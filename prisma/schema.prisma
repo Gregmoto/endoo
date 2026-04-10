@@ -1,0 +1,755 @@
+// Endoo — Multi-tenant SaaS Invoicing Platform
+// Database: PostgreSQL (Neon) via Prisma ORM
+// Tenant isolation: organization_id on all tenant-scoped tables + PostgreSQL RLS
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions", "multiSchema"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [uuidOssp(map: "uuid-ossp"), pgcrypto, pgTrgm(map: "pg_trgm")]
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum OrganizationType {
+  agency
+  customer
+}
+
+enum Plan {
+  free
+  starter
+  pro
+  enterprise
+}
+
+enum MemberRole {
+  owner   // Full control — billing, settings, delete org
+  admin   // Users + settings, no billing
+  member  // Create/edit invoices and contacts
+  viewer  // Read-only
+}
+
+enum InvoiceStatus {
+  draft
+  sent
+  viewed
+  partial
+  paid
+  overdue
+  void
+  uncollectable
+}
+
+enum InvoiceType {
+  invoice
+  credit_note
+  quote
+  proforma
+}
+
+enum PaymentMethod {
+  bank_transfer
+  card
+  swish
+  cash
+  credit_note
+  other
+}
+
+enum RecurringFrequency {
+  weekly
+  biweekly
+  monthly
+  quarterly
+  yearly
+}
+
+enum AgencyAccessLevel {
+  full
+  read_only
+  invoicing_only
+}
+
+enum RelationshipStatus {
+  active
+  suspended
+  terminated
+}
+
+enum AuditAction {
+  create
+  update
+  delete
+  login
+  logout
+  impersonate_start
+  impersonate_end
+  invite_send
+  invite_accept
+  plan_change
+  payment_record
+  invoice_send
+  invoice_void
+}
+
+// ─────────────────────────────────────────────
+// ORGANIZATIONS — tenants
+// Every paying account is one row here.
+// type = 'agency'   → has agency_client_relationships
+// type = 'customer' → standalone or managed by an agency
+// ─────────────────────────────────────────────
+model Organization {
+  id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug      String           @unique                // URL path: endoo.se/app/{slug}
+  name      String
+  type      OrganizationType
+  plan      Plan             @default(free)
+  planExpiresAt DateTime?
+
+  // Stripe
+  stripeCustomerId     String? @unique
+  stripeSubscriptionId String? @unique
+
+  // Branding (for PDF invoices)
+  logoUrl      String?
+  primaryColor String?          // hex
+
+  // Invoice defaults
+  invoicePrefix        String  @default("INV")
+  invoiceSequenceStart Int     @default(1)
+  defaultCurrency      String  @default("SEK")
+  defaultTaxRate       Decimal @default(0.25) @db.Decimal(5, 4)
+  defaultPaymentTermsDays Int  @default(30)
+
+  // Locale
+  locale   String @default("sv-SE")
+  timezone String @default("Europe/Stockholm")
+
+  // Address
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  postalCode   String?
+  country      String  @default("SE")
+
+  // Swedish identifiers
+  vatNumber String?
+  orgNumber String?     // organisationsnummer
+
+  // Banking
+  bankName    String?
+  bankAccount String?   // stored encrypted at app layer
+  bankgiro    String?
+  plusgiro    String?
+  iban        String?
+  bic         String?
+
+  isActive Boolean @default(true)
+  metadata Json    @default("{}")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Relations
+  members               OrganizationMember[]
+  invitations           Invitation[]
+
+  // Agency side: agencies this org manages
+  agencyRelationships   AgencyClientRelationship[] @relation("AgencyOrg")
+  // Client side: agencies managing this org
+  clientRelationships   AgencyClientRelationship[] @relation("ClientOrg")
+
+  contacts              Contact[]
+  products              Product[]
+  invoices              Invoice[]
+  invoiceLineItems      InvoiceLineItem[]
+  payments              Payment[]
+  recurringSchedules    RecurringSchedule[]
+  settings              OrganizationSetting[]
+  auditLogs             AuditLog[]
+  subscriptions         Subscription[]
+
+  // Agency access grants for this client org
+  staffAccessGrants     AgencyStaffAccess[]     @relation("ClientStaffAccess")
+
+  // Sessions currently active in this org
+  activeSessions        Session[]               @relation("ActiveOrgSessions")
+  impersonatingSessions Session[]               @relation("ImpersonatingOrgSessions")
+
+  // Invoices created on behalf of this org (by an agency)
+  invoicesCreatedOnBehalf Invoice[]             @relation("AgencyCreatedInvoices")
+
+  @@index([slug])
+  @@index([type])
+  @@index([stripeCustomerId])
+  @@map("organizations")
+}
+
+// ─────────────────────────────────────────────
+// AGENCY ↔ CLIENT RELATIONSHIPS
+// An Agency manages one or more client Organizations.
+// tenant-scoped: NO (cross-tenant by nature)
+// ─────────────────────────────────────────────
+model AgencyClientRelationship {
+  id       String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  agencyId String             @db.Uuid
+  clientId String             @db.Uuid
+  status   RelationshipStatus @default(active)
+
+  grantedAt DateTime  @default(now())
+  grantedBy String?   @db.Uuid   // user_id who created the link
+  revokedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  agency Organization @relation("AgencyOrg", fields: [agencyId], references: [id], onDelete: Cascade)
+  client Organization @relation("ClientOrg", fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@unique([agencyId, clientId])
+  @@index([agencyId])
+  @@index([clientId])
+  @@map("agency_client_relationships")
+}
+
+// ─────────────────────────────────────────────
+// USERS — global identity, no org affiliation here
+// A user gets roles through OrganizationMember rows.
+// ─────────────────────────────────────────────
+model User {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email           String    @unique
+  emailVerified   Boolean   @default(false)
+  emailVerifiedAt DateTime?
+  fullName        String
+  avatarUrl       String?
+
+  locale   String @default("sv-SE")
+  timezone String @default("Europe/Stockholm")
+
+  lastLoginAt DateTime?
+  lastLoginIp String?
+
+  // Super Admin — bypasses all tenant RLS
+  isPlatformAdmin Boolean @default(false)
+
+  // 2FA
+  totpSecret    String?   // encrypted at app layer
+  totpEnabled   Boolean   @default(false)
+  recoveryCodes String[]  // hashed
+
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  // Relations
+  accounts     UserAccount[]
+  sessions     Session[]
+  memberships  OrganizationMember[]
+  invitationsSent Invitation[]
+  auditLogs    AuditLog[]
+
+  // Agency staff grants (this user → client orgs)
+  staffAccessGrants AgencyStaffAccess[]
+
+  invoicesCreated  Invoice[]   @relation("InvoiceCreatedBy")
+  paymentsCreated  Payment[]   @relation("PaymentCreatedBy")
+  schedulesCreated RecurringSchedule[] @relation("ScheduleCreatedBy")
+
+  @@index([email])
+  @@index([isPlatformAdmin])
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────
+// USER ACCOUNTS — OAuth / credential providers
+// NextAuth.js compatible
+// ─────────────────────────────────────────────
+model UserAccount {
+  id                String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String  @db.Uuid
+  type              String   // 'oauth' | 'email' | 'credentials'
+  provider          String   // 'google' | 'github' | 'email'
+  providerAccountId String
+  refreshToken      String?
+  accessToken       String?
+  expiresAt         BigInt?
+  tokenType         String?
+  scope             String?
+  idToken           String?
+  sessionState      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("user_accounts")
+}
+
+// ─────────────────────────────────────────────
+// ORGANIZATION MEMBERS — user ↔ org many-to-many
+// Role is per membership, not global.
+// Account switching = changing active_organization_id in session.
+// ─────────────────────────────────────────────
+model OrganizationMember {
+  id             String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String     @db.Uuid
+  userId         String     @db.Uuid
+  role           MemberRole
+
+  invitedBy  String?   @db.Uuid
+  invitedAt  DateTime  @default(now())
+  acceptedAt DateTime?
+
+  // Marks the user's "home" org (shown first after login)
+  isPrimary Boolean @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Agency staff can have explicit per-client access grants
+  staffAccessGrants AgencyStaffAccess[]
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+  @@index([organizationId, role])
+  @@map("organization_members")
+}
+
+// ─────────────────────────────────────────────
+// AGENCY STAFF ACCESS — per-staff client access
+// An agency owner implicitly accesses all clients.
+// Non-owner agency staff need explicit grants here.
+// ─────────────────────────────────────────────
+model AgencyStaffAccess {
+  id             String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  agencyMemberId String            @db.Uuid  // OrganizationMember in agency
+  clientId       String            @db.Uuid  // client Organization
+  accessLevel    AgencyAccessLevel @default(full)
+
+  grantedBy String   @db.Uuid
+  grantedAt DateTime @default(now())
+  revokedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  agencyMember OrganizationMember @relation(fields: [agencyMemberId], references: [id], onDelete: Cascade)
+  client       Organization       @relation("ClientStaffAccess", fields: [clientId], references: [id], onDelete: Cascade)
+  grantedByUser User              @relation(fields: [grantedBy], references: [id])
+
+  @@unique([agencyMemberId, clientId])
+  @@index([agencyMemberId])
+  @@index([clientId])
+  @@map("agency_staff_access")
+}
+
+// ─────────────────────────────────────────────
+// INVITATIONS — pending membership invites
+// ─────────────────────────────────────────────
+model Invitation {
+  id             String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String     @db.Uuid
+  email          String
+  role           MemberRole
+  token          String     @unique @default(dbgenerated("encode(gen_random_bytes(32), 'hex')"))
+
+  invitedBy  String   @db.Uuid
+  expiresAt  DateTime @default(dbgenerated("NOW() + INTERVAL '7 days'"))
+  acceptedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invitedByUser User        @relation(fields: [invitedBy], references: [id])
+
+  @@unique([organizationId, email])
+  @@index([token])
+  @@index([email])
+  @@map("invitations")
+}
+
+// ─────────────────────────────────────────────
+// SESSIONS — NextAuth + account switching context
+// active_organization_id  = current tenant context
+// impersonating_org_id    = agency acting as client
+// ─────────────────────────────────────────────
+model Session {
+  id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionToken String  @unique
+  userId       String  @db.Uuid
+  expires      DateTime
+
+  // Account switching state (stored in session, not JWT)
+  activeOrganizationId       String? @db.Uuid
+  impersonatingOrganizationId String? @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user                     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activeOrganization       Organization? @relation("ActiveOrgSessions", fields: [activeOrganizationId], references: [id])
+  impersonatingOrganization Organization? @relation("ImpersonatingOrgSessions", fields: [impersonatingOrganizationId], references: [id])
+
+  @@index([sessionToken])
+  @@index([userId])
+  @@map("sessions")
+}
+
+// NextAuth verification tokens (magic links / email OTP)
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@id([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ─────────────────────────────────────────────
+// CONTACTS — the customers you invoice
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model Contact {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid
+
+  type  String @default("business") // 'business' | 'individual'
+  name  String
+  email String?
+  phone String?
+
+  // Swedish business identifiers
+  vatNumber String?
+  orgNumber String?
+
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  postalCode   String?
+  country      String  @default("SE")
+
+  // Per-contact defaults (override org defaults)
+  defaultCurrency         String?
+  defaultPaymentTermsDays Int?
+  defaultTaxRate          Decimal? @db.Decimal(5, 4)
+
+  notes      String?
+  tags       String[]
+  isArchived Boolean @default(false)
+  metadata   Json    @default("{}")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices     Invoice[]
+  schedules    RecurringSchedule[]
+
+  @@index([organizationId])
+  @@index([organizationId, email])
+  @@map("contacts")
+}
+
+// ─────────────────────────────────────────────
+// PRODUCTS / SERVICES — item catalog
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model Product {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid
+
+  name        String
+  description String?
+  sku         String?
+  unit        String  @default("piece")
+  // stored as smallest currency unit (öre for SEK)
+  unitPrice   BigInt  @default(0)
+  currency    String  @default("SEK")
+  taxRate     Decimal @default(0.25) @db.Decimal(5, 4)
+  isActive    Boolean @default(true)
+  metadata    Json    @default("{}")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lineItems    InvoiceLineItem[]
+
+  @@index([organizationId])
+  @@index([organizationId, sku])
+  @@map("products")
+}
+
+// ─────────────────────────────────────────────
+// INVOICES
+// TENANT-SCOPED: organization_id required
+// Amounts stored as BigInt (smallest unit, e.g. öre)
+// ─────────────────────────────────────────────
+model Invoice {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String        @db.Uuid
+  contactId      String?       @db.Uuid
+  invoiceNumber  String
+  status         InvoiceStatus @default(draft)
+  type           InvoiceType   @default(invoice)
+  currency       String        @default("SEK")
+
+  issueDate DateTime @default(now()) @db.Date
+  dueDate   DateTime @db.Date
+
+  sentAt   DateTime?
+  viewedAt DateTime?
+  paidAt   DateTime?
+  voidedAt DateTime?
+
+  // Denormalized totals — recalculated on line item change
+  subtotalAmount BigInt @default(0)   // before tax
+  taxAmount      BigInt @default(0)
+  discountAmount BigInt @default(0)
+  totalAmount    BigInt @default(0)
+  paidAmount     BigInt @default(0)
+  // balanceDue = totalAmount - paidAmount (computed in app layer)
+
+  // Snapshot of billing address at send time
+  billingName    String?
+  billingEmail   String?
+  billingAddress Json?
+
+  notes      String?
+  footerText String?
+  poNumber   String?
+  reference  String?
+
+  // For credit notes — which invoice this credits
+  creditedInvoiceId String? @db.Uuid
+
+  // For recurring invoices
+  recurringScheduleId String? @db.Uuid
+
+  // PDF storage
+  pdfUrl         String?
+  pdfGeneratedAt DateTime?
+
+  // Audit: who created, in which context
+  createdByUserId            String? @db.Uuid
+  createdOnBehalfOfAgencyId  String? @db.Uuid
+
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  contact        Contact?      @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  creditedInvoice Invoice?     @relation("CreditNote", fields: [creditedInvoiceId], references: [id])
+  creditNotes     Invoice[]    @relation("CreditNote")
+  recurringSchedule RecurringSchedule? @relation(fields: [recurringScheduleId], references: [id], onDelete: SetNull)
+  createdByUser  User?         @relation("InvoiceCreatedBy", fields: [createdByUserId], references: [id])
+  agencyCreator  Organization? @relation("AgencyCreatedInvoices", fields: [createdOnBehalfOfAgencyId], references: [id])
+
+  lineItems InvoiceLineItem[]
+  payments  Payment[]
+
+  @@unique([organizationId, invoiceNumber])
+  @@index([organizationId])
+  @@index([contactId])
+  @@index([organizationId, status])
+  @@index([organizationId, dueDate])
+  @@map("invoices")
+}
+
+// ─────────────────────────────────────────────
+// INVOICE LINE ITEMS
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model InvoiceLineItem {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoiceId      String  @db.Uuid
+  organizationId String  @db.Uuid
+  productId      String? @db.Uuid
+
+  sortOrder   Int     @default(0)
+  description String
+  quantity    Decimal @db.Decimal(12, 4)
+  unit        String  @default("piece")
+  unitPrice   BigInt
+  taxRate     Decimal @db.Decimal(5, 4)
+  discountRate Decimal @default(0) @db.Decimal(5, 4)
+  lineTotal   BigInt   // quantity × unitPrice × (1 - discountRate)
+  taxAmount   BigInt   // lineTotal × taxRate
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  invoice      Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  product      Product?     @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([invoiceId])
+  @@index([organizationId])
+  @@map("invoice_line_items")
+}
+
+// ─────────────────────────────────────────────
+// PAYMENTS — recorded receipts against invoices
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model Payment {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String        @db.Uuid
+  invoiceId      String        @db.Uuid
+  amount         BigInt
+  currency       String        @default("SEK")
+  paymentDate    DateTime      @default(now()) @db.Date
+  method         PaymentMethod @default(bank_transfer)
+  reference      String?
+  notes          String?
+  stripePaymentIntentId String?
+  createdByUserId String?      @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoice        Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  createdByUser  User?        @relation("PaymentCreatedBy", fields: [createdByUserId], references: [id])
+
+  @@index([organizationId])
+  @@index([invoiceId])
+  @@map("payments")
+}
+
+// ─────────────────────────────────────────────
+// RECURRING SCHEDULES
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model RecurringSchedule {
+  id             String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String             @db.Uuid
+  contactId      String?            @db.Uuid
+  name           String
+  status         String             @default("active")  // active | paused | cancelled
+  frequency      RecurringFrequency
+  startDate      DateTime           @db.Date
+  endDate        DateTime?          @db.Date
+  nextIssueDate  DateTime           @db.Date
+  lastIssuedAt   DateTime?
+  autoSend       Boolean            @default(false)
+  templateData   Json               @default("{}")  // invoice template snapshot
+  createdByUserId String?           @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contact      Contact?     @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  createdByUser User?        @relation("ScheduleCreatedBy", fields: [createdByUserId], references: [id])
+  invoices     Invoice[]
+
+  @@index([organizationId])
+  @@index([nextIssueDate])
+  @@map("recurring_schedules")
+}
+
+// ─────────────────────────────────────────────
+// SUBSCRIPTIONS — SaaS plan for each org
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model Subscription {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid @unique
+
+  plan          Plan     @default(free)
+  status        String   @default("active")  // active | past_due | cancelled | trialing
+  trialEndsAt   DateTime?
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  cancelAtPeriodEnd  Boolean @default(false)
+
+  stripeCustomerId     String? @unique
+  stripeSubscriptionId String? @unique
+  stripePriceId        String?
+
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+// ─────────────────────────────────────────────
+// ORGANIZATION SETTINGS — key/value per tenant
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model OrganizationSetting {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid
+  key            String
+  value          Json
+
+  updatedByUserId String?  @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, key])
+  @@index([organizationId])
+  @@map("organization_settings")
+}
+
+// ─────────────────────────────────────────────
+// AUDIT LOGS — immutable event stream
+// TENANT-SCOPED: organization_id required
+// Never updated or deleted (append-only).
+// ─────────────────────────────────────────────
+model AuditLog {
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String      @db.Uuid
+  userId         String?     @db.Uuid
+  action         AuditAction
+  entityType     String?     // 'invoice' | 'contact' | 'user' etc.
+  entityId       String?     @db.Uuid
+  ipAddress      String?
+  userAgent      String?
+
+  // Full before/after snapshot for updates
+  before Json?
+  after  Json?
+  meta   Json  @default("{}")
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([organizationId, action])
+  @@index([organizationId, entityType, entityId])
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
+  @@map("audit_logs")
+}
