@@ -99,7 +99,8 @@ export function tenantDb(ctx: RBACContext) {
         },
 
         // ── create ────────────────────────────────────────────────────
-        async create({ model, args, query }) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        async create({ model, args, query }: any) {
           if (isTenantModel(model)) {
             args.data = { ...args.data, organizationId: orgId }
           }
@@ -159,10 +160,8 @@ function isTenantModel(model: string): model is TenantModel {
   return TENANT_MODELS.has(model.charAt(0).toLowerCase() + model.slice(1) as TenantModel)
 }
 
-function withOrgFilter(
-  where: Record<string, unknown> | undefined,
-  orgId: string
-): Record<string, unknown> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function withOrgFilter(where: any, orgId: string): any {
   return { ...where, organizationId: orgId }
 }
 

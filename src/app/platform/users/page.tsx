@@ -35,8 +35,8 @@ export default async function PlatformUsersPage() {
               {users.map((user) => (
                 <tr key={user.id} className="border-t border-gray-50 hover:bg-gray-50">
                   <td className="px-6 py-3">
-                    <p className="font-medium text-gray-900">{user.name ?? user.email}</p>
-                    {user.name && <p className="text-xs text-gray-400">{user.email}</p>}
+                    <p className="font-medium text-gray-900">{user.fullName ?? user.email}</p>
+                    {user.fullName && <p className="text-xs text-gray-400">{user.email}</p>}
                   </td>
                   <td className="px-6 py-3">
                     <div className="flex flex-wrap gap-1">

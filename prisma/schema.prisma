@@ -98,6 +98,7 @@ enum AuditAction {
   payment_record
   invoice_send
   invoice_void
+  account_switch
 }
 
 // ─────────────────────────────────────────────
@@ -139,6 +140,11 @@ model Organization {
   city         String?
   postalCode   String?
   country      String  @default("SE")
+
+  // Contact
+  phone        String?
+  website      String?
+  contactEmail String?  // publik kontaktadress (≠ inloggnings-e-post)
 
   // Swedish identifiers
   vatNumber String?

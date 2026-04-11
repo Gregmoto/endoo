@@ -27,7 +27,7 @@ interface SidebarProps {
 
 export function Sidebar({ orgSlug, orgName, orgType, userEmail }: SidebarProps) {
   const pathname = usePathname()
-  const base = `/app/${orgSlug}`
+  const base = `/${orgSlug}`
 
   function isActive(href: string) {
     const full = `${base}${href}`

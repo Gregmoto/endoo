@@ -72,7 +72,7 @@ export default async function PlatformOrgDetailPage({ params }: { params: Promis
             <Row label="Org.nr" value={org.orgNumber} />
             <Row label="Momsnr" value={org.vatNumber} />
             <Row label="Skapad" value={formatDate(org.createdAt)} />
-            {org.subscriptionStatus && <Row label="Prenumeration" value={org.subscriptionStatus} />}
+            {/* subscription status shown via separate Subscription model if needed */}
           </CardContent>
         </Card>
 

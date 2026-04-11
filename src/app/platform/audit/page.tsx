@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent } from "@/components/ui/card"
+import type { AuditAction } from "@prisma/client"
 
 export default async function PlatformAuditPage({
   searchParams,
@@ -9,7 +10,15 @@ export default async function PlatformAuditPage({
   const { page: pageParam, action } = await searchParams
   const page = parseInt(pageParam ?? "1")
   const pageSize = 50
-  const where = action ? { action: { contains: action } } : {}
+
+  // action is an enum — filter only if value matches a valid enum value
+  const validActions: AuditAction[] = [
+    "create","update","delete","login","logout",
+    "impersonate_start","impersonate_end","invite_send","invite_accept",
+    "plan_change","payment_record","invoice_send","invoice_void","account_switch",
+  ]
+  const matchedAction = validActions.find(a => a === action) ?? null
+  const where = matchedAction ? { action: matchedAction } : {}
 
   const [logs, total] = await Promise.all([
     prisma.auditLog.findMany({
@@ -18,7 +27,7 @@ export default async function PlatformAuditPage({
       take: pageSize,
       skip: (page - 1) * pageSize,
       include: {
-        actor: { select: { name: true, email: true } },
+        user: { select: { fullName: true, email: true } },
         organization: { select: { name: true, slug: true } },
       },
     }),
@@ -35,12 +44,16 @@ export default async function PlatformAuditPage({
           <p className="text-sm text-gray-500 mt-1">{total.toLocaleString("sv-SE")} händelser totalt</p>
         </div>
         <form className="flex gap-2">
-          <input
+          <select
             name="action"
             defaultValue={action ?? ""}
-            placeholder="Filtrera på händelse…"
-            className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48"
-          />
+            className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">Alla händelser</option>
+            {validActions.map(a => (
+              <option key={a} value={a}>{a}</option>
+            ))}
+          </select>
           <button
             type="submit"
             className="px-3 py-2 text-sm bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
@@ -73,9 +86,9 @@ export default async function PlatformAuditPage({
                     }).format(new Date(log.createdAt))}
                   </td>
                   <td className="px-6 py-3">
-                    <p className="text-gray-900">{log.actor?.fullName ?? log.actor?.email ?? "System"}</p>
-                    {log.actor?.fullName && (
-                      <p className="text-xs text-gray-400">{log.actor.email}</p>
+                    <p className="text-gray-900">{log.user?.fullName ?? log.user?.email ?? "System"}</p>
+                    {log.user?.fullName && (
+                      <p className="text-xs text-gray-400">{log.user.email}</p>
                     )}
                   </td>
                   <td className="px-6 py-3 text-gray-600 text-xs">
@@ -87,9 +100,9 @@ export default async function PlatformAuditPage({
                     </code>
                   </td>
                   <td className="px-6 py-3 text-gray-500 text-xs">
-                    {log.resourceType}
-                    {log.resourceId && (
-                      <span className="text-gray-400 font-mono ml-1">#{log.resourceId.slice(0, 8)}</span>
+                    {log.entityType}
+                    {log.entityId && (
+                      <span className="text-gray-400 font-mono ml-1">#{log.entityId.slice(0, 8)}</span>
                     )}
                   </td>
                   <td className="px-6 py-3 text-gray-400 font-mono text-xs">{log.ipAddress ?? "—"}</td>

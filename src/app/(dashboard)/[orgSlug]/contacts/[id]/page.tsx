@@ -57,7 +57,6 @@ export default async function ContactDetailPage({ params }: { params: Promise<{ 
           <CardContent className="space-y-3 text-sm">
             <Row label="E-post" value={contact.email} />
             <Row label="Telefon" value={contact.phone} />
-            <Row label="Webbplats" value={contact.website} />
           </CardContent>
         </Card>
         <Card>

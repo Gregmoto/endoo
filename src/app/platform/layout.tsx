@@ -10,7 +10,7 @@ const navItems = [
 
 export default async function PlatformLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
-  if (!session?.isPlatformAdmin) redirect("/")
+  if (!session?.user?.isPlatformAdmin) redirect("/")
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

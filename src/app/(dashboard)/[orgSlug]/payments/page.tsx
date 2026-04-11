@@ -19,7 +19,7 @@ export default async function PaymentsPage({ params }: { params: Promise<{ orgSl
 
   const payments = await prisma.payment.findMany({
     where: { organizationId: orgId },
-    orderBy: { paidAt: "desc" },
+    orderBy: { paymentDate: "desc" },
     take: 100,
     include: {
       invoice: {
@@ -62,7 +62,7 @@ export default async function PaymentsPage({ params }: { params: Promise<{ orgSl
               <tbody>
                 {payments.map((p) => (
                   <tr key={p.id} className="border-t border-gray-50 hover:bg-gray-50">
-                    <td className="px-6 py-3 text-gray-600">{formatDate(p.paidAt)}</td>
+                    <td className="px-6 py-3 text-gray-600">{formatDate(p.paymentDate)}</td>
                     <td className="px-6 py-3">
                       <Link href={`/${orgSlug}/invoices/${p.invoice.id}`} className="font-mono text-indigo-600 hover:underline text-xs">
                         {p.invoice.invoiceNumber}

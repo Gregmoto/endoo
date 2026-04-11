@@ -16,7 +16,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
     include: {
       contact: true,
       lineItems: { orderBy: { sortOrder: "asc" } },
-      payments: { orderBy: { paidAt: "desc" } },
+      payments: { orderBy: { paymentDate: "desc" } },
     },
   })
   if (!inv) notFound()
@@ -128,7 +128,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
               <tbody>
                 {inv.payments.map((p) => (
                   <tr key={p.id} className="border-t border-gray-50">
-                    <td className="px-5 py-3">{formatDate(p.paidAt)}</td>
+                    <td className="px-5 py-3">{formatDate(p.paymentDate)}</td>
                     <td className="px-5 py-3 text-gray-500">{p.method}</td>
                     <td className="px-5 py-3 text-right font-medium tabular-nums text-green-600">{formatMoney(p.amount)}</td>
                   </tr>

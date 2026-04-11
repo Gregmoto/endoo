@@ -2,7 +2,6 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { formatDate } from "@/lib/utils"
 import { PLANS } from "@/lib/constants"
 
 const PLAN_LABELS: Record<string, string> = {
@@ -17,30 +16,29 @@ export default async function BillingPage({ params }: { params: Promise<{ orgSlu
   const session = await auth()
   const orgId = session?.activeOrganizationId ?? ""
 
-  const org = await prisma.organization.findUnique({
-    where: { id: orgId },
-    select: {
-      plan: true,
-      stripeCustomerId: true,
-      stripeSubscriptionId: true,
-      subscriptionStatus: true,
-      subscriptionPeriodEnd: true,
-      _count: {
-        select: {
-          invoices: { where: { deletedAt: null } },
-          contacts: { where: { deletedAt: null } },
-          members: true,
-        },
-      },
-    },
-  })
+  const [org, sub, memberCount, invoiceCount, contactCount] = await Promise.all([
+    prisma.organization.findUnique({
+      where: { id: orgId },
+      select: { plan: true, stripeSubscriptionId: true },
+    }),
+    prisma.subscription.findUnique({
+      where: { organizationId: orgId },
+      select: { status: true, currentPeriodEnd: true, cancelAtPeriodEnd: true },
+    }),
+    prisma.organizationMember.count({
+      where: { organizationId: orgId, deletedAt: null },
+    }),
+    prisma.invoice.count({
+      where: { organizationId: orgId, deletedAt: null },
+    }),
+    prisma.contact.count({
+      where: { organizationId: orgId, deletedAt: null },
+    }),
+  ])
 
   if (!org) return null
 
   const plan = PLANS[org.plan as keyof typeof PLANS] ?? PLANS.free
-  const invoiceCount = org._count.invoices
-  const contactCount = org._count.contacts
-  const memberCount = org._count.members
   const maxInvoices = "maxInvoicesPerMonth" in plan ? (plan.maxInvoicesPerMonth === Infinity ? -1 : plan.maxInvoicesPerMonth) : -1
   const maxContacts = "maxClients" in plan ? (plan.maxClients === Infinity ? -1 : plan.maxClients) : -1
   const maxMembers = "maxUsers" in plan ? (plan.maxUsers === Infinity ? -1 : plan.maxUsers) : -1
@@ -60,16 +58,18 @@ export default async function BillingPage({ params }: { params: Promise<{ orgSlu
           </Badge>
         </CardHeader>
         <CardContent className="space-y-4">
-          {org.subscriptionStatus && (
+          {sub?.status && (
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Status</span>
-              <span className="font-medium capitalize">{org.subscriptionStatus}</span>
+              <span className="font-medium capitalize">{sub.status}</span>
             </div>
           )}
-          {org.subscriptionPeriodEnd && (
+          {sub?.currentPeriodEnd && (
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Förnyas</span>
-              <span className="font-medium">{formatDate(org.subscriptionPeriodEnd)}</span>
+              <span className="text-gray-500">{sub.cancelAtPeriodEnd ? "Avslutas" : "Förnyas"}</span>
+              <span className="font-medium">
+                {new Intl.DateTimeFormat("sv-SE", { dateStyle: "short" }).format(new Date(sub.currentPeriodEnd))}
+              </span>
             </div>
           )}
           {org.plan === "free" && (

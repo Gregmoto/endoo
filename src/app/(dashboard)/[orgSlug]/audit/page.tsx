@@ -12,7 +12,7 @@ export default async function AuditPage({ params }: { params: Promise<{ orgSlug:
     orderBy: { createdAt: "desc" },
     take: 100,
     include: {
-      actor: { select: { fullName: true, email: true } },
+      user: { select: { fullName: true, email: true } },
     },
   })
 
@@ -45,15 +45,15 @@ export default async function AuditPage({ params }: { params: Promise<{ orgSlug:
                       {new Intl.DateTimeFormat("sv-SE", { dateStyle: "short", timeStyle: "short" }).format(new Date(log.createdAt))}
                     </td>
                     <td className="px-6 py-3">
-                      <p className="text-gray-900">{log.actor?.fullName ?? log.actor?.email ?? "System"}</p>
-                      {log.actor?.fullName && <p className="text-xs text-gray-400">{log.actor.email}</p>}
+                      <p className="text-gray-900">{log.user?.fullName ?? log.user?.email ?? "System"}</p>
+                      {log.user?.fullName && <p className="text-xs text-gray-400">{log.user.email}</p>}
                     </td>
                     <td className="px-6 py-3">
                       <code className="text-xs bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded">{log.action}</code>
                     </td>
                     <td className="px-6 py-3 text-gray-600 text-xs">
-                      {log.resourceType && <span>{log.resourceType}</span>}
-                      {log.resourceId && <span className="text-gray-400 font-mono ml-1">#{log.resourceId.slice(0, 8)}</span>}
+                      {log.entityType && <span>{log.entityType}</span>}
+                      {log.entityId && <span className="text-gray-400 font-mono ml-1">#{log.entityId.slice(0, 8)}</span>}
                     </td>
                     <td className="px-6 py-3 text-gray-400 font-mono text-xs">{log.ipAddress ?? "—"}</td>
                   </tr>
