@@ -37,9 +37,10 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-sm px-4">
-      {/* Logo */}
       <div className="mb-8 text-center">
-        <span className="text-2xl font-bold text-brand-600">Endoo</span>
+        <Link href="/" className="text-2xl font-bold text-indigo-600 hover:text-indigo-700">
+          Endoo
+        </Link>
         <p className="mt-1 text-sm text-gray-500">Logga in på ditt konto</p>
       </div>
 
@@ -75,11 +76,15 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Inget konto?{" "}
-          <Link href="/register" className="text-brand-600 font-medium hover:underline">
+          <Link href="/register" className="text-indigo-600 font-medium hover:underline">
             Skapa konto
           </Link>
         </p>
       </div>
+
+      <p className="mt-6 text-center text-sm text-gray-400">
+        <Link href="/" className="hover:text-gray-600">← Tillbaka till startsidan</Link>
+      </p>
     </div>
   )
 }
