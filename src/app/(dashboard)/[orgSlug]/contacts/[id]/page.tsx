@@ -6,16 +6,13 @@ import { InvoiceStatusBadge } from "@/components/ui/badge"
 import { formatDate, formatMoney } from "@/lib/utils"
 import Link from "next/link"
 
-export default async function ContactDetailPage({
-  params,
-}: {
-  params: { orgSlug: string; id: string }
-}) {
+export default async function ContactDetailPage({ params }: { params: Promise<{ orgSlug: string; id: string }> }) {
+  const { orgSlug, id } = await params
   const session = await auth()
   const orgId = session?.activeOrganizationId ?? ""
 
   const contact = await prisma.contact.findFirst({
-    where: { id: params.id, organizationId: orgId, deletedAt: null },
+    where: { id, organizationId: orgId, deletedAt: null },
     include: {
       invoices: {
         where: { deletedAt: null },
@@ -24,7 +21,6 @@ export default async function ContactDetailPage({
       },
     },
   })
-
   if (!contact) notFound()
 
   const totalBilled = contact.invoices.reduce((sum, inv) => sum + Number(inv.totalAmount), 0)
@@ -35,44 +31,29 @@ export default async function ContactDetailPage({
   return (
     <div className="p-8 max-w-4xl">
       <div className="mb-6">
-        <Link
-          href={`/${params.orgSlug}/contacts`}
-          className="text-sm text-gray-400 hover:text-gray-600"
-        >
-          ← Alla kontakter
-        </Link>
+        <Link href={`/${orgSlug}/contacts`} className="text-sm text-gray-400 hover:text-gray-600">← Alla kontakter</Link>
         <h1 className="text-2xl font-bold text-gray-900 mt-2">{contact.name}</h1>
-        {contact.orgNumber && (
-          <p className="text-sm text-gray-500 font-mono">{contact.orgNumber}</p>
-        )}
+        {contact.orgNumber && <p className="text-sm text-gray-500 font-mono">{contact.orgNumber}</p>}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Fakturerat</p>
-            <p className="text-xl font-bold text-gray-900">{formatMoney(totalBilled)}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Betalt</p>
-            <p className="text-xl font-bold text-green-600">{formatMoney(totalPaid)}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Utestående</p>
-            <p className="text-xl font-bold text-amber-600">{formatMoney(totalBilled - totalPaid)}</p>
-          </CardContent>
-        </Card>
+        <Card><CardContent className="p-4">
+          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Fakturerat</p>
+          <p className="text-xl font-bold text-gray-900">{formatMoney(totalBilled)}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Betalt</p>
+          <p className="text-xl font-bold text-green-600">{formatMoney(totalPaid)}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Utestående</p>
+          <p className="text-xl font-bold text-amber-600">{formatMoney(totalBilled - totalPaid)}</p>
+        </CardContent></Card>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <Card>
-          <CardHeader>
-            <CardTitle>Kontaktuppgifter</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle>Kontaktuppgifter</CardTitle></CardHeader>
           <CardContent className="space-y-3 text-sm">
             <Row label="E-post" value={contact.email} />
             <Row label="Telefon" value={contact.phone} />
@@ -80,11 +61,9 @@ export default async function ContactDetailPage({
           </CardContent>
         </Card>
         <Card>
-          <CardHeader>
-            <CardTitle>Adress</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle>Adress</CardTitle></CardHeader>
           <CardContent className="space-y-3 text-sm">
-            <Row label="Gatuadress" value={contact.address} />
+            <Row label="Gatuadress" value={contact.addressLine1} />
             <Row label="Postnummer" value={contact.postalCode} />
             <Row label="Stad" value={contact.city} />
             <Row label="Land" value={contact.country} />
@@ -95,10 +74,7 @@ export default async function ContactDetailPage({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Fakturor</CardTitle>
-          <Link
-            href={`/${params.orgSlug}/invoices/new?contactId=${contact.id}`}
-            className="text-sm text-indigo-600 hover:underline"
-          >
+          <Link href={`/${orgSlug}/invoices/new?contactId=${contact.id}`} className="text-sm text-indigo-600 hover:underline">
             + Ny faktura
           </Link>
         </CardHeader>
@@ -119,18 +95,13 @@ export default async function ContactDetailPage({
                 {contact.invoices.map((inv) => (
                   <tr key={inv.id} className="border-t border-gray-50 hover:bg-gray-50">
                     <td className="px-6 py-3">
-                      <Link
-                        href={`/${params.orgSlug}/invoices/${inv.id}`}
-                        className="font-mono text-indigo-600 hover:underline"
-                      >
+                      <Link href={`/${orgSlug}/invoices/${inv.id}`} className="font-mono text-indigo-600 hover:underline">
                         {inv.invoiceNumber}
                       </Link>
                     </td>
                     <td className="px-6 py-3 text-gray-600">{formatDate(inv.dueDate)}</td>
                     <td className="px-6 py-3 font-medium">{formatMoney(inv.totalAmount)}</td>
-                    <td className="px-6 py-3">
-                      <InvoiceStatusBadge status={inv.status as any} />
-                    </td>
+                    <td className="px-6 py-3"><InvoiceStatusBadge status={inv.status as any} /></td>
                   </tr>
                 ))}
               </tbody>

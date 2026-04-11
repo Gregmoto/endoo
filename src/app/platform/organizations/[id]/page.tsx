@@ -1,17 +1,18 @@
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { InvoiceStatusBadge } from "@/components/ui/badge"
+import { Badge, InvoiceStatusBadge } from "@/components/ui/badge"
 import { formatDate, formatMoney, initials, stringToColor } from "@/lib/utils"
 import Link from "next/link"
 
-export default async function PlatformOrgDetailPage({ params }: { params: { id: string } }) {
+export default async function PlatformOrgDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
   const org = await prisma.organization.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       members: {
-        include: { user: { select: { name: true, email: true, isPlatformAdmin: true } } },
+        include: { user: { select: { fullName: true, email: true, isPlatformAdmin: true } } },
         orderBy: { createdAt: "asc" },
       },
       invoices: {
@@ -33,32 +34,23 @@ export default async function PlatformOrgDetailPage({ params }: { params: { id: 
   if (!org) notFound()
 
   const ROLE_LABELS: Record<string, string> = {
-    owner: "Ägare",
-    admin: "Admin",
-    member: "Medlem",
-    viewer: "Läsare",
+    owner: "Ägare", admin: "Admin", member: "Medlem", viewer: "Läsare",
   }
 
   return (
     <div className="p-8 max-w-5xl">
       <div className="mb-6">
-        <Link href="/platform/organizations" className="text-sm text-gray-400 hover:text-gray-600">
-          ← Alla organisationer
-        </Link>
+        <Link href="/platform/organizations" className="text-sm text-gray-400 hover:text-gray-600">← Alla organisationer</Link>
         <div className="flex items-center gap-3 mt-2">
-          <div
-            className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold"
-            style={{ backgroundColor: stringToColor(org.name) }}
-          >
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold"
+            style={{ backgroundColor: stringToColor(org.name) }}>
             {initials(org.name)}
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{org.name}</h1>
             <p className="text-sm text-gray-500 font-mono">{org.slug}</p>
           </div>
-          {org.deletedAt && (
-            <Badge variant="danger">Borttagen</Badge>
-          )}
+          {org.deletedAt && <Badge variant="danger">Borttagen</Badge>}
         </div>
       </div>
 
@@ -66,12 +58,10 @@ export default async function PlatformOrgDetailPage({ params }: { params: { id: 
         <StatCard label="Fakturor" value={org._count.invoices} />
         <StatCard label="Kontakter" value={org._count.contacts} />
         <StatCard label="Medlemmar" value={org._count.members} />
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Plan</p>
-            <p className="text-lg font-bold text-gray-900 capitalize">{org.plan}</p>
-          </CardContent>
-        </Card>
+        <Card><CardContent className="p-4">
+          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Plan</p>
+          <p className="text-lg font-bold text-gray-900 capitalize">{org.plan}</p>
+        </CardContent></Card>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -82,12 +72,7 @@ export default async function PlatformOrgDetailPage({ params }: { params: { id: 
             <Row label="Org.nr" value={org.orgNumber} />
             <Row label="Momsnr" value={org.vatNumber} />
             <Row label="Skapad" value={formatDate(org.createdAt)} />
-            {org.subscriptionStatus && (
-              <Row label="Prenumerationsstatus" value={org.subscriptionStatus} />
-            )}
-            {org.subscriptionPeriodEnd && (
-              <Row label="Perioden slutar" value={formatDate(org.subscriptionPeriodEnd)} />
-            )}
+            {org.subscriptionStatus && <Row label="Prenumeration" value={org.subscriptionStatus} />}
           </CardContent>
         </Card>
 
@@ -99,8 +84,8 @@ export default async function PlatformOrgDetailPage({ params }: { params: { id: 
                 {org.members.map((m) => (
                   <tr key={m.id} className="border-t border-gray-50 first:border-0">
                     <td className="px-4 py-2.5">
-                      <p className="font-medium text-gray-900">{m.user.name ?? m.user.email}</p>
-                      {m.user.name && <p className="text-xs text-gray-400">{m.user.email}</p>}
+                      <p className="font-medium text-gray-900">{m.user.fullName}</p>
+                      <p className="text-xs text-gray-400">{m.user.email}</p>
                     </td>
                     <td className="px-4 py-2.5">
                       <Badge variant={m.role === "owner" ? "default" : "secondary"}>
@@ -127,11 +112,9 @@ export default async function PlatformOrgDetailPage({ params }: { params: { id: 
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Nr</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Kund</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Belopp</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Datum</th>
+                  {["Nr","Kund","Belopp","Status","Datum"].map(h => (
+                    <th key={h} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">{h}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
@@ -164,11 +147,9 @@ function Row({ label, value }: { label: string; value: string | null | undefined
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <Card>
-      <CardContent className="p-4">
-        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{label}</p>
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
-      </CardContent>
-    </Card>
+    <Card><CardContent className="p-4">
+      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{label}</p>
+      <p className="text-2xl font-bold text-gray-900">{value}</p>
+    </CardContent></Card>
   )
 }

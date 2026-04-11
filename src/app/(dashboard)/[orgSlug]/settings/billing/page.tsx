@@ -2,17 +2,18 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { formatDate, formatMoney } from "@/lib/utils"
+import { formatDate } from "@/lib/utils"
 import { PLANS } from "@/lib/constants"
 
 const PLAN_LABELS: Record<string, string> = {
   free: "Gratis",
   starter: "Starter",
   pro: "Pro",
-  agency: "Agency",
+  enterprise: "Enterprise",
 }
 
-export default async function BillingPage({ params }: { params: { orgSlug: string } }) {
+export default async function BillingPage({ params }: { params: Promise<{ orgSlug: string }> }) {
+  await params
   const session = await auth()
   const orgId = session?.activeOrganizationId ?? ""
 
@@ -84,33 +85,17 @@ export default async function BillingPage({ params }: { params: { orgSlug: strin
       </Card>
 
       <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Användning denna period</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle>Användning denna period</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <UsageBar
-            label="Fakturor (denna månad)"
-            used={invoiceCount}
-            limit={maxInvoices}
-          />
-          <UsageBar
-            label="Kontakter"
-            used={contactCount}
-            limit={maxContacts}
-          />
-          <UsageBar
-            label="Teammedlemmar"
-            used={memberCount}
-            limit={maxMembers}
-          />
+          <UsageBar label="Fakturor (denna månad)" used={invoiceCount} limit={maxInvoices} />
+          <UsageBar label="Kontakter" used={contactCount} limit={maxContacts} />
+          <UsageBar label="Teammedlemmar" used={memberCount} limit={maxMembers} />
         </CardContent>
       </Card>
 
       {org.stripeSubscriptionId && (
         <Card>
-          <CardHeader>
-            <CardTitle>Hantera abonnemang</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle>Hantera abonnemang</CardTitle></CardHeader>
           <CardContent>
             <p className="text-sm text-gray-500 mb-4">
               Ändra plan, uppdatera betalningsmetod eller avsluta ditt abonnemang via Stripe-portalen.
@@ -125,19 +110,10 @@ export default async function BillingPage({ params }: { params: { orgSlug: strin
   )
 }
 
-function UsageBar({
-  label,
-  used,
-  limit,
-}: {
-  label: string
-  used: number
-  limit: number
-}) {
+function UsageBar({ label, used, limit }: { label: string; used: number; limit: number }) {
   const pct = limit === -1 ? 0 : Math.min(100, Math.round((used / limit) * 100))
   const isNearLimit = pct >= 80
   const isUnlimited = limit === -1
-
   return (
     <div>
       <div className="flex justify-between text-sm mb-1.5">
@@ -148,10 +124,7 @@ function UsageBar({
       </div>
       {!isUnlimited && (
         <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all ${isNearLimit ? "bg-amber-500" : "bg-indigo-500"}`}
-            style={{ width: `${pct}%` }}
-          />
+          <div className={`h-full rounded-full transition-all ${isNearLimit ? "bg-amber-500" : "bg-indigo-500"}`} style={{ width: `${pct}%` }} />
         </div>
       )}
     </div>

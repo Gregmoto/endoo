@@ -6,16 +6,17 @@ import { InvoiceStatusBadge } from "@/components/ui/badge"
 import { formatMoney, formatDate } from "@/lib/utils"
 import Link from "next/link"
 
-export default async function InvoiceDetailPage({ params }: { params: { orgSlug: string; id: string } }) {
+export default async function InvoiceDetailPage({ params }: { params: Promise<{ orgSlug: string; id: string }> }) {
+  const { orgSlug, id } = await params
   const session = await auth()
   const orgId = session?.activeOrganizationId ?? ""
 
   const inv = await prisma.invoice.findFirst({
-    where: { id: params.id, organizationId: orgId, deletedAt: null },
+    where: { id, organizationId: orgId, deletedAt: null },
     include: {
       contact: true,
       lineItems: { orderBy: { sortOrder: "asc" } },
-      payments: { orderBy: { paymentDate: "desc" } },
+      payments: { orderBy: { paidAt: "desc" } },
     },
   })
   if (!inv) notFound()
@@ -24,19 +25,20 @@ export default async function InvoiceDetailPage({ params }: { params: { orgSlug:
 
   return (
     <div className="p-8 max-w-3xl">
+      <div className="mb-4">
+        <Link href={`/${orgSlug}/invoices`} className="text-sm text-gray-400 hover:text-gray-600">← Alla fakturor</Link>
+      </div>
       <div className="flex items-center justify-between mb-8">
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-gray-900">{inv.invoiceNumber}</h1>
             <InvoiceStatusBadge status={inv.status} />
           </div>
-          <p className="text-sm text-gray-500 mt-1">
-            Skapad {formatDate(inv.createdAt)}
-          </p>
+          <p className="text-sm text-gray-500 mt-1">Skapad {formatDate(inv.createdAt)}</p>
         </div>
         <div className="flex gap-2">
           {inv.status === "draft" && (
-            <button className="px-4 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700">
+            <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700">
               Skicka faktura
             </button>
           )}
@@ -54,7 +56,7 @@ export default async function InvoiceDetailPage({ params }: { params: { orgSlug:
           <CardContent className="space-y-2 text-sm">
             <Row label="Fakturadatum" value={formatDate(inv.issueDate)} />
             <Row label="Förfallodatum" value={formatDate(inv.dueDate)} />
-            <Row label="Valuta"        value={inv.currency} />
+            <Row label="Valuta" value={inv.currency} />
             {inv.poNumber && <Row label="Er referens" value={inv.poNumber} />}
           </CardContent>
         </Card>
@@ -75,7 +77,6 @@ export default async function InvoiceDetailPage({ params }: { params: { orgSlug:
         </Card>
       </div>
 
-      {/* Line items */}
       <Card className="mb-6">
         <table className="w-full text-sm">
           <thead>
@@ -119,7 +120,6 @@ export default async function InvoiceDetailPage({ params }: { params: { orgSlug:
         </table>
       </Card>
 
-      {/* Payments */}
       {inv.payments.length > 0 && (
         <Card>
           <CardHeader><CardTitle>Betalningar</CardTitle></CardHeader>
@@ -128,7 +128,7 @@ export default async function InvoiceDetailPage({ params }: { params: { orgSlug:
               <tbody>
                 {inv.payments.map((p) => (
                   <tr key={p.id} className="border-t border-gray-50">
-                    <td className="px-5 py-3">{formatDate(p.paymentDate)}</td>
+                    <td className="px-5 py-3">{formatDate(p.paidAt)}</td>
                     <td className="px-5 py-3 text-gray-500">{p.method}</td>
                     <td className="px-5 py-3 text-right font-medium tabular-nums text-green-600">{formatMoney(p.amount)}</td>
                   </tr>

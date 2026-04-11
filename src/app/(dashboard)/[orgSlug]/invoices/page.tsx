@@ -5,7 +5,8 @@ import { InvoiceStatusBadge } from "@/components/ui/badge"
 import { formatMoney, formatDate } from "@/lib/utils"
 import Link from "next/link"
 
-export default async function InvoicesPage({ params }: { params: { orgSlug: string } }) {
+export default async function InvoicesPage({ params }: { params: Promise<{ orgSlug: string }> }) {
+  const { orgSlug } = await params
   const session = await auth()
   const orgId = session?.activeOrganizationId ?? ""
 
@@ -22,8 +23,8 @@ export default async function InvoicesPage({ params }: { params: { orgSlug: stri
           <h1 className="text-2xl font-bold text-gray-900">Fakturor</h1>
           <p className="text-sm text-gray-500 mt-1">{invoices.length} fakturor totalt</p>
         </div>
-        <Link href={`/app/${params.orgSlug}/invoices/new`}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 transition-colors">
+        <Link href={`/${orgSlug}/invoices/new`}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
           + Ny faktura
         </Link>
       </div>
@@ -34,8 +35,8 @@ export default async function InvoicesPage({ params }: { params: { orgSlug: stri
             <p className="text-4xl mb-3">◧</p>
             <p className="font-medium text-gray-900">Inga fakturor än</p>
             <p className="text-sm text-gray-400 mt-1 mb-4">Skapa din första faktura</p>
-            <Link href={`/app/${params.orgSlug}/invoices/new`}
-              className="inline-flex items-center px-4 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700">
+            <Link href={`/${orgSlug}/invoices/new`}
+              className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700">
               Skapa faktura
             </Link>
           </CardContent>
@@ -58,7 +59,7 @@ export default async function InvoicesPage({ params }: { params: { orgSlug: stri
                   <td className="px-5 py-3 font-medium tabular-nums">{formatMoney(inv.totalAmount)}</td>
                   <td className="px-5 py-3"><InvoiceStatusBadge status={inv.status} /></td>
                   <td className="px-5 py-3 text-right">
-                    <Link href={`/app/${params.orgSlug}/invoices/${inv.id}`} className="text-brand-600 hover:underline text-xs font-medium">Öppna</Link>
+                    <Link href={`/${orgSlug}/invoices/${inv.id}`} className="text-indigo-600 hover:underline text-xs font-medium">Öppna</Link>
                   </td>
                 </tr>
               ))}

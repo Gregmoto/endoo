@@ -8,17 +8,18 @@ export default async function DashboardLayout({
   params,
 }: {
   children: React.ReactNode
-  params: { orgSlug: string }
+  params: Promise<{ orgSlug: string }>
 }) {
+  const { orgSlug } = await params
   const session = await auth()
   if (!session?.user?.id) redirect("/login")
 
   const org = await prisma.organization.findUnique({
-    where: { slug: params.orgSlug },
+    where: { slug: orgSlug },
     select: { id: true, name: true, type: true, slug: true, isActive: true },
   })
 
-  if (!org || !org.isActive) redirect("/app")
+  if (!org || !org.isActive) redirect("/")
 
   const membership = await prisma.organizationMember.findUnique({
     where: {
@@ -31,7 +32,7 @@ export default async function DashboardLayout({
     session.impersonatingOrganizationId === org.id ||
     session.user.isPlatformAdmin
 
-  if (!canAccess) redirect("/app")
+  if (!canAccess) redirect("/")
 
   return (
     <div className="min-h-screen bg-gray-50">

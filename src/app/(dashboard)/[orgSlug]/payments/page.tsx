@@ -12,7 +12,8 @@ const METHOD_LABELS: Record<string, string> = {
   other: "Annat",
 }
 
-export default async function PaymentsPage({ params }: { params: { orgSlug: string } }) {
+export default async function PaymentsPage({ params }: { params: Promise<{ orgSlug: string }> }) {
+  const { orgSlug } = await params
   const session = await auth()
   const orgId = session?.activeOrganizationId ?? ""
 
@@ -31,13 +32,11 @@ export default async function PaymentsPage({ params }: { params: { orgSlug: stri
 
   return (
     <div className="p-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Betalningar</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            {payments.length} betalningar · {formatMoney(total)} totalt
-          </p>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">Betalningar</h1>
+        <p className="text-sm text-gray-500 mt-1">
+          {payments.length} betalningar · {formatMoney(total)} totalt
+        </p>
       </div>
 
       <Card>
@@ -65,10 +64,7 @@ export default async function PaymentsPage({ params }: { params: { orgSlug: stri
                   <tr key={p.id} className="border-t border-gray-50 hover:bg-gray-50">
                     <td className="px-6 py-3 text-gray-600">{formatDate(p.paidAt)}</td>
                     <td className="px-6 py-3">
-                      <Link
-                        href={`/${params.orgSlug}/invoices/${p.invoice.id}`}
-                        className="font-mono text-indigo-600 hover:underline text-xs"
-                      >
+                      <Link href={`/${orgSlug}/invoices/${p.invoice.id}`} className="font-mono text-indigo-600 hover:underline text-xs">
                         {p.invoice.invoiceNumber}
                       </Link>
                     </td>
