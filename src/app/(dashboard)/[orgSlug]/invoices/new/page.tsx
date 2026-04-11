@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { use, useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,7 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 interface Contact { id: string; name: string }
 interface LineItem { description: string; quantity: number; unitPrice: number; taxRate: number }
 
-export default function NewInvoicePage({ params }: { params: { orgSlug: string } }) {
+export default function NewInvoicePage({ params }: { params: Promise<{ orgSlug: string }> }) {
+  const { orgSlug } = use(params)
   const router = useRouter()
   const [contacts, setContacts] = useState<Contact[]>([])
   const [form, setForm] = useState({
@@ -56,7 +57,7 @@ export default function NewInvoicePage({ params }: { params: { orgSlug: string }
     })
     const data = await res.json()
     if (!res.ok) { setError(data.error ?? "Fel"); setLoading(false); return }
-    router.push(`/app/${params.orgSlug}/invoices/${data.id}`)
+    router.push(`/${orgSlug}/invoices/${data.id}`)
   }
 
   return (

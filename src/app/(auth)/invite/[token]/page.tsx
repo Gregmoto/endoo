@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { use, useState } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-export default function InvitePage({ params }: { params: { token: string } }) {
+export default function InvitePage({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = use(params)
   const router = useRouter()
   const [scenario, setScenario] = useState<"existing" | "new">("existing")
   const [form, setForm] = useState({ fullName: "", password: "" })
@@ -24,8 +25,8 @@ export default function InvitePage({ params }: { params: { token: string } }) {
     setError("")
 
     const body = scenario === "existing"
-      ? { scenario: "existing", token: params.token }
-      : { scenario: "new", token: params.token, ...form }
+      ? { scenario: "existing", token }
+      : { scenario: "new", token, ...form }
 
     const res = await fetch("/api/invitations/accept", {
       method: "POST",
@@ -45,23 +46,22 @@ export default function InvitePage({ params }: { params: { token: string } }) {
         email: data.email, password: form.password, redirect: false,
       })
     }
-    router.push(`/app/${data.orgSlug}`)
+    router.push(`/${data.orgSlug}`)
   }
 
   return (
     <div className="w-full max-w-sm px-4">
       <div className="mb-8 text-center">
-        <span className="text-2xl font-bold text-brand-600">Endoo</span>
+        <span className="text-2xl font-bold text-indigo-600">Endoo</span>
         <p className="mt-1 text-sm text-gray-500">Du har blivit inbjuden</p>
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-        {/* Toggle */}
         <div className="flex rounded-lg border border-gray-200 p-1 mb-6">
           {(["existing", "new"] as const).map((s) => (
             <button key={s} type="button" onClick={() => setScenario(s)}
               className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                scenario === s ? "bg-brand-600 text-white" : "text-gray-600 hover:text-gray-900"
+                scenario === s ? "bg-indigo-600 text-white" : "text-gray-600 hover:text-gray-900"
               }`}>
               {s === "existing" ? "Jag har konto" : "Nytt konto"}
             </button>
