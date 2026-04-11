@@ -4,11 +4,12 @@ import { Card, CardContent } from "@/components/ui/card"
 export default async function PlatformAuditPage({
   searchParams,
 }: {
-  searchParams: { page?: string; action?: string }
+  searchParams: Promise<{ page?: string; action?: string }>
 }) {
-  const page = parseInt(searchParams.page ?? "1")
+  const { page: pageParam, action } = await searchParams
+  const page = parseInt(pageParam ?? "1")
   const pageSize = 50
-  const where = searchParams.action ? { action: { contains: searchParams.action } } : {}
+  const where = action ? { action: { contains: action } } : {}
 
   const [logs, total] = await Promise.all([
     prisma.auditLog.findMany({
@@ -36,7 +37,7 @@ export default async function PlatformAuditPage({
         <form className="flex gap-2">
           <input
             name="action"
-            defaultValue={searchParams.action ?? ""}
+            defaultValue={action ?? ""}
             placeholder="Filtrera på händelse…"
             className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48"
           />
@@ -72,8 +73,8 @@ export default async function PlatformAuditPage({
                     }).format(new Date(log.createdAt))}
                   </td>
                   <td className="px-6 py-3">
-                    <p className="text-gray-900">{log.actor?.name ?? log.actor?.email ?? "System"}</p>
-                    {log.actor?.name && (
+                    <p className="text-gray-900">{log.actor?.fullName ?? log.actor?.email ?? "System"}</p>
+                    {log.actor?.fullName && (
                       <p className="text-xs text-gray-400">{log.actor.email}</p>
                     )}
                   </td>
@@ -112,7 +113,7 @@ export default async function PlatformAuditPage({
           <div className="flex gap-2">
             {page > 1 && (
               <a
-                href={`?page=${page - 1}${searchParams.action ? `&action=${searchParams.action}` : ""}`}
+                href={`?page=${page - 1}${action ? `&action=${action}` : ""}`}
                 className="px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50"
               >
                 Föregående
@@ -120,7 +121,7 @@ export default async function PlatformAuditPage({
             )}
             {page < totalPages && (
               <a
-                href={`?page=${page + 1}${searchParams.action ? `&action=${searchParams.action}` : ""}`}
+                href={`?page=${page + 1}${action ? `&action=${action}` : ""}`}
                 className="px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50"
               >
                 Nästa
