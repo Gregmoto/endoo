@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Endoo",
-  description: "Multi-tenant invoicing platform",
+  title: { default: "Endoo", template: "%s · Endoo" },
+  description: "Multi-tenant faktureringssystem",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
