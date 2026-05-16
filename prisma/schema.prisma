@@ -4,7 +4,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions", "multiSchema"]
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
@@ -655,6 +655,7 @@ model Invoice {
   @@index([contactId])
   @@index([organizationId, status])
   @@index([organizationId, dueDate])
+  @@index([recurringScheduleId])
   @@map("invoices")
 }
 
@@ -716,6 +717,7 @@ model Payment {
 
   @@index([organizationId])
   @@index([invoiceId])
+  @@index([organizationId, paymentDate])
   @@map("payments")
 }
 
@@ -757,6 +759,8 @@ model RecurringSchedule {
   lines         RecurringScheduleLine[]
 
   @@index([organizationId])
+  @@index([organizationId, status])
+  @@index([contactId])
   @@index([nextIssueDate])
   @@map("recurring_schedules")
 }
@@ -782,6 +786,7 @@ model RecurringScheduleLine {
   organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([scheduleId])
+  @@index([organizationId])
   @@map("recurring_schedule_lines")
 }
 
