@@ -1,7 +1,57 @@
-// platform/organizations — implementation in Fas 3-5
-export async function GET() {
-  return Response.json({ error: "Not implemented" }, { status: 501 })
+/**
+ * GET  /api/platform/organizations — list all orgs (super admin only)
+ * POST /api/platform/organizations — not used (orgs created via register)
+ */
+
+import { auth } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
+
+function guard(isPlatformAdmin: boolean | undefined) {
+  if (!isPlatformAdmin) throw new Error("Forbidden")
 }
-export async function POST() {
-  return Response.json({ error: "Not implemented" }, { status: 501 })
+
+export async function GET(req: Request) {
+  const session = await auth()
+  try { guard(session?.user?.isPlatformAdmin) } catch {
+    return Response.json({ error: "Forbidden" }, { status: 403 })
+  }
+
+  const { searchParams } = new URL(req.url)
+  const search = searchParams.get("search") ?? ""
+  const type   = searchParams.get("type") ?? ""
+  const status = searchParams.get("status") ?? ""
+  const page   = Math.max(1, parseInt(searchParams.get("page") ?? "1"))
+  const limit  = 50
+
+  const where: Record<string, unknown> = {}
+  if (search) {
+    where.OR = [
+      { name: { contains: search, mode: "insensitive" } },
+      { slug: { contains: search, mode: "insensitive" } },
+    ]
+  }
+  if (type === "agency" || type === "customer") where.type = type
+  if (status === "active")   where.isActive = true
+  if (status === "inactive") where.isActive = false
+  if (status === "deleted")  where.deletedAt = { not: null }
+
+  const [orgs, total] = await Promise.all([
+    prisma.organization.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * limit,
+      take: limit,
+      include: {
+        _count: {
+          select: {
+            members: true,
+            invoices: { where: { deletedAt: null } },
+          },
+        },
+      },
+    }),
+    prisma.organization.count({ where }),
+  ])
+
+  return Response.json({ orgs, total, pages: Math.ceil(total / limit) })
 }

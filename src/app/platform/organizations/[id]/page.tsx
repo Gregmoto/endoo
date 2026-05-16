@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge, InvoiceStatusBadge } from "@/components/ui/badge"
 import { formatDate, formatMoney, initials, stringToColor } from "@/lib/utils"
 import Link from "next/link"
+import { OrgStatusToggle } from "./OrgStatusToggle"
 
 export default async function PlatformOrgDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -51,7 +52,11 @@ export default async function PlatformOrgDetailPage({ params }: { params: Promis
             <p className="text-sm text-gray-500 font-mono">{org.slug}</p>
           </div>
           {org.deletedAt && <Badge variant="danger">Borttagen</Badge>}
+          {!org.isActive && !org.deletedAt && <Badge variant="secondary">Inaktiv</Badge>}
         </div>
+        {!org.deletedAt && (
+          <OrgStatusToggle orgId={org.id} isActive={org.isActive} />
+        )}
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-8">
