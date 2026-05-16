@@ -93,6 +93,16 @@ export const REPORT_PERMISSIONS = {
 } as const
 
 // ─────────────────────────────────────────────
+// CONTRACT / RECURRING SCHEDULE PERMISSIONS
+// ─────────────────────────────────────────────
+export const CONTRACT_PERMISSIONS = {
+  READ:   "contracts:read",
+  CREATE: "contracts:create",
+  UPDATE: "contracts:update",
+  DELETE: "contracts:delete",
+} as const
+
+// ─────────────────────────────────────────────
 // AGENCY PERMISSIONS (only meaningful in agency orgs)
 // ─────────────────────────────────────────────
 export const AGENCY_PERMISSIONS = {
@@ -111,6 +121,7 @@ export type Permission =
   | (typeof CONTACT_PERMISSIONS)[keyof typeof CONTACT_PERMISSIONS]
   | (typeof PRODUCT_PERMISSIONS)[keyof typeof PRODUCT_PERMISSIONS]
   | (typeof PAYMENT_PERMISSIONS)[keyof typeof PAYMENT_PERMISSIONS]
+  | (typeof CONTRACT_PERMISSIONS)[keyof typeof CONTRACT_PERMISSIONS]
   | (typeof USER_PERMISSIONS)[keyof typeof USER_PERMISSIONS]
   | (typeof SETTINGS_PERMISSIONS)[keyof typeof SETTINGS_PERMISSIONS]
   | (typeof REPORT_PERMISSIONS)[keyof typeof REPORT_PERMISSIONS]
@@ -122,6 +133,7 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(CONTACT_PERMISSIONS),
   ...Object.values(PRODUCT_PERMISSIONS),
   ...Object.values(PAYMENT_PERMISSIONS),
+  ...Object.values(CONTRACT_PERMISSIONS),
   ...Object.values(USER_PERMISSIONS),
   ...Object.values(SETTINGS_PERMISSIONS),
   ...Object.values(REPORT_PERMISSIONS),

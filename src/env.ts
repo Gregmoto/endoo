@@ -34,8 +34,8 @@ const schema = z.object({
 function validateEnv() {
   const parsed = schema.safeParse(process.env)
   if (!parsed.success) {
-    const missing = parsed.error.errors
-      .map((e) => `  ${e.path.join(".")}: ${e.message}`)
+    const missing = parsed.error.issues
+      .map((issue) => `  ${issue.path.join(".")}: ${issue.message}`)
       .join("\n")
     throw new Error(`\n[env] Missing or invalid environment variables:\n${missing}\n`)
   }

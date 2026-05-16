@@ -82,7 +82,7 @@ export async function requireAuth(): Promise<RBACContext> {
         throw new UnauthorizedError("agency:switch_to_client", "agency_staff")
       }
 
-      agencyAccessLevel = grant.accessLevel as typeof agencyAccessLevel
+      agencyAccessLevel = grant.accessLevel as "full" | "invoicing_only" | "read_only"
     } else {
       agencyAccessLevel = "full"
     }

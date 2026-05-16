@@ -48,17 +48,6 @@ declare module "next-auth" {
   }
 }
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string
-    isPlatformAdmin: boolean
-    activeOrganizationId: string
-    activeOrgSlug: string
-    impersonatingOrganizationId?: string
-    impersonatingOrgSlug?: string
-  }
-}
-
 // ─────────────────────────────────────────────
 // Credentials schema — validated before DB hit
 // ─────────────────────────────────────────────
@@ -171,13 +160,14 @@ const config: NextAuthConfig = {
 
     // ── session ──────────────────────────────────────────────────────
     session({ session, token }) {
-      session.user.id              = token.id
-      session.user.isPlatformAdmin = token.isPlatformAdmin
-      session.activeOrganizationId = token.activeOrganizationId
-      session.activeOrgSlug        = token.activeOrgSlug
-      if (token.impersonatingOrganizationId) {
-        session.impersonatingOrganizationId = token.impersonatingOrganizationId
-        session.impersonatingOrgSlug        = token.impersonatingOrgSlug
+      const t = token as Record<string, unknown>
+      session.user.id              = t.id as string
+      session.user.isPlatformAdmin = t.isPlatformAdmin as boolean ?? false
+      session.activeOrganizationId = t.activeOrganizationId as string ?? ""
+      session.activeOrgSlug        = t.activeOrgSlug as string ?? ""
+      if (t.impersonatingOrganizationId) {
+        session.impersonatingOrganizationId = t.impersonatingOrganizationId as string
+        session.impersonatingOrgSlug        = t.impersonatingOrgSlug as string | undefined
       }
       return session
     },
