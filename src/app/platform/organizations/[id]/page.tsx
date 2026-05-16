@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
+import { auth } from "@/lib/auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge, InvoiceStatusBadge } from "@/components/ui/badge"
 import { formatDate, formatMoney, initials, stringToColor } from "@/lib/utils"
@@ -7,6 +8,9 @@ import Link from "next/link"
 import { OrgStatusToggle } from "./OrgStatusToggle"
 
 export default async function PlatformOrgDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await auth()
+  if (!session?.user?.isPlatformAdmin) redirect("/")
+
   const { id } = await params
 
   const org = await prisma.organization.findUnique({

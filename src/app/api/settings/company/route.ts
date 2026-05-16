@@ -81,6 +81,17 @@ export async function PATCH(req: Request) {
       select: SELECT,
     })
 
+    prisma.auditLog.create({
+      data: {
+        organizationId: ctx.organizationId,
+        userId:         ctx.userId,
+        action:         "update",
+        entityType:     "Organization",
+        entityId:       ctx.organizationId,
+        meta:           { section: "company", keys: Object.keys(parsed.data) },
+      },
+    }).catch(() => {})
+
     return Response.json(org)
   } catch (err: unknown) {
     return handleError(err)

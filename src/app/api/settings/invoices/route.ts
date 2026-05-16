@@ -106,6 +106,17 @@ export async function PATCH(req: Request) {
       ...settingUpserts,
     ])
 
+    prisma.auditLog.create({
+      data: {
+        organizationId: ctx.organizationId,
+        userId:         ctx.userId,
+        action:         "update",
+        entityType:     "Organization",
+        entityId:       ctx.organizationId,
+        meta:           { section: "invoices", keys: Object.keys(parsed.data) },
+      },
+    }).catch(() => {})
+
     return Response.json({ ok: true })
   } catch (err) {
     return handleError(err)

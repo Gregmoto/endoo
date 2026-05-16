@@ -3,16 +3,13 @@
  * POST /api/platform/organizations — not used (orgs created via register)
  */
 
-import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-
-function guard(isPlatformAdmin: boolean | undefined) {
-  if (!isPlatformAdmin) throw new Error("Forbidden")
-}
+import { requireSuperAdmin } from "@/lib/rbac/guards"
 
 export async function GET(req: Request) {
-  const session = await auth()
-  try { guard(session?.user?.isPlatformAdmin) } catch {
+  try {
+    await requireSuperAdmin()
+  } catch {
     return Response.json({ error: "Forbidden" }, { status: 403 })
   }
 
