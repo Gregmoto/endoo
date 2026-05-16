@@ -22,9 +22,12 @@
  *   /api/**                   → requires auth (JWT); fine-grained in handler
  */
 
-import { auth } from "@/lib/auth"
+import NextAuth from "next-auth"
+import { authConfig } from "@/lib/auth.config"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+
+const { auth } = NextAuth(authConfig)
 
 // Routes that do NOT require authentication
 const PUBLIC_ROUTES = [

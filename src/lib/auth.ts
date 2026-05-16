@@ -1,24 +1,12 @@
 /**
- * NextAuth.js v5 — Auth configuration
+ * NextAuth.js v5 — Auth configuration (Node.js runtime)
  *
- * Strategy: JWT (not database sessions) so we can embed org context
- * directly in the token without a DB round-trip on every request.
+ * Strategy: JWT so org context lives in the token without a DB read
+ * on every request. Account switching patches the token via unstable_update().
  *
- * Providers:
- *   Credentials — email + bcrypt password (primary for MVP)
- *   (Google, magic link to be added post-MVP)
- *
- * JWT payload (our additions on top of NextAuth defaults):
- *   id                           — user UUID
- *   isPlatformAdmin              — bypasses all tenant checks
- *   activeOrganizationId         — current tenant context
- *   activeOrgSlug                — for URL navigation
- *   impersonatingOrganizationId  — agency acting as client (optional)
- *   impersonatingOrgSlug         — for URL
- *
- * Account switching: POST /api/auth/switch-org calls unstable_update()
- * which triggers the jwt callback with trigger="update" and patches
- * the token in-place — no new sign-in required.
+ * This file adds the Credentials provider (needs bcrypt + Prisma) and
+ * the Prisma adapter on top of the Edge-compatible base config in auth.config.ts.
+ * Middleware imports auth.config.ts directly — not this file.
  */
 
 import NextAuth, { type NextAuthConfig } from "next-auth"
@@ -27,26 +15,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
-
-// ─────────────────────────────────────────────
-// Type augmentation
-// ─────────────────────────────────────────────
-
-declare module "next-auth" {
-  interface Session {
-    activeOrganizationId: string
-    activeOrgSlug: string
-    impersonatingOrganizationId?: string
-    impersonatingOrgSlug?: string
-    user: {
-      id: string
-      email: string
-      name?: string | null
-      image?: string | null
-      isPlatformAdmin: boolean
-    }
-  }
-}
+import { authConfig } from "@/lib/auth.config"
 
 // ─────────────────────────────────────────────
 // Credentials schema — validated before DB hit
@@ -58,42 +27,30 @@ const CredentialsSchema = z.object({
 })
 
 // ─────────────────────────────────────────────
-// Config
+// Config — extends the Edge-safe base config
 // ─────────────────────────────────────────────
 
 const config: NextAuthConfig = {
+  ...authConfig,
   adapter: PrismaAdapter(prisma),
-
-  // JWT strategy: org context lives in the token, not a DB session row.
-  // This avoids a session-table read on every request while still allowing
-  // us to patch context (org switch) via unstable_update().
-  session: { strategy: "jwt" },
-
-  pages: {
-    signIn:  "/login",
-    error:   "/login",
-    newUser: "/onboarding",
-  },
 
   providers: [
     Credentials({
       name: "Email",
       credentials: {
-        email:    { label: "E-post",  type: "email"    },
+        email:    { label: "E-post",   type: "email"    },
         password: { label: "Lösenord", type: "password" },
       },
 
       async authorize(credentials) {
-        // 1. Validate shape
         const parsed = CredentialsSchema.safeParse(credentials)
         if (!parsed.success) return null
 
-        // 2. Load user + password account
         const user = await prisma.user.findUnique({
           where: { email: parsed.data.email.toLowerCase() },
           include: {
             accounts: {
-              where: { provider: "credentials" },
+              where:  { provider: "credentials" },
               select: { providerAccountId: true }, // stores bcrypt hash
             },
           },
@@ -101,22 +58,20 @@ const config: NextAuthConfig = {
 
         if (!user || user.deletedAt) return null
 
-        // 3. Verify password
         const hash = user.accounts[0]?.providerAccountId
         if (!hash) return null
         const valid = await bcrypt.compare(parsed.data.password, hash)
         if (!valid) return null
 
-        // 4. Update last login
         await prisma.user.update({
           where: { id: user.id },
-          data: { lastLoginAt: new Date() },
+          data:  { lastLoginAt: new Date() },
         })
 
         return {
-          id:             user.id,
-          email:          user.email,
-          name:           user.fullName,
+          id:              user.id,
+          email:           user.email,
+          name:            user.fullName,
           isPlatformAdmin: user.isPlatformAdmin,
         }
       },
@@ -124,34 +79,36 @@ const config: NextAuthConfig = {
   ],
 
   callbacks: {
-    // ── jwt ─────────────────────────────────────────────────────────
+    // ── jwt ──────────────────────────────────────────────────────────
     async jwt({ token, user, trigger, session: updatedSession }) {
+      const t  = token as Record<string, unknown>
+      const u  = user  as { id?: string; isPlatformAdmin?: boolean } | undefined
+      const s  = updatedSession as Record<string, unknown> | null | undefined
 
-      // A. Initial sign-in — load platform flag + primary org
-      if (user && trigger === "signIn") {
-        token.id             = user.id as string
-        token.isPlatformAdmin = (user as { isPlatformAdmin?: boolean }).isPlatformAdmin ?? false
+      // A. Initial sign-in — embed org context into the token
+      if (u && trigger === "signIn") {
+        t.id              = u.id
+        t.isPlatformAdmin = u.isPlatformAdmin ?? false
 
         const membership = await prisma.organizationMember.findFirst({
-          where: { userId: user.id as string, deletedAt: null },
+          where:   { userId: u.id as string, deletedAt: null },
           orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
           include: { organization: { select: { id: true, slug: true } } },
         })
 
-        token.activeOrganizationId = membership?.organization.id   ?? ""
-        token.activeOrgSlug        = membership?.organization.slug ?? ""
+        t.activeOrganizationId = membership?.organization.id   ?? ""
+        t.activeOrgSlug        = membership?.organization.slug ?? ""
       }
 
-      // B. Account switch / impersonation — patched via update()
-      if (trigger === "update" && updatedSession) {
-        if (updatedSession.activeOrganizationId !== undefined) {
-          token.activeOrganizationId = updatedSession.activeOrganizationId
-          token.activeOrgSlug        = updatedSession.activeOrgSlug
+      // B. Account switch / impersonation via unstable_update()
+      if (trigger === "update" && s) {
+        if (s.activeOrganizationId !== undefined) {
+          t.activeOrganizationId = s.activeOrganizationId
+          t.activeOrgSlug        = s.activeOrgSlug
         }
-        // Explicit undefined clears impersonation
-        if ("impersonatingOrganizationId" in updatedSession) {
-          token.impersonatingOrganizationId = updatedSession.impersonatingOrganizationId
-          token.impersonatingOrgSlug        = updatedSession.impersonatingOrgSlug
+        if ("impersonatingOrganizationId" in s) {
+          t.impersonatingOrganizationId = s.impersonatingOrganizationId
+          t.impersonatingOrgSlug        = s.impersonatingOrgSlug
         }
       }
 
@@ -162,9 +119,9 @@ const config: NextAuthConfig = {
     session({ session, token }) {
       const t = token as Record<string, unknown>
       session.user.id              = t.id as string
-      session.user.isPlatformAdmin = t.isPlatformAdmin as boolean ?? false
-      session.activeOrganizationId = t.activeOrganizationId as string ?? ""
-      session.activeOrgSlug        = t.activeOrgSlug as string ?? ""
+      session.user.isPlatformAdmin = (t.isPlatformAdmin as boolean) ?? false
+      session.activeOrganizationId = (t.activeOrganizationId as string) ?? ""
+      session.activeOrgSlug        = (t.activeOrgSlug as string) ?? ""
       if (t.impersonatingOrganizationId) {
         session.impersonatingOrganizationId = t.impersonatingOrganizationId as string
         session.impersonatingOrgSlug        = t.impersonatingOrgSlug as string | undefined
