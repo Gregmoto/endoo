@@ -1,7 +1,7 @@
 /** Application-wide constants */
 
 export const APP_NAME = "Endoo"
-export const APP_URL = process.env.NEXTAUTH_URL ?? "https://endoo.se"
+export const APP_URL = process.env.AUTH_URL ?? process.env.NEXTAUTH_URL ?? "https://endoo.se"
 
 // ─────────────────────────────────────────────
 // Plans

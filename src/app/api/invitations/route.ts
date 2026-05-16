@@ -109,7 +109,7 @@ export async function POST(req: Request) {
       role:      invitation.role,
       expiresAt: invitation.expiresAt,
       // Included for development — remove before production
-      inviteUrl: `${process.env.NEXTAUTH_URL}/invite/${invitation.token}`,
+      inviteUrl: `${process.env.AUTH_URL ?? process.env.NEXTAUTH_URL}/invite/${invitation.token}`,
     }, { status: 201 })
 
   } catch (err: unknown) {

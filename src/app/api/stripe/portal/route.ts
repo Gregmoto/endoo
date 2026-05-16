@@ -24,7 +24,7 @@ export async function POST() {
       return Response.json({ error: "No Stripe customer — upgrade first" }, { status: 400 })
     }
 
-    const appUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000"
+    const appUrl = process.env.AUTH_URL ?? process.env.NEXTAUTH_URL ?? "http://localhost:3000"
 
     const portalSession = await stripe.billingPortal.sessions.create({
       customer:   org.stripeCustomerId,

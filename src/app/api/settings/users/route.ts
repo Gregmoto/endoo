@@ -116,7 +116,7 @@ export async function POST(req: Request) {
       email:     invitation.email,
       role:      invitation.role,
       expiresAt: invitation.expiresAt,
-      inviteUrl: `${process.env.NEXTAUTH_URL}/invite/${invitation.token}`,
+      inviteUrl: `${process.env.AUTH_URL ?? process.env.NEXTAUTH_URL}/invite/${invitation.token}`,
     }, { status: 201 })
   } catch (err) {
     return handleError(err)

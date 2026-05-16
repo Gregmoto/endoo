@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     })
     if (!org) return Response.json({ error: "Org not found" }, { status: 404 })
 
-    const appUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000"
+    const appUrl = process.env.AUTH_URL ?? process.env.NEXTAUTH_URL ?? "http://localhost:3000"
 
     let customerId = org.stripeCustomerId
     if (!customerId) {

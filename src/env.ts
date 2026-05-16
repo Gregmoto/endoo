@@ -14,8 +14,10 @@ const schema = z.object({
   DATABASE_URL: z.string().url(),
   DIRECT_URL:   z.string().url(),
 
-  // NextAuth
-  NEXTAUTH_SECRET: z.string().min(32),
+  // NextAuth v5 — AUTH_SECRET is the canonical name; NEXTAUTH_SECRET kept for backward compat
+  AUTH_SECRET:     z.string().min(32).optional(),
+  NEXTAUTH_SECRET: z.string().min(32).optional(),
+  AUTH_URL:        z.string().url().optional(),
   NEXTAUTH_URL:    z.string().url().optional(),
 
   // Stripe
@@ -39,7 +41,19 @@ function validateEnv() {
       .join("\n")
     throw new Error(`\n[env] Missing or invalid environment variables:\n${missing}\n`)
   }
-  return parsed.data
+
+  const data = parsed.data
+  if (!data.AUTH_SECRET && !data.NEXTAUTH_SECRET) {
+    throw new Error("\n[env] Missing required variable: AUTH_SECRET (or NEXTAUTH_SECRET)\n")
+  }
+
+  return data
 }
 
 export const env = validateEnv()
+
+/** Resolved app URL — prefers AUTH_URL (NextAuth v5), falls back to NEXTAUTH_URL */
+export const APP_URL =
+  process.env.AUTH_URL ??
+  process.env.NEXTAUTH_URL ??
+  "https://endoo.se"
