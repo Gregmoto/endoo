@@ -19,6 +19,12 @@
 
 import { prisma } from "@/lib/prisma"
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+function assertUUID(id: string): void {
+  if (!UUID_RE.test(id)) throw new Error(`Invalid organizationId: ${id}`)
+}
+
 /**
  * Run a callback with org context set for the current transaction.
  * Uses SET LOCAL so the setting is scoped to the transaction only.
@@ -27,6 +33,7 @@ export async function withRLS<T>(
   organizationId: string,
   callback: () => Promise<T>
 ): Promise<T> {
+  assertUUID(organizationId)
   return prisma.$transaction(async (tx) => {
     await tx.$executeRawUnsafe(
       `SET LOCAL app.current_organization_id = '${organizationId}'`
@@ -47,6 +54,7 @@ export async function withRLS<T>(
  * In production, use SET LOCAL inside $transaction for stronger isolation.
  */
 export async function setRLSContext(organizationId: string): Promise<void> {
+  assertUUID(organizationId)
   await prisma.$executeRawUnsafe(
     `SET app.current_organization_id = '${organizationId}'`
   )

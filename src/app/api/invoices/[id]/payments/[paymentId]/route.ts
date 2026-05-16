@@ -5,6 +5,7 @@
 import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
+import { InvoiceStatus } from "@prisma/client"
 
 export async function DELETE(
   _req: Request,
@@ -12,7 +13,7 @@ export async function DELETE(
 ) {
   try {
     const ctx = await requireAuth()
-    canOrThrow(ctx, "invoices:update")
+    canOrThrow(ctx, "payments:delete")
     const { id, paymentId } = await params
 
     const invoice = await prisma.invoice.findFirst({
@@ -21,27 +22,43 @@ export async function DELETE(
     if (!invoice) return Response.json({ error: "Faktura hittades ej" }, { status: 404 })
 
     const payment = await prisma.payment.findFirst({
-      where: { id: paymentId, invoiceId: id },
+      where: { id: paymentId, invoiceId: id, organizationId: ctx.organizationId },
     })
     if (!payment) return Response.json({ error: "Betalning hittades ej" }, { status: 404 })
 
     const newPaidAmount = Math.max(0, Number(invoice.paidAmount) - Number(payment.amount))
-    const newStatus =
+    const newStatus: InvoiceStatus =
       newPaidAmount === 0 ? "sent" :
       newPaidAmount < Number(invoice.totalAmount) ? "partial" :
       "paid"
 
     await prisma.$transaction([
-      prisma.payment.delete({ where: { id: paymentId } }),
+      prisma.payment.delete({ where: { id: paymentId, organizationId: ctx.organizationId } }),
       prisma.invoice.update({
-        where: { id },
+        where: { id, organizationId: ctx.organizationId },
         data: {
           paidAmount: BigInt(newPaidAmount),
-          status:     newStatus as any,
+          status:     newStatus,
           ...(newStatus !== "paid" ? { paidAt: null } : {}),
         },
       }),
     ])
+
+    prisma.auditLog.create({
+      data: {
+        organizationId: ctx.organizationId,
+        userId:         ctx.userId,
+        action:         "delete",
+        entityType:     "Payment",
+        entityId:       paymentId,
+        before: {
+          amount:     Number(payment.amount),
+          method:     payment.method,
+          invoiceId:  id,
+        },
+        meta: { newPaidAmount, newStatus },
+      },
+    }).catch(() => {})
 
     return new Response(null, { status: 204 })
   } catch (err) {

@@ -154,6 +154,17 @@ export async function POST(req: Request) {
       },
     })
 
+    prisma.auditLog.create({
+      data: {
+        organizationId: ctx.organizationId,
+        userId:         ctx.userId,
+        action:         "create",
+        entityType:     "Invoice",
+        entityId:       invoice.id,
+        after: { invoiceNumber: invoice.invoiceNumber, totalAmount: invoice.totalAmount.toString() },
+      },
+    }).catch(() => {})
+
     return Response.json(invoice, { status: 201 })
   } catch (err) {
     return handleError(err)

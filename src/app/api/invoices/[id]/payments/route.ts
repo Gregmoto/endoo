@@ -6,6 +6,7 @@
 import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
+import { InvoiceStatus } from "@prisma/client"
 import { z } from "zod"
 
 export async function GET(
@@ -23,7 +24,7 @@ export async function GET(
     if (!invoice) return Response.json({ error: "Faktura hittades ej" }, { status: 404 })
 
     const payments = await prisma.payment.findMany({
-      where: { invoiceId: id },
+      where: { invoiceId: id, organizationId: ctx.organizationId },
       orderBy: { paymentDate: "desc" },
     })
     return Response.json(payments)
@@ -33,7 +34,7 @@ export async function GET(
 }
 
 const PaymentSchema = z.object({
-  amountKr:    z.number().positive(),             // kr — converted to öre
+  amountKr:    z.number().positive(),
   paymentDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   method:      z.enum(["bank_transfer", "card", "swish", "cash", "credit_note", "other"]).default("bank_transfer"),
   reference:   z.string().max(255).optional().nullable(),
@@ -46,7 +47,7 @@ export async function POST(
 ) {
   try {
     const ctx = await requireAuth()
-    canOrThrow(ctx, "invoices:update")
+    canOrThrow(ctx, "payments:create")
     const { id } = await params
 
     const invoice = await prisma.invoice.findFirst({
@@ -79,10 +80,10 @@ export async function POST(
     }
 
     const newPaidAmount = Number(invoice.paidAmount) + amountOre
-    const newStatus =
+    const newStatus: InvoiceStatus =
       newPaidAmount >= Number(invoice.totalAmount) ? "paid" :
       newPaidAmount > 0 ? "partial" :
-      invoice.status
+      invoice.status as InvoiceStatus
 
     const [payment] = await prisma.$transaction([
       prisma.payment.create({
@@ -99,14 +100,31 @@ export async function POST(
         },
       }),
       prisma.invoice.update({
-        where: { id },
+        where: { id, organizationId: ctx.organizationId },
         data: {
           paidAmount: BigInt(newPaidAmount),
-          status:     newStatus as any,
+          status:     newStatus,
           ...(newStatus === "paid" ? { paidAt: new Date() } : {}),
         },
       }),
     ])
+
+    prisma.auditLog.create({
+      data: {
+        organizationId: ctx.organizationId,
+        userId:         ctx.userId,
+        action:         "payment_record",
+        entityType:     "Invoice",
+        entityId:       id,
+        meta: {
+          paymentId:   payment.id,
+          amountOre,
+          method:      parsed.data.method,
+          newStatus,
+          newPaidAmount,
+        },
+      },
+    }).catch(() => {})
 
     return Response.json(payment, { status: 201 })
   } catch (err) {

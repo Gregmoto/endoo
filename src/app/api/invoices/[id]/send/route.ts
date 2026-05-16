@@ -20,7 +20,7 @@ export async function POST(
 ) {
   try {
     const ctx = await requireAuth()
-    canOrThrow(ctx, "invoices:update")
+    canOrThrow(ctx, "invoices:send")
     const { id } = await params
 
     const [invoice, emailSettings] = await Promise.all([
@@ -93,7 +93,7 @@ export async function POST(
     }
 
     const updated = await prisma.invoice.update({
-      where: { id },
+      where: { id, organizationId: ctx.organizationId },
       data: { status: "sent", sentAt: new Date() },
     })
 

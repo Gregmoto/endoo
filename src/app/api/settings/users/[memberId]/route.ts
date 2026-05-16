@@ -6,6 +6,7 @@
 import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
+import { writeAuditLog } from "@/lib/tenant-db"
 import { z } from "zod"
 
 const PatchSchema = z.object({
@@ -52,6 +53,18 @@ export async function PATCH(
       select: { id: true, role: true },
     })
 
+    prisma.auditLog.create({
+      data: {
+        organizationId: ctx.organizationId,
+        userId:         ctx.userId,
+        action:         "update",
+        entityType:     "OrganizationMember",
+        entityId:       memberId,
+        before: { role: member.role },
+        after:  { role: parsed.data.role },
+      },
+    }).catch(() => {})
+
     return Response.json(updated)
   } catch (err) {
     return handleError(err)
@@ -88,6 +101,17 @@ export async function DELETE(
       where: { id: memberId },
       data: { deletedAt: new Date() },
     })
+
+    prisma.auditLog.create({
+      data: {
+        organizationId: ctx.organizationId,
+        userId:         ctx.userId,
+        action:         "delete",
+        entityType:     "OrganizationMember",
+        entityId:       memberId,
+        before: { role: member.role, userId: member.userId },
+      },
+    }).catch(() => {})
 
     return new Response(null, { status: 204 })
   } catch (err) {
