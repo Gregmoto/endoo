@@ -96,7 +96,7 @@ async function handleSubscriptionStart(
 
   await prisma.organization.update({
     where: { id: org.id },
-    data: { stripeCustomerId, stripeSubscriptionId, plan: plan as any },
+    data: { stripeCustomerId, stripeSubscriptionId, plan: plan as Plan },
   })
 
   await upsertSubscription(org.id, sub, plan)
@@ -159,24 +159,24 @@ async function upsertSubscription(orgId: string, sub: Stripe.Subscription, plan:
     paused:             "paused",
   }
 
-  const existing = await prisma.subscription.findFirst({
-    where: { organizationId: orgId, stripeSubscriptionId: sub.id },
-  })
+  const item             = sub.items.data[0]
+  const stripeCustomerId = typeof sub.customer === "string"
+    ? sub.customer
+    : (sub.customer as Stripe.Customer | null)?.id ?? null
 
-  const item = sub.items.data[0]
-  const data = {
-    organizationId:       orgId,
+  const shared = {
     plan:                 plan as Plan,
     status:               statusMap[sub.status] ?? "active",
+    stripeCustomerId,
     stripeSubscriptionId: sub.id,
     currentPeriodStart:   item?.current_period_start ? new Date(item.current_period_start * 1000) : null,
     currentPeriodEnd:     item?.current_period_end   ? new Date(item.current_period_end   * 1000) : null,
     cancelAtPeriodEnd:    sub.cancel_at_period_end,
   }
 
-  if (existing) {
-    await prisma.subscription.update({ where: { id: existing.id }, data })
-  } else {
-    await prisma.subscription.create({ data })
-  }
+  await prisma.subscription.upsert({
+    where:  { organizationId: orgId },
+    create: { organizationId: orgId, ...shared },
+    update: shared,
+  })
 }

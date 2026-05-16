@@ -76,6 +76,7 @@ export type InvoicePdfData = {
   contactName: string
   contactAddress?: string | null
   notes?: string | null
+  footerText?: string | null
   reference?: string | null
   lines: Array<{
     description: string
@@ -189,6 +190,14 @@ export function InvoicePdf({ d }: { d: InvoicePdfData }) {
           <View style={s.notesBox}>
             <Text style={s.notesLabel}>Meddelande</Text>
             <Text style={s.notesText}>{d.notes}</Text>
+          </View>
+        )}
+
+        {/* Footer text (bank details, payment info) */}
+        {d.footerText && (
+          <View style={[s.notesBox, { marginTop: 12, backgroundColor: "#fff", borderTopWidth: 1, borderColor: "#e5e7eb" }]}>
+            <Text style={s.notesLabel}>Betalningsinformation</Text>
+            <Text style={s.notesText}>{d.footerText}</Text>
           </View>
         )}
 

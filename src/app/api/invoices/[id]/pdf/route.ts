@@ -58,7 +58,7 @@ export async function GET(
     const contactAddress = contactAddressParts.length ? contactAddressParts.join(", ") : null
 
     const data: InvoicePdfData = {
-      invoiceNumber:  invoice.invoiceNumber,
+      invoiceNumber:  invoice.invoiceNumber ?? "Utkast",
       issueDate:      invoice.issueDate.toLocaleDateString("sv-SE"),
       dueDate:        invoice.dueDate.toLocaleDateString("sv-SE"),
       currency:       invoice.currency,
@@ -69,6 +69,7 @@ export async function GET(
       contactName:    c?.name ?? "—",
       contactAddress,
       notes:          invoice.notes ?? null,
+      footerText:     invoice.footerText ?? null,
       reference:      invoice.reference ?? null,
       lines: invoice.lineItems.map(l => ({
         description:  l.description,
@@ -98,7 +99,7 @@ export async function GET(
     return new Response(pdf, {
       headers: {
         "Content-Type":        "application/pdf",
-        "Content-Disposition": `attachment; filename="faktura-${invoice.invoiceNumber}.pdf"`,
+        "Content-Disposition": `attachment; filename="faktura-${invoice.invoiceNumber ?? "utkast"}.pdf"`,
         "Content-Length":      String(pdf.length),
       },
     })

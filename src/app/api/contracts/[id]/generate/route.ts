@@ -38,6 +38,7 @@ export async function POST(
     const existing = await prisma.invoice.findFirst({
       where: {
         recurringScheduleId: id,
+        organizationId: ctx.organizationId,
         issueDate,
         deletedAt: null,
       },
@@ -112,7 +113,7 @@ export async function POST(
         },
       }),
       prisma.recurringSchedule.update({
-        where: { id },
+        where: { id, organizationId: ctx.organizationId },
         data: {
           lastIssuedAt:  new Date(),
           nextIssueDate: nextDate(issueDate, contract.frequency),

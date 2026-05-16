@@ -72,6 +72,10 @@ export async function POST(req: Request) {
       },
     }).catch(() => {})
 
+    if (!checkoutSession.url) {
+      return Response.json({ error: "Stripe returnerade ingen checkout-URL" }, { status: 500 })
+    }
+
     return Response.json({ url: checkoutSession.url })
   } catch (err) {
     if ((err as { name?: string }).name === "UnauthenticatedError") return Response.json({ error: "Unauthorized" }, { status: 401 })
