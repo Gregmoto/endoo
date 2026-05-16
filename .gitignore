@@ -20,3 +20,14 @@ npm-debug.log*
 
 # Prisma
 prisma/migrations/dev.db
+
+# TypeScript build info
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+
+# Debug logs
+yarn-debug.log*
+yarn-error.log*
