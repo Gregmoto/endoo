@@ -1,136 +1,297 @@
-import { auth } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
-import { notFound } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { InvoiceStatusBadge } from "@/components/ui/badge"
-import { formatMoney, formatDate } from "@/lib/utils"
+"use client"
+
+import { useState, useEffect } from "react"
+import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
-export default async function InvoiceDetailPage({ params }: { params: Promise<{ orgSlug: string; id: string }> }) {
-  const { orgSlug, id } = await params
-  const session = await auth()
-  const orgId = session?.activeOrganizationId ?? ""
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-  const inv = await prisma.invoice.findFirst({
-    where: { id, organizationId: orgId, deletedAt: null },
-    include: {
-      contact: true,
-      lineItems: { orderBy: { sortOrder: "asc" } },
-      payments: { orderBy: { paymentDate: "desc" } },
-    },
-  })
-  if (!inv) notFound()
+type LineItem = {
+  id: string; description: string; quantity: number; unit: string
+  unitPrice: number; taxRate: number; discountRate: number; lineTotal: number; taxAmount: number
+}
+type Payment = {
+  id: string; amount: number; currency: string; paymentDate: string; method: string; reference: string | null; notes: string | null
+}
+type Contact = { id: string; name: string; email: string | null; orgNumber: string | null; addressLine1: string | null; city: string | null; country: string }
+type RecurringRef = { id: string; contractNumber: string | null; name: string }
 
-  const balance = Number(inv.totalAmount) - Number(inv.paidAmount)
+type Invoice = {
+  id: string; invoiceNumber: string; status: string; type: string
+  issueDate: string; dueDate: string; sentAt: string | null; paidAt: string | null
+  currency: string; reference: string | null; poNumber: string | null
+  notes: string | null; footerText: string | null
+  subtotalAmount: number; taxAmount: number; discountAmount: number; totalAmount: number; paidAmount: number
+  billingName: string | null; billingEmail: string | null; billingAddress: unknown
+  contact: Contact | null
+  lineItems: LineItem[]
+  payments: Payment[]
+  recurringSchedule: RecurringRef | null
+}
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
+  draft:         { label: "Utkast",    cls: "bg-gray-100 text-gray-600" },
+  sent:          { label: "Skickad",   cls: "bg-blue-100 text-blue-700" },
+  viewed:        { label: "Visad",     cls: "bg-indigo-100 text-indigo-700" },
+  partial:       { label: "Delbetald",cls: "bg-yellow-100 text-yellow-700" },
+  paid:          { label: "Betald",    cls: "bg-green-100 text-green-700" },
+  overdue:       { label: "Förfallen", cls: "bg-red-100 text-red-700" },
+  void:          { label: "Makulerad",cls: "bg-orange-100 text-orange-700" },
+  uncollectable: { label: "Osäker",    cls: "bg-red-200 text-red-800" },
+}
+
+const METHOD_LABELS: Record<string, string> = {
+  bank_transfer: "Bankgiro/överföring",
+  card: "Kort",
+  swish: "Swish",
+  cash: "Kontant",
+  credit_note: "Kreditfaktura",
+  other: "Övrigt",
+}
+
+function fmtMoney(v: number, currency: string) {
+  return `${(v / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`
+}
+function fmtDate(d: string | null | undefined) {
+  if (!d) return "—"
+  return new Date(d).toLocaleDateString("sv-SE")
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
+
+export default function InvoiceDetailPage() {
+  const params  = useParams<{ orgSlug: string; id: string }>()
+  const router  = useRouter()
+  const { orgSlug, id } = params
+
+  const [invoice, setInvoice] = useState<Invoice | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  // Modal states
+  const [sendModal,    setSendModal]    = useState(false)
+  const [payModal,     setPayModal]     = useState(false)
+
+  useEffect(() => {
+    fetch(`/api/invoices/${id}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { setInvoice(data); setLoading(false) })
+  }, [id])
+
+  function refresh() {
+    fetch(`/api/invoices/${id}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => setInvoice(data))
+  }
+
+  if (loading)  return <div className="p-8 text-sm text-gray-400">Laddar…</div>
+  if (!invoice) return <div className="p-8 text-sm text-red-500">Fakturan hittades inte.</div>
+
+  const balance = invoice.totalAmount - invoice.paidAmount
+  const overdue = ["sent", "viewed", "partial"].includes(invoice.status) && new Date(invoice.dueDate) < new Date()
+  const displayStatus = overdue ? STATUS_LABELS.overdue : (STATUS_LABELS[invoice.status] ?? STATUS_LABELS.draft)
 
   return (
     <div className="p-8 max-w-3xl">
-      <div className="mb-4">
-        <Link href={`/${orgSlug}/invoices`} className="text-sm text-gray-400 hover:text-gray-600">← Alla fakturor</Link>
+      {/* Breadcrumb */}
+      <div className="mb-2 flex items-center gap-2 text-sm text-gray-500">
+        <Link href={`/${orgSlug}/invoices`} className="hover:text-gray-700">Fakturor</Link>
+        <span className="text-gray-300">/</span>
+        <span className="text-gray-700 font-medium font-mono">{invoice.invoiceNumber}</span>
       </div>
-      <div className="flex items-center justify-between mb-8">
+
+      {/* Header */}
+      <div className="mb-6 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">{inv.invoiceNumber}</h1>
-            <InvoiceStatusBadge status={inv.status} />
+            <h1 className="text-2xl font-bold text-gray-900 font-mono">{invoice.invoiceNumber}</h1>
+            <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${displayStatus.cls}`}>{displayStatus.label}</span>
           </div>
-          <p className="text-sm text-gray-500 mt-1">Skapad {formatDate(inv.createdAt)}</p>
+          <p className="text-sm text-gray-500 mt-1">
+            Utfärdat {fmtDate(invoice.issueDate)} · Förfaller {fmtDate(invoice.dueDate)}
+            {invoice.recurringSchedule && (
+              <span className="ml-3 text-indigo-600">
+                <Link href={`/${orgSlug}/contracts/${invoice.recurringSchedule.id}`}>
+                  ↺ {invoice.recurringSchedule.contractNumber ?? invoice.recurringSchedule.name}
+                </Link>
+              </span>
+            )}
+          </p>
         </div>
-        <div className="flex gap-2">
-          {inv.status === "draft" && (
-            <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700">
-              Skicka faktura
-            </button>
+
+        {/* Action buttons */}
+        <div className="flex gap-2 flex-wrap justify-end">
+          <a href={`/api/invoices/${id}/pdf`} target="_blank" rel="noreferrer">
+            <Button size="sm" variant="outline">↓ PDF</Button>
+          </a>
+          {invoice.status === "draft" && (
+            <>
+              <Link href={`/${orgSlug}/invoices/${id}/edit`}>
+                <Button size="sm" variant="outline">Redigera</Button>
+              </Link>
+              <Button size="sm" onClick={() => setSendModal(true)}>Skicka</Button>
+            </>
           )}
-          {["sent","viewed","partial","overdue"].includes(inv.status) && (
-            <button className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700">
-              Registrera betalning
-            </button>
+          {["sent", "viewed", "partial"].includes(invoice.status) && (
+            <>
+              <Button size="sm" variant="outline" onClick={() => setSendModal(true)}>Skicka igen</Button>
+              <Button size="sm" onClick={() => setPayModal(true)}>Registrera betalning</Button>
+            </>
+          )}
+          {overdue && (
+            <Button size="sm" onClick={() => setPayModal(true)}>Registrera betalning</Button>
           )}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 mb-6">
-        <Card>
-          <CardHeader><CardTitle>Faktureringsinfo</CardTitle></CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <Row label="Fakturadatum" value={formatDate(inv.issueDate)} />
-            <Row label="Förfallodatum" value={formatDate(inv.dueDate)} />
-            <Row label="Valuta" value={inv.currency} />
-            {inv.poNumber && <Row label="Er referens" value={inv.poNumber} />}
-          </CardContent>
-        </Card>
-
+      {/* Info grid */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
         <Card>
           <CardHeader><CardTitle>Mottagare</CardTitle></CardHeader>
           <CardContent className="text-sm">
-            {inv.contact ? (
-              <div className="space-y-1">
-                <p className="font-medium text-gray-900">{inv.contact.name}</p>
-                {inv.contact.email && <p className="text-gray-500">{inv.contact.email}</p>}
-                {inv.contact.orgNumber && <p className="text-gray-400">Org.nr: {inv.contact.orgNumber}</p>}
+            {invoice.contact ? (
+              <div className="space-y-0.5">
+                <Link href={`/${orgSlug}/contacts/${invoice.contact.id}`} className="font-medium text-gray-900 hover:text-indigo-600">
+                  {invoice.contact.name}
+                </Link>
+                {invoice.contact.email    && <p className="text-gray-500">{invoice.contact.email}</p>}
+                {invoice.contact.orgNumber && <p className="text-gray-400 text-xs">Org.nr: {invoice.contact.orgNumber}</p>}
+                {invoice.contact.addressLine1 && <p className="text-gray-500 mt-1">{invoice.contact.addressLine1}</p>}
+                {invoice.contact.city && <p className="text-gray-500">{invoice.contact.city}</p>}
               </div>
             ) : (
               <p className="text-gray-400">Ingen kund kopplad</p>
             )}
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader><CardTitle>Faktureringsinfo</CardTitle></CardHeader>
+          <CardContent>
+            <dl className="space-y-1.5 text-sm">
+              {invoice.poNumber && <InfoRow label="Er ref" value={invoice.poNumber} />}
+              {invoice.reference && <InfoRow label="Vår ref" value={invoice.reference} />}
+              <InfoRow label="Valuta" value={invoice.currency} />
+              {invoice.sentAt && <InfoRow label="Skickad" value={fmtDate(invoice.sentAt)} />}
+              {invoice.paidAt && <InfoRow label="Betald" value={fmtDate(invoice.paidAt)} />}
+            </dl>
+          </CardContent>
+        </Card>
       </div>
 
+      {/* Line items */}
       <Card className="mb-6">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100">
-              {["Beskrivning","Antal","À-pris","Moms","Summa"].map(h => (
-                <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+            <tr className="border-b border-gray-100 bg-gray-50">
+              {["Beskrivning", "Antal", "Enhet", "À-pris", "Rabatt", "Moms", "Summa"].map(h => (
+                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {inv.lineItems.map((l) => (
+            {invoice.lineItems.map(l => (
               <tr key={l.id} className="border-t border-gray-50">
-                <td className="px-5 py-3">{l.description}</td>
-                <td className="px-5 py-3 text-gray-500">{Number(l.quantity)}</td>
-                <td className="px-5 py-3 tabular-nums">{formatMoney(l.unitPrice)}</td>
-                <td className="px-5 py-3 text-gray-500">{Math.round(Number(l.taxRate)*100)}%</td>
-                <td className="px-5 py-3 font-medium tabular-nums text-right">{formatMoney(l.lineTotal + l.taxAmount)}</td>
+                <td className="px-4 py-3">{l.description}</td>
+                <td className="px-4 py-3 text-gray-500 tabular-nums">{Number(l.quantity)}</td>
+                <td className="px-4 py-3 text-gray-500">{l.unit}</td>
+                <td className="px-4 py-3 tabular-nums">{fmtMoney(l.unitPrice, invoice.currency)}</td>
+                <td className="px-4 py-3 text-gray-500 tabular-nums">
+                  {Number(l.discountRate) > 0 ? `${Math.round(Number(l.discountRate) * 100)}%` : "—"}
+                </td>
+                <td className="px-4 py-3 text-gray-500">{Math.round(Number(l.taxRate) * 100)}%</td>
+                <td className="px-4 py-3 text-right font-medium tabular-nums">
+                  {fmtMoney(l.lineTotal + l.taxAmount, invoice.currency)}
+                </td>
               </tr>
             ))}
           </tbody>
-          <tfoot className="bg-gray-50">
-            <tr><td colSpan={4} className="px-5 py-2 text-right text-sm text-gray-500">Netto</td>
-              <td className="px-5 py-2 text-right tabular-nums text-sm">{formatMoney(inv.subtotalAmount)}</td></tr>
-            <tr><td colSpan={4} className="px-5 py-2 text-right text-sm text-gray-500">Moms</td>
-              <td className="px-5 py-2 text-right tabular-nums text-sm">{formatMoney(inv.taxAmount)}</td></tr>
-            <tr className="border-t border-gray-200">
-              <td colSpan={4} className="px-5 py-3 text-right font-semibold">Totalt</td>
-              <td className="px-5 py-3 text-right font-bold tabular-nums text-base">{formatMoney(inv.totalAmount)}</td>
+          <tfoot className="bg-gray-50 border-t border-gray-200">
+            <tr>
+              <td colSpan={6} className="px-4 py-2 text-right text-sm text-gray-500">Netto</td>
+              <td className="px-4 py-2 text-right tabular-nums text-sm">{fmtMoney(invoice.subtotalAmount, invoice.currency)}</td>
             </tr>
-            {Number(inv.paidAmount) > 0 && (
-              <tr><td colSpan={4} className="px-5 py-2 text-right text-sm text-green-600">Betalt</td>
-                <td className="px-5 py-2 text-right tabular-nums text-sm text-green-600">-{formatMoney(inv.paidAmount)}</td></tr>
+            {Number(invoice.discountAmount) > 0 && (
+              <tr>
+                <td colSpan={6} className="px-4 py-2 text-right text-sm text-gray-500">Rabatt</td>
+                <td className="px-4 py-2 text-right tabular-nums text-sm text-green-600">-{fmtMoney(invoice.discountAmount, invoice.currency)}</td>
+              </tr>
+            )}
+            <tr>
+              <td colSpan={6} className="px-4 py-2 text-right text-sm text-gray-500">Moms</td>
+              <td className="px-4 py-2 text-right tabular-nums text-sm">{fmtMoney(invoice.taxAmount, invoice.currency)}</td>
+            </tr>
+            <tr className="border-t border-gray-200">
+              <td colSpan={6} className="px-4 py-3 text-right font-semibold">Totalt att betala</td>
+              <td className="px-4 py-3 text-right font-bold tabular-nums text-base">{fmtMoney(invoice.totalAmount, invoice.currency)}</td>
+            </tr>
+            {Number(invoice.paidAmount) > 0 && (
+              <tr>
+                <td colSpan={6} className="px-4 py-2 text-right text-sm text-green-600">Betalt</td>
+                <td className="px-4 py-2 text-right tabular-nums text-sm text-green-600">-{fmtMoney(invoice.paidAmount, invoice.currency)}</td>
+              </tr>
             )}
             {balance > 0 && (
               <tr className="bg-red-50">
-                <td colSpan={4} className="px-5 py-2 text-right font-semibold text-red-700">Kvarstår</td>
-                <td className="px-5 py-2 text-right font-bold tabular-nums text-red-700">{formatMoney(balance)}</td>
+                <td colSpan={6} className="px-4 py-2 text-right font-semibold text-red-700">Återstår</td>
+                <td className="px-4 py-2 text-right font-bold tabular-nums text-red-700">{fmtMoney(balance, invoice.currency)}</td>
               </tr>
             )}
           </tfoot>
         </table>
       </Card>
 
-      {inv.payments.length > 0 && (
+      {/* Notes */}
+      {(invoice.notes || invoice.footerText) && (
+        <Card className="mb-6">
+          <CardContent className="py-4 space-y-3">
+            {invoice.notes     && <p className="text-sm text-gray-600 whitespace-pre-wrap">{invoice.notes}</p>}
+            {invoice.footerText && <p className="text-xs text-gray-400 whitespace-pre-wrap border-t border-gray-100 pt-3">{invoice.footerText}</p>}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Payments */}
+      {invoice.payments.length > 0 && (
         <Card>
-          <CardHeader><CardTitle>Betalningar</CardTitle></CardHeader>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Betalningar</CardTitle>
+              {["sent","viewed","partial","overdue"].includes(invoice.status) && (
+                <button onClick={() => setPayModal(true)} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+                  + Registrera
+                </button>
+              )}
+            </div>
+          </CardHeader>
           <CardContent className="p-0">
             <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="px-5 py-2 text-left text-xs font-medium text-gray-500">Datum</th>
+                  <th className="px-5 py-2 text-left text-xs font-medium text-gray-500">Metod</th>
+                  <th className="px-5 py-2 text-left text-xs font-medium text-gray-500">Referens</th>
+                  <th className="px-5 py-2 text-right text-xs font-medium text-gray-500">Belopp</th>
+                  <th className="px-5 py-2"></th>
+                </tr>
+              </thead>
               <tbody>
-                {inv.payments.map((p) => (
+                {invoice.payments.map(p => (
                   <tr key={p.id} className="border-t border-gray-50">
-                    <td className="px-5 py-3">{formatDate(p.paymentDate)}</td>
-                    <td className="px-5 py-3 text-gray-500">{p.method}</td>
-                    <td className="px-5 py-3 text-right font-medium tabular-nums text-green-600">{formatMoney(p.amount)}</td>
+                    <td className="px-5 py-2.5">{fmtDate(p.paymentDate)}</td>
+                    <td className="px-5 py-2.5 text-gray-500">{METHOD_LABELS[p.method] ?? p.method}</td>
+                    <td className="px-5 py-2.5 text-gray-500">{p.reference ?? "—"}</td>
+                    <td className="px-5 py-2.5 text-right font-medium tabular-nums text-green-700">{fmtMoney(p.amount, p.currency)}</td>
+                    <td className="px-5 py-2.5 text-right">
+                      <DeletePaymentButton
+                        invoiceId={id}
+                        paymentId={p.id}
+                        onDeleted={refresh}
+                      />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -138,11 +299,247 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
           </CardContent>
         </Card>
       )}
+
+      {/* Modals */}
+      {sendModal && (
+        <SendModal
+          invoiceId={id}
+          contactEmail={invoice.contact?.email ?? null}
+          onClose={() => setSendModal(false)}
+          onSent={() => { setSendModal(false); refresh() }}
+        />
+      )}
+      {payModal && (
+        <PaymentModal
+          invoiceId={id}
+          balance={balance}
+          currency={invoice.currency}
+          onClose={() => setPayModal(false)}
+          onSaved={() => { setPayModal(false); refresh() }}
+        />
+      )}
     </div>
   )
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+// ─── Send modal with PDF preview ─────────────────────────────────────────────
+
+function SendModal({ invoiceId, contactEmail, onClose, onSent }: {
+  invoiceId: string; contactEmail: string | null
+  onClose: () => void; onSent: () => void
+}) {
+  const [email, setEmail]       = useState(contactEmail ?? "")
+  const [markOnly, setMarkOnly] = useState(!contactEmail)
+  const [sending, setSending]   = useState(false)
+  const [error, setError]       = useState("")
+  const [tab, setTab]           = useState<"send" | "preview">("send")
+
+  async function send() {
+    setSending(true)
+    const res = await fetch(`/api/invoices/${invoiceId}/send`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: markOnly ? null : email, markOnly }),
+    })
+    if (res.ok) { onSent() }
+    else { const d = await res.json(); setError(d.error ?? "Fel"); setSending(false) }
+  }
+
+  return (
+    <Modal title="Skicka faktura" onClose={onClose} wide>
+      {/* Tabs */}
+      <div className="flex border-b border-gray-200 mb-4 -mt-1">
+        {(["send", "preview"] as const).map(t => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              tab === t ? "border-brand-600 text-brand-700" : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            {t === "send" ? "Skicka" : "Förhandsgranska PDF"}
+          </button>
+        ))}
+      </div>
+
+      {tab === "send" && (
+        <div className="space-y-4">
+          <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <input
+              type="checkbox"
+              checked={markOnly}
+              onChange={e => setMarkOnly(e.target.checked)}
+              className="rounded"
+            />
+            Markera bara som skickad (utan e-post)
+          </label>
+          {!markOnly && (
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1.5">E-postadress</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                placeholder="mottagare@foretaget.se"
+              />
+            </div>
+          )}
+          {error && <p className="text-sm text-red-600">{error}</p>}
+          <div className="flex gap-3 pt-2">
+            <Button onClick={send} loading={sending} size="sm">
+              {markOnly ? "Markera som skickad" : "Skicka via e-post"}
+            </Button>
+            <Button variant="outline" size="sm" onClick={onClose}>Avbryt</Button>
+          </div>
+        </div>
+      )}
+
+      {tab === "preview" && (
+        <div className="space-y-3">
+          <iframe
+            src={`/api/invoices/${invoiceId}/pdf`}
+            className="w-full rounded border border-gray-200 bg-gray-50"
+            style={{ height: "520px" }}
+            title="Faktura PDF-förhandsgranskning"
+          />
+          <p className="text-xs text-gray-400 text-center">
+            <a href={`/api/invoices/${invoiceId}/pdf`} target="_blank" rel="noreferrer"
+              className="underline hover:text-gray-600">Öppna i nytt fönster ↗</a>
+          </p>
+        </div>
+      )}
+    </Modal>
+  )
+}
+
+// ─── Payment modal ────────────────────────────────────────────────────────────
+
+function PaymentModal({ invoiceId, balance, currency, onClose, onSaved }: {
+  invoiceId: string; balance: number; currency: string
+  onClose: () => void; onSaved: () => void
+}) {
+  const [form, setForm] = useState({
+    amountKr:    (balance / 100).toFixed(2),
+    paymentDate: new Date().toISOString().slice(0, 10),
+    method:      "bank_transfer",
+    reference:   "",
+    notes:       "",
+  })
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState("")
+
+  async function save() {
+    setSaving(true)
+    const res = await fetch(`/api/invoices/${invoiceId}/payments`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amountKr:    parseFloat(form.amountKr),
+        paymentDate: form.paymentDate,
+        method:      form.method,
+        reference:   form.reference || null,
+        notes:       form.notes     || null,
+      }),
+    })
+    if (res.ok) { onSaved() }
+    else { const d = await res.json(); setError(d.error ?? "Fel"); setSaving(false) }
+  }
+
+  const cls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+
+  return (
+    <Modal title="Registrera betalning" onClose={onClose}>
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1.5">Belopp ({currency})</label>
+            <input
+              type="number" min="0.01" step="0.01"
+              value={form.amountKr}
+              onChange={e => setForm(f => ({ ...f, amountKr: e.target.value }))}
+              className={cls}
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              Saldo: {(balance / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2 })} {currency}
+            </p>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1.5">Betaldatum</label>
+            <input
+              type="date"
+              value={form.paymentDate}
+              onChange={e => setForm(f => ({ ...f, paymentDate: e.target.value }))}
+              className={cls}
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1.5">Betalningsmetod</label>
+          <select value={form.method} onChange={e => setForm(f => ({ ...f, method: e.target.value }))} className={cls}>
+            <option value="bank_transfer">Bankgiro/överföring</option>
+            <option value="swish">Swish</option>
+            <option value="card">Kort</option>
+            <option value="cash">Kontant</option>
+            <option value="other">Övrigt</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1.5">Referens</label>
+          <input value={form.reference} onChange={e => setForm(f => ({ ...f, reference: e.target.value }))} className={cls} placeholder="OCR-nummer, referensnr…" />
+        </div>
+        {error && <p className="text-sm text-red-600">{error}</p>}
+        <div className="flex gap-3 pt-2">
+          <Button onClick={save} loading={saving} size="sm">Registrera</Button>
+          <Button variant="outline" size="sm" onClick={onClose}>Avbryt</Button>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
+// ─── Delete payment button ────────────────────────────────────────────────────
+
+function DeletePaymentButton({ invoiceId, paymentId, onDeleted }: {
+  invoiceId: string; paymentId: string; onDeleted: () => void
+}) {
+  const [loading, setLoading] = useState(false)
+  async function del() {
+    if (!confirm("Ta bort betalningen?")) return
+    setLoading(true)
+    const res = await fetch(`/api/invoices/${invoiceId}/payments/${paymentId}`, { method: "DELETE" })
+    if (res.ok) onDeleted()
+    setLoading(false)
+  }
+  return (
+    <button onClick={del} disabled={loading} className="text-xs text-red-400 hover:text-red-600 disabled:opacity-40">
+      {loading ? "…" : "Ta bort"}
+    </button>
+  )
+}
+
+// ─── Modal wrapper ─────────────────────────────────────────────────────────────
+
+function Modal({ title, children, onClose, wide }: {
+  title: string; children: React.ReactNode; onClose: () => void; wide?: boolean
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className={`bg-white rounded-2xl shadow-xl w-full mx-4 p-6 ${wide ? "max-w-2xl" : "max-w-md"}`}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+// ─── Shared helpers ───────────────────────────────────────────────────────────
+
+function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between">
       <span className="text-gray-500">{label}</span>
