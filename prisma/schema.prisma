@@ -574,7 +574,7 @@ model Product {
   lineItems    InvoiceLineItem[]
 
   @@index([organizationId])
-  @@index([organizationId, sku])
+  @@unique([organizationId, sku])
   @@map("products")
 }
 

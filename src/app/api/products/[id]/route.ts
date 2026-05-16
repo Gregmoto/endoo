@@ -132,6 +132,9 @@ function handleError(err: unknown): Response {
   if ((err as { name?: string }).name === "UnauthorizedError") {
     return Response.json({ error: "Otillräckliga rättigheter" }, { status: 403 })
   }
+  if ((err as { code?: string }).code === "P2002") {
+    return Response.json({ error: "Artikelnumret används redan av en annan artikel" }, { status: 409 })
+  }
   console.error("[products/[id]]", err)
   return Response.json({ error: "Internt fel" }, { status: 500 })
 }

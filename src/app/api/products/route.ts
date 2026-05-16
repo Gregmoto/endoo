@@ -93,6 +93,17 @@ export async function POST(req: Request) {
       },
     })
 
+    prisma.auditLog.create({
+      data: {
+        organizationId: ctx.organizationId,
+        userId:         ctx.userId,
+        action:         "create",
+        entityType:     "Product",
+        entityId:       product.id,
+        after:          { name: product.name, sku: product.sku, unitPrice: product.unitPrice.toString() },
+      },
+    }).catch(() => {})
+
     return Response.json(product, { status: 201 })
   } catch (err) {
     return handleError(err)
@@ -105,6 +116,9 @@ function handleError(err: unknown): Response {
   }
   if ((err as { name?: string }).name === "UnauthorizedError") {
     return Response.json({ error: "Otillräckliga rättigheter" }, { status: 403 })
+  }
+  if ((err as { code?: string }).code === "P2002") {
+    return Response.json({ error: "Artikelnumret används redan av en annan artikel" }, { status: 409 })
   }
   console.error("[products]", err)
   return Response.json({ error: "Internt fel" }, { status: 500 })

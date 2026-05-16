@@ -113,6 +113,17 @@ export async function POST(req: Request) {
       },
     })
 
+    prisma.auditLog.create({
+      data: {
+        organizationId: ctx.organizationId,
+        userId:         ctx.userId,
+        action:         "create",
+        entityType:     "Contact",
+        entityId:       contact.id,
+        after:          { name: contact.name, customerNumber: contact.customerNumber, type: contact.type },
+      },
+    }).catch(() => {})
+
     return Response.json(contact, { status: 201 })
   } catch (err) {
     return handleError(err)
