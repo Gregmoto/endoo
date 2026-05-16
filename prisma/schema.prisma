@@ -72,6 +72,27 @@ enum RecurringFrequency {
   yearly
 }
 
+enum RecurringStatus {
+  draft
+  active
+  paused
+  ended
+  cancelled
+}
+
+enum ContactStatus {
+  active
+  inactive
+  blocked
+  ended
+  test
+}
+
+enum ProductType {
+  product
+  service
+}
+
 enum AgencyAccessLevel {
   full
   read_only
@@ -175,11 +196,13 @@ model Organization {
   clientRelationships   AgencyClientRelationship[] @relation("ClientOrg")
 
   contacts              Contact[]
+  contactPersons        ContactPerson[]
   products              Product[]
   invoices              Invoice[]
   invoiceLineItems      InvoiceLineItem[]
   payments              Payment[]
   recurringSchedules    RecurringSchedule[]
+  recurringScheduleLines RecurringScheduleLine[]
   settings              OrganizationSetting[]
   auditLogs             AuditLog[]
   subscriptions         Subscription[]
@@ -453,6 +476,22 @@ model Contact {
   postalCode   String?
   country      String  @default("SE")
 
+  // Status & classification
+  status         ContactStatus @default(active)
+  customerNumber String?       // org-scoped sequence, e.g. K-0042
+  website        String?
+
+  // Delivery address (separate from billing)
+  deliveryLine1      String?
+  deliveryLine2      String?
+  deliveryCity       String?
+  deliveryPostalCode String?
+  deliveryCountry    String?
+
+  // Relation metadata
+  customerReference String?   // their reference for invoices
+  internalNotes     String?
+
   // Per-contact defaults (override org defaults)
   defaultCurrency         String?
   defaultPaymentTermsDays Int?
@@ -467,13 +506,43 @@ model Contact {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  invoices     Invoice[]
-  schedules    RecurringSchedule[]
+  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices        Invoice[]
+  schedules       RecurringSchedule[]
+  contactPersons  ContactPerson[]
 
   @@index([organizationId])
   @@index([organizationId, email])
+  @@index([organizationId, status])
   @@map("contacts")
+}
+
+// ─────────────────────────────────────────────
+// CONTACT PERSONS — individuals at a contact
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model ContactPerson {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+  contactId      String  @db.Uuid
+
+  name             String
+  role             String?
+  email            String?
+  phone            String?
+  isPrimary        Boolean @default(false)
+  isInvoiceContact Boolean @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contact      Contact      @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId])
+  @@index([organizationId])
+  @@map("contact_persons")
 }
 
 // ─────────────────────────────────────────────
@@ -487,6 +556,8 @@ model Product {
   name        String
   description String?
   sku         String?
+  type        ProductType @default(service)
+  category    String?
   unit        String  @default("piece")
   // stored as smallest currency unit (öre for SEK)
   unitPrice   BigInt  @default(0)
@@ -524,10 +595,12 @@ model Invoice {
   issueDate DateTime @default(now()) @db.Date
   dueDate   DateTime @db.Date
 
-  sentAt   DateTime?
-  viewedAt DateTime?
-  paidAt   DateTime?
-  voidedAt DateTime?
+  sentAt         DateTime?
+  viewedAt       DateTime?
+  paidAt         DateTime?
+  voidedAt       DateTime?
+  lastReminderAt DateTime?
+  reminderCount  Int       @default(0)
 
   // Denormalized totals — recalculated on line item change
   subtotalAmount BigInt @default(0)   // before tax
@@ -651,31 +724,65 @@ model Payment {
 // TENANT-SCOPED: organization_id required
 // ─────────────────────────────────────────────
 model RecurringSchedule {
-  id             String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  organizationId String             @db.Uuid
-  contactId      String?            @db.Uuid
+  id             String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String            @db.Uuid
+  contactId      String?           @db.Uuid
+
+  contractNumber String?           // auto-generated: AVT-0001
   name           String
-  status         String             @default("active")  // active | paused | cancelled
+  status         RecurringStatus   @default(draft)
   frequency      RecurringFrequency
-  startDate      DateTime           @db.Date
-  endDate        DateTime?          @db.Date
-  nextIssueDate  DateTime           @db.Date
+  startDate      DateTime          @db.Date
+  endDate        DateTime?         @db.Date
+  nextIssueDate  DateTime          @db.Date
   lastIssuedAt   DateTime?
-  autoSend       Boolean            @default(false)
-  templateData   Json               @default("{}")  // invoice template snapshot
-  createdByUserId String?           @db.Uuid
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  currency         String   @default("SEK")
+  paymentTermsDays Int      @default(30)
+  autoSend         Boolean  @default(false)
+  reference        String?
+  notes            String?  // visible on generated invoices
+  internalNotes    String?
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  contact      Contact?     @relation(fields: [contactId], references: [id], onDelete: SetNull)
-  createdByUser User?        @relation("ScheduleCreatedBy", fields: [createdByUserId], references: [id])
-  invoices     Invoice[]
+  createdByUserId String?   @db.Uuid
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  organization  Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contact       Contact?              @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  createdByUser User?                 @relation("ScheduleCreatedBy", fields: [createdByUserId], references: [id])
+  invoices      Invoice[]
+  lines         RecurringScheduleLine[]
 
   @@index([organizationId])
   @@index([nextIssueDate])
   @@map("recurring_schedules")
+}
+
+model RecurringScheduleLine {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  scheduleId     String @db.Uuid
+  organizationId String @db.Uuid
+  productId      String? @db.Uuid  // soft ref — values copied at creation
+
+  sortOrder    Int     @default(0)
+  description  String
+  quantity     Decimal @db.Decimal(12, 4)
+  unit         String  @default("st")
+  unitPrice    BigInt               // öre
+  taxRate      Decimal @db.Decimal(5, 4)
+  discountRate Decimal @default(0) @db.Decimal(5, 4)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  schedule     RecurringSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([scheduleId])
+  @@map("recurring_schedule_lines")
 }
 
 // ─────────────────────────────────────────────
