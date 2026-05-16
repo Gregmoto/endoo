@@ -74,6 +74,8 @@ export default function InvoiceDetailPage() {
   // Modal states
   const [sendModal,    setSendModal]    = useState(false)
   const [payModal,     setPayModal]     = useState(false)
+  const [cnLoading,    setCnLoading]    = useState(false)
+  const [pfLoading,    setPfLoading]    = useState(false)
 
   useEffect(() => {
     fetch(`/api/invoices/${id}`)
@@ -94,6 +96,34 @@ export default function InvoiceDetailPage() {
   const overdue = ["sent", "viewed", "partial"].includes(invoice.status) && new Date(invoice.dueDate) < new Date()
   const displayStatus = overdue ? STATUS_LABELS.overdue : (STATUS_LABELS[invoice.status] ?? STATUS_LABELS.draft)
 
+  async function createCreditNote() {
+    if (!confirm("Skapa en kreditnota för denna faktura?")) return
+    setCnLoading(true)
+    const res = await fetch(`/api/invoices/${id}/credit-note`, { method: "POST" })
+    if (res.ok) {
+      const d = await res.json()
+      router.push(`/${orgSlug}/invoices/${d.id}`)
+    } else {
+      const d = await res.json().catch(() => ({}))
+      alert(d.error ?? "Kunde inte skapa kreditnota")
+      setCnLoading(false)
+    }
+  }
+
+  async function convertProforma() {
+    if (!confirm("Konvertera proformafakturan till en vanlig faktura?")) return
+    setPfLoading(true)
+    const res = await fetch(`/api/invoices/${id}/convert-proforma`, { method: "POST" })
+    if (res.ok) {
+      refresh()
+      setPfLoading(false)
+    } else {
+      const d = await res.json().catch(() => ({}))
+      alert(d.error ?? "Kunde inte konvertera")
+      setPfLoading(false)
+    }
+  }
+
   return (
     <div className="p-8 max-w-3xl">
       {/* Breadcrumb */}
@@ -106,9 +136,15 @@ export default function InvoiceDetailPage() {
       {/* Header */}
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl font-bold text-gray-900 font-mono">{invoice.invoiceNumber}</h1>
             <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${displayStatus.cls}`}>{displayStatus.label}</span>
+            {invoice.type === "credit_note" && (
+              <span className="px-2.5 py-1 text-xs rounded-full font-medium bg-orange-100 text-orange-700">Kreditnota</span>
+            )}
+            {invoice.type === "proforma" && (
+              <span className="px-2.5 py-1 text-xs rounded-full font-medium bg-purple-100 text-purple-700">Proforma</span>
+            )}
           </div>
           <p className="text-sm text-gray-500 mt-1">
             Utfärdat {fmtDate(invoice.issueDate)} · Förfaller {fmtDate(invoice.dueDate)}
@@ -127,7 +163,16 @@ export default function InvoiceDetailPage() {
           <a href={`/api/invoices/${id}/pdf`} target="_blank" rel="noreferrer">
             <Button size="sm" variant="outline">↓ PDF</Button>
           </a>
-          {invoice.status === "draft" && (
+
+          {/* Proforma-specific actions */}
+          {invoice.type === "proforma" && invoice.status === "draft" && (
+            <Button size="sm" onClick={convertProforma} loading={pfLoading}>
+              Konvertera till faktura
+            </Button>
+          )}
+
+          {/* Regular invoice actions */}
+          {invoice.type === "invoice" && invoice.status === "draft" && (
             <>
               <Link href={`/${orgSlug}/invoices/${id}/edit`}>
                 <Button size="sm" variant="outline">Redigera</Button>
@@ -135,14 +180,21 @@ export default function InvoiceDetailPage() {
               <Button size="sm" onClick={() => setSendModal(true)}>Skicka</Button>
             </>
           )}
-          {["sent", "viewed", "partial"].includes(invoice.status) && (
+          {invoice.type === "invoice" && ["sent", "viewed", "partial"].includes(invoice.status) && (
             <>
               <Button size="sm" variant="outline" onClick={() => setSendModal(true)}>Skicka igen</Button>
               <Button size="sm" onClick={() => setPayModal(true)}>Registrera betalning</Button>
             </>
           )}
-          {overdue && (
+          {invoice.type === "invoice" && overdue && (
             <Button size="sm" onClick={() => setPayModal(true)}>Registrera betalning</Button>
+          )}
+
+          {/* Credit note button for sent/paid regular invoices */}
+          {invoice.type === "invoice" && ["sent", "viewed", "partial", "paid"].includes(invoice.status) && (
+            <Button size="sm" variant="outline" onClick={createCreditNote} loading={cnLoading}>
+              Skapa kreditnota
+            </Button>
           )}
         </div>
       </div>

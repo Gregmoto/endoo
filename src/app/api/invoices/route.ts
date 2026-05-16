@@ -80,6 +80,7 @@ const CreateSchema = z.object({
   notes:           z.string().max(5000).optional().nullable(),
   footerText:      z.string().max(5000).optional().nullable(),
   internalNotes:   z.string().max(5000).optional().nullable(),
+  type:            z.enum(["invoice", "proforma"]).default("invoice"),
   lineItems:       z.array(LineItemSchema).min(1),
 })
 
@@ -94,10 +95,16 @@ export async function POST(req: Request) {
       return Response.json({ error: "Ogiltiga uppgifter", details: parsed.error.flatten() }, { status: 400 })
     }
 
-    // Auto-generate invoice number: YYYY-NNNN
-    const year  = new Date().getFullYear()
-    const count = await prisma.invoice.count({ where: { organizationId: ctx.organizationId } })
-    const invoiceNumber = `${year}-${String(count + 1).padStart(4, "0")}`
+    // Auto-generate invoice number
+    // Proformas get a PF- prefix; regular invoices use YYYY-NNNN
+    const year      = new Date().getFullYear()
+    const typeFilter = parsed.data.type === "proforma" ? "proforma" : "invoice"
+    const count = await prisma.invoice.count({
+      where: { organizationId: ctx.organizationId, type: typeFilter },
+    })
+    const invoiceNumber = parsed.data.type === "proforma"
+      ? `PF-${year}-${String(count + 1).padStart(4, "0")}`
+      : `${year}-${String(count + 1).padStart(4, "0")}`
 
     // Calculate totals from line items (all in öre)
     const lines = parsed.data.lineItems.map((l, i) => {
@@ -132,6 +139,7 @@ export async function POST(req: Request) {
       data: {
         organizationId:   ctx.organizationId,
         invoiceNumber,
+        type:             parsed.data.type ?? "invoice",
         contactId:        parsed.data.contactId ?? null,
         issueDate:        new Date(parsed.data.issueDate),
         dueDate:          new Date(parsed.data.dueDate),

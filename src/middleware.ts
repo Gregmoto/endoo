@@ -52,7 +52,7 @@ function isPublic(pathname: string): boolean {
   return PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix))
 }
 
-export default auth((req: NextRequest & { auth: { user?: { id: string; isPlatformAdmin?: boolean } } | null }) => {
+export default auth((req: NextRequest & { auth: { user?: { id: string; isPlatformAdmin?: boolean }; activeOrganizationId?: string } | null }) => {
   const { pathname } = req.nextUrl
   const session = req.auth
 
@@ -70,6 +70,16 @@ export default auth((req: NextRequest & { auth: { user?: { id: string; isPlatfor
     const loginUrl = new URL("/login", req.url)
     loginUrl.searchParams.set("callbackUrl", pathname)
     return NextResponse.redirect(loginUrl)
+  }
+
+  // ── Onboarding: redirect users without an active org ─────
+  // Skip for API routes, platform routes and /onboarding itself.
+  const hasOrg = Boolean(session.activeOrganizationId)
+  if (!hasOrg
+    && !pathname.startsWith("/onboarding")
+    && !pathname.startsWith("/api/")
+    && !pathname.startsWith("/platform")) {
+    return NextResponse.redirect(new URL("/onboarding", req.url))
   }
 
   // ── Platform admin routes ─────────────────────────────────

@@ -59,6 +59,7 @@ export async function GET(
 
     const data: InvoicePdfData = {
       invoiceNumber:  invoice.invoiceNumber ?? "Utkast",
+      invoiceType:    invoice.type,
       issueDate:      invoice.issueDate.toLocaleDateString("sv-SE"),
       dueDate:        invoice.dueDate.toLocaleDateString("sv-SE"),
       currency:       invoice.currency,
@@ -99,7 +100,7 @@ export async function GET(
     return new Response(pdf, {
       headers: {
         "Content-Type":        "application/pdf",
-        "Content-Disposition": `attachment; filename="faktura-${invoice.invoiceNumber ?? "utkast"}.pdf"`,
+        "Content-Disposition": `attachment; filename="${invoice.invoiceNumber ?? "utkast"}.pdf"`,
         "Content-Length":      String(pdf.length),
       },
     })

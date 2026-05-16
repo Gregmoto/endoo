@@ -56,6 +56,7 @@ export default function NewInvoicePage() {
     poNumber:    "",
     notes:       "",
     footerText:  "",
+    type:        (searchParams.get("type") ?? "invoice") as "invoice" | "proforma",
   })
 
   const [lines, setLines] = useState<LineItem[]>([newLine()])
@@ -129,10 +130,10 @@ export default function NewInvoicePage() {
 
     const payload = {
       ...form,
-      contactId: form.contactId || null,
-      reference: form.reference || null,
-      poNumber:  form.poNumber  || null,
-      notes:     form.notes     || null,
+      contactId:  form.contactId  || null,
+      reference:  form.reference  || null,
+      poNumber:   form.poNumber   || null,
+      notes:      form.notes      || null,
       footerText: form.footerText || null,
       lineItems: lines.map((l, i) => ({
         description:  l.description,
@@ -158,10 +159,25 @@ export default function NewInvoicePage() {
 
   return (
     <div className="p-8 max-w-4xl">
-      <div className="mb-6 flex items-center gap-3">
-        <Link href={`/${orgSlug}/invoices`} className="text-sm text-gray-500 hover:text-gray-700">← Fakturor</Link>
-        <span className="text-gray-300">/</span>
-        <h1 className="text-2xl font-bold text-gray-900">Ny faktura</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Link href={`/${orgSlug}/invoices`} className="text-sm text-gray-500 hover:text-gray-700">← Fakturor</Link>
+          <span className="text-gray-300">/</span>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {form.type === "proforma" ? "Ny proformafaktura" : "Ny faktura"}
+          </h1>
+        </div>
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-gray-500">Typ:</span>
+          <select
+            value={form.type}
+            onChange={setField("type")}
+            className="px-2 py-1 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+          >
+            <option value="invoice">Faktura</option>
+            <option value="proforma">Proformafaktura</option>
+          </select>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -371,7 +387,9 @@ export default function NewInvoicePage() {
         {error && <p className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-lg">{error}</p>}
 
         <div className="flex items-center gap-3">
-          <Button type="submit" loading={saving}>Spara faktura</Button>
+          <Button type="submit" loading={saving}>
+            {form.type === "proforma" ? "Spara proforma" : "Spara faktura"}
+          </Button>
           <Link href={`/${orgSlug}/invoices`}>
             <Button type="button" variant="outline">Avbryt</Button>
           </Link>

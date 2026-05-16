@@ -66,6 +66,7 @@ function fmt(n: number, currency: string) {
 
 export type InvoicePdfData = {
   invoiceNumber: string
+  invoiceType?: string     // "invoice" | "credit_note" | "proforma" | "quote"
   issueDate: string
   dueDate: string
   currency: string
@@ -98,8 +99,13 @@ export type InvoicePdfData = {
 export function InvoicePdf({ d }: { d: InvoicePdfData }) {
   const hasDiscount = d.discountAmount > 0
 
+  const typeLabel =
+    d.invoiceType === "credit_note" ? "KREDITFAKTURA" :
+    d.invoiceType === "proforma"    ? "PROFORMAFAKTURA" :
+    "FAKTURA"
+
   return (
-    <Document title={`Faktura ${d.invoiceNumber}`} author={d.orgName}>
+    <Document title={`${typeLabel} ${d.invoiceNumber}`} author={d.orgName}>
       <Page size="A4" style={s.page}>
 
         {/* Header */}
@@ -111,7 +117,7 @@ export function InvoicePdf({ d }: { d: InvoicePdfData }) {
             {d.orgVatNumber && <Text style={{ fontSize: 9, color: "#6b7280" }}>Moms: {d.orgVatNumber}</Text>}
           </View>
           <View>
-            <Text style={s.invLabel}>FAKTURA</Text>
+            <Text style={s.invLabel}>{typeLabel}</Text>
             <Text style={s.invNumber}>{d.invoiceNumber}</Text>
           </View>
         </View>
