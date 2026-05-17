@@ -71,7 +71,7 @@ export async function bookSupplierInvoice(input: BookingInput) {
       id:                    invoiceId,
       organizationId,
       bookingIdempotencyKey: null,
-      status:                { in: ["approved", "needs_review"] },
+      status:                "approved",
     },
     data: { bookingIdempotencyKey: idempotencyKey },
   })

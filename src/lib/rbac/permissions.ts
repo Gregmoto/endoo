@@ -118,12 +118,14 @@ export const ACCOUNTING_PERMISSIONS = {
 // ─────────────────────────────────────────────
 export const SUPPLIER_INVOICE_PERMISSIONS = {
   READ:             "supplier_invoices:read",
-  UPLOAD:           "supplier_invoices:upload",    // upload + trigger extraction
-  REVIEW:           "supplier_invoices:review",    // edit extracted fields
-  BOOK:             "supplier_invoices:book",      // post journal
-  PAY:              "supplier_invoices:pay",       // mark as paid
+  UPLOAD:           "supplier_invoices:upload",          // upload + trigger extraction
+  REVIEW:           "supplier_invoices:review",          // edit extracted fields
+  BOOK:             "supplier_invoices:book",            // post journal
+  PAY:              "supplier_invoices:pay",             // mark as paid
   MANAGE_SUPPLIERS: "supplier_invoices:manage_suppliers", // edit supplier register
-  DELETE:           "supplier_invoices:delete",    // delete draft invoices
+  DELETE:           "supplier_invoices:delete",          // delete draft invoices
+  ATTEST:           "supplier_invoices:attest",          // cast approval votes
+  MANAGE_APPROVALS: "supplier_invoices:manage_approvals", // configure approval policies
 } as const
 
 // ─────────────────────────────────────────────

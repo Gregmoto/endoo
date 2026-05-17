@@ -138,6 +138,11 @@ enum AuditAction {
   invoice_post
   payment_post
   posting_failed
+  // Approval workflow events
+  approval_submitted
+  approval_voted
+  approval_auto_approved
+  approval_withdrawn
 }
 
 // ─── ACCOUNTING ENUMS ─────────────────────────────────────────────────────────
@@ -181,7 +186,8 @@ enum SupplierInvoiceStatus {
   draft            // uploaded, extraction not started
   extracting       // AI is processing right now
   needs_review     // extraction done, awaiting user confirmation
-  approved         // user confirmed fields, ready to book
+  pending_approval // sent to attest workflow — locked for editing
+  approved         // all steps approved (or no policy) — ready to book
   booked           // journal created and posted
   paid             // payment journal created
   rejected         // user rejected (duplicate or invalid)
@@ -210,6 +216,37 @@ enum VatPeriodStatus {
 enum ApiKeyEnv {
   live
   test
+}
+
+// ─── APPROVAL WORKFLOW ENUMS ──────────────────────────────────────────────────
+
+enum ApproverType {
+  specific_user   // a named user ID
+  role_based      // any member with the given MemberRole
+}
+
+enum CompletionRule {
+  any_one    // first approval clears the step
+  all_must   // every resolved approver must vote
+}
+
+enum ApprovalRequestStatus {
+  in_progress
+  approved
+  rejected
+  withdrawn
+}
+
+enum ApprovalStepStatus {
+  pending   // waiting for previous step
+  active    // current — approvers can vote
+  approved
+  rejected
+}
+
+enum VoteDecision {
+  approved
+  rejected
 }
 
 // ─────────────────────────────────────────────
@@ -328,6 +365,10 @@ model Organization {
   // API platform
   apiKeys               ApiKey[]
   idempotencyKeys       IdempotencyKey[]
+
+  // Approval workflow
+  approvalPolicies      ApprovalPolicy[]
+  approvalRequests      ApprovalRequest[]
 
   @@index([slug])
   @@index([type])
@@ -1336,6 +1377,7 @@ model SupplierInvoice {
 
   organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   supplier         Supplier?    @relation(fields: [supplierId],     references: [id])
+  approvalRequests ApprovalRequest[]
 
   @@index([organizationId, status])
   @@index([organizationId, supplierId])
@@ -1512,4 +1554,144 @@ model IdempotencyKey {
   @@index([organizationId])
   @@index([expiresAt])
   @@map("idempotency_keys")
+}
+
+// ─────────────────────────────────────────────
+// APPROVAL WORKFLOW — Attestation module
+// ─────────────────────────────────────────────
+
+// Policy template: defines the approval chain for an org
+model ApprovalPolicy {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+
+  name           String
+  description    String?
+  isDefault      Boolean  @default(false)
+  isActive       Boolean  @default(true)
+
+  // Auto-approve invoices below this amount (öre); null = never auto-approve
+  autoApproveBelow BigInt?
+
+  createdByUserId String?  @db.Uuid
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  steps          ApprovalPolicyStep[]
+  requests       ApprovalRequest[]
+
+  @@index([organizationId, isDefault])
+  @@index([organizationId, isActive])
+  @@map("approval_policies")
+}
+
+// One step in an approval chain (e.g. "Manager sign-off", "CFO approval")
+model ApprovalPolicyStep {
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  policyId String @db.Uuid
+
+  stepOrder      Int
+  name           String
+
+  approverType   ApproverType
+  specificUserId String?      @db.Uuid   // set when approverType = specific_user
+  approverRole   MemberRole?             // set when approverType = role_based
+
+  completionRule CompletionRule @default(any_one)
+
+  // Amount filter: null = applies to all amounts
+  amountMin      BigInt?   // öre, inclusive
+  amountMax      BigInt?   // öre, inclusive
+
+  policy ApprovalPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@index([policyId, stepOrder])
+  @@map("approval_policy_steps")
+}
+
+// One attest round for a supplier invoice
+model ApprovalRequest {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String   @db.Uuid
+  supplierInvoiceId String @db.Uuid
+  policyId        String?  @db.Uuid   // null if policy was deleted after submission
+
+  // Snapshot of policy+steps at submission time (immutable audit trail)
+  policySnapshot  Json
+
+  status          ApprovalRequestStatus @default(in_progress)
+  round           Int                   @default(1)  // increments on resubmission
+
+  submittedByUserId String  @db.Uuid
+  submittedAt       DateTime @default(now())
+  completedAt       DateTime?
+  withdrawnAt       DateTime?
+  withdrawnByUserId String?  @db.Uuid
+
+  rejectionReason String?
+  // SHA-256 of the invoice file at submission — detects tampering
+  documentHash    String?
+
+  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  supplierInvoice SupplierInvoice @relation(fields: [supplierInvoiceId], references: [id], onDelete: Cascade)
+  policy          ApprovalPolicy? @relation(fields: [policyId], references: [id])
+  steps           ApprovalStep[]
+
+  @@index([organizationId, status])
+  @@index([organizationId, supplierInvoiceId])
+  @@index([supplierInvoiceId, round])
+  @@map("approval_requests")
+}
+
+// One step instance within an active approval request
+model ApprovalStep {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  requestId      String   @db.Uuid
+
+  stepOrder      Int
+  name           String
+  completionRule CompletionRule
+
+  // Resolved at submission time from the policy step definition
+  resolvedApproverIds String[]   // UUID[]
+
+  status         ApprovalStepStatus @default(pending)
+  activatedAt    DateTime?
+  completedAt    DateTime?
+
+  // Reminder tracking
+  lastReminderSentAt DateTime?
+  reminderCount      Int       @default(0)
+
+  request ApprovalRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  votes   ApprovalVote[]
+
+  @@index([requestId, stepOrder])
+  @@index([organizationId, status])
+  @@map("approval_steps")
+}
+
+// An individual vote on a step (immutable — never updated)
+model ApprovalVote {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  stepId         String   @db.Uuid
+
+  voterUserId    String   @db.Uuid
+  actingForUserId String? @db.Uuid  // set if voter is acting on behalf of someone
+
+  decision  VoteDecision
+  comment   String?      @db.Text
+
+  votedAt DateTime @default(now())
+
+  step ApprovalStep @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  // One vote per voter per step (idempotency enforced at DB level)
+  @@unique([stepId, voterUserId])
+  @@index([organizationId, stepId])
+  @@index([voterUserId])
+  @@map("approval_votes")
 }

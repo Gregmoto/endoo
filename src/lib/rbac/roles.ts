@@ -120,7 +120,7 @@ const AGENCY_OWNER_PERMISSIONS: Permission[] = [
   ACCOUNTING_PERMISSIONS.MANAGE_ACCOUNTS,
   ACCOUNTING_PERMISSIONS.MANAGE_PERIODS,
   ACCOUNTING_PERMISSIONS.EXPORT,
-  // Supplier invoices — full access
+  // Supplier invoices — full access (including approvals)
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
   // Inventory — full access
   ...Object.values(INVENTORY_PERMISSIONS),
@@ -218,10 +218,11 @@ const AGENCY_STAFF_PERMISSIONS: Permission[] = [
   REPORT_PERMISSIONS.READ,
   // Accounting — read only for staff
   ACCOUNTING_PERMISSIONS.READ,
-  // Supplier invoices — upload + review (no book/pay)
+  // Supplier invoices — upload + review + attest (no book/pay, no manage_approvals)
   SUPPLIER_INVOICE_PERMISSIONS.READ,
   SUPPLIER_INVOICE_PERMISSIONS.UPLOAD,
   SUPPLIER_INVOICE_PERMISSIONS.REVIEW,
+  SUPPLIER_INVOICE_PERMISSIONS.ATTEST,
   // Agency (can switch to granted clients)
   AGENCY_PERMISSIONS.READ_CLIENTS,
   AGENCY_PERMISSIONS.SWITCH_TO_CLIENT,
@@ -372,10 +373,11 @@ const CUSTOMER_USER_PERMISSIONS: Permission[] = [
   REPORT_PERMISSIONS.READ,
   // Accounting — read only for regular users
   ACCOUNTING_PERMISSIONS.READ,
-  // Supplier invoices — upload + review
+  // Supplier invoices — upload + review + attest (no book/pay, no manage_approvals)
   SUPPLIER_INVOICE_PERMISSIONS.READ,
   SUPPLIER_INVOICE_PERMISSIONS.UPLOAD,
   SUPPLIER_INVOICE_PERMISSIONS.REVIEW,
+  SUPPLIER_INVOICE_PERMISSIONS.ATTEST,
   // Inventory — read + write transactions
   INVENTORY_PERMISSIONS.READ,
   INVENTORY_PERMISSIONS.WRITE,
