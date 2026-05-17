@@ -566,6 +566,10 @@ model Organization {
   bulkJobs         BulkJob[]        @relation("AgencyBulkJobs")
   pinnedByStaff    AgencyClientPin[] @relation("PinnedClients")
 
+  // Analytics
+  analyticsSnapshots AnalyticsSnapshot[] @relation("OrgAnalyticsSnapshots")
+  monthlyMetrics     MonthlyMetric[]     @relation("OrgMonthlyMetrics")
+
   @@index([slug])
   @@index([type])
   @@index([stripeCustomerId])
@@ -2931,4 +2935,79 @@ model TaskComment {
   @@index([taskId])
   @@index([organizationId, authorId])
   @@map("task_comments")
+}
+
+// ─────────────────────────────────────────────
+// ANALYTICS
+// ─────────────────────────────────────────────
+
+model AnalyticsSnapshot {
+  id             String   @id @default(cuid())
+  organizationId String   @db.Uuid
+  date           DateTime @db.Date
+
+  // Receivables
+  outstandingCount     Int    @default(0)
+  outstandingAmountOre BigInt @default(0)
+  overdueCount         Int    @default(0)
+  overdueAmountOre     BigInt @default(0)
+  agingBuckets         Json   @default("{}")
+
+  // Revenue (month-to-date + YTD)
+  revenueMonthOre BigInt @default(0)
+  revenueYtdOre   BigInt @default(0)
+
+  // MRR
+  mrrOre    BigInt @default(0)
+  mrrChange Float  @default(0)
+
+  // Cashflow (month-to-date)
+  cashInMonthOre  BigInt @default(0)
+  cashOutMonthOre BigInt @default(0)
+  netCashflowOre  BigInt @default(0)
+
+  // VAT forecast
+  vatOutputOre    BigInt    @default(0)
+  vatInputOre     BigInt    @default(0)
+  vatLiabilityOre BigInt    @default(0)
+  nextVatDueDate  DateTime?
+
+  // Customers
+  activeContactCount Int @default(0)
+  newContactsMonth   Int @default(0)
+
+  // Payment behaviour (rolling 12 months)
+  avgDaysToPayment Float?
+  latePaymentRate  Float?
+
+  computedAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  organization Organization @relation("OrgAnalyticsSnapshots", fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, date])
+  @@index([organizationId, date(sort: Desc)])
+  @@map("analytics_snapshots")
+}
+
+model MonthlyMetric {
+  id             String @id @default(cuid())
+  organizationId String @db.Uuid
+  year           Int
+  month          Int    // 1–12
+
+  revenueOre       BigInt @default(0)
+  cashInOre        BigInt @default(0)
+  cashOutOre       BigInt @default(0)
+  invoiceCount     Int    @default(0)
+  paidInvoiceCount Int    @default(0)
+  newContactCount  Int    @default(0)
+  mrrOre           BigInt @default(0)
+  avgDaysToPayment Float?
+
+  organization Organization @relation("OrgMonthlyMetrics", fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, year, month])
+  @@index([organizationId, year, month])
+  @@map("monthly_metrics")
 }

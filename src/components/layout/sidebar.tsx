@@ -24,6 +24,7 @@ const NAV_GROUPS = [
       { label: "Kontoplan",      href: "/accounts",          icon: "▤" },
       { label: "Rapporter",      href: "/reports",           icon: "◧" },
       { label: "Moms",           href: "/tax/vat",           icon: "◰" },
+      { label: "Analys",         href: "/analytics",         icon: "◎" },
     ],
   },
   {
