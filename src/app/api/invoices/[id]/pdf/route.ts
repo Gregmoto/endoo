@@ -10,6 +10,7 @@ import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
 import { renderToStream, type DocumentProps } from "@react-pdf/renderer"
 import { InvoicePdf, type InvoicePdfData } from "@/lib/pdf/invoice-pdf"
+import { resolveBranding } from "@/lib/branding/resolver"
 import React, { type ReactElement } from "react"
 
 export async function GET(
@@ -49,6 +50,7 @@ export async function GET(
 
     if (!invoice) return Response.json({ error: "Faktura hittades ej" }, { status: 404 })
 
+    const branding = await resolveBranding(ctx.organizationId)
     const org = invoice.organization
     const orgAddressParts = [org.addressLine1, [org.postalCode, org.city].filter(Boolean).join(" ")].filter(Boolean)
     const orgAddress = orgAddressParts.length ? orgAddressParts.join(", ") : null
@@ -58,6 +60,13 @@ export async function GET(
     const contactAddress = contactAddressParts.length ? contactAddressParts.join(", ") : null
 
     const data: InvoicePdfData = {
+      branding: {
+        primaryColor:     branding.primaryColor,
+        pdfLogoUrl:       branding.pdfLogoUrl,
+        pdfFooterText:    branding.pdfFooterText,
+        pdfShowPoweredBy: branding.pdfShowPoweredBy,
+        displayName:      branding.displayName,
+      },
       invoiceNumber:  invoice.invoiceNumber ?? "Utkast",
       invoiceType:    invoice.type,
       issueDate:      invoice.issueDate.toLocaleDateString("sv-SE"),

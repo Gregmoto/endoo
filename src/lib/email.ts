@@ -37,12 +37,18 @@ export function renderTemplate(template: string, vars: TemplateVars): string {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+export type EmailBranding = {
+  primaryColor?: string | null
+  logoUrl?:      string | null
+}
+
 export type InvoiceEmailData = {
   to: string
   // Org settings (loaded by caller)
   senderName?:     string | null
   senderAddress?:  string | null
   replyTo?:        string | null
+  branding?:       EmailBranding
   // Template from settings (subject / plain-text body)
   subjectTemplate?: string | null
   bodyTemplate?:    string | null
@@ -69,6 +75,7 @@ export type ReminderEmailData = {
   senderName?:     string | null
   senderAddress?:  string | null
   replyTo?:        string | null
+  branding?:       EmailBranding
   subjectTemplate?: string | null
   bodyTemplate?:    string | null
   orgName:        string
@@ -97,10 +104,9 @@ export async function sendInvoiceEmail(data: InvoiceEmailData): Promise<{ id?: s
 
   const from = buildFrom(data.senderName, data.senderAddress)
 
-  // Build body: prefer org text template wrapped in HTML, else full HTML table
   const html = data.bodyTemplate
-    ? buildTextWrapHtml(renderTemplate(data.bodyTemplate, vars), data)
-    : buildInvoiceHtml(data)
+    ? buildTextWrapHtml(renderTemplate(data.bodyTemplate, vars), data, data.branding)
+    : buildInvoiceHtml(data, data.branding)
 
   return sendEmail({ from, replyTo: data.replyTo ?? undefined, to: data.to, subject, html })
 }
@@ -127,7 +133,7 @@ export async function sendReminderEmail(data: ReminderEmailData): Promise<{ id?:
     : `Hej ${data.contactName},\n\nVi vill påminna om att faktura ${data.invoiceNumber} på ${fmtAmount(data.balanceAmount, data.currency)} förfaller ${data.dueDate}.\n\nMed vänliga hälsningar\n${data.orgName}`
 
   const from = buildFrom(data.senderName, data.senderAddress)
-  const html = buildTextWrapHtml(body, null)
+  const html = buildTextWrapHtml(body, null, data.branding)
 
   return sendEmail({ from, replyTo: data.replyTo ?? undefined, to: data.to, subject, html })
 }
@@ -171,13 +177,18 @@ function fmtAmount(n: bigint | number, currency: string): string {
 }
 
 // Wrap plain text body in minimal branded HTML
-function buildTextWrapHtml(body: string, data: InvoiceEmailData | null): string {
+function buildTextWrapHtml(body: string, data: InvoiceEmailData | null, branding?: EmailBranding): string {
+  const color = branding?.primaryColor ?? "#4f46e5"
   const lines = body.split("\n").map(l => `<p style="margin:0 0 8px;font-size:14px;line-height:1.6;color:#374151">${l || "&nbsp;"}</p>`).join("")
+  const logoHtml = branding?.logoUrl
+    ? `<img src="${branding.logoUrl}" alt="" style="height:36px;margin-bottom:12px;display:block" />`
+    : ""
   return `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
   <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)">
-    <div style="background:#4f46e5;padding:24px 32px">
+    <div style="background:${color};padding:24px 32px">
+      ${logoHtml}
       <p style="margin:0;font-size:18px;font-weight:700;color:#fff">${data?.orgName ?? ""}</p>
-      ${data ? `<p style="margin:4px 0 0;font-size:13px;color:#c7d2fe">Faktura ${data.invoiceNumber}</p>` : ""}
+      ${data ? `<p style="margin:4px 0 0;font-size:13px;color:rgba(255,255,255,0.7)">Faktura ${data.invoiceNumber}</p>` : ""}
     </div>
     <div style="padding:28px 32px">${lines}</div>
     <div style="padding:16px 32px;border-top:1px solid #f0f0f0"><p style="margin:0;font-size:11px;color:#9ca3af;text-align:center">Skickat via Endoo</p></div>
@@ -185,7 +196,11 @@ function buildTextWrapHtml(body: string, data: InvoiceEmailData | null): string 
 }
 
 // Full HTML invoice with line items table
-function buildInvoiceHtml(d: InvoiceEmailData): string {
+function buildInvoiceHtml(d: InvoiceEmailData, branding?: EmailBranding): string {
+  const color = branding?.primaryColor ?? "#4f46e5"
+  const logoHtml = branding?.logoUrl
+    ? `<img src="${branding.logoUrl}" alt="" style="height:40px;margin-bottom:14px;display:block" />`
+    : ""
   const rows = d.lines.map(l => `
     <tr>
       <td style="padding:8px 12px;border-bottom:1px solid #f0f0f0">${l.description}</td>
@@ -199,9 +214,10 @@ function buildInvoiceHtml(d: InvoiceEmailData): string {
 <html lang="sv"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#111827">
   <div style="max-width:640px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)">
-    <div style="background:#4f46e5;padding:32px 40px">
+    <div style="background:${color};padding:32px 40px">
+      ${logoHtml}
       <p style="margin:0;font-size:22px;font-weight:700;color:#fff">${d.orgName}</p>
-      <p style="margin:6px 0 0;font-size:14px;color:#c7d2fe">Faktura ${d.invoiceNumber}</p>
+      <p style="margin:6px 0 0;font-size:14px;color:rgba(255,255,255,0.7)">Faktura ${d.invoiceNumber}</p>
     </div>
     <div style="padding:28px 40px;border-bottom:1px solid #f0f0f0;display:flex;gap:40px">
       <div><p style="margin:0;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase">Till</p><p style="margin:4px 0 0;font-size:15px;font-weight:600">${d.contactName}</p></div>

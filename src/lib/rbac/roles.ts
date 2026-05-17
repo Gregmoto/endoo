@@ -36,6 +36,9 @@ import {
   INVENTORY_PERMISSIONS,
   AGENCY_PERMISSIONS,
   TASK_PERMISSIONS,
+  SIGNATURE_PERMISSIONS,
+  QUOTE_PERMISSIONS,
+  BRANDING_PERMISSIONS,
   type Permission,
 } from "./permissions"
 
@@ -70,6 +73,8 @@ const SUPER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(INVENTORY_PERMISSIONS),
   ...Object.values(AGENCY_PERMISSIONS),
   ...Object.values(TASK_PERMISSIONS),
+  ...Object.values(SIGNATURE_PERMISSIONS),
+  ...Object.values(BRANDING_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -133,6 +138,12 @@ const AGENCY_OWNER_PERMISSIONS: Permission[] = [
   AGENCY_PERMISSIONS.GRANT_STAFF_ACCESS,
   // Tasks — full access
   ...Object.values(TASK_PERMISSIONS),
+  // Signatures — full access
+  ...Object.values(SIGNATURE_PERMISSIONS),
+  // Quotes — full access
+  ...Object.values(QUOTE_PERMISSIONS),
+  // Branding — full access incl. white-label
+  ...Object.values(BRANDING_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -194,6 +205,18 @@ const AGENCY_ADMIN_PERMISSIONS: Permission[] = [
   AGENCY_PERMISSIONS.GRANT_STAFF_ACCESS,
   // Tasks — full access
   ...Object.values(TASK_PERMISSIONS),
+  // Signatures — full access
+  ...Object.values(SIGNATURE_PERMISSIONS),
+  // Quotes — full access (no cancel for admin)
+  QUOTE_PERMISSIONS.READ,
+  QUOTE_PERMISSIONS.CREATE,
+  QUOTE_PERMISSIONS.UPDATE,
+  QUOTE_PERMISSIONS.SEND,
+  QUOTE_PERMISSIONS.CONVERT,
+  // Branding — read + update (no white-label toggle for admin)
+  BRANDING_PERMISSIONS.READ,
+  BRANDING_PERMISSIONS.UPDATE,
+  BRANDING_PERMISSIONS.UPLOAD_ASSETS,
 ]
 
 // ─────────────────────────────────────────────
@@ -239,6 +262,16 @@ const AGENCY_STAFF_PERMISSIONS: Permission[] = [
   TASK_PERMISSIONS.DELETE_OWN,
   TASK_PERMISSIONS.ASSIGN,
   TASK_PERMISSIONS.COMMENT,
+  // Signatures — can view and send (create + remind), cancel own
+  SIGNATURE_PERMISSIONS.READ,
+  SIGNATURE_PERMISSIONS.CREATE,
+  SIGNATURE_PERMISSIONS.SEND,
+  SIGNATURE_PERMISSIONS.REMIND,
+  // Quotes — create + send, no cancel/convert
+  QUOTE_PERMISSIONS.READ,
+  QUOTE_PERMISSIONS.CREATE,
+  QUOTE_PERMISSIONS.UPDATE,
+  QUOTE_PERMISSIONS.SEND,
 ]
 
 // ─────────────────────────────────────────────
@@ -255,6 +288,7 @@ const AGENCY_VIEWER_PERMISSIONS: Permission[] = [
   SUPPLIER_INVOICE_PERMISSIONS.READ,
   AGENCY_PERMISSIONS.READ_CLIENTS,
   TASK_PERMISSIONS.READ,
+  QUOTE_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -313,6 +347,12 @@ const CUSTOMER_OWNER_PERMISSIONS: Permission[] = [
   ...Object.values(INVENTORY_PERMISSIONS),
   // Tasks — full access
   ...Object.values(TASK_PERMISSIONS),
+  // Signatures — full access
+  ...Object.values(SIGNATURE_PERMISSIONS),
+  // Quotes — full access
+  ...Object.values(QUOTE_PERMISSIONS),
+  // Branding — full access
+  ...Object.values(BRANDING_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -362,6 +402,18 @@ const CUSTOMER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(INVENTORY_PERMISSIONS),
   // Tasks — full access
   ...Object.values(TASK_PERMISSIONS),
+  // Signatures — full access
+  ...Object.values(SIGNATURE_PERMISSIONS),
+  // Quotes — full access (no cancel)
+  QUOTE_PERMISSIONS.READ,
+  QUOTE_PERMISSIONS.CREATE,
+  QUOTE_PERMISSIONS.UPDATE,
+  QUOTE_PERMISSIONS.SEND,
+  QUOTE_PERMISSIONS.CONVERT,
+  // Branding — read + update (no white-label toggle)
+  BRANDING_PERMISSIONS.READ,
+  BRANDING_PERMISSIONS.UPDATE,
+  BRANDING_PERMISSIONS.UPLOAD_ASSETS,
 ]
 
 // ─────────────────────────────────────────────
@@ -405,6 +457,16 @@ const CUSTOMER_USER_PERMISSIONS: Permission[] = [
   TASK_PERMISSIONS.UPDATE_OWN,
   TASK_PERMISSIONS.DELETE_OWN,
   TASK_PERMISSIONS.COMMENT,
+  // Signatures — create + send + remind
+  SIGNATURE_PERMISSIONS.READ,
+  SIGNATURE_PERMISSIONS.CREATE,
+  SIGNATURE_PERMISSIONS.SEND,
+  SIGNATURE_PERMISSIONS.REMIND,
+  // Quotes — create + send, no cancel/convert
+  QUOTE_PERMISSIONS.READ,
+  QUOTE_PERMISSIONS.CREATE,
+  QUOTE_PERMISSIONS.UPDATE,
+  QUOTE_PERMISSIONS.SEND,
 ]
 
 // ─────────────────────────────────────────────
@@ -421,6 +483,7 @@ const CUSTOMER_VIEWER_PERMISSIONS: Permission[] = [
   SUPPLIER_INVOICE_PERMISSIONS.READ,
   INVENTORY_PERMISSIONS.READ,
   TASK_PERMISSIONS.READ,
+  QUOTE_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────

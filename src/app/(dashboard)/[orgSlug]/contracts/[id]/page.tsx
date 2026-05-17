@@ -5,6 +5,8 @@ import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { SignatureRequestModal } from "@/components/signing/SignatureRequestModal"
+import { SignatureStatusWidget } from "@/components/signing/SignatureStatusWidget"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -73,6 +75,8 @@ export default function ContractDetailPage() {
   const [generating, setGenerating] = useState(false)
   const [genError, setGenError]     = useState("")
   const [genSuccess, setGenSuccess] = useState("")
+  const [signModal,    setSignModal]    = useState(false)
+  const [signRefresh,  setSignRefresh]  = useState(0)
 
   useEffect(() => {
     fetch(`/api/contracts/${id}`)
@@ -155,6 +159,7 @@ export default function ContractDetailPage() {
         </div>
 
         <div className="flex gap-2 flex-wrap justify-end">
+          <Button size="sm" variant="outline" onClick={() => setSignModal(true)}>✍ Signera</Button>
           <Link href={`/${orgSlug}/contracts/${id}/edit`}>
             <Button size="sm" variant="outline">Redigera</Button>
           </Link>
@@ -312,6 +317,30 @@ export default function ContractDetailPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* E-signering */}
+      <Card className="mt-4">
+        <CardHeader><CardTitle>E-signering</CardTitle></CardHeader>
+        <CardContent>
+          <SignatureStatusWidget
+            entityType="contract"
+            entityId={id}
+            onRequestSign={() => setSignModal(true)}
+            refreshKey={signRefresh}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Signature request modal */}
+      {signModal && (
+        <SignatureRequestModal
+          entityType="contract"
+          entityId={id}
+          defaultTitle={contract.name}
+          onClose={() => setSignModal(false)}
+          onCreated={() => setSignRefresh(k => k + 1)}
+        />
+      )}
     </div>
   )
 }

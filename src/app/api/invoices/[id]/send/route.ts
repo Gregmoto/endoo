@@ -12,6 +12,7 @@ import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
 import { sendInvoiceEmail } from "@/lib/email"
+import { resolveBranding } from "@/lib/branding/resolver"
 import { SETTING_KEYS } from "@/lib/settings/keys"
 import { postInvoiceSent } from "@/services/invoices/posting"
 import { InvoiceAlreadyPostedError } from "@/lib/accounting/posting/errors"
@@ -25,7 +26,7 @@ export async function POST(
     canOrThrow(ctx, "invoices:send")
     const { id } = await params
 
-    const [invoice, emailSettings] = await Promise.all([
+    const [invoice, emailSettings, branding] = await Promise.all([
       prisma.invoice.findFirst({
         where: { id, organizationId: ctx.organizationId, deletedAt: null },
         include: {
@@ -49,6 +50,7 @@ export async function POST(
           ]},
         },
       }),
+      resolveBranding(ctx.organizationId),
     ])
 
     if (!invoice) return Response.json({ error: "Faktura hittades ej" }, { status: 404 })
@@ -69,9 +71,10 @@ export async function POST(
     if (!markOnly && recipientEmail) {
       const result = await sendInvoiceEmail({
         to:              recipientEmail,
-        senderName:      sv(sm[SETTING_KEYS.EMAIL_SENDER_NAME]),
-        senderAddress:   sv(sm[SETTING_KEYS.EMAIL_SENDER_ADDRESS]),
-        replyTo:         sv(sm[SETTING_KEYS.EMAIL_REPLY_TO]),
+        senderName:      sv(sm[SETTING_KEYS.EMAIL_SENDER_NAME]) ?? branding.senderName,
+        senderAddress:   sv(sm[SETTING_KEYS.EMAIL_SENDER_ADDRESS]) ?? branding.senderEmail,
+        replyTo:         sv(sm[SETTING_KEYS.EMAIL_REPLY_TO]) ?? branding.replyTo,
+        branding:        { primaryColor: branding.primaryColor, logoUrl: branding.emailLogoUrl ?? branding.logoUrl },
         subjectTemplate: sv(sm[SETTING_KEYS.EMAIL_INVOICE_SUBJECT]),
         bodyTemplate:    sv(sm[SETTING_KEYS.EMAIL_INVOICE_BODY]),
         orgName:         invoice.organization.name,

@@ -12,6 +12,7 @@ const NAV_SECTIONS = [
       { href: "invoices",  label: "Fakturainställningar" },
       { href: "payments",  label: "Betalningsinställningar" },
       { href: "email",     label: "E-postinställningar" },
+      { href: "branding",  label: "Varumärke" },
     ],
   },
   {

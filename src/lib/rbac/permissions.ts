@@ -165,6 +165,42 @@ export const TASK_PERMISSIONS = {
   COMMENT:     "tasks:comment",
 } as const
 
+// ─────────────────────────────────────────────
+// SIGNATURE PERMISSIONS
+// ─────────────────────────────────────────────
+export const SIGNATURE_PERMISSIONS = {
+  READ:   "signatures:read",
+  CREATE: "signatures:create",
+  SEND:   "signatures:send",
+  CANCEL: "signatures:cancel",
+  REMIND: "signatures:remind",
+} as const
+
+// ─────────────────────────────────────────────
+// BRANDING PERMISSIONS
+// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+// QUOTE PERMISSIONS
+// ─────────────────────────────────────────────
+export const QUOTE_PERMISSIONS = {
+  READ:    "quotes:read",
+  CREATE:  "quotes:create",
+  UPDATE:  "quotes:update",
+  SEND:    "quotes:send",
+  CANCEL:  "quotes:cancel",
+  CONVERT: "quotes:convert",  // → invoice or contract
+} as const
+
+// ─────────────────────────────────────────────
+// BRANDING PERMISSIONS
+// ─────────────────────────────────────────────
+export const BRANDING_PERMISSIONS = {
+  READ:          "branding:read",
+  UPDATE:        "branding:update",
+  UPLOAD_ASSETS: "branding:upload_assets",
+  WHITE_LABEL:   "branding:white_label",   // toggle applyToClients (agency-only)
+} as const
+
 export type Permission =
   | (typeof PLATFORM_PERMISSIONS)[keyof typeof PLATFORM_PERMISSIONS]
   | (typeof INVOICE_PERMISSIONS)[keyof typeof INVOICE_PERMISSIONS]
@@ -180,6 +216,9 @@ export type Permission =
   | (typeof INVENTORY_PERMISSIONS)[keyof typeof INVENTORY_PERMISSIONS]
   | (typeof AGENCY_PERMISSIONS)[keyof typeof AGENCY_PERMISSIONS]
   | (typeof TASK_PERMISSIONS)[keyof typeof TASK_PERMISSIONS]
+  | (typeof SIGNATURE_PERMISSIONS)[keyof typeof SIGNATURE_PERMISSIONS]
+  | (typeof QUOTE_PERMISSIONS)[keyof typeof QUOTE_PERMISSIONS]
+  | (typeof BRANDING_PERMISSIONS)[keyof typeof BRANDING_PERMISSIONS]
 
 export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(PLATFORM_PERMISSIONS),
@@ -196,4 +235,7 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(INVENTORY_PERMISSIONS),
   ...Object.values(AGENCY_PERMISSIONS),
   ...Object.values(TASK_PERMISSIONS),
+  ...Object.values(SIGNATURE_PERMISSIONS),
+  ...Object.values(QUOTE_PERMISSIONS),
+  ...Object.values(BRANDING_PERMISSIONS),
 ]

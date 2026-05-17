@@ -6,6 +6,8 @@ import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { TaskWidget } from "@/components/tasks/TaskWidget"
+import { SignatureRequestModal } from "@/components/signing/SignatureRequestModal"
+import { SignatureStatusWidget } from "@/components/signing/SignatureStatusWidget"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -77,6 +79,8 @@ export default function InvoiceDetailPage() {
   const [payModal,     setPayModal]     = useState(false)
   const [cnLoading,    setCnLoading]    = useState(false)
   const [pfLoading,    setPfLoading]    = useState(false)
+  const [signModal,    setSignModal]    = useState(false)
+  const [signRefresh,  setSignRefresh]  = useState(0)
 
   useEffect(() => {
     fetch(`/api/invoices/${id}`)
@@ -189,6 +193,13 @@ export default function InvoiceDetailPage() {
           )}
           {invoice.type === "invoice" && overdue && (
             <Button size="sm" onClick={() => setPayModal(true)}>Registrera betalning</Button>
+          )}
+
+          {/* Quote signing button */}
+          {invoice.type === "quote" && ["draft", "sent"].includes(invoice.status) && (
+            <Button size="sm" variant="outline" onClick={() => setSignModal(true)}>
+              ✍ Signera
+            </Button>
           )}
 
           {/* Credit note button for sent/paid regular invoices */}
@@ -366,6 +377,21 @@ export default function InvoiceDetailPage() {
         </CardContent>
       </Card>
 
+      {/* E-signering — only for quotes */}
+      {invoice.type === "quote" && (
+        <Card className="mb-6">
+          <CardHeader><CardTitle>E-signering</CardTitle></CardHeader>
+          <CardContent>
+            <SignatureStatusWidget
+              entityType="quote"
+              entityId={id}
+              onRequestSign={() => setSignModal(true)}
+              refreshKey={signRefresh}
+            />
+          </CardContent>
+        </Card>
+      )}
+
       {/* Modals */}
       {sendModal && (
         <SendModal
@@ -382,6 +408,15 @@ export default function InvoiceDetailPage() {
           currency={invoice.currency}
           onClose={() => setPayModal(false)}
           onSaved={() => { setPayModal(false); refresh() }}
+        />
+      )}
+      {signModal && (
+        <SignatureRequestModal
+          entityType="quote"
+          entityId={id}
+          defaultTitle={`Offert ${invoice.invoiceNumber}`}
+          onClose={() => setSignModal(false)}
+          onCreated={() => setSignRefresh(k => k + 1)}
         />
       )}
     </div>

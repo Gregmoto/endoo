@@ -570,6 +570,15 @@ model Organization {
   analyticsSnapshots AnalyticsSnapshot[] @relation("OrgAnalyticsSnapshots")
   monthlyMetrics     MonthlyMetric[]     @relation("OrgMonthlyMetrics")
 
+  // White-label branding
+  brandingProfile          BrandingProfile?
+  emailDomainVerifications EmailDomainVerification[]
+
+  // E-signering
+  signatureRequests SignatureRequest[] @relation("OrgSignatureRequests")
+  quotes            Quote[]            @relation("OrgQuotes")
+  portalMagicTokens PortalMagicToken[] @relation("OrgPortalTokens")
+
   @@index([slug])
   @@index([type])
   @@index([stripeCustomerId])
@@ -647,6 +656,8 @@ model User {
   invoicesCreated  Invoice[]   @relation("InvoiceCreatedBy")
   paymentsCreated  Payment[]   @relation("PaymentCreatedBy")
   schedulesCreated RecurringSchedule[] @relation("ScheduleCreatedBy")
+  signatureRequestsCreated SignatureRequest[] @relation("SignatureRequestCreatedBy")
+  quotesCreated            Quote[]           @relation("QuoteCreatedBy")
 
   // Accounting
   journalsPosted      Journal[]              @relation("JournalPostedBy")
@@ -883,10 +894,12 @@ model Contact {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  invoices        Invoice[]
-  schedules       RecurringSchedule[]
-  contactPersons  ContactPerson[]
+  organization      Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices          Invoice[]
+  schedules         RecurringSchedule[]
+  contactPersons    ContactPerson[]
+  quotes            Quote[]
+  portalMagicTokens PortalMagicToken[] @relation("ContactPortalTokens")
 
   @@index([organizationId])
   @@index([organizationId, email])
@@ -3010,4 +3023,293 @@ model MonthlyMetric {
   @@unique([organizationId, year, month])
   @@index([organizationId, year, month])
   @@map("monthly_metrics")
+}
+
+// ─────────────────────────────────────────────
+// WHITE-LABEL BRANDING
+// One profile per organization (optional).
+// Agencies can extend branding to managed clients.
+// ─────────────────────────────────────────────
+model BrandingProfile {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @unique @db.Uuid
+
+  // Visual identity
+  displayName    String?
+  logoUrl        String?   // full-size logo (sidebar, PDF header)
+  logoDarkUrl    String?   // dark-mode variant
+  faviconUrl     String?
+  primaryColor   String?   // hex e.g. "#4f46e5"
+  accentColor    String?
+  textOnPrimary  String?   // text color on top of primary
+
+  // Email branding
+  senderName     String?
+  senderEmail    String?   // must be verified via Resend
+  replyTo        String?
+  emailLogoUrl   String?   // logo shown in email header (can differ from sidebar logo)
+
+  // PDF branding
+  pdfLogoUrl     String?   // logo shown on PDF invoices
+  pdfAccentColor String?
+  pdfFooterText  String?   // custom PDF footer (e.g. "Sent by Acme Accounting")
+  pdfShowPoweredBy Boolean @default(true)
+
+  // Agency → client propagation
+  applyToClients      Boolean @default(false)  // push branding to managed clients
+  allowClientOverride Boolean @default(true)   // clients may override agency branding
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("branding_profiles")
+}
+
+// ─────────────────────────────────────────────
+// EMAIL DOMAIN VERIFICATION
+// Tracks Resend domain-verification status.
+// ─────────────────────────────────────────────
+model EmailDomainVerification {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+  domain         String
+  resendDomainId String?
+  status         String  @default("pending")  // pending | verified | failed
+  dnsRecords     Json    @default("[]")
+  verifiedAt     DateTime?
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("email_domain_verifications")
+}
+
+// ─────────────────────────────────────────────
+// E-SIGNERING
+// ─────────────────────────────────────────────
+
+enum SignatureRequestStatus {
+  draft             // skapad, ej skickad
+  sent              // skickad, väntar på signerare
+  partially_signed  // minst en signerare klar
+  completed         // alla signerare klara
+  declined          // någon avböjde
+  expired           // löpte ut utan completion
+  cancelled         // avsändaren avbröt
+}
+
+enum SignerStatus {
+  pending   // invite skickat, ej öppnat
+  viewed    // öppnat signeringssidan
+  signed    // har signerat
+  declined  // avböjt
+}
+
+enum QuoteStatus {
+  draft
+  sent
+  viewed
+  accepted
+  declined
+  expired
+  cancelled
+  invoiced
+  contracted
+}
+
+enum SignatureEventType {
+  created
+  sent
+  viewed
+  signed
+  declined
+  reminder_sent
+  partially_signed
+  completed
+  cancelled
+  expired
+  resent
+}
+
+model SignatureRequest {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+
+  // Linked entity — "contract" = RecurringSchedule, "quote" = Invoice (type=quote)
+  entityType     String  // "contract" | "quote"
+  entityId       String  @db.Uuid
+
+  // Document snapshot frozen at send time
+  title               String
+  message             String?
+  documentSnapshotUrl String?
+  documentHash        String?   // SHA-256 of PDF bytes at send time
+
+  // Config
+  expiresAt      DateTime
+  reminderDays   Int[]     @default([3, 7, 14])
+
+  // Status
+  status         SignatureRequestStatus @default(draft)
+  completedAt    DateTime?
+  cancelledAt    DateTime?
+  cancelReason   String?
+
+  createdByUserId String  @db.Uuid
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization Organization    @relation("OrgSignatureRequests", fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User             @relation("SignatureRequestCreatedBy", fields: [createdByUserId], references: [id])
+  signers      Signer[]
+  events       SignatureEvent[]
+
+  @@index([organizationId, status])
+  @@index([entityType, entityId])
+  @@index([expiresAt])
+  @@map("signature_requests")
+}
+
+model Signer {
+  id                 String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  signatureRequestId String @db.Uuid
+
+  // Identity
+  name         String
+  email        String
+  role         String @default("signer")  // "signer" | "cc"
+  signingOrder Int    @default(0)
+
+  // Token — raw token sent in email, only hash stored in DB
+  tokenHash      String   @unique
+  tokenExpiresAt DateTime
+
+  // Status
+  status     SignerStatus @default(pending)
+  viewedAt   DateTime?
+  signedAt   DateTime?
+  declinedAt DateTime?
+  declineReason String?
+
+  // Evidence
+  signatureText String?
+  ipAddress     String?
+  userAgent     String?
+
+  // Reminders
+  lastRemindedAt DateTime?
+  reminderCount  Int       @default(0)
+
+  signatureRequest SignatureRequest @relation(fields: [signatureRequestId], references: [id], onDelete: Cascade)
+  events           SignatureEvent[]
+
+  @@index([signatureRequestId])
+  @@index([tokenHash])
+  @@map("signers")
+}
+
+model SignatureEvent {
+  id                 String @id @default(cuid())
+  signatureRequestId String @db.Uuid
+  signerId           String? @db.Uuid
+
+  eventType    SignatureEventType
+  ipAddress    String?
+  userAgent    String?
+  documentHash String?
+  meta         Json    @default("{}")
+
+  createdAt DateTime @default(now())
+
+  signatureRequest SignatureRequest @relation(fields: [signatureRequestId], references: [id], onDelete: Cascade)
+  signer           Signer?         @relation(fields: [signerId], references: [id], onDelete: SetNull)
+
+  @@index([signatureRequestId, createdAt])
+  @@map("signature_events")
+}
+
+// ─────────────────────────────────────────────
+// PORTAL — customer self-service portal
+// ─────────────────────────────────────────────
+
+model PortalMagicToken {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  contactId      String   @db.Uuid
+  email          String
+  tokenHash      String   @unique
+  expiresAt      DateTime
+  usedAt         DateTime?
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation("OrgPortalTokens", fields: [organizationId], references: [id], onDelete: Cascade)
+  contact      Contact      @relation("ContactPortalTokens", fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([tokenHash])
+  @@map("portal_magic_tokens")
+}
+
+// ─────────────────────────────────────────────
+// QUOTES — sales offers sent to contacts
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model Quote {
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String      @db.Uuid
+  number         String      // Q-2026-0001
+
+  title          String?
+  status         QuoteStatus @default(draft)
+
+  // Mottagare (kopieras vid skapande)
+  contactId      String?     @db.Uuid
+  contactName    String
+  contactEmail   String?
+  contactAddress Json?
+
+  // Radposter (JSON array av QuoteLineItem)
+  lineItems      Json        @default("[]")
+  currency       String      @default("SEK")
+
+  // Rabatt på total nivå
+  discount       Decimal?    @db.Decimal(12, 2)
+  discountType   String?     // "percent" | "amount"
+
+  // Text
+  notes          String?
+  terms          String?
+  internalNote   String?
+
+  // Tidpunkter
+  validUntil     DateTime?
+  sentAt         DateTime?
+  viewedAt       DateTime?
+  respondedAt    DateTime?
+  responseNote   String?
+
+  // Godkännandetoken — raw skickas i email, hash lagras
+  approvalTokenHash      String?   @unique
+  approvalTokenExpiresAt DateTime?
+
+  // Konvertering
+  convertedToInvoiceId   String?   @db.Uuid
+  convertedToContractId  String?   @db.Uuid
+  convertedAt            DateTime?
+
+  createdByUserId String    @db.Uuid
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  organization Organization @relation("OrgQuotes", fields: [organizationId], references: [id], onDelete: Cascade)
+  contact      Contact?     @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  createdBy    User         @relation("QuoteCreatedBy", fields: [createdByUserId], references: [id])
+
+  @@index([organizationId, status])
+  @@index([organizationId, createdAt(sort: Desc)])
+  @@index([contactId])
+  @@map("quotes")
 }
