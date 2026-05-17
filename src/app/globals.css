@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-brand-50: #f0f4ff;
   --color-brand-100: #e0e9ff;
@@ -28,6 +30,11 @@ body {
   background: #f8f9fb;
   color: #111827;
   -webkit-font-smoothing: antialiased;
+}
+
+.dark body {
+  background: #0f1117;
+  color: #f3f4f6;
 }
 
 /* Scrollbar */

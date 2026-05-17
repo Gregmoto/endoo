@@ -6,6 +6,7 @@ import { MobileNavBar } from "@/components/layout/MobileNavBar"
 import { ImpersonationBanner } from "@/components/layout/ImpersonationBanner"
 import { AiShell } from "@/components/ai/AiShell"
 import { SearchProvider } from "@/components/search/SearchProvider"
+import { resolveBranding } from "@/lib/branding/resolver"
 
 export default async function DashboardLayout({
   children,
@@ -43,18 +44,26 @@ export default async function DashboardLayout({
   let agencySlug: string | null = null
   const isImpersonating = session.impersonatingOrganizationId === org.id
 
-  if (isImpersonating && session.activeOrgSlug) {
-    const agencyOrg = await prisma.organization.findUnique({
-      where: { slug: session.activeOrgSlug },
-      select: { name: true, slug: true },
-    })
-    agencyName = agencyOrg?.name ?? null
-    agencySlug = agencyOrg?.slug ?? null
+  const [agencyOrg, branding] = await Promise.all([
+    isImpersonating && session.activeOrgSlug
+      ? prisma.organization.findUnique({ where: { slug: session.activeOrgSlug }, select: { name: true, slug: true } })
+      : Promise.resolve(null),
+    resolveBranding(org.id),
+  ])
+
+  if (agencyOrg) {
+    agencyName = agencyOrg.name
+    agencySlug = agencyOrg.slug
   }
+
+  const cssVars = {
+    "--brand-primary": branding.primaryColor,
+    "--brand-accent":  branding.accentColor,
+  } as React.CSSProperties
 
   return (
     <SearchProvider orgSlug={org.slug} orgId={org.id}>
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950" style={cssVars}>
       {isImpersonating && agencyName && agencySlug && (
         <ImpersonationBanner agencyName={agencyName} agencySlug={agencySlug} clientSlug={orgSlug} />
       )}
@@ -65,6 +74,8 @@ export default async function DashboardLayout({
         orgType={org.type as "agency" | "customer"}
         userEmail={session.user.email}
         isImpersonating={isImpersonating}
+        logoUrl={branding.logoUrl}
+        brandingDisplayName={branding.displayName}
       />
 
       <AiShell>
