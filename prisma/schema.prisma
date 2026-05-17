@@ -93,6 +93,20 @@ enum ProductType {
   service
 }
 
+enum InventoryTxType {
+  purchase     // inköp från leverantör
+  sale         // försäljning via faktura
+  return_in    // retur från kund
+  return_out   // retur till leverantör
+  adjustment   // manuell justering
+  count_set    // inventering — sätter ny startnivå
+}
+
+enum CostMethod {
+  average   // rörligt genomsnitt
+  standard  // fast standardkostnad
+}
+
 enum AgencyAccessLevel {
   full
   read_only
@@ -297,6 +311,10 @@ model Organization {
 
   // VAT
   vatPeriods            VatPeriod[]
+
+  // Inventory
+  inventoryItems        InventoryItem[]
+  inventoryTransactions InventoryTransaction[]
 
   @@index([slug])
   @@index([type])
@@ -656,7 +674,8 @@ model Product {
   deletedAt DateTime?
 
   organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  lineItems    InvoiceLineItem[]
+  lineItems     InvoiceLineItem[]
+  inventoryItem InventoryItem?
 
   @@index([organizationId])
   @@unique([organizationId, sku])
@@ -1346,4 +1365,67 @@ model VatPeriod {
   @@index([organizationId, status])
   @@index([organizationId, periodStart])
   @@map("vat_periods")
+}
+
+// ─────────────────────────────────────────────
+// INVENTORY ITEM — Lagervara
+// TENANT-SCOPED: organization_id required
+// One InventoryItem per Product (1-1, only for physical goods).
+// Stock level is always computed query-time from InventoryTransaction rows.
+// ─────────────────────────────────────────────
+model InventoryItem {
+  id             String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String     @db.Uuid
+  productId      String     @unique @db.Uuid
+
+  unitOfMeasure  String     @default("st")
+  costMethod     CostMethod @default(average)
+  standardCost   BigInt?    // öre/enhet — används om costMethod=standard
+  reorderPoint   Decimal?   @db.Decimal(12, 4)  // varning under denna nivå
+  warehouseNote  String?
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  product      Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+  transactions InventoryTransaction[]
+
+  @@index([organizationId])
+  @@map("inventory_items")
+}
+
+// ─────────────────────────────────────────────
+// INVENTORY TRANSACTION — Lagertransaktion
+// TENANT-SCOPED: organization_id required
+// Append-only ledger. Never update or delete rows.
+// Corrections via new adjustment rows (mirror).
+// ─────────────────────────────────────────────
+model InventoryTransaction {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String          @db.Uuid
+  itemId         String          @db.Uuid
+
+  type           InventoryTxType
+  quantity       Decimal         @db.Decimal(12, 4)  // + = inleverans, - = utleverans
+  unitCost       BigInt          @default(0)          // öre per enhet
+  totalCost      BigInt          @default(0)          // abs(quantity) × unitCost
+
+  // Source document (optional)
+  sourceType     String?   // "invoice" | "supplier_invoice" | "manual" | "count"
+  sourceId       String?   @db.Uuid
+
+  memo           String?
+  transactedAt   DateTime  @db.Date
+  createdAt      DateTime  @default(now())
+  createdByUserId String?  @db.Uuid
+
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  item         InventoryItem    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, itemId, transactedAt])
+  @@index([organizationId, type])
+  @@index([organizationId, sourceType, sourceId])
+  @@map("inventory_transactions")
 }

@@ -33,6 +33,7 @@ import {
   REPORT_PERMISSIONS,
   ACCOUNTING_PERMISSIONS,
   SUPPLIER_INVOICE_PERMISSIONS,
+  INVENTORY_PERMISSIONS,
   AGENCY_PERMISSIONS,
   type Permission,
 } from "./permissions"
@@ -65,6 +66,7 @@ const SUPER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(REPORT_PERMISSIONS),
   ...Object.values(ACCOUNTING_PERMISSIONS),
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
+  ...Object.values(INVENTORY_PERMISSIONS),
   ...Object.values(AGENCY_PERMISSIONS),
 ]
 
@@ -120,6 +122,8 @@ const AGENCY_OWNER_PERMISSIONS: Permission[] = [
   ACCOUNTING_PERMISSIONS.EXPORT,
   // Supplier invoices — full access
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
+  // Inventory — full access
+  ...Object.values(INVENTORY_PERMISSIONS),
   // Agency
   AGENCY_PERMISSIONS.READ_CLIENTS,
   AGENCY_PERMISSIONS.MANAGE_CLIENTS,
@@ -177,6 +181,8 @@ const AGENCY_ADMIN_PERMISSIONS: Permission[] = [
   ACCOUNTING_PERMISSIONS.EXPORT,
   // Supplier invoices — full access
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
+  // Inventory — full access
+  ...Object.values(INVENTORY_PERMISSIONS),
   // Agency
   AGENCY_PERMISSIONS.READ_CLIENTS,
   AGENCY_PERMISSIONS.MANAGE_CLIENTS,
@@ -288,6 +294,8 @@ const CUSTOMER_OWNER_PERMISSIONS: Permission[] = [
   ACCOUNTING_PERMISSIONS.EXPORT,
   // Supplier invoices — full access
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
+  // Inventory — full access
+  ...Object.values(INVENTORY_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -333,6 +341,8 @@ const CUSTOMER_ADMIN_PERMISSIONS: Permission[] = [
   ACCOUNTING_PERMISSIONS.EXPORT,
   // Supplier invoices — full access (admins handle AP)
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
+  // Inventory — full access
+  ...Object.values(INVENTORY_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -366,6 +376,9 @@ const CUSTOMER_USER_PERMISSIONS: Permission[] = [
   SUPPLIER_INVOICE_PERMISSIONS.READ,
   SUPPLIER_INVOICE_PERMISSIONS.UPLOAD,
   SUPPLIER_INVOICE_PERMISSIONS.REVIEW,
+  // Inventory — read + write transactions
+  INVENTORY_PERMISSIONS.READ,
+  INVENTORY_PERMISSIONS.WRITE,
 ]
 
 // ─────────────────────────────────────────────
@@ -380,6 +393,7 @@ const CUSTOMER_VIEWER_PERMISSIONS: Permission[] = [
   REPORT_PERMISSIONS.READ,
   ACCOUNTING_PERMISSIONS.READ,
   SUPPLIER_INVOICE_PERMISSIONS.READ,
+  INVENTORY_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────

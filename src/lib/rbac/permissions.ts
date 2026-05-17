@@ -127,6 +127,16 @@ export const SUPPLIER_INVOICE_PERMISSIONS = {
 } as const
 
 // ─────────────────────────────────────────────
+// INVENTORY PERMISSIONS
+// ─────────────────────────────────────────────
+export const INVENTORY_PERMISSIONS = {
+  READ:   "inventory:read",
+  WRITE:  "inventory:write",   // add transactions, create items
+  COUNT:  "inventory:count",   // run stock counts (inventering)
+  MANAGE: "inventory:manage",  // create/edit/deactivate items
+} as const
+
+// ─────────────────────────────────────────────
 // AGENCY PERMISSIONS (only meaningful in agency orgs)
 // ─────────────────────────────────────────────
 export const AGENCY_PERMISSIONS = {
@@ -151,6 +161,7 @@ export type Permission =
   | (typeof REPORT_PERMISSIONS)[keyof typeof REPORT_PERMISSIONS]
   | (typeof ACCOUNTING_PERMISSIONS)[keyof typeof ACCOUNTING_PERMISSIONS]
   | (typeof SUPPLIER_INVOICE_PERMISSIONS)[keyof typeof SUPPLIER_INVOICE_PERMISSIONS]
+  | (typeof INVENTORY_PERMISSIONS)[keyof typeof INVENTORY_PERMISSIONS]
   | (typeof AGENCY_PERMISSIONS)[keyof typeof AGENCY_PERMISSIONS]
 
 export const ALL_PERMISSIONS: Permission[] = [
@@ -165,5 +176,6 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(REPORT_PERMISSIONS),
   ...Object.values(ACCOUNTING_PERMISSIONS),
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
+  ...Object.values(INVENTORY_PERMISSIONS),
   ...Object.values(AGENCY_PERMISSIONS),
 ]

@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { label: "Produkter",           href: "/products",           icon: "◉" },
   { label: "Avtal",               href: "/contracts",          icon: "↺" },
   { label: "Betalningar",         href: "/payments",           icon: "◎" },
+  { label: "Lager",               href: "/inventory",          icon: "▣" },
   { label: "Rapporter",           href: "/reports",            icon: "◱" },
   { label: "Moms",               href: "/tax/vat",            icon: "◰" },
 ]
