@@ -122,6 +122,60 @@ enum AuditAction {
   account_switch
 }
 
+// ─── ACCOUNTING ENUMS ─────────────────────────────────────────────────────────
+
+// Which side of the T-account increases the balance
+enum NormalSide {
+  debit
+  credit
+}
+
+enum FiscalYearStatus {
+  open    // new journals allowed
+  closed  // period closed, no new journals (but can still void with new journal in open year)
+  locked  // archived — no mutations at all
+}
+
+enum JournalStatus {
+  draft   // editable, not in reports
+  posted  // immutable, visible in reports
+  voided  // reversed by a later journal, still visible in history
+}
+
+// Where the account appears in financial statements
+enum ReportClass {
+  balance_sheet       // 1xxx + 2xxx
+  income_statement    // 3xxx–8xxx
+}
+
+// Accounting type — drives sign convention in reports
+enum AccountType {
+  asset       // 1xxx  — DR normal
+  liability   // 2xxx  — CR normal
+  equity      // 2xxx  — CR normal
+  income      // 3xxx  — CR normal
+  expense     // 4xxx–8xxx — DR normal
+}
+
+// ─── SUPPLIER INVOICE ENUMS ───────────────────────────────────────────────────
+
+enum SupplierInvoiceStatus {
+  draft            // uploaded, extraction not started
+  extracting       // AI is processing right now
+  needs_review     // extraction done, awaiting user confirmation
+  approved         // user confirmed fields, ready to book
+  booked           // journal created and posted
+  paid             // payment journal created
+  rejected         // user rejected (duplicate or invalid)
+}
+
+enum ExtractionStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
 // ─────────────────────────────────────────────
 // ORGANIZATIONS — tenants
 // Every paying account is one row here.
@@ -217,6 +271,17 @@ model Organization {
   // Invoices created on behalf of this org (by an agency)
   invoicesCreatedOnBehalf Invoice[]             @relation("AgencyCreatedInvoices")
 
+  // Accounting
+  accounts              Account[]
+  fiscalYears           FiscalYear[]
+  journalSeries         JournalSeries[]
+  journals              Journal[]
+  journalEntries        JournalEntry[]
+
+  // Supplier invoices
+  suppliers             Supplier[]
+  supplierInvoices      SupplierInvoice[]
+
   @@index([slug])
   @@index([type])
   @@index([stripeCustomerId])
@@ -294,6 +359,10 @@ model User {
   invoicesCreated  Invoice[]   @relation("InvoiceCreatedBy")
   paymentsCreated  Payment[]   @relation("PaymentCreatedBy")
   schedulesCreated RecurringSchedule[] @relation("ScheduleCreatedBy")
+
+  // Accounting
+  journalsPosted  Journal[] @relation("JournalPostedBy")
+  journalsCreated Journal[] @relation("JournalCreatedBy")
 
   @@index([email])
   @@index([isPlatformAdmin])
@@ -870,4 +939,352 @@ model AuditLog {
   @@index([userId])
   @@index([createdAt(sort: Desc)])
   @@map("audit_logs")
+}
+
+// ─────────────────────────────────────────────
+// ACCOUNTS — Bokföringskonton (chart of accounts)
+// TENANT-SCOPED: organization_id required
+//
+// Each organization gets its own copy of the BAS standard accounts
+// (isSystem = true, seeded at onboarding). Organizations may also
+// add custom accounts (isSystem = false).
+//
+// Immutability rules:
+//   - System accounts (isSystem=true): name/description editable, number/type NOT
+//   - Accounts with journal entries: cannot change number, type, or normalSide
+//   - Soft-disable via isActive=false — history is never deleted
+// ─────────────────────────────────────────────
+model Account {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid
+
+  // BAS account number — "1510", "3001", etc.
+  number String
+  name   String    // Swedish BAS name, e.g. "Kundfordringar"
+
+  // Classification
+  type       AccountType  // asset | liability | equity | income | expense
+  normalSide NormalSide   // debit for assets/expenses, credit for liabilities/equity/income
+  reportClass ReportClass // balance_sheet | income_statement
+
+  // Report presentation — Swedish BAS section name
+  // e.g. "Omsättningstillgångar", "Kortfristiga skulder", "Rörelsens intäkter"
+  reportSection  String?
+  reportSubsection String?
+
+  // VAT (moms) code — used when building journal entries
+  // MP1=25%, MP2=12%, MP3=6%, MF=exempt, null=not VAT-relevant
+  vatCode String?
+
+  // BAS hierarchy
+  parentNumber String?  // account group, e.g. "1500" for 1510
+  level        Int      @default(3)   // 1=class (1000), 2=group (1500), 3=account (1510)
+  sortOrder    Int      @default(0)   // within its level for display ordering
+
+  // Origin — basNumber is set if this account was derived from BAS standard
+  basNumber String?
+  isSystem  Boolean @default(false)  // BAS standard accounts: number/type protected
+
+  // Status
+  isActive         Boolean @default(true)
+  allowManualEntry Boolean @default(true)  // false for system-only accounts (e.g. 2069 Årets resultat)
+
+  description String?  // public-facing explanation shown in UI
+  notes       String?  // internal accountant notes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  journalEntries JournalEntry[]
+
+  @@unique([organizationId, number])
+  @@index([organizationId])
+  @@index([organizationId, type])
+  @@index([organizationId, reportClass])
+  @@index([organizationId, isActive])
+  @@index([organizationId, isSystem])
+  @@map("accounts")
+}
+
+// ─────────────────────────────────────────────
+// FISCAL YEAR — Räkenskapsår
+// TENANT-SCOPED: organization_id required
+// Journals must fall within an open fiscal year.
+// ─────────────────────────────────────────────
+model FiscalYear {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String           @db.Uuid
+  name           String           // "2025" or "2024/2025" for broken fiscal year
+  startDate      DateTime         @db.Date
+  endDate        DateTime         @db.Date
+  status         FiscalYearStatus @default(open)
+  isDefault      Boolean          @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  journals     Journal[]
+
+  @@unique([organizationId, name])
+  @@index([organizationId, status])
+  @@index([organizationId, startDate])
+  @@map("fiscal_years")
+}
+
+// ─────────────────────────────────────────────
+// JOURNAL SERIES — Verifikationsserie
+// TENANT-SCOPED: organization_id required
+// Each prefix (A, K, L...) has its own sequence counter.
+// The counter is incremented atomically inside a transaction.
+// ─────────────────────────────────────────────
+model JournalSeries {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid
+  prefix         String         // "A" general, "K" cash, "L" payroll
+  name           String         // "Allmänna verifikationer"
+  currentSeq     Int    @default(0)
+  isDefault      Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  journals     Journal[]
+
+  @@unique([organizationId, prefix])
+  @@index([organizationId])
+  @@map("journal_series")
+}
+
+// ─────────────────────────────────────────────
+// JOURNAL — Verifikation (header)
+// TENANT-SCOPED: organization_id required
+//
+// Immutability rules (enforced at app layer + DB trigger):
+//   draft   → editable, not in reports
+//   posted  → immutable (only voidedBy can be added via void flow)
+//   voided  → immutable, reversed by a later journal
+//
+// To correct a posted journal: call voidJournal() which creates
+// a reversing journal (mirrored debit/credit) and sets status=voided.
+// ─────────────────────────────────────────────
+model Journal {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String        @db.Uuid
+  fiscalYearId   String        @db.Uuid
+  seriesId       String        @db.Uuid
+
+  number    Int    // sequence within series (from JournalSeries.currentSeq)
+  reference String // "A-0001" — denormalized for display and search
+
+  date        DateTime      @db.Date // bokföringsdatum
+  description String        // verifikationstext
+  status      JournalStatus @default(draft)
+
+  // Source document link (polymorphic — set by auto-booking engine)
+  sourceType String? // "invoice" | "payment" | "credit_note" | "manual"
+  sourceId   String? @db.Uuid
+
+  // Void / reversal links (self-relation)
+  // voidOf: this journal reverses the journal with that id
+  // reversals: journals that reverse this journal (0 or 1 in practice)
+  voidOf String? @db.Uuid
+
+  postedAt       DateTime?
+  postedByUserId String?   @db.Uuid
+
+  createdByUserId String?   @db.Uuid
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  organization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  fiscalYear      FiscalYear    @relation(fields: [fiscalYearId], references: [id], onDelete: Restrict)
+  series          JournalSeries @relation(fields: [seriesId], references: [id], onDelete: Restrict)
+  entries         JournalEntry[]
+  postedBy        User?         @relation("JournalPostedBy",   fields: [postedByUserId],  references: [id])
+  createdBy       User?         @relation("JournalCreatedBy",  fields: [createdByUserId], references: [id])
+
+  // Self-relation: reversal chain
+  reversedJournal Journal?  @relation("JournalReversal", fields: [voidOf], references: [id])
+  reversals       Journal[] @relation("JournalReversal")
+
+  @@unique([organizationId, seriesId, number])
+  @@index([organizationId, status])
+  @@index([organizationId, date])
+  @@index([organizationId, sourceType, sourceId])
+  @@index([fiscalYearId])
+  @@map("journals")
+}
+
+// ─────────────────────────────────────────────
+// JOURNAL ENTRY — Verifikationsrad
+// TENANT-SCOPED: organization_id required
+//
+// Each row is either debit OR credit — never both.
+// Enforced at app layer (validateEntries) and via DB check constraint.
+//
+// Immutable once the parent journal is posted.
+// ─────────────────────────────────────────────
+model JournalEntry {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid
+  journalId      String @db.Uuid
+  accountId      String @db.Uuid
+
+  debit  BigInt @default(0) // öre — zero when this is a credit entry
+  credit BigInt @default(0) // öre — zero when this is a debit entry
+
+  description String? // line description (optional, overrides journal description in ledger)
+  vatCode     String? // "MP1" | "MP2" | "MP3" | "MF" — for VAT reporting
+  sortOrder   Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  journal      Journal      @relation(fields: [journalId],      references: [id], onDelete: Restrict)
+  account      Account      @relation(fields: [accountId],      references: [id], onDelete: Restrict)
+
+  @@index([organizationId, journalId])
+  @@index([organizationId, accountId])
+  @@index([accountId, createdAt(sort: Desc)])
+  @@map("journal_entries")
+}
+
+// ─────────────────────────────────────────────
+// SUPPLIER — leverantörsregister
+// TENANT-SCOPED: organizationId required
+// ─────────────────────────────────────────────
+model Supplier {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+
+  name           String
+  orgNumber      String?   // 556000-0000 (Swedish org number)
+  vatNumber      String?   // SE556000000001
+  email          String?
+  phone          String?
+  website        String?
+
+  // Payment details
+  bankgiro       String?
+  plusgiro       String?
+  iban           String?
+  bic            String?
+
+  address        Json?     // { street, city, postalCode, country }
+
+  paymentTermsDays            Int     @default(30)
+  defaultExpenseAccountNumber String? // e.g. "6420" — pre-fills kontering
+
+  isActive       Boolean  @default(true)
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices       SupplierInvoice[]
+
+  @@unique([organizationId, orgNumber])
+  @@index([organizationId])
+  @@index([organizationId, name])
+  @@map("suppliers")
+}
+
+// ─────────────────────────────────────────────
+// SUPPLIER INVOICE — inkommande leverantörsfaktura
+// TENANT-SCOPED: organizationId required
+//
+// Lifecycle: draft → extracting → needs_review → approved → booked → paid
+// Idempotency keys prevent double extraction/booking/payment.
+// Duplicate detection via duplicateHash (supplier+invoiceNumber+amount).
+// ─────────────────────────────────────────────
+model SupplierInvoice {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+  supplierId     String? @db.Uuid  // null until matched to Supplier
+
+  status         SupplierInvoiceStatus @default(draft)
+
+  // ── Original file ─────────────────────────────────────────────────────────
+  fileKey        String   // Vercel Blob or R2 object key
+  fileName       String
+  fileMimeType   String   // "application/pdf" | "image/jpeg" | "image/png"
+  fileUploadedAt DateTime @default(now())
+
+  // ── AI extraction metadata ────────────────────────────────────────────────
+  extractionStatus   ExtractionStatus @default(pending)
+  aiModel            String?          // "claude-sonnet-4-6"
+  aiVersion          String?          // Anthropic API model version string
+  aiPromptVersion    String?          // "v1" — bump when prompt changes
+  aiProcessedAt      DateTime?
+  ocrRawText         String?          @db.Text
+  aiExtractedData    Json?            // raw structured output from Claude
+  aiConfidence       Json?            // { field: 0.0–1.0 } confidence per field
+
+  // ── Idempotency keys (unique — DB enforces single execution) ──────────────
+  extractionIdempotencyKey  String? @unique  // set before calling Claude; cleared on failure
+  bookingIdempotencyKey     String? @unique  // set when booking starts
+  paymentIdempotencyKey     String? @unique  // set when payment journal starts
+
+  // ── Verified fields (user-confirmed after AI review) ─────────────────────
+  supplierName      String?
+  supplierOrgNumber String?
+  supplierVatNumber String?
+  invoiceNumber     String?
+  ocrNumber         String?   // OCR/referensnummer för bankgiro
+  invoiceDate       DateTime? @db.Date
+  dueDate           DateTime? @db.Date
+  currency          String    @default("SEK")
+  amountExclVat     BigInt?   // öre
+  vatAmount         BigInt?   // öre
+  amountInclVat     BigInt?   // öre
+  vatRate           Decimal?  @db.Decimal(5, 4)  // 0.2500
+  bankgiro          String?
+  plusgiro          String?
+  iban              String?
+
+  // ── Duplicate detection ───────────────────────────────────────────────────
+  // Hash of (organizationId + supplierId/supplierOrgNumber + invoiceNumber + amountInclVat)
+  // Recomputed after user confirms fields.
+  duplicateHash    String?    // SHA-256 hex
+  duplicateOf      String?    @db.Uuid  // FK to original if this IS a duplicate
+  duplicateCheckAt DateTime?
+
+  // ── Booking ───────────────────────────────────────────────────────────────
+  journalId        String?   @db.Uuid  // FK to Journal once booked
+  bookedAt         DateTime?
+  bookedByUserId   String?   @db.Uuid
+
+  // ── Payment ───────────────────────────────────────────────────────────────
+  paidAt              DateTime?
+  paidAmount          BigInt?
+  paymentMethod       PaymentMethod?
+  paymentReference    String?
+  paymentJournalId    String?  @db.Uuid  // FK to the payment Journal
+  paidByUserId        String?  @db.Uuid
+
+  // ── Approval (prepared for attest flow — Fas 2) ───────────────────────────
+  approvedAt        DateTime?
+  approvedByUserId  String?  @db.Uuid
+  rejectedAt        DateTime?
+  rejectedByUserId  String?  @db.Uuid
+  rejectionReason   String?
+
+  // ── Audit ─────────────────────────────────────────────────────────────────
+  createdByUserId  String?  @db.Uuid
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  supplier         Supplier?    @relation(fields: [supplierId],     references: [id])
+
+  @@index([organizationId, status])
+  @@index([organizationId, supplierId])
+  @@index([organizationId, dueDate])
+  @@index([organizationId, invoiceDate])
+  @@index([duplicateHash])
+  @@index([organizationId, supplierId, invoiceNumber])
+  @@map("supplier_invoices")
 }

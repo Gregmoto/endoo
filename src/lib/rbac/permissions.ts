@@ -103,6 +103,30 @@ export const CONTRACT_PERMISSIONS = {
 } as const
 
 // ─────────────────────────────────────────────
+// ACCOUNTING PERMISSIONS
+// ─────────────────────────────────────────────
+export const ACCOUNTING_PERMISSIONS = {
+  READ:            "accounting:read",            // view ledger, reports, chart of accounts
+  POST:            "accounting:post",            // post and void journal entries
+  MANAGE_ACCOUNTS: "accounting:manage_accounts", // add/edit custom accounts, deactivate
+  MANAGE_PERIODS:  "accounting:manage_periods",  // close fiscal years, lock VAT periods
+  EXPORT:          "accounting:export",          // SIE4 export
+} as const
+
+// ─────────────────────────────────────────────
+// SUPPLIER INVOICE PERMISSIONS
+// ─────────────────────────────────────────────
+export const SUPPLIER_INVOICE_PERMISSIONS = {
+  READ:             "supplier_invoices:read",
+  UPLOAD:           "supplier_invoices:upload",    // upload + trigger extraction
+  REVIEW:           "supplier_invoices:review",    // edit extracted fields
+  BOOK:             "supplier_invoices:book",      // post journal
+  PAY:              "supplier_invoices:pay",       // mark as paid
+  MANAGE_SUPPLIERS: "supplier_invoices:manage_suppliers", // edit supplier register
+  DELETE:           "supplier_invoices:delete",    // delete draft invoices
+} as const
+
+// ─────────────────────────────────────────────
 // AGENCY PERMISSIONS (only meaningful in agency orgs)
 // ─────────────────────────────────────────────
 export const AGENCY_PERMISSIONS = {
@@ -125,6 +149,8 @@ export type Permission =
   | (typeof USER_PERMISSIONS)[keyof typeof USER_PERMISSIONS]
   | (typeof SETTINGS_PERMISSIONS)[keyof typeof SETTINGS_PERMISSIONS]
   | (typeof REPORT_PERMISSIONS)[keyof typeof REPORT_PERMISSIONS]
+  | (typeof ACCOUNTING_PERMISSIONS)[keyof typeof ACCOUNTING_PERMISSIONS]
+  | (typeof SUPPLIER_INVOICE_PERMISSIONS)[keyof typeof SUPPLIER_INVOICE_PERMISSIONS]
   | (typeof AGENCY_PERMISSIONS)[keyof typeof AGENCY_PERMISSIONS]
 
 export const ALL_PERMISSIONS: Permission[] = [
@@ -137,5 +163,7 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(USER_PERMISSIONS),
   ...Object.values(SETTINGS_PERMISSIONS),
   ...Object.values(REPORT_PERMISSIONS),
+  ...Object.values(ACCOUNTING_PERMISSIONS),
+  ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
   ...Object.values(AGENCY_PERMISSIONS),
 ]

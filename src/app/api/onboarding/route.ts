@@ -10,6 +10,8 @@
 
 import { auth, unstable_update } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { seedBasAccounts } from "@/lib/accounting/accounts"
+import { seedLedgerDefaults } from "@/lib/accounting/journals"
 import { z } from "zod"
 
 const Schema = z.object({
@@ -86,6 +88,11 @@ export async function POST(req: Request) {
       },
       select: { id: true, slug: true },
     })
+
+    // Seed BAS 2024 chart of accounts + default fiscal year and journal series
+    // (fire-and-forget — non-blocking)
+    seedBasAccounts(org.id).catch(() => {})
+    seedLedgerDefaults(org.id).catch(() => {})
 
     // Patch the JWT so the user immediately has org context
     await unstable_update({

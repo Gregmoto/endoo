@@ -6,12 +6,13 @@ import { useEffect, useRef, useState } from "react"
 import { cn, stringToColor, initials } from "@/lib/utils"
 
 const NAV_ITEMS = [
-  { label: "Översikt",      href: "",               icon: "▦" },
-  { label: "Fakturor",      href: "/invoices",       icon: "◧" },
-  { label: "Kontakter",     href: "/contacts",       icon: "◈" },
-  { label: "Produkter",     href: "/products",       icon: "◉" },
-  { label: "Avtal",         href: "/contracts",      icon: "↺" },
-  { label: "Betalningar",   href: "/payments",       icon: "◎" },
+  { label: "Översikt",            href: "",                    icon: "▦" },
+  { label: "Fakturor",            href: "/invoices",           icon: "◧" },
+  { label: "Lev.fakturor",        href: "/supplier-invoices",  icon: "◨" },
+  { label: "Kontakter",           href: "/contacts",           icon: "◈" },
+  { label: "Produkter",           href: "/products",           icon: "◉" },
+  { label: "Avtal",               href: "/contracts",          icon: "↺" },
+  { label: "Betalningar",         href: "/payments",           icon: "◎" },
 ]
 
 const BOTTOM_ITEMS = [
