@@ -151,6 +151,61 @@ export const EVENT_REGISTRY: Record<string, EventDefinition<any>> = {
 
   // ── Accounting ────────────────────────────────────────────────────────────────
 
+  journal_voided: {
+    category:      "accounting",
+    defaultInApp:  true,
+    defaultEmail:  true,
+    payloadVersion: 1,
+    emailTemplate: "journal_voided",
+    activityIcon:  "journal_voided",
+    fingerprint: (p: BaseEventPayload & { journalId: string }) => ({ kind: "exact", key: `voided:${p.journalId}` }),
+    resolveRecipients: async (orgId) => resolveOrgAdmins(orgId),
+  },
+
+  period_locked: {
+    category:      "accounting",
+    defaultInApp:  true,
+    defaultEmail:  false,
+    payloadVersion: 1,
+    emailTemplate: "period_locked",
+    activityIcon:  "period_locked",
+    fingerprint: (p: BaseEventPayload & { periodId: string }) => ({ kind: "exact", key: `locked:${p.periodId}` }),
+    resolveRecipients: async (orgId) => resolveOrgAdmins(orgId),
+  },
+
+  period_unlocked: {
+    category:      "accounting",
+    defaultInApp:  true,
+    defaultEmail:  true,
+    payloadVersion: 1,
+    emailTemplate: "period_unlocked",
+    activityIcon:  "period_unlocked",
+    fingerprint: (p: BaseEventPayload & { periodId: string }) => ({ kind: "exact", key: `unlocked:${p.periodId}` }),
+    resolveRecipients: async (orgId) => resolveOrgAdmins(orgId),
+  },
+
+  fiscal_year_locked: {
+    category:      "accounting",
+    defaultInApp:  true,
+    defaultEmail:  true,
+    payloadVersion: 1,
+    emailTemplate: "generic",
+    activityIcon:  "fiscal_year_locked",
+    fingerprint: (p: BaseEventPayload & { fiscalYearId: string }) => ({ kind: "exact", key: `fy_locked:${p.fiscalYearId}` }),
+    resolveRecipients: async (orgId) => resolveOrgAdmins(orgId),
+  },
+
+  fiscal_year_reopened: {
+    category:      "accounting",
+    defaultInApp:  true,
+    defaultEmail:  true,
+    payloadVersion: 1,
+    emailTemplate: "generic",
+    activityIcon:  "fiscal_year_reopened",
+    fingerprint: (p: BaseEventPayload & { fiscalYearId: string }) => ({ kind: "exact", key: `fy_reopened:${p.fiscalYearId}` }),
+    resolveRecipients: async (orgId) => resolveOrgAdmins(orgId),
+  },
+
   accounting_posting_failed: {
     category:      "accounting",
     defaultInApp:  true,

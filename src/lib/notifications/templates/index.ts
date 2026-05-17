@@ -204,6 +204,80 @@ function renderGeneric(payload: Record<string, unknown>): RenderedEmail {
   return { subject, html }
 }
 
+// ─── journal_voided ───────────────────────────────────────────────────────────
+
+function renderJournalVoided(payload: Record<string, unknown>): RenderedEmail {
+  const ref    = (payload.originalReference as string) ?? "–"
+  const revRef = (payload.reversalReference as string) ?? "–"
+  const reason = (payload.reason as string) ?? "–"
+  const href   = `${APP_BASE}${payload.href ?? "/accounting/journals"}`
+
+  const subject = `Verifikation ${ref} makulerad`
+  const html = emailShell(
+    subject,
+    `Verifikation ${ref} har makulerats och en motpost (${revRef}) skapades.`,
+    h1("Verifikation makulerad") +
+    alertBox(`Verifikation <strong>${ref}</strong> är makulerad.`, "#fef3c7", "#f59e0b") +
+    factsTable(
+      factRow("Original", ref) +
+      factRow("Motpost", revRef) +
+      factRow("Orsak", reason),
+    ) +
+    p("En motpost har bokförts automatiskt i aktuell öppen period.") +
+    ctaButton("Visa verifikation", href),
+  )
+  return { subject, html }
+}
+
+// ─── period_locked ────────────────────────────────────────────────────────────
+
+function renderPeriodLocked(payload: Record<string, unknown>): RenderedEmail {
+  const year   = Number(payload.year ?? 0)
+  const month  = Number(payload.month ?? 0)
+  const count  = Number(payload.journalCount ?? 0)
+  const label  = `${year}-${String(month).padStart(2, "0")}`
+  const href   = `${APP_BASE}${payload.href ?? "/accounting/periods"}`
+
+  const subject = `Period ${label} låst`
+  const html = emailShell(
+    subject,
+    `Bokföringsperiod ${label} är låst med ${count} verifikationer.`,
+    h1("Period låst") +
+    factsTable(
+      factRow("Period", label) +
+      factRow("Antal verifikationer", String(count)),
+    ) +
+    p("Perioden är nu låst. Inga nya verifikationer kan bokföras i denna period.") +
+    ctaButton("Visa period", href),
+  )
+  return { subject, html }
+}
+
+// ─── period_unlocked ──────────────────────────────────────────────────────────
+
+function renderPeriodUnlocked(payload: Record<string, unknown>): RenderedEmail {
+  const year   = Number(payload.year ?? 0)
+  const month  = Number(payload.month ?? 0)
+  const reason = (payload.reason as string) ?? "–"
+  const label  = `${year}-${String(month).padStart(2, "0")}`
+  const href   = `${APP_BASE}${payload.href ?? "/accounting/periods"}`
+
+  const subject = `⚠ Period ${label} upplåst`
+  const html = emailShell(
+    subject,
+    `Bokföringsperiod ${label} har upplåsts.`,
+    h1("Period upplåst") +
+    alertBox(`Period <strong>${label}</strong> har upplåsts. Bokföring i perioden är nu möjlig igen.`) +
+    factsTable(
+      factRow("Period", label) +
+      factRow("Orsak till upplåsning", reason),
+    ) +
+    p("Granska att bokföringen i perioden är korrekt och lås den igen snarast.") +
+    ctaButton("Visa period", href),
+  )
+  return { subject, html }
+}
+
 // ─── Router ───────────────────────────────────────────────────────────────────
 
 export function renderTemplate(
@@ -219,6 +293,9 @@ export function renderTemplate(
     case "subscription_payment_failed": return renderSubscriptionPaymentFailed(payload)
     case "member_joined":             return renderMemberJoined(payload)
     case "generic":                   return renderGeneric(payload)
+    case "journal_voided":            return renderJournalVoided(payload)
+    case "period_locked":             return renderPeriodLocked(payload)
+    case "period_unlocked":           return renderPeriodUnlocked(payload)
     // Digest rendered separately (batch)
     case "approval_reminder":         return renderGeneric(payload)
     case "contract_expiring":         return renderGeneric(payload)

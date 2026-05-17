@@ -143,6 +143,13 @@ enum AuditAction {
   approval_voted
   approval_auto_approved
   approval_withdrawn
+  // Accounting period / journal events
+  journal_void
+  period_lock
+  period_unlock
+  period_close
+  fiscal_year_lock
+  fiscal_year_unlock
 }
 
 // ─── ACCOUNTING ENUMS ─────────────────────────────────────────────────────────
@@ -157,6 +164,20 @@ enum FiscalYearStatus {
   open    // new journals allowed
   closed  // period closed, no new journals (but can still void with new journal in open year)
   locked  // archived — no mutations at all
+}
+
+enum AccountingPeriodStatus {
+  open    // new journals allowed
+  locked  // soft lock — admins can unlock with mandatory reason
+  closed  // hard close — only platform admins can reopen
+}
+
+enum AccountingPeriodEventType {
+  opened
+  locked
+  unlocked
+  closed
+  reopened
 }
 
 enum JournalStatus {
@@ -281,6 +302,12 @@ enum NotificationEventType {
   accounting_journal_posted
   accounting_posting_failed
   accounting_fiscal_year_closed
+  // Accounting period / journal
+  journal_voided
+  period_locked
+  period_unlocked
+  fiscal_year_locked
+  fiscal_year_reopened
   // VAT
   vat_period_approaching
   vat_period_overdue
@@ -316,6 +343,9 @@ enum NotificationTemplate {
   contract_expiring
   subscription_payment_failed
   member_joined
+  journal_voided
+  period_locked
+  period_unlocked
   digest
   generic
 }
@@ -429,6 +459,8 @@ model Organization {
   journalSeries         JournalSeries[]
   journals              Journal[]
   journalEntries        JournalEntry[]
+  accountingPeriods     AccountingPeriod[]
+  accountingPeriodEvents AccountingPeriodEvent[]
 
   // Supplier invoices
   suppliers             Supplier[]
@@ -535,8 +567,11 @@ model User {
   schedulesCreated RecurringSchedule[] @relation("ScheduleCreatedBy")
 
   // Accounting
-  journalsPosted  Journal[] @relation("JournalPostedBy")
-  journalsCreated Journal[] @relation("JournalCreatedBy")
+  journalsPosted      Journal[]              @relation("JournalPostedBy")
+  journalsCreated     Journal[]              @relation("JournalCreatedBy")
+  periodsLocked       AccountingPeriod[]     @relation("PeriodLockedBy")
+  periodsClosed       AccountingPeriod[]     @relation("PeriodClosedBy")
+  periodEvents        AccountingPeriodEvent[] @relation("PeriodEventUser")
 
   @@index([email])
   @@index([isPlatformAdmin])
@@ -1208,8 +1243,9 @@ model FiscalYear {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  journals     Journal[]
+  organization      Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  journals          Journal[]
+  accountingPeriods AccountingPeriod[]
 
   @@unique([organizationId, name])
   @@index([organizationId, status])
@@ -1263,9 +1299,12 @@ model Journal {
   number    Int    // sequence within series (from JournalSeries.currentSeq)
   reference String // "A-0001" — denormalized for display and search
 
+  periodId    String?       @db.Uuid // FK to AccountingPeriod (null = pre-period feature)
+
   date        DateTime      @db.Date // bokföringsdatum
   description String        // verifikationstext
   status      JournalStatus @default(draft)
+  voidReason  String?       // populated when status = voided
 
   // Source document link (polymorphic — set by auto-booking engine)
   sourceType String? // "invoice" | "payment" | "credit_note" | "manual"
@@ -1283,12 +1322,13 @@ model Journal {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  organization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
-  fiscalYear      FiscalYear    @relation(fields: [fiscalYearId], references: [id], onDelete: Restrict)
-  series          JournalSeries @relation(fields: [seriesId], references: [id], onDelete: Restrict)
+  organization    Organization      @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  fiscalYear      FiscalYear        @relation(fields: [fiscalYearId], references: [id], onDelete: Restrict)
+  series          JournalSeries     @relation(fields: [seriesId], references: [id], onDelete: Restrict)
+  period          AccountingPeriod? @relation(fields: [periodId], references: [id])
   entries         JournalEntry[]
-  postedBy        User?         @relation("JournalPostedBy",   fields: [postedByUserId],  references: [id])
-  createdBy       User?         @relation("JournalCreatedBy",  fields: [createdByUserId], references: [id])
+  postedBy        User?             @relation("JournalPostedBy",   fields: [postedByUserId],  references: [id])
+  createdBy       User?             @relation("JournalCreatedBy",  fields: [createdByUserId], references: [id])
 
   // Self-relation: reversal chain
   reversedJournal Journal?  @relation("JournalReversal", fields: [voidOf], references: [id])
@@ -1334,6 +1374,93 @@ model JournalEntry {
   @@index([organizationId, accountId])
   @@index([accountId, createdAt(sort: Desc)])
   @@map("journal_entries")
+}
+
+// ─────────────────────────────────────────────
+// ACCOUNTING PERIOD — Bokföringsperiod (månadsvis)
+// TENANT-SCOPED: organizationId required
+//
+// Created lazily on first journal post to that month.
+// Journals within a locked/closed period are rejected by assertPeriodOpen().
+// Locking captures an immutable snapshot (debit/credit totals, journal count).
+// ─────────────────────────────────────────────
+model AccountingPeriod {
+  id             String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String                 @db.Uuid
+  fiscalYearId   String                 @db.Uuid
+  year           Int                    // 2026
+  month          Int                    // 1–12
+  startDate      DateTime               @db.Date
+  endDate        DateTime               @db.Date
+  status         AccountingPeriodStatus @default(open)
+
+  lockedAt       DateTime?
+  lockedByUserId String?   @db.Uuid
+  closedAt       DateTime?
+  closedByUserId String?   @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  fiscalYear   FiscalYear            @relation(fields: [fiscalYearId],   references: [id], onDelete: Restrict)
+  lockedBy     User?                 @relation("PeriodLockedBy",  fields: [lockedByUserId],  references: [id])
+  closedBy     User?                 @relation("PeriodClosedBy",  fields: [closedByUserId],  references: [id])
+  journals     Journal[]
+  snapshot     AccountingPeriodSnapshot?
+  events       AccountingPeriodEvent[]
+
+  @@unique([organizationId, year, month])
+  @@index([organizationId, status])
+  @@index([organizationId, fiscalYearId])
+  @@map("accounting_periods")
+}
+
+// ─────────────────────────────────────────────
+// ACCOUNTING PERIOD SNAPSHOT — Periodavstämning
+// Created atomically when a period is locked.
+// Immutable after creation — never updated.
+// ─────────────────────────────────────────────
+model AccountingPeriodSnapshot {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid
+  periodId       String @unique @db.Uuid
+
+  totalDebit   BigInt  // sum of all debit entries in posted journals
+  totalCredit  BigInt  // sum of all credit entries in posted journals
+  journalCount Int     // number of posted journals
+  voidedCount  Int     // number of voided journals
+  snapshotHash String  // SHA-256(periodId:totalDebit:totalCredit:journalCount:voidedCount)
+
+  createdAt DateTime @default(now())
+
+  period AccountingPeriod @relation(fields: [periodId], references: [id], onDelete: Restrict)
+
+  @@map("accounting_period_snapshots")
+}
+
+// ─────────────────────────────────────────────
+// ACCOUNTING PERIOD EVENT — Periodhändelselogg
+// Append-only audit trail for every period state change.
+// ─────────────────────────────────────────────
+model AccountingPeriodEvent {
+  id             String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String                    @db.Uuid
+  periodId       String                    @db.Uuid
+  eventType      AccountingPeriodEventType
+  userId         String?                   @db.Uuid
+  reason         String?                   // mandatory for unlock
+  meta           Json?
+
+  createdAt DateTime @default(now())
+
+  period       AccountingPeriod @relation(fields: [periodId],       references: [id], onDelete: Restrict)
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User?            @relation("PeriodEventUser", fields: [userId], references: [id])
+
+  @@index([organizationId, periodId])
+  @@index([organizationId, eventType])
+  @@map("accounting_period_events")
 }
 
 // ─────────────────────────────────────────────

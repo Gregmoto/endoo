@@ -30,6 +30,7 @@ import {
   PostingUnsupportedTypeError,
 } from "@/lib/accounting/posting/errors"
 import { FiscalYearNotFoundError } from "@/lib/accounting/journals"
+import { assertPeriodOpen, getOrCreatePeriod } from "@/services/accounting/periods"
 import type { Journal, PaymentMethod } from "@prisma/client"
 
 // ─── postInvoiceSent ──────────────────────────────────────────────────────────
@@ -95,7 +96,7 @@ export async function postInvoiceSent(
     const journalDate  = invoice.issueDate
     const dateStr      = journalDate.toISOString().slice(0, 10)
 
-    // Atomic: resolve fiscal year + increment series + create journal + update invoice
+    // Atomic: resolve fiscal year + period + increment series + create journal + update invoice
     const journal = await prisma.$transaction(async (tx) => {
       // Resolve open fiscal year
       const fy = await tx.fiscalYear.findFirst({
@@ -107,6 +108,12 @@ export async function postInvoiceSent(
         },
       })
       if (!fy) throw new FiscalYearNotFoundError()
+
+      // Guard: reject if accounting period is locked or closed
+      await assertPeriodOpen(tx, organizationId, journalDate)
+
+      // Lazy-create accounting period for this month
+      const period = await getOrCreatePeriod(tx, organizationId, fy.id, journalDate)
 
       // Increment series counter (atomic with the journal create)
       const series = await tx.journalSeries.update({
@@ -124,6 +131,7 @@ export async function postInvoiceSent(
           organizationId,
           fiscalYearId:    fy.id,
           seriesId:        series.id,
+          periodId:        period.id,
           number,
           reference,
           date:            new Date(dateStr),
@@ -270,6 +278,12 @@ export async function postInvoicePaid(
       })
       if (!fy) throw new FiscalYearNotFoundError()
 
+      // Guard: reject if accounting period is locked or closed
+      await assertPeriodOpen(tx, organizationId, journalDate)
+
+      // Lazy-create accounting period for this month
+      const period = await getOrCreatePeriod(tx, organizationId, fy.id, journalDate)
+
       const series = await tx.journalSeries.update({
         where: { organizationId_prefix: { organizationId, prefix: "A" } },
         data:  { currentSeq: { increment: 1 } },
@@ -284,6 +298,7 @@ export async function postInvoicePaid(
           organizationId,
           fiscalYearId:    fy.id,
           seriesId:        series.id,
+          periodId:        period.id,
           number,
           reference,
           date:            new Date(dateStr),

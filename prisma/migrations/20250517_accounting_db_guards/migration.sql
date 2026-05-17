@@ -175,3 +175,61 @@ $$;
 CREATE TRIGGER trg_guard_locked_year_entry_insert
   BEFORE INSERT ON journal_entries
   FOR EACH ROW EXECUTE FUNCTION fn_guard_locked_fiscal_year();
+
+
+-- ─── 6. Block new journals in locked/closed accounting periods ────────────────
+-- Belt-and-suspenders: assertPeriodOpen() in app layer is the primary guard.
+-- This trigger prevents bypasses via raw SQL or direct DB access.
+
+CREATE OR REPLACE FUNCTION fn_guard_locked_period_journal()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+DECLARE
+  v_period_status TEXT;
+BEGIN
+  IF NEW.period_id IS NULL THEN
+    RETURN NEW; -- no period assigned (legacy / pre-period feature)
+  END IF;
+
+  SELECT status INTO v_period_status
+    FROM accounting_periods
+   WHERE id = NEW.period_id;
+
+  IF v_period_status = 'locked' THEN
+    RAISE EXCEPTION 'period_locked: accounting period % is locked — cannot insert journal',
+      NEW.period_id
+      USING ERRCODE = 'P0001';
+  END IF;
+
+  IF v_period_status = 'closed' THEN
+    RAISE EXCEPTION 'period_closed: accounting period % is closed — cannot insert journal',
+      NEW.period_id
+      USING ERRCODE = 'P0001';
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_guard_locked_period_journal_insert
+  BEFORE INSERT ON journals
+  FOR EACH ROW EXECUTE FUNCTION fn_guard_locked_period_journal();
+
+
+-- ─── 7. AccountingPeriodSnapshot is immutable once created ───────────────────
+
+CREATE OR REPLACE FUNCTION fn_guard_snapshot_immutable()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+BEGIN
+  RAISE EXCEPTION 'snapshot_immutable: accounting period snapshots cannot be modified (period_id: %)',
+    OLD.period_id
+    USING ERRCODE = 'P0001';
+END;
+$$;
+
+CREATE TRIGGER trg_guard_snapshot_update
+  BEFORE UPDATE ON accounting_period_snapshots
+  FOR EACH ROW EXECUTE FUNCTION fn_guard_snapshot_immutable();
+
+CREATE TRIGGER trg_guard_snapshot_delete
+  BEFORE DELETE ON accounting_period_snapshots
+  FOR EACH ROW EXECUTE FUNCTION fn_guard_snapshot_immutable();
