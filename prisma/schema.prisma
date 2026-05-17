@@ -143,6 +143,13 @@ enum AuditAction {
   approval_voted
   approval_auto_approved
   approval_withdrawn
+  // Integration events
+  integration_connected
+  integration_disconnected
+  integration_sync_started
+  integration_sync_completed
+  integration_webhook_processed
+  integration_import_committed
   // Accounting period / journal events
   journal_void
   period_lock
@@ -164,6 +171,34 @@ enum FiscalYearStatus {
   open    // new journals allowed
   closed  // period closed, no new journals (but can still void with new journal in open year)
   locked  // archived — no mutations at all
+}
+
+enum ConnectionStatus {
+  pending       // auth not completed
+  active        // connected and working
+  error         // auth failure or repeated sync errors
+  disconnected  // user-initiated disconnect
+}
+
+enum WebhookEventStatus {
+  pending    // waiting to be processed
+  processing // claimed by processor
+  processed  // successfully handled
+  failed     // exhausted retries
+  skipped    // ignored (duplicate, unsupported topic)
+}
+
+enum SyncJobStatus {
+  pending
+  running
+  completed
+  failed
+}
+
+enum ImportFileStatus {
+  preview    // parsed, not committed
+  committed  // fully imported
+  failed     // import errored
 }
 
 enum ProjectStatus {
@@ -478,6 +513,14 @@ model Organization {
   supplierInvoiceDimensions SupplierInvoiceDimension[]
   accountDimensionRules  AccountDimensionRule[]
 
+  // Integrations
+  connections       Connection[]
+  webhookEvents     WebhookEvent[]
+  syncJobs          SyncJob[]
+  integrationLogs   IntegrationLog[]
+  externalEntityMaps ExternalEntityMap[]
+  importFiles       ImportFile[]
+
   // Supplier invoices
   suppliers             Supplier[]
   supplierInvoices      SupplierInvoice[]
@@ -592,6 +635,9 @@ model User {
   // Dimensions
   dimensionsOwned     Dimension[]            @relation("DimensionOwner")
   dimensionForces     JournalEntryDimension[] @relation("DimensionForceUser")
+
+  // Integrations
+  importFilesUploaded ImportFile[]           @relation("ImportFileUser")
 
   @@index([email])
   @@index([isPlatformAdmin])
@@ -1586,6 +1632,219 @@ model AccountDimensionRule {
   @@unique([accountId, axisId])
   @@index([organizationId, accountId])
   @@map("account_dimension_rules")
+}
+
+// ═══════════════════════════════════════════════
+// INTEGRATIONS — external system connections
+// ═══════════════════════════════════════════════
+
+// ─────────────────────────────────────────────
+// CONNECTION — tenant connection to an external system
+// TENANT-SCOPED: organizationId required
+//
+// Credentials are encrypted (AES-256-GCM) before storage.
+// Never store plaintext tokens.
+// ─────────────────────────────────────────────
+model Connection {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String           @db.Uuid
+  integrationSlug String          // "shopify" | "stripe" | "klarna" | "fortnox_import"
+  status         ConnectionStatus @default(pending)
+  displayName    String?          // user-facing label, e.g. "Min Shopify-butik"
+
+  // Encrypted credentials (AES-256-GCM + per-connection IV, stored as base64)
+  encryptedAccessToken  String?  @db.Text
+  encryptedRefreshToken String?  @db.Text
+  tokenExpiresAt        DateTime?
+  encryptedApiKey       String?  @db.Text
+  webhookSecret         String?  // HMAC secret for incoming webhook verification
+  encryptionIv          String?  // base64 IV used for this connection's credentials
+
+  // Integration-specific config (shop domain, account mappings, etc.)
+  config         Json?
+
+  // Sync state
+  lastSyncAt      DateTime?
+  lastSyncCursor  String?    // cursor for incremental sync resume
+  syncIntervalMin Int        @default(60)
+
+  // Error tracking
+  lastErrorAt      DateTime?
+  lastErrorMessage String?   @db.Text
+  errorCount       Int       @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  webhookEvents  WebhookEvent[]
+  syncJobs       SyncJob[]
+  logs           IntegrationLog[]
+  entityMaps     ExternalEntityMap[]
+  importFiles    ImportFile[]
+
+  @@index([organizationId, integrationSlug])
+  @@index([organizationId, status])
+  @@map("connections")
+}
+
+// ─────────────────────────────────────────────
+// WEBHOOK EVENT — immutable incoming event log
+// TENANT-SCOPED: organizationId required
+//
+// Written immediately on receipt; processed async.
+// Never modified after creation except status fields.
+// ─────────────────────────────────────────────
+model WebhookEvent {
+  id              String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String             @db.Uuid
+  connectionId    String             @db.Uuid
+  externalEventId String?            // provider's own event ID (dedup key)
+  topic           String             // "orders/paid", "payment_intent.succeeded"
+  rawPayload      Json               // full body as received — append-only
+  signatureHeader String?            // raw sig header stored for audit
+  signatureValid  Boolean
+
+  status          WebhookEventStatus @default(pending)
+  attempts        Int                @default(0)
+  nextAttemptAt   DateTime?          @default(now())
+  processedAt     DateTime?
+  errorMessage    String?            @db.Text
+
+  // Result — entity created or updated as a result of this webhook
+  resultEntityType String?
+  resultEntityId   String?           @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  connection   Connection   @relation(fields: [connectionId],   references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, externalEventId])
+  @@index([organizationId, status, nextAttemptAt])
+  @@index([connectionId])
+  @@map("webhook_events")
+}
+
+// ─────────────────────────────────────────────
+// SYNC JOB — background sync job record
+// TENANT-SCOPED: organizationId required
+// ─────────────────────────────────────────────
+model SyncJob {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String        @db.Uuid
+  connectionId   String        @db.Uuid
+  jobType        String        // "orders" | "customers" | "payments" | "products"
+  status         SyncJobStatus @default(pending)
+
+  cursor         String?       // resume cursor updated per batch
+  rangeFrom      DateTime?
+  rangeTo        DateTime?
+
+  itemsTotal     Int?
+  itemsOk        Int           @default(0)
+  itemsFailed    Int           @default(0)
+  errorMessage   String?       @db.Text
+
+  triggeredBy    String?       // "cron" | "manual" | userId
+  startedAt      DateTime?
+  completedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  connection   Connection   @relation(fields: [connectionId],   references: [id], onDelete: Cascade)
+
+  @@index([organizationId, status])
+  @@index([connectionId, status])
+  @@map("sync_jobs")
+}
+
+// ─────────────────────────────────────────────
+// INTEGRATION LOG — human-readable audit trail
+// TENANT-SCOPED: organizationId required
+// ─────────────────────────────────────────────
+model IntegrationLog {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+  connectionId   String  @db.Uuid
+  eventType      String  // "connected" | "sync_started" | "webhook_processed" | "token_refreshed" | "error"
+  message        String
+  meta           Json?
+  userId         String? @db.Uuid  // null for automated events
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  connection   Connection   @relation(fields: [connectionId],   references: [id], onDelete: Cascade)
+
+  @@index([organizationId, connectionId])
+  @@index([connectionId, createdAt(sort: Desc)])
+  @@map("integration_logs")
+}
+
+// ─────────────────────────────────────────────
+// EXTERNAL ENTITY MAP — external ↔ internal ID mapping
+// TENANT-SCOPED: organizationId required
+//
+// Prevents duplicate imports and tracks sync state per entity.
+// checksum = SHA-256 of relevant external fields — enables change detection.
+// ─────────────────────────────────────────────
+model ExternalEntityMap {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+  connectionId   String  @db.Uuid
+  externalType   String  // "order" | "customer" | "payment" | "product" | "journal"
+  externalId     String  // provider's entity ID
+  internalType   String  // "Invoice" | "Contact" | "Payment" | "Product"
+  internalId     String  @db.Uuid  // Endoo entity UUID
+  checksum       String  // SHA-256 of mapped fields — change detection
+  syncedAt       DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  connection   Connection   @relation(fields: [connectionId],   references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, externalType, externalId])
+  @@index([organizationId, internalType, internalId])
+  @@map("external_entity_maps")
+}
+
+// ─────────────────────────────────────────────
+// IMPORT FILE — file import deduplication
+// TENANT-SCOPED: organizationId required
+//
+// fileHash (SHA-256) prevents re-importing the same file.
+// status = preview until user confirms; committed = fully imported.
+// ─────────────────────────────────────────────
+model ImportFile {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String           @db.Uuid
+  connectionId   String           @db.Uuid
+  integrationSlug String          // "fortnox_import" | "visma_import"
+  fileName       String
+  fileSize       Int              // bytes
+  fileHash       String           // SHA-256 of raw file — dedup key
+  status         ImportFileStatus @default(preview)
+  previewData    Json?            // parsed preview (accounts, journals, contacts counts)
+  importResult   Json?            // { created, skipped, errors } on commit
+  importedByUserId String?        @db.Uuid
+  errorMessage   String?          @db.Text
+
+  createdAt   DateTime @default(now())
+  committedAt DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  connection   Connection   @relation(fields: [connectionId],   references: [id], onDelete: Cascade)
+  importedBy   User?        @relation("ImportFileUser", fields: [importedByUserId], references: [id])
+
+  @@unique([organizationId, fileHash])
+  @@index([organizationId, status])
+  @@map("import_files")
 }
 
 // ─────────────────────────────────────────────
