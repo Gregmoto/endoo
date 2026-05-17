@@ -22,6 +22,12 @@ const NAV_SECTIONS = [
       { href: "subscription", label: "Abonnemang" },
     ],
   },
+  {
+    label: "Utvecklare",
+    items: [
+      { href: "api", label: "API-nycklar" },
+    ],
+  },
 ]
 
 const AGENCY_SECTION = {

@@ -203,6 +203,11 @@ enum VatPeriodStatus {
   locked
 }
 
+enum ApiKeyEnv {
+  live
+  test
+}
+
 // ─────────────────────────────────────────────
 // ORGANIZATIONS — tenants
 // Every paying account is one row here.
@@ -315,6 +320,10 @@ model Organization {
   // Inventory
   inventoryItems        InventoryItem[]
   inventoryTransactions InventoryTransaction[]
+
+  // API platform
+  apiKeys               ApiKey[]
+  idempotencyKeys       IdempotencyKey[]
 
   @@index([slug])
   @@index([type])
@@ -1428,4 +1437,66 @@ model InventoryTransaction {
   @@index([organizationId, type])
   @@index([organizationId, sourceType, sourceId])
   @@map("inventory_transactions")
+}
+
+// ─────────────────────────────────────────────
+// API KEYS — External API access tokens
+// TENANT-SCOPED: organization_id required
+// keyHash is SHA-256 of the raw key (never stored plain).
+// keyPrefix is the first 8 chars of the raw key (shown in UI).
+// ─────────────────────────────────────────────
+model ApiKey {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String    @db.Uuid
+
+  name           String                // user-given label, e.g. "Zapier integration"
+  keyPrefix      String                // first 8 chars of raw key — shown in UI
+  keyHash        String    @unique     // SHA-256(rawKey) — used for lookup
+  scopes         String[]              // ["invoices:read", "contacts:read", ...]
+  environment    ApiKeyEnv @default(live)
+  rateLimit      Int?                  // requests/minute; null = org default (60)
+
+  lastUsedAt     DateTime?
+  expiresAt      DateTime?
+  isActive       Boolean   @default(true)
+  revokedAt      DateTime?
+  revokedByUserId String?  @db.Uuid
+
+  createdByUserId String?  @db.Uuid
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([keyHash])
+  @@map("api_keys")
+}
+
+// ─────────────────────────────────────────────
+// IDEMPOTENCY KEYS — Prevent duplicate API writes
+// TENANT-SCOPED: organization_id required
+// Keyed by (organizationId, key) — key is caller-supplied token.
+// Response is cached so retries with the same key get the same reply.
+// ─────────────────────────────────────────────
+model IdempotencyKey {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+
+  key            String               // caller-supplied idempotency token
+  method         String               // HTTP method
+  path           String               // request path
+  requestHash    String               // SHA-256 of request body (detects body mismatch)
+  responseBody   Json?                // cached response payload
+  statusCode     Int?                 // cached HTTP status
+
+  createdAt      DateTime @default(now())
+  expiresAt      DateTime             // auto-purge after 24h via cron
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, key])
+  @@index([organizationId])
+  @@index([expiresAt])
+  @@map("idempotency_keys")
 }
