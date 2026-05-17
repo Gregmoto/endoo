@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { signOut } from "next-auth/react"
 
 const inputCls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
 const labelCls = "block text-xs font-medium text-gray-600 mb-1.5"
@@ -155,6 +156,15 @@ export default function OnboardingPage() {
         <p className="text-center text-xs text-gray-400 mt-6">
           Du kan ändra dessa uppgifter senare under Inställningar.
         </p>
+
+        <div className="text-center mt-4">
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="text-xs text-gray-400 hover:text-gray-600 underline underline-offset-2"
+          >
+            Logga ut
+          </button>
+        </div>
       </div>
     </main>
   )

@@ -72,10 +72,16 @@ export default auth((req: NextRequest & { auth: { user?: { id: string; isPlatfor
     return NextResponse.redirect(loginUrl)
   }
 
+  // ── Platform admins skip onboarding entirely ─────────────
+  if (session.user.isPlatformAdmin && pathname.startsWith("/onboarding")) {
+    return NextResponse.redirect(new URL("/platform/organizations", req.url))
+  }
+
   // ── Onboarding: redirect users without an active org ─────
   // Skip for API routes, platform routes and /onboarding itself.
   const hasOrg = Boolean(session.activeOrganizationId)
   if (!hasOrg
+    && !session.user.isPlatformAdmin
     && !pathname.startsWith("/onboarding")
     && !pathname.startsWith("/api/")
     && !pathname.startsWith("/platform")) {
