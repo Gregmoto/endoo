@@ -100,7 +100,7 @@ export default function NewContactPage() {
     <div className="p-8 max-w-3xl">
       <div className="mb-6 flex items-center gap-3">
         <Link href={`/${params.orgSlug}/contacts`} className="text-sm text-gray-500 hover:text-gray-700">
-          ← Kontakter
+          ← Kunder
         </Link>
         <span className="text-gray-300">/</span>
         <h1 className="text-2xl font-bold text-gray-900">Ny kontakt</h1>

@@ -5,7 +5,7 @@ import { useParams }                         from "next/navigation"
 
 const ALL_SCOPES = [
   { value: "invoices:read",   label: "Fakturor (läs)" },
-  { value: "contacts:read",   label: "Kontakter (läs)" },
+  { value: "contacts:read",   label: "Kunder (läs)" },
   { value: "products:read",   label: "Produkter (läs)" },
   { value: "journals:read",   label: "Verifikat (läs)" },
   { value: "inventory:read",  label: "Lager (läs)" },
@@ -277,7 +277,7 @@ export default function ApiSettingsPage() {
         <div className="space-y-2">
           {[
             { method: "GET", path: "/api/v1/invoices",  scope: "invoices:read",  desc: "Lista fakturor" },
-            { method: "GET", path: "/api/v1/contacts",  scope: "contacts:read",  desc: "Lista kontakter" },
+            { method: "GET", path: "/api/v1/contacts",  scope: "contacts:read",  desc: "Lista kunder" },
             { method: "GET", path: "/api/v1/products",  scope: "products:read",  desc: "Lista produkter" },
             { method: "GET", path: "/api/v1/journals",  scope: "journals:read",  desc: "Lista verifikat" },
             { method: "GET", path: "/api/v1/inventory", scope: "inventory:read", desc: "Lagersaldo" },

@@ -113,7 +113,7 @@ export default function ContactDetailPage() {
     <div className="p-8 max-w-4xl">
       {/* Breadcrumb + header */}
       <div className="mb-2 flex items-center gap-2 text-sm text-gray-500">
-        <Link href={`/${orgSlug}/contacts`} className="hover:text-gray-700">Kontakter</Link>
+        <Link href={`/${orgSlug}/contacts`} className="hover:text-gray-700">Kunder</Link>
         <span className="text-gray-300">/</span>
         <span className="text-gray-700 font-medium">{contact.name}</span>
       </div>

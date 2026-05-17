@@ -100,7 +100,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ orgS
           <CardContent className="space-y-2">
             {[
               { label: "Skapa ny faktura",   href: `/${orgSlug}/invoices/new`, desc: "Fakturera en kund" },
-              { label: "Lägg till kontakt",  href: `/${orgSlug}/contacts`,     desc: `${contactCount} kontakter totalt` },
+              { label: "Lägg till kund",      href: `/${orgSlug}/contacts`,     desc: `${contactCount} kunder totalt` },
               { label: "Bjud in teammedlem", href: `/${orgSlug}/team`,         desc: "Hantera ditt team" },
             ].map((a) => (
               <Link key={a.href} href={a.href}

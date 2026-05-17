@@ -18,13 +18,13 @@ const PLANS = [
     id: "starter",
     name: "Starter",
     price: "299 kr/mån",
-    features: ["3 användare", "100 kontakter", "50 fakturor/mån", "E-post & PDF"],
+    features: ["3 användare", "100 kunder", "50 fakturor/mån", "E-post & PDF"],
   },
   {
     id: "pro",
     name: "Pro",
     price: "799 kr/mån",
-    features: ["10 användare", "1 000 kontakter", "500 fakturor/mån", "Avtalsfakturering", "Prioriterad support"],
+    features: ["10 användare", "1 000 kunder", "500 fakturor/mån", "Avtalsfakturering", "Prioriterad support"],
   },
   {
     id: "enterprise",
@@ -134,7 +134,7 @@ export default function BillingPage() {
         <CardHeader><CardTitle>Användning</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <UsageBar label="Fakturor" used={data.usage.invoices} limit={data.limits.maxInvoicesPerMonth} />
-          <UsageBar label="Kontakter" used={data.usage.contacts} limit={data.limits.maxContacts} />
+          <UsageBar label="Kunder" used={data.usage.contacts} limit={data.limits.maxContacts} />
           <UsageBar label="Teammedlemmar" used={data.usage.members} limit={data.limits.maxUsers} />
         </CardContent>
       </Card>

@@ -28,7 +28,7 @@ const NAV_GROUPS = [
   {
     label: "Register",
     items: [
-      { label: "Kontakter",      href: "/contacts",          icon: "◈" },
+      { label: "Kunder",          href: "/contacts",          icon: "◈" },
       { label: "Produkter",      href: "/products",          icon: "◉" },
       { label: "Lager",          href: "/inventory",         icon: "▣" },
     ],

@@ -65,7 +65,7 @@ export default async function PlatformOrgDetailPage({ params }: { params: Promis
 
       <div className="grid grid-cols-4 gap-4 mb-8">
         <StatCard label="Fakturor" value={org._count.invoices} />
-        <StatCard label="Kontakter" value={org._count.contacts} />
+        <StatCard label="Kunder" value={org._count.contacts} />
         <StatCard label="Medlemmar" value={org._count.members} />
         <Card><CardContent className="p-4">
           <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Plan</p>
