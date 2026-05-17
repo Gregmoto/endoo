@@ -13,6 +13,8 @@ import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
 import { sendInvoiceEmail } from "@/lib/email"
 import { SETTING_KEYS } from "@/lib/settings/keys"
+import { postInvoiceSent } from "@/services/invoices/posting"
+import { InvoiceAlreadyPostedError } from "@/lib/accounting/posting/errors"
 
 export async function POST(
   req: Request,
@@ -95,6 +97,13 @@ export async function POST(
     const updated = await prisma.invoice.update({
       where: { id, organizationId: ctx.organizationId },
       data: { status: "sent", sentAt: new Date() },
+    })
+
+    // Auto-post to ledger (idempotent — InvoiceAlreadyPostedError means already done)
+    postInvoiceSent(ctx.organizationId, id, ctx.userId).catch((err) => {
+      if (!(err instanceof InvoiceAlreadyPostedError)) {
+        console.error("[invoices/send] posting failed", err)
+      }
     })
 
     prisma.auditLog.create({

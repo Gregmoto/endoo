@@ -13,7 +13,7 @@
 
 import { prisma }          from "@/lib/prisma"
 import { createJournal, postJournal } from "@/lib/accounting/journals"
-import { getAccountByNumber }         from "@/lib/accounting/accounts"
+import { getAccountByNumber, getVatCode } from "@/lib/accounting/accounts"
 import { randomUUID }      from "crypto"
 import type { PaymentMethod } from "@prisma/client"
 
@@ -126,11 +126,12 @@ export async function bookSupplierInvoice(input: BookingInput) {
   if (vatAmount > 0n) {
     const vatAcct = await getAccountByNumber(organizationId, vatAccountNumber)
     if (!vatAcct) throw new MissingFieldsError([`account ${vatAccountNumber}`])
+    const vatCode = invoice.vatRate ? getVatCode(Number(invoice.vatRate)) : "MP1"
     entries.push({
       accountId:   vatAcct.id,
       debit:       vatAmount,
       credit:      0n,
-      vatCode:     "MP1",
+      vatCode,
       description: "Ingående moms",
     })
   }

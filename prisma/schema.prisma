@@ -134,6 +134,10 @@ enum AuditAction {
   invoice_send
   invoice_void
   account_switch
+  // Posting engine events
+  invoice_post
+  payment_post
+  posting_failed
 }
 
 // ─── ACCOUNTING ENUMS ─────────────────────────────────────────────────────────
@@ -743,6 +747,10 @@ model Invoice {
   pdfUrl         String?
   pdfGeneratedAt DateTime?
 
+  // Posting engine — idempotency fields
+  journalSentId           String?   @db.Uuid  // set after invoice journal is posted
+  journalPostingLockedAt  DateTime?            // posting lock; cleared on success (inside tx) or failure (catch)
+
   // Audit: who created, in which context
   createdByUserId            String? @db.Uuid
   createdOnBehalfOfAgencyId  String? @db.Uuid
@@ -821,6 +829,10 @@ model Payment {
   stripePaymentIntentId String?
   createdByUserId String?      @db.Uuid
 
+  // Posting engine — idempotency fields
+  journalId              String?   @db.Uuid  // set after payment journal is posted
+  journalPostingLockedAt DateTime?            // posting lock
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -831,6 +843,7 @@ model Payment {
   @@index([organizationId])
   @@index([invoiceId])
   @@index([organizationId, paymentDate])
+  @@index([organizationId, journalId])
   @@map("payments")
 }
 

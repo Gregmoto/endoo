@@ -8,6 +8,8 @@ import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
 import { InvoiceStatus } from "@prisma/client"
 import { z } from "zod"
+import { postInvoicePaid } from "@/services/invoices/posting"
+import { PaymentAlreadyPostedError } from "@/lib/accounting/posting/errors"
 
 export async function GET(
   _req: Request,
@@ -108,6 +110,13 @@ export async function POST(
         },
       }),
     ])
+
+    // Auto-post payment to ledger (fire-and-forget; idempotent)
+    postInvoicePaid(ctx.organizationId, payment.id, ctx.userId).catch((err) => {
+      if (!(err instanceof PaymentAlreadyPostedError)) {
+        console.error("[invoices/payments] posting failed", err)
+      }
+    })
 
     prisma.auditLog.create({
       data: {
