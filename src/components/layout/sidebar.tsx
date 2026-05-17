@@ -29,7 +29,7 @@ const NAV_GROUPS = [
   {
     label: "Register",
     items: [
-      { label: "Kunder",          href: "/contacts",          icon: "◈" },
+      { label: "Kunder",         href: "/contacts",          icon: "◈" },
       { label: "Produkter",      href: "/products",          icon: "◉" },
       { label: "Lager",          href: "/inventory",         icon: "▣" },
     ],
@@ -42,31 +42,32 @@ const BOTTOM_ITEMS = [
   { label: "Audit log",     href: "/audit",    icon: "◷" },
 ]
 
-type Org = {
-  id: string
-  name: string
-  slug: string
-  type: string
-  role: string
-}
+type Org = { id: string; name: string; slug: string; type: string; role: string }
 
 interface SidebarProps {
-  orgSlug: string
-  orgName: string
-  orgType: "agency" | "customer"
-  userEmail: string
+  orgSlug:        string
+  orgName:        string
+  orgType:        "agency" | "customer"
+  userEmail:      string
   isImpersonating?: boolean
 }
 
-export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating }: SidebarProps) {
+function SidebarContent({
+  orgSlug,
+  orgName,
+  orgType,
+  userEmail,
+  isImpersonating,
+  onNavigate,
+}: SidebarProps & { onNavigate?: () => void }) {
   const pathname = usePathname()
-  const router = useRouter()
-  const base = `/${orgSlug}`
+  const router   = useRouter()
+  const base     = `/${orgSlug}`
 
-  const [open, setOpen] = useState(false)
-  const [orgs, setOrgs] = useState<Org[]>([])
+  const [orgOpen, setOrgOpen]   = useState(false)
+  const [orgs, setOrgs]         = useState<Org[]>([])
   const [switching, setSwitching] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const dropdownRef              = useRef<HTMLDivElement>(null)
 
   function isActive(href: string) {
     const full = `${base}${href}`
@@ -74,28 +75,24 @@ export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating 
     return pathname.startsWith(full)
   }
 
-  // Fetch orgs on first open
   useEffect(() => {
-    if (!open || orgs.length > 0) return
+    if (!orgOpen || orgs.length > 0) return
     fetch("/api/auth/orgs")
       .then((r) => r.ok ? r.json() : [])
       .then(setOrgs)
-  }, [open, orgs.length])
+  }, [orgOpen, orgs.length])
 
-  // Close on outside click
   useEffect(() => {
-    if (!open) return
+    if (!orgOpen) return
     function handle(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) setOrgOpen(false)
     }
     document.addEventListener("mousedown", handle)
     return () => document.removeEventListener("mousedown", handle)
-  }, [open])
+  }, [orgOpen])
 
   async function switchOrg(org: Org) {
-    if (org.slug === orgSlug) { setOpen(false); return }
+    if (org.slug === orgSlug) { setOrgOpen(false); return }
     setSwitching(true)
     const res = await fetch("/api/auth/switch-org", {
       method: "POST",
@@ -107,13 +104,13 @@ export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating 
       router.push(`/${slug}`)
     }
     setSwitching(false)
-    setOpen(false)
+    setOrgOpen(false)
   }
 
   return (
-    <aside className="fixed inset-y-0 left-0 w-56 bg-white border-r border-gray-100 flex flex-col z-10">
+    <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-lg font-bold text-brand-600">Endoo</span>
           {orgType === "agency" && (
@@ -126,10 +123,10 @@ export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating 
       </div>
 
       {/* Org switcher */}
-      <div className="px-3 py-2 border-b border-gray-50 relative" ref={dropdownRef}>
+      <div className="px-3 py-2 border-b border-gray-50 relative flex-shrink-0" ref={dropdownRef}>
         <button
-          onClick={() => setOpen((v) => !v)}
-          className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+          onClick={() => setOrgOpen((v) => !v)}
+          className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors min-h-[44px]"
         >
           <div
             className="w-6 h-6 rounded-md flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
@@ -138,21 +135,19 @@ export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating 
             {initials(orgName, 1)}
           </div>
           <span className="text-sm font-medium text-gray-700 truncate flex-1 text-left">{orgName}</span>
-          <span className="text-gray-400 text-xs">{open ? "▲" : "▼"}</span>
+          <span className="text-gray-400 text-xs">{orgOpen ? "▲" : "▼"}</span>
         </button>
 
-        {open && (
+        {orgOpen && (
           <div className="absolute left-3 right-3 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1 overflow-hidden">
-            {orgs.length === 0 && (
-              <p className="px-3 py-2 text-xs text-gray-400">Laddar…</p>
-            )}
+            {orgs.length === 0 && <p className="px-3 py-2 text-xs text-gray-400">Laddar…</p>}
             {orgs.map((org) => (
               <button
                 key={org.id}
                 onClick={() => switchOrg(org)}
                 disabled={switching}
                 className={cn(
-                  "w-full flex items-center gap-2.5 px-3 py-2 text-left hover:bg-gray-50 transition-colors",
+                  "w-full flex items-center gap-2.5 px-3 py-2.5 text-left hover:bg-gray-50 transition-colors",
                   org.slug === orgSlug && "bg-brand-50"
                 )}
               >
@@ -166,7 +161,7 @@ export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating 
                   <p className={cn("text-sm truncate", org.slug === orgSlug ? "font-semibold text-brand-700" : "text-gray-700")}>
                     {org.name}
                   </p>
-                  <p className="text-xs text-gray-400 capitalize">{org.type === "agency" ? "Byrå" : "Kund"}</p>
+                  <p className="text-xs text-gray-400">{org.type === "agency" ? "Byrå" : "Kund"}</p>
                 </div>
                 {org.slug === orgSlug && <span className="text-brand-500 text-xs">✓</span>}
               </button>
@@ -182,11 +177,10 @@ export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating 
             <p className="px-3 mb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Byrå</p>
             <Link
               href={`${base}/clients`}
+              onClick={onNavigate}
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                isActive("/clients")
-                  ? "bg-brand-50 text-brand-700"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px]",
+                isActive("/clients") ? "bg-brand-50 text-brand-700" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               )}
             >
               <span className="text-base leading-none">◈</span>
@@ -204,11 +198,10 @@ export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating 
                 <Link
                   key={item.href}
                   href={`${base}${item.href}`}
+                  onClick={onNavigate}
                   className={cn(
-                    "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                    isActive(item.href)
-                      ? "bg-brand-50 text-brand-700"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px]",
+                    isActive(item.href) ? "bg-brand-50 text-brand-700" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   )}
                 >
                   <span className="text-base leading-none">{item.icon}</span>
@@ -221,24 +214,21 @@ export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating 
       </nav>
 
       {/* Bottom nav */}
-      <div className="px-3 py-3 border-t border-gray-100 space-y-0.5">
+      <div className="px-3 py-3 border-t border-gray-100 space-y-0.5 flex-shrink-0">
         {BOTTOM_ITEMS.map((item) => (
           <Link
             key={item.href}
             href={`${base}${item.href}`}
+            onClick={onNavigate}
             className={cn(
-              "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-              isActive(item.href)
-                ? "bg-brand-50 text-brand-700"
-                : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+              "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px]",
+              isActive(item.href) ? "bg-brand-50 text-brand-700" : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
             )}
           >
             <span className="text-base leading-none">{item.icon}</span>
             {item.label}
           </Link>
         ))}
-
-        {/* User */}
         <div className="flex items-center gap-2 px-3 py-2 mt-1">
           <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600 flex-shrink-0">
             {userEmail.charAt(0).toUpperCase()}
@@ -246,6 +236,83 @@ export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating 
           <span className="text-xs text-gray-500 truncate">{userEmail}</span>
         </div>
       </div>
-    </aside>
+    </div>
+  )
+}
+
+export function Sidebar(props: SidebarProps) {
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const pathname = usePathname()
+
+  // Close drawer on route change
+  useEffect(() => { setDrawerOpen(false) }, [pathname])
+
+  // Lock body scroll when drawer is open
+  useEffect(() => {
+    if (drawerOpen) document.body.style.overflow = "hidden"
+    else            document.body.style.overflow = ""
+    return () => { document.body.style.overflow = "" }
+  }, [drawerOpen])
+
+  return (
+    <>
+      {/* ── Desktop sidebar (hidden on mobile) ─────────────────────────────── */}
+      <aside className="hidden md:fixed md:inset-y-0 md:left-0 md:flex md:flex-col md:w-56 bg-white border-r border-gray-100 z-10">
+        <SidebarContent {...props} />
+      </aside>
+
+      {/* ── Mobile top bar (hidden on desktop) ─────────────────────────────── */}
+      <header className="md:hidden fixed top-0 inset-x-0 z-20 h-12 bg-white border-b border-gray-100 flex items-center justify-between px-4">
+        <button
+          onClick={() => setDrawerOpen(true)}
+          className="p-2 -ml-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+          aria-label="Öppna meny"
+        >
+          {/* Hamburger */}
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <rect y="3"  width="20" height="2" rx="1" />
+            <rect y="9"  width="20" height="2" rx="1" />
+            <rect y="15" width="20" height="2" rx="1" />
+          </svg>
+        </button>
+
+        <span className="absolute left-1/2 -translate-x-1/2 text-base font-bold text-brand-600 pointer-events-none">
+          Endoo
+        </span>
+
+        <NotificationBell />
+      </header>
+
+      {/* ── Mobile drawer overlay ───────────────────────────────────────────── */}
+      {drawerOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="md:hidden fixed inset-0 z-30 bg-black/40 backdrop-blur-[1px]"
+            onClick={() => setDrawerOpen(false)}
+            aria-hidden
+          />
+
+          {/* Drawer panel */}
+          <aside
+            className={cn(
+              "md:hidden fixed inset-y-0 left-0 z-40 flex flex-col bg-white shadow-2xl",
+              "w-[85vw] max-w-xs",
+              "animate-drawer-in",
+            )}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setDrawerOpen(false)}
+              className="absolute top-3 right-3 p-2 rounded-full hover:bg-gray-100 text-gray-400 z-10"
+              aria-label="Stäng meny"
+            >
+              ✕
+            </button>
+            <SidebarContent {...props} onNavigate={() => setDrawerOpen(false)} />
+          </aside>
+        </>
+      )}
+    </>
   )
 }

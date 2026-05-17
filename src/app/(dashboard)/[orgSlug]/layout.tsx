@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { Sidebar } from "@/components/layout/sidebar"
+import { MobileNavBar } from "@/components/layout/MobileNavBar"
 import { ImpersonationBanner } from "@/components/layout/ImpersonationBanner"
 import { AiShell } from "@/components/ai/AiShell"
 
@@ -55,6 +56,7 @@ export default async function DashboardLayout({
       {isImpersonating && agencyName && agencySlug && (
         <ImpersonationBanner agencyName={agencyName} agencySlug={agencySlug} />
       )}
+
       <Sidebar
         orgSlug={org.slug}
         orgName={org.name}
@@ -62,11 +64,26 @@ export default async function DashboardLayout({
         userEmail={session.user.email}
         isImpersonating={isImpersonating}
       />
+
       <AiShell>
-        <main className={`ml-56 pt-12 ${isImpersonating ? "mt-10" : ""}`}>
+        {/*
+          ml-0 on mobile (sidebar is hidden),
+          md:ml-56 on desktop (sidebar is fixed 224px).
+          pt-12 = clearance for the mobile top bar (h-12).
+          pb-16 md:pb-0 = clearance for the mobile bottom nav.
+        */}
+        <main className={[
+          "ml-0 md:ml-56",
+          "pt-12",
+          "pb-20 md:pb-0",
+          isImpersonating ? "mt-10" : "",
+        ].join(" ")}>
           {children}
         </main>
       </AiShell>
+
+      {/* Mobile bottom tab bar */}
+      <MobileNavBar orgSlug={org.slug} />
     </div>
   )
 }

@@ -32,6 +32,7 @@ function lineTotal(l: LineItem) {
 }
 
 const inputCls = "w-full px-2 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500"
+const fieldCls = "w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500"
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
@@ -41,11 +42,11 @@ export default function NewInvoicePage() {
   const router       = useRouter()
   const orgSlug      = params.orgSlug
 
-  const [contacts, setContacts]         = useState<Contact[]>([])
-  const [products, setProducts]         = useState<Product[]>([])
+  const [contacts, setContacts]           = useState<Contact[]>([])
+  const [products, setProducts]           = useState<Product[]>([])
   const [productSearch, setProductSearch] = useState<Record<number, string>>({})
-  const [saving, setSaving]             = useState(false)
-  const [error, setError]               = useState("")
+  const [saving, setSaving]               = useState(false)
+  const [error, setError]                 = useState("")
 
   const [form, setForm] = useState({
     contactId:   searchParams.get("contactId") ?? "",
@@ -123,6 +124,10 @@ export default function NewInvoicePage() {
     return { net: acc.net + t.net, tax: acc.tax + t.tax, total: acc.total + t.total }
   }, { net: 0, tax: 0, total: 0 })
 
+  function fmt(v: number) {
+    return v.toLocaleString("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
@@ -158,21 +163,22 @@ export default function NewInvoicePage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl">
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link href={`/${orgSlug}/invoices`} className="text-sm text-gray-500 hover:text-gray-700">← Fakturor</Link>
+    <div className="p-4 sm:p-8 max-w-4xl">
+      {/* Header */}
+      <div className="mb-5 flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link href={`/${orgSlug}/invoices`} className="text-sm text-gray-500 hover:text-gray-700 flex-shrink-0">← Fakturor</Link>
           <span className="text-gray-300">/</span>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
             {form.type === "proforma" ? "Ny proformafaktura" : "Ny faktura"}
           </h1>
         </div>
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex items-center gap-2 text-sm flex-shrink-0">
           <span className="text-gray-500">Typ:</span>
           <select
             value={form.type}
             onChange={setField("type")}
-            className="px-2 py-1 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
           >
             <option value="invoice">Faktura</option>
             <option value="proforma">Proformafaktura</option>
@@ -180,13 +186,13 @@ export default function NewInvoicePage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Header fields */}
         <Card>
           <CardHeader><CardTitle>Mottagare & datum</CardTitle></CardHeader>
-          <CardContent className="grid grid-cols-2 gap-4">
+          <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Kund">
-              <select value={form.contactId} onChange={setField("contactId")} className={inputCls}>
+              <select value={form.contactId} onChange={setField("contactId")} className={fieldCls}>
                 <option value="">Välj kund…</option>
                 {contacts.map(c => (
                   <option key={c.id} value={c.id}>{c.name}{c.customerNumber ? ` (${c.customerNumber})` : ""}</option>
@@ -194,21 +200,21 @@ export default function NewInvoicePage() {
               </select>
             </Field>
             <Field label="Valuta">
-              <select value={form.currency} onChange={setField("currency")} className={inputCls}>
+              <select value={form.currency} onChange={setField("currency")} className={fieldCls}>
                 {["SEK","EUR","USD","GBP","NOK","DKK"].map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </Field>
             <Field label="Fakturadatum">
-              <input type="date" required value={form.issueDate} onChange={setField("issueDate")} className={inputCls} />
+              <input type="date" required value={form.issueDate} onChange={setField("issueDate")} className={fieldCls} />
             </Field>
             <Field label="Förfallodatum">
-              <input type="date" required value={form.dueDate} onChange={setField("dueDate")} className={inputCls} />
+              <input type="date" required value={form.dueDate} onChange={setField("dueDate")} className={fieldCls} />
             </Field>
             <Field label="Er referens / PO-nummer">
-              <input value={form.poNumber} onChange={setField("poNumber")} className={inputCls} placeholder="Inköpsorder, projektnamn…" />
+              <input value={form.poNumber} onChange={setField("poNumber")} className={fieldCls} placeholder="Inköpsorder, projektnamn…" />
             </Field>
             <Field label="Vår referens">
-              <input value={form.reference} onChange={setField("reference")} className={inputCls} placeholder="Säljare, projekt-ID…" />
+              <input value={form.reference} onChange={setField("reference")} className={fieldCls} placeholder="Säljare, projekt-ID…" />
             </Field>
           </CardContent>
         </Card>
@@ -221,14 +227,16 @@ export default function NewInvoicePage() {
               <button
                 type="button"
                 onClick={() => setLines(ls => [...ls, newLine()])}
-                className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                className="text-sm text-indigo-600 hover:text-indigo-800 font-medium min-h-[44px] px-2"
               >
                 + Lägg till rad
               </button>
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
+
+            {/* ── Desktop table (hidden on mobile) ──────────────────────────── */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50">
@@ -239,7 +247,7 @@ export default function NewInvoicePage() {
                     <th className="px-2 py-2.5 text-right text-xs font-medium text-gray-500 w-16">Rabatt</th>
                     <th className="px-2 py-2.5 text-right text-xs font-medium text-gray-500 w-16">Moms</th>
                     <th className="px-2 py-2.5 text-right text-xs font-medium text-gray-500 w-28">Summa</th>
-                    <th className="px-2 py-2.5 w-6"></th>
+                    <th className="px-2 py-2.5 w-6" />
                   </tr>
                 </thead>
                 <tbody>
@@ -249,7 +257,6 @@ export default function NewInvoicePage() {
                     const suggestions = filteredProducts(query)
                     return (
                       <tr key={line.id} className="border-t border-gray-50 align-top">
-                        {/* Description + product search */}
                         <td className="px-3 py-2 relative">
                           <input
                             value={line.description}
@@ -324,7 +331,7 @@ export default function NewInvoicePage() {
                           </select>
                         </td>
                         <td className="px-2 py-2 text-right tabular-nums font-medium">
-                          {t.total.toLocaleString("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {fmt(t.total)}
                         </td>
                         <td className="px-2 py-2 text-center">
                           {lines.length > 1 && (
@@ -344,16 +351,138 @@ export default function NewInvoicePage() {
               </table>
             </div>
 
+            {/* ── Mobile line item cards (hidden on desktop) ────────────────── */}
+            <div className="sm:hidden divide-y divide-gray-100">
+              {lines.map((line, i) => {
+                const t = lineTotal(line)
+                const query = productSearch[i] ?? ""
+                const suggestions = filteredProducts(query)
+                return (
+                  <div key={line.id} className="p-4 space-y-3">
+                    {/* Row header */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Rad {i + 1}</span>
+                      {lines.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setLines(ls => ls.filter(l => l.id !== line.id))}
+                          className="text-xs text-red-400 hover:text-red-600 font-medium min-h-[44px] px-2"
+                        >
+                          Ta bort
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Description with product search */}
+                    <div className="relative">
+                      <label className="block text-xs font-medium text-gray-500 mb-1">Beskrivning</label>
+                      <input
+                        value={line.description}
+                        onChange={e => {
+                          setLine(line.id, "description", e.target.value)
+                          setProductSearch(s => ({ ...s, [i]: e.target.value }))
+                        }}
+                        placeholder="Artikel eller beskrivning…"
+                        required
+                        className={inputCls}
+                      />
+                      {suggestions.length > 0 && (
+                        <div className="absolute left-0 right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-lg shadow-lg">
+                          {suggestions.map(p => (
+                            <button
+                              key={p.id}
+                              type="button"
+                              onClick={() => fillFromProduct(line.id, p)}
+                              className="w-full px-3 py-3 text-left text-sm hover:bg-gray-50 border-b border-gray-50 last:border-0 flex items-center justify-between"
+                            >
+                              <div>
+                                <span className="font-medium">{p.name}</span>
+                                {p.sku && <span className="text-gray-400 ml-2 text-xs">{p.sku}</span>}
+                              </div>
+                              <span className="text-gray-500 text-xs tabular-nums">
+                                {(p.unitPrice / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2 })} kr
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Quantity + unit + price */}
+                    <div className="grid grid-cols-3 gap-2">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Antal</label>
+                        <input
+                          type="number" min="0.001" step="any" value={line.quantity}
+                          onChange={e => setLine(line.id, "quantity", parseFloat(e.target.value) || 0)}
+                          className={inputCls}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Enhet</label>
+                        <input
+                          value={line.unit}
+                          onChange={e => setLine(line.id, "unit", e.target.value)}
+                          className={inputCls}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">À-pris (kr)</label>
+                        <input
+                          type="number" min="0" step="0.01" value={line.unitPriceKr}
+                          onChange={e => setLine(line.id, "unitPriceKr", parseFloat(e.target.value) || 0)}
+                          className={inputCls}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Discount + tax */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Rabatt (%)</label>
+                        <input
+                          type="number" min="0" max="100" step="1"
+                          value={Math.round(line.discountRate * 100)}
+                          onChange={e => setLine(line.id, "discountRate", (parseFloat(e.target.value) || 0) / 100)}
+                          className={inputCls}
+                          placeholder="0"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Moms</label>
+                        <select
+                          value={line.taxRate}
+                          onChange={e => setLine(line.id, "taxRate", parseFloat(e.target.value))}
+                          className={inputCls}
+                        >
+                          <option value={0.25}>25%</option>
+                          <option value={0.12}>12%</option>
+                          <option value={0.06}>6%</option>
+                          <option value={0}>0%</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Line total */}
+                    <div className="flex items-center justify-between pt-1 border-t border-gray-100">
+                      <span className="text-xs text-gray-500">Radtotal (inkl. moms)</span>
+                      <span className="font-semibold tabular-nums text-gray-900">{fmt(t.total)} {form.currency}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
             {/* Totals */}
             <div className="px-4 py-4 border-t border-gray-100 text-sm space-y-1.5 flex flex-col items-end">
               <div className="text-gray-500 tabular-nums">
-                Netto: {totals.net.toLocaleString("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {form.currency}
+                Netto: {fmt(totals.net)} {form.currency}
               </div>
               <div className="text-gray-500 tabular-nums">
-                Moms: {totals.tax.toLocaleString("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {form.currency}
+                Moms: {fmt(totals.tax)} {form.currency}
               </div>
               <div className="font-bold text-gray-900 text-base tabular-nums border-t border-gray-200 pt-1.5 mt-1">
-                Totalt: {totals.total.toLocaleString("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {form.currency}
+                Totalt: {fmt(totals.total)} {form.currency}
               </div>
             </div>
           </CardContent>
@@ -368,7 +497,7 @@ export default function NewInvoicePage() {
                 value={form.notes}
                 onChange={setField("notes")}
                 rows={3}
-                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
                 placeholder="Tack för ert förtroende…"
               />
             </Field>
@@ -377,7 +506,7 @@ export default function NewInvoicePage() {
                 value={form.footerText}
                 onChange={setField("footerText")}
                 rows={2}
-                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
                 placeholder="Bankgiro: 123-4567 · Swish: 070-000 00 00"
               />
             </Field>
@@ -386,12 +515,12 @@ export default function NewInvoicePage() {
 
         {error && <p className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-lg">{error}</p>}
 
-        <div className="flex items-center gap-3">
-          <Button type="submit" loading={saving}>
+        <div className="flex items-center gap-3 pb-4">
+          <Button type="submit" loading={saving} className="min-h-[44px]">
             {form.type === "proforma" ? "Spara proforma" : "Spara faktura"}
           </Button>
           <Link href={`/${orgSlug}/invoices`}>
-            <Button type="button" variant="outline">Avbryt</Button>
+            <Button type="button" variant="outline" className="min-h-[44px]">Avbryt</Button>
           </Link>
         </div>
       </form>
