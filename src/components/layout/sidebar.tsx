@@ -5,23 +5,40 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { cn, stringToColor, initials } from "@/lib/utils"
 
-const NAV_ITEMS = [
-  { label: "Översikt",            href: "",                    icon: "▦" },
-  { label: "Fakturor",            href: "/invoices",           icon: "◧" },
-  { label: "Lev.fakturor",        href: "/supplier-invoices",  icon: "◨" },
-  { label: "Kontakter",           href: "/contacts",           icon: "◈" },
-  { label: "Produkter",           href: "/products",           icon: "◉" },
-  { label: "Avtal",               href: "/contracts",          icon: "↺" },
-  { label: "Betalningar",         href: "/payments",           icon: "◎" },
-  { label: "Lager",               href: "/inventory",          icon: "▣" },
-  { label: "Rapporter",           href: "/reports",            icon: "◱" },
-  { label: "Moms",               href: "/tax/vat",            icon: "◰" },
+const NAV_GROUPS = [
+  {
+    label: "Fakturering",
+    items: [
+      { label: "Översikt",       href: "",                   icon: "▦" },
+      { label: "Fakturor",       href: "/invoices",          icon: "◧" },
+      { label: "Lev.fakturor",   href: "/supplier-invoices", icon: "◨" },
+      { label: "Betalningar",    href: "/payments",          icon: "◎" },
+      { label: "Avtal",          href: "/contracts",         icon: "↺" },
+    ],
+  },
+  {
+    label: "Bokföring",
+    items: [
+      { label: "Verifikat",      href: "/journals",          icon: "◱" },
+      { label: "Kontoplan",      href: "/accounts",          icon: "▤" },
+      { label: "Rapporter",      href: "/reports",           icon: "◧" },
+      { label: "Moms",           href: "/tax/vat",           icon: "◰" },
+    ],
+  },
+  {
+    label: "Register",
+    items: [
+      { label: "Kontakter",      href: "/contacts",          icon: "◈" },
+      { label: "Produkter",      href: "/products",          icon: "◉" },
+      { label: "Lager",          href: "/inventory",         icon: "▣" },
+    ],
+  },
 ]
 
 const BOTTOM_ITEMS = [
-  { label: "Team",          href: "/team",           icon: "◫" },
-  { label: "Inställningar", href: "/settings",       icon: "◌" },
-  { label: "Audit log",     href: "/audit",          icon: "◷" },
+  { label: "Team",          href: "/team",     icon: "◫" },
+  { label: "Inställningar", href: "/settings", icon: "◌" },
+  { label: "Audit log",     href: "/audit",    icon: "◷" },
 ]
 
 type Org = {
@@ -155,35 +172,47 @@ export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating 
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 px-3 py-3 overflow-y-auto space-y-4">
         {orgType === "agency" && !isImpersonating && (
-          <Link
-            href={`${base}/clients`}
-            className={cn(
-              "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-              isActive("/clients")
-                ? "bg-brand-50 text-brand-700"
-                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            )}
-          >
-            <span className="text-base leading-none">◈</span>
-            Kundkonton
-          </Link>
+          <div>
+            <p className="px-3 mb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Byrå</p>
+            <Link
+              href={`${base}/clients`}
+              className={cn(
+                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                isActive("/clients")
+                  ? "bg-brand-50 text-brand-700"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+              )}
+            >
+              <span className="text-base leading-none">◈</span>
+              Kundkonton
+            </Link>
+          </div>
         )}
-        {NAV_ITEMS.map((item) => (
-          <Link
-            key={item.href}
-            href={`${base}${item.href}`}
-            className={cn(
-              "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-              isActive(item.href)
-                ? "bg-brand-50 text-brand-700"
-                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            )}
-          >
-            <span className="text-base leading-none">{item.icon}</span>
-            {item.label}
-          </Link>
+        {NAV_GROUPS.map((group) => (
+          <div key={group.label}>
+            <p className="px-3 mb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+              {group.label}
+            </p>
+            <div className="space-y-0.5">
+              {group.items.map((item) => (
+                <Link
+                  key={item.href}
+                  href={`${base}${item.href}`}
+                  className={cn(
+                    "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                    isActive(item.href)
+                      ? "bg-brand-50 text-brand-700"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  )}
+                >
+                  <span className="text-base leading-none">{item.icon}</span>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
         ))}
       </nav>
 
