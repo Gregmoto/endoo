@@ -1,5 +1,6 @@
 import Link from "next/link"
 import type { Metadata } from "next"
+import { auth } from "@/lib/auth"
 
 export const metadata: Metadata = {
   title: "Endoo – Ekonomiplattform för moderna företag och byråer",
@@ -265,7 +266,9 @@ const STATS = [
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth()
+  const orgSlug = (session as { activeOrgSlug?: string } | null)?.activeOrgSlug
   return (
     <main className="min-h-screen bg-white text-gray-900">
 
@@ -287,15 +290,26 @@ export default function HomePage() {
             <a href="#priser"        className="hover:text-gray-900 transition-colors">Priser</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-              Logga in
-            </Link>
-            <Link
-              href="/register"
-              className="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
-            >
-              Kom igång gratis
-            </Link>
+            {orgSlug ? (
+              <Link
+                href={`/${orgSlug}`}
+                className="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+              >
+                Till appen →
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                  Logga in
+                </Link>
+                <Link
+                  href="/register"
+                  className="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+                >
+                  Kom igång gratis
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -861,10 +875,10 @@ export default function HomePage() {
             <div>
               <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Lösningar</p>
               <nav className="space-y-2.5 text-sm text-gray-500">
-                <a href="#byra"         className="block hover:text-gray-800 transition-colors">Redovisningsbyråer</a>
-                <span className="block text-gray-400">Konsulter & frilansare</span>
-                <span className="block text-gray-400">Småföretag</span>
-                <span className="block text-gray-400">E-handel & lager</span>
+                <a href="#byra"              className="block hover:text-gray-800 transition-colors">Redovisningsbyråer</a>
+                <Link href="/konsulter"      className="block hover:text-gray-800 transition-colors">Konsulter & frilansare</Link>
+                <Link href="/smaforetag"     className="block hover:text-gray-800 transition-colors">Småföretag</Link>
+                <Link href="/e-handel"       className="block hover:text-gray-800 transition-colors">E-handel & lager</Link>
               </nav>
             </div>
 
@@ -889,7 +903,7 @@ export default function HomePage() {
           </div>
 
           <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
-            <span>© {new Date().getFullYear()} Endoo AB · Organisationsnummer: 559XXX-XXXX · Stockholm, Sverige 🇸🇪</span>
+            <span>© {new Date().getFullYear()} Endoo · Byggt i Sverige 🇸🇪</span>
             <div className="flex gap-6">
               <Link href="/privacy" className="hover:text-gray-600 transition-colors">Integritetspolicy</Link>
               <Link href="/terms"   className="hover:text-gray-600 transition-colors">Användarvillkor</Link>
