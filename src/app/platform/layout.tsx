@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import { SignOutButton } from "./SignOutButton"
 
 const navItems = [
   { href: "/platform/organizations", label: "Organisationer" },
@@ -31,10 +32,11 @@ export default async function PlatformLayout({ children }: { children: React.Rea
             </Link>
           ))}
         </nav>
-        <div className="p-4 border-t border-gray-700">
+        <div className="p-4 border-t border-gray-700 flex flex-col gap-2">
           <Link href="/" className="text-xs text-gray-500 hover:text-gray-300">
             ← Tillbaka till appen
           </Link>
+          <SignOutButton />
         </div>
       </aside>
 
