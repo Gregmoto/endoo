@@ -2,130 +2,265 @@ import Link from "next/link"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Endoo – Faktureringssystem för byråer och konsulter",
+  title: "Endoo – Ekonomiplattform för moderna företag och byråer",
+  description:
+    "Endoo samlar fakturering, bokföring, momsdeklaration, leverantörsfakturor och AI-assistans i ett modernt system. Byggt för Sverige med BAS-kontoplan, SIE-export och byråstöd.",
+  keywords:
+    "faktureringssystem, bokföringsprogram, ekonomisystem, byråsystem, momsdeklaration, SIE-export, BAS-kontoplan, leverantörsfaktura, OCR, AI-bokföring",
+  openGraph: {
+    title: "Endoo – Hela ekonomin. En plattform.",
+    description:
+      "Fakturering, bokföring, leverantörsfakturor, moms och AI — i ett modernt system byggt för svenska regler.",
+    url: "https://endoo.se",
+    siteName: "Endoo",
+    locale: "sv_SE",
+    type: "website",
+  },
   alternates: { canonical: "https://endoo.se" },
 }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-const FEATURES = [
+const PLATFORM_FEATURES = [
   {
     icon: "◧",
-    title: "Professionella fakturor på sekunder",
+    title: "Professionell fakturering",
     description:
-      "Skapa, skicka och följ upp fakturor med automatisk numrering, momsberäkning och PDF-export. Inga krångliga inställningar.",
+      "Skapa, skicka och följ upp fakturor med automatisk numrering, momsberäkning, PDF-export och direktutskick via e-post. Kreditnotor och delbetalningar inkluderat.",
+    tag: "Kärna",
   },
   {
     icon: "↺",
-    title: "Avtalsfakturering – aldrig missa en faktura",
+    title: "Avtalsfakturering",
     description:
-      "Sätt upp återkommande fakturering månadsvis, kvartalsvis eller årsvis. Systemet genererar fakturan automatiskt med snapshotade priser.",
+      "Sätt upp återkommande fakturering månadsvis, kvartalsvis eller årsvis. Systemet genererar fakturan automatiskt med snapshotade priser och duplikatskydd.",
+    tag: "Automatisering",
+  },
+  {
+    icon: "▤",
+    title: "Komplett bokföring",
+    description:
+      "Dubbelbokhållning med BAS-kontoplan, verifikationsserier (A, K, L), räkenskapsår och periodlåsning. Automatisk kontering vid fakturering och betalning.",
+    tag: "Bokföring",
+  },
+  {
+    icon: "◱",
+    title: "Finansiella rapporter",
+    description:
+      "Provbalans, resultaträkning och balansräkning i realtid. Huvudbok per konto och SIE4-export för revisorer och årsredovisning.",
+    tag: "Rapporter",
+  },
+  {
+    icon: "◨",
+    title: "Leverantörsfakturor & OCR",
+    description:
+      "Fotografera eller ladda upp fakturan — AI extraherar leverantör, belopp, OCR-nummer och momssats. Granska, godkänn och bokför med ett klick.",
+    tag: "AI",
+  },
+  {
+    icon: "◰",
+    title: "Momsdeklaration",
+    description:
+      "Beräkna moms per period automatiskt från bokföringen. Lås perioder med SHA-256-hash för revisionssäker snapshot. Exportera i SKV-format.",
+    tag: "Moms",
+  },
+  {
+    icon: "▣",
+    title: "Lagerhantering",
+    description:
+      "Spåra lagersaldo i realtid med rörligt genomsnitt. Inventering, inköp, försäljning och justeringstransaktioner — append-only ledger som aldrig ljuger.",
+    tag: "Lager",
+  },
+  {
+    icon: "⬡",
+    title: "API & integrationer",
+    description:
+      "REST API med API-nyckelautentisering, scope-baserade behörigheter och rate limiting. Koppla Zapier, er ERP eller egna system mot fakturor, kontakter och bokföring.",
+    tag: "API",
   },
   {
     icon: "◈",
-    title: "Hantera flera kunder enkelt",
+    title: "Kunder & kontakter",
     description:
-      "Strukturera alla dina kunder med kontaktpersoner, betalningsvillkor och fakturahistorik på ett ställe.",
-  },
-  {
-    icon: "◎",
-    title: "Betalningsuppföljning i realtid",
-    description:
-      "Se vilka fakturor som är betalda, förfallna eller delbetalda. Registrera betalningar manuellt och håll koll på saldot.",
-  },
-  {
-    icon: "◉",
-    title: "Produktregister med momsstöd",
-    description:
-      "Lägg upp produkter och tjänster med pris, enhet och momssats. Sök och fyll i fakturarader med ett klick.",
-  },
-  {
-    icon: "◫",
-    title: "Team och rollstyrning",
-    description:
-      "Bjud in medarbetare med rätt behörighet. Ägare, administratörer och läsare – granulär kontroll per konto.",
+      "Strukturerat kundregister med org-nummer, VAT-nummer, kontaktpersoner och fakturahistorik. Per-kund betalningsvillkor och standardinställningar.",
+    tag: "Kärna",
   },
 ]
 
+const ACCOUNTING_BULLETS = [
+  { icon: "✦", text: "BAS 2024-kontoplan förinladdad — klar att använda direkt" },
+  { icon: "✦", text: "Automatisk kontering vid faktura, betalning och kreditnota" },
+  { icon: "✦", text: "Verifikationsserier med atomär sekvens — aldrig glapp i numrering" },
+  { icon: "✦", text: "Periodlåsning och räkenskapsårsstängning" },
+  { icon: "✦", text: "SIE4-export för revisorer och årsredovisningsbyråer" },
+  { icon: "✦", text: "Provbalans, resultaträkning och balansräkning i realtid" },
+]
+
+const AI_BULLETS = [
+  "Fråga om balansen — få svar direkt ur bokföringen",
+  "Granska momsperioden innan deklaration",
+  "Identifiera obalanser och avvikelser",
+  "Konteringsförslag för leverantörsfakturor",
+  "Streaming-svar — inga laddtider, inga spinner",
+]
+
 const AGENCY_FEATURES = [
-  "Arbeta i kundkontots namn",
-  "Sätt åtkomstnivå per medarbetare",
-  "Full spårbarhet i aktivitetsloggen",
-  "Separata inställningar per konto",
+  { icon: "◈", title: "Arbeta i kundkontots namn", desc: "Impersonera kunden och fakturera i deras namn. Full spårbarhet i aktivitetsloggen." },
+  { icon: "◫", title: "Rollstyrning per medarbetare", desc: "Sätt åtkomstnivå per byrå-anställd och per kund — ägare, admin eller läsare." },
+  { icon: "▦", title: "Byråöversikt", desc: "Se alla dina kundkonton på ett ställe — vilka har förfallna fakturor, aktiva avtal eller öppna ärenden." },
+  { icon: "↺", title: "Separata inställningar", desc: "Varje kundkonto har egna fakturanummer, bankgiro, logotyp och momsperioder." },
 ]
 
 const PLANS = [
   {
     name: "Gratis",
-    price: "0 kr",
-    period: "för alltid",
-    description: "Perfekt för att komma igång.",
-    features: ["1 användare", "10 kontakter", "5 fakturor/mån", "PDF-export"],
+    price: "0",
+    period: "kr/mån",
+    description: "Kom igång utan kreditkort.",
+    highlighted: false,
+    features: [
+      "1 användare",
+      "5 fakturor per månad",
+      "10 kontakter",
+      "PDF-export",
+      "Grundläggande bokföring",
+    ],
     cta: "Kom igång",
     href: "/register",
-    highlighted: false,
   },
   {
     name: "Starter",
-    price: "299 kr",
-    period: "/månad",
+    price: "299",
+    period: "kr/mån",
     description: "För frilansare och småföretag.",
-    features: ["3 användare", "100 kontakter", "50 fakturor/mån", "E-postutskick", "Avtalsfakturering"],
+    highlighted: false,
+    features: [
+      "3 användare",
+      "Obegränsade fakturor",
+      "100 kontakter",
+      "Avtalsfakturering",
+      "Full bokföring & rapporter",
+      "Momsdeklaration",
+      "E-postutskick",
+    ],
     cta: "Prova Starter",
     href: "/register?plan=starter",
-    highlighted: true,
   },
   {
     name: "Pro",
-    price: "799 kr",
-    period: "/månad",
+    price: "799",
+    period: "kr/mån",
     description: "För byråer och växande team.",
-    features: ["10 användare", "1 000 kontakter", "500 fakturor/mån", "Byråläge", "Prioriterad support"],
+    highlighted: true,
+    features: [
+      "10 användare",
+      "Obegränsade fakturor & kontakter",
+      "Byråläge — hantera kundkonton",
+      "AI-assistent",
+      "Leverantörsfakturor med OCR",
+      "SIE4-export",
+      "Lagerhantering",
+      "API-åtkomst",
+      "Prioriterad support",
+    ],
     cta: "Prova Pro",
     href: "/register?plan=pro",
+  },
+  {
+    name: "Enterprise",
+    price: "Kontakta oss",
+    period: "",
+    description: "Skräddarsytt för större verksamheter.",
     highlighted: false,
+    features: [
+      "Obegränsade användare",
+      "SSO / SAML",
+      "Dedikerat API-stöd",
+      "SLA-avtal",
+      "Skräddarsydd onboarding",
+      "Revisors-export",
+    ],
+    cta: "Kontakta oss",
+    href: "mailto:enterprise@endoo.se",
   },
 ]
 
 const TESTIMONIALS = [
   {
-    quote: "Vi hanterar fakturering för 12 kunder och Endoo är det enda system som faktiskt förstår hur byråer jobbar.",
+    quote:
+      "Vi hanterar fakturering och bokföring för 14 kundkonton. Endoo är det enda system som faktiskt förstår hur byråer jobbar — vi behöver inte logga ut och in för varje kund.",
     name: "Anna K.",
     role: "Grundare, digital byrå",
+    initials: "AK",
+    color: "bg-violet-100 text-violet-700",
   },
   {
-    quote: "Avtalsfaktureringen sparar oss 3–4 timmar i månaden. Det bara tickar på utan att vi behöver tänka på det.",
+    quote:
+      "AI-assistenten sparar oss en timme per momsperiod. Jag frågar 'stämmer rutorna?' och får ett svar direkt ur vår bokföring — inte ett generiskt AI-svar.",
     name: "Marcus L.",
-    role: "Konsult, IT-tjänster",
+    role: "Ekonomiansvarig, konsultbolag",
+    initials: "ML",
+    color: "bg-blue-100 text-blue-700",
   },
   {
-    quote: "Äntligen ett system på svenska som inte känns som det kom från 2008. Snabbt, enkelt och ser bra ut.",
+    quote:
+      "Äntligen ett ekonomisystem på svenska som inte känns som det kom från 2008. OCR-läsaren på leverantörsfakturor fungerar bättre än det vi hade hos Fortnox.",
     name: "Sofia E.",
-    role: "Frilans kommunikatör",
+    role: "Grundare, e-handelsbolag",
+    initials: "SE",
+    color: "bg-rose-100 text-rose-700",
   },
+]
+
+const INTEGRATIONS = [
+  { name: "REST API", desc: "Cursor-paginerade endpoints för fakturor, kontakter, bokföring och lager" },
+  { name: "API-nycklar", desc: "Scope-baserade nycklar med rate limiting och revocation" },
+  { name: "SIE4-export", desc: "Standardformat för revisorer, årsredovisning och externa system" },
+  { name: "Stripe", desc: "Fakturabetalning och prenumerationshantering" },
+  { name: "Webhooks (snart)", desc: "Realtidshändelser för faktura betald, ny kund med mera" },
+  { name: "Zapier (snart)", desc: "No-code-koppling mot tusentals appar" },
 ]
 
 const FAQS = [
   {
-    q: "Kan jag hantera flera kunder med olika inställningar?",
-    a: "Ja. Varje konto har sina egna fakturainställningar, kontakter, produkter och historik. Som byrå kan du växla mellan kundkonton utan att logga ut.",
+    q: "Hur skiljer sig Endoo från Fortnox och Visma?",
+    a: "Endoo är byggt från grunden för moderna arbetsflöden — realtidsrapporter, AI-assistans och byråstöd direkt i grundprodukten. Vi har inga licensmoduler eller dold prissättning. Gränssnittet är snabbt och mobilvänligt, inte portat från en skrivbordsapplikation från 2005.",
   },
   {
-    q: "Fungerar Endoo för svenska moms och regler?",
-    a: "Absolut. Endoo hanterar 25%, 12% och 6% moms, stödjer organisationsnummer, bankgiro och korrekt fakturanumrering enligt Skatteverkets krav.",
+    q: "Kan jag hantera bokföringen i Endoo?",
+    a: "Ja. Endoo har komplett dubbelbokhållning med BAS 2024-kontoplan, verifikationsserier, räkenskapsår och periodlåsning. Fakturering och betalning bokförs automatiskt. Du kan också skapa manuella verifikat och exportera SIE4-filer för revisorn.",
   },
   {
-    q: "Hur fungerar avtalsfakturering?",
-    a: "Du skapar ett avtal med intervall (månadsvis, kvartalsvis, årsvis), lägger till rader och sätter ett startdatum. Systemet genererar fakturan automatiskt på rätt datum — med snapshotade priser och duplikatskydd.",
+    q: "Hur fungerar AI-assistenten?",
+    a: "AI-assistenten hämtar din faktiska bokföring, dina fakturor och ditt lagersaldo i realtid och svarar baserat på det — inte generiska råd. Du kan fråga 'stämmer mina momsrutor?', 'visa resultaträkningen för Q1' eller 'vilka fakturor är förfallna?'.",
   },
   {
-    q: "Kan jag exportera fakturor som PDF?",
-    a: "Ja, alla fakturor kan laddas ner som professionell PDF direkt från detaljsidan eller skickas som bilaga via e-post.",
+    q: "Kan jag som byrå hantera flera kunder?",
+    a: "Ja. Endoo har ett inbyggt byråläge där du kan arbeta direkt i kundkontots namn — fakturera, bokföra och rapportera — med full spårbarhet. Du ser alla dina kundkonton i en vy och kan byta utan att logga ut.",
   },
   {
-    q: "Vad händer om jag når gränsen för min plan?",
-    a: "Du får en tydlig varning när du närmar dig gränsen. Uppgradering sker direkt via Stripe och träder i kraft omedelbart.",
+    q: "Fungerar Endoo för svenska momsregler?",
+    a: "Absolut. Endoo hanterar 25%, 12% och 6% moms, momsperioder (månadsvis/kvartalsvis/årsvis), låsning av deklarerade perioder med revisionssäker hash och stödjer SKV-format. Fakturor uppfyller Skatteverkets krav på innehåll och numrering.",
   },
+  {
+    q: "Vad är SIE4-export och behöver jag det?",
+    a: "SIE4 är det svenska standardformatet för att exportera bokföring till revisorer, årsredovisningsbyråer och andra system. Om din revisor ber om 'SIE-filen' — det är det Endoo exporterar med ett klick.",
+  },
+  {
+    q: "Hur fungerar OCR på leverantörsfakturor?",
+    a: "Du laddar upp en PDF eller bild. Claude AI extraherar leverantörsnamn, belopp, OCR-nummer, förfallodatum och momssats. Du granskar, korrigerar vid behov och godkänner — systemet bokför automatiskt på rätt konton.",
+  },
+  {
+    q: "Har Endoo ett API?",
+    a: "Ja. Endoo erbjuder ett REST API med scope-baserade API-nycklar. Du kan hämta fakturor, kontakter, produkter, verifikat och lagersaldo. Webhooks och fler write-endpoints kommer i nästa fas.",
+  },
+]
+
+const STATS = [
+  { value: "< 2 min", label: "Från registrering till första faktura" },
+  { value: "BAS 2024", label: "Kontoplan förinladdad och klar" },
+  { value: "100%", label: "Momshantering enligt SKV-krav" },
+  { value: "99.9%", label: "Drifttid — Neon + Vercel infrastruktur" },
 ]
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -134,18 +269,22 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-white text-gray-900">
 
-      {/* ── Nav ── */}
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-extrabold text-indigo-600 tracking-tight">endoo</span>
-            <span className="hidden sm:inline text-xs font-medium bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">Beta</span>
+      {/* ── Nav ─────────────────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+              <span className="text-white text-sm font-black leading-none">E</span>
+            </div>
+            <span className="text-lg font-extrabold text-gray-900 tracking-tight">endoo</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-gray-600">
-            <a href="#funktioner" className="hover:text-gray-900 transition-colors">Funktioner</a>
-            <a href="#byra" className="hover:text-gray-900 transition-colors">För byråer</a>
-            <a href="#priser" className="hover:text-gray-900 transition-colors">Priser</a>
-            <a href="#faq" className="hover:text-gray-900 transition-colors">FAQ</a>
+          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
+            <a href="#funktioner"    className="hover:text-gray-900 transition-colors">Funktioner</a>
+            <a href="#bokforing"     className="hover:text-gray-900 transition-colors">Bokföring</a>
+            <a href="#ai"            className="hover:text-gray-900 transition-colors">AI-assistent</a>
+            <a href="#byra"          className="hover:text-gray-900 transition-colors">För byråer</a>
+            <a href="#api"           className="hover:text-gray-900 transition-colors">API</a>
+            <a href="#priser"        className="hover:text-gray-900 transition-colors">Priser</a>
           </nav>
           <div className="flex items-center gap-3">
             <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
@@ -161,85 +300,91 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50/60 to-white pt-20 pb-28 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-indigo-100 text-indigo-700 text-xs font-semibold rounded-full mb-8 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            Nu i beta · Gratis att testa
+      {/* ── Hero ────────────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden pt-24 pb-32 px-6">
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-indigo-50/30 to-white -z-10" />
+        <div className="absolute top-0 right-0 w-[600px] h-[500px] bg-indigo-100/50 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/4" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-100/40 rounded-full blur-3xl -z-10 -translate-x-1/3 translate-y-1/4" />
+
+        <div className="max-w-5xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white border border-indigo-100 text-indigo-700 text-xs font-semibold rounded-full mb-10 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Nu i beta · Gratis att testa · Byggt i Sverige 🇸🇪
           </div>
 
-          <h1 className="text-5xl sm:text-6xl font-extrabold text-gray-900 leading-tight tracking-tight mb-6">
-            Fakturering byggd för<br />
-            <span className="text-indigo-600">byråer och konsulter</span>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 leading-[1.05] tracking-tight mb-7">
+            Hela ekonomin.<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
+              En plattform.
+            </span>
           </h1>
 
-          <p className="text-xl text-gray-500 leading-relaxed mb-10 max-w-2xl mx-auto">
-            Hantera fakturering för dina kunder från ett enda verktyg. Professionella fakturor, avtalsfakturering, PDF-export och betalningsuppföljning — utan krångel.
+          <p className="text-xl sm:text-2xl text-gray-500 leading-relaxed mb-12 max-w-3xl mx-auto font-light">
+            Fakturering, bokföring, leverantörsfakturor, momsdeklaration och AI-assistans — i ett modernt system byggt för svenska regler. <span className="text-gray-700 font-medium">Äntligen ett alternativ till Fortnox och Visma som faktiskt känns modernt.</span>
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <Link
               href="/register"
-              className="w-full sm:w-auto px-8 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors text-lg shadow-md hover:shadow-lg"
+              className="w-full sm:w-auto px-9 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-all text-lg shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-200 hover:-translate-y-0.5"
             >
               Skapa konto gratis →
             </Link>
             <a
-              href="#priser"
-              className="w-full sm:w-auto px-8 py-3.5 border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-lg"
+              href="#funktioner"
+              className="w-full sm:w-auto px-9 py-4 bg-white border border-gray-200 text-gray-700 font-semibold rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all text-lg"
             >
-              Se priser
+              Se alla funktioner
             </a>
           </div>
 
-          {/* Social proof */}
           <p className="text-sm text-gray-400">
-            Inget kreditkort krävs · Kom igång på under 2 minuter · GDPR-säkert · Byggt i Sverige 🇸🇪
+            Inget kreditkort · Inga bindningstider · GDPR-säkert · Driftas i EU
           </p>
         </div>
-
-        {/* Decorative blobs */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-100/40 rounded-full blur-3xl -z-10 pointer-events-none" />
       </section>
 
-      {/* ── Stats ── */}
-      <section className="border-y border-gray-100 bg-gray-50/50 py-10">
-        <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {[
-            { value: "< 2 min", label: "Tid att skapa din första faktura" },
-            { value: "100%",    label: "Momshantering enligt svenska regler" },
-            { value: "0 kr",   label: "Att komma igång" },
-            { value: "99.9%",  label: "Drifttid (Neon + Vercel)" },
-          ].map(s => (
+      {/* ── Stats bar ───────────────────────────────────────────────────────── */}
+      <section className="border-y border-gray-100 bg-white py-10">
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {STATS.map(s => (
             <div key={s.label}>
-              <p className="text-3xl font-extrabold text-indigo-600 mb-1">{s.value}</p>
-              <p className="text-sm text-gray-500">{s.label}</p>
+              <p className="text-2xl sm:text-3xl font-black text-indigo-600 mb-1.5">{s.value}</p>
+              <p className="text-sm text-gray-500 leading-snug">{s.label}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── Features ── */}
-      <section id="funktioner" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Allt du behöver för smart fakturering</h2>
-            <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-              Från enkel fakturering till avancerad avtalsstyrning — Endoo växer med ditt företag.
+      {/* ── Platform features ───────────────────────────────────────────────── */}
+      <section id="funktioner" className="py-28 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-4">Plattformen</p>
+            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5 leading-tight">
+              Allt ditt företag behöver.<br />Ingenting du inte behöver.
+            </h2>
+            <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
+              Endoo är ingen samling av hopkopplade moduler — det är en plattform där fakturering, bokföring och rapporter pratar med varandra från dag ett.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FEATURES.map(f => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {PLATFORM_FEATURES.map(f => (
               <div
                 key={f.title}
-                className="p-7 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:shadow-md transition-all group"
+                className="group p-7 rounded-2xl border border-gray-100 bg-white hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-50 transition-all cursor-default"
               >
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-lg font-bold mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                  {f.icon}
+                <div className="flex items-start justify-between mb-5">
+                  <div className="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-xl font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                    {f.icon}
+                  </div>
+                  <span className="text-xs font-semibold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+                    {f.tag}
+                  </span>
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2 text-lg">{f.title}</h3>
+                <h3 className="font-bold text-gray-900 mb-2.5 text-lg leading-snug">{f.title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{f.description}</p>
               </div>
             ))}
@@ -247,61 +392,278 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Agency section ── */}
-      <section id="byra" className="bg-indigo-600 py-24 px-6">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      {/* ── Accounting deep-dive ────────────────────────────────────────────── */}
+      <section id="bokforing" className="py-28 px-6 bg-slate-900">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="inline-block px-3 py-1 bg-white/20 text-white text-xs font-semibold rounded-full mb-6 uppercase tracking-wide">
-              Byråläge
-            </div>
-            <h2 className="text-4xl font-extrabold text-white leading-tight mb-5">
-              Byggt för byråer som hanterar flera kunder
+            <p className="text-sm font-semibold text-indigo-400 uppercase tracking-widest mb-5">Bokföring</p>
+            <h2 className="text-4xl sm:text-5xl font-black text-white leading-tight mb-6">
+              Riktig bokföring.<br />Inte ett kalkylblad.
             </h2>
-            <p className="text-indigo-200 text-lg leading-relaxed mb-8">
-              Endoo är unikt i att låta byråer arbeta direkt i kundernas konton — med full spårbarhet och rollstyrning. Du ser allt, kunderna ser bara sitt.
+            <p className="text-slate-300 text-lg leading-relaxed mb-10">
+              Endoo har komplett dubbelbokhållning — inte ett förenklat kassaflöde. BAS 2024-kontoplanen är förinladdad och klar. Bokföringen uppdateras automatiskt när du fakturerar, registrerar en betalning eller godkänner en leverantörsfaktura.
             </p>
-            <ul className="space-y-3 mb-8">
-              {AGENCY_FEATURES.map(f => (
-                <li key={f} className="flex items-center gap-3 text-white">
-                  <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">✓</span>
-                  {f}
+            <ul className="space-y-3.5 mb-10">
+              {ACCOUNTING_BULLETS.map(b => (
+                <li key={b.text} className="flex items-start gap-3">
+                  <span className="text-indigo-400 text-sm mt-0.5 flex-shrink-0">{b.icon}</span>
+                  <span className="text-slate-300 text-sm leading-relaxed">{b.text}</span>
                 </li>
               ))}
             </ul>
             <Link
               href="/register"
-              className="inline-block px-7 py-3 bg-white text-indigo-700 font-semibold rounded-xl hover:bg-indigo-50 transition-colors"
+              className="inline-block px-7 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-500 transition-colors"
             >
-              Skapa byråkonto gratis →
+              Starta din bokföring gratis →
             </Link>
           </div>
 
-          <div className="hidden md:block">
-            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 border border-white/20 space-y-3">
-              {["Kund AB · 3 fakturor", "Webbyrån Norr · 1 förfallen", "Konsult & Co · 5 aktiva avtal", "Startup XYZ · Betald idag ✓"].map(item => (
-                <div key={item} className="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-3">
-                  <div className="w-2 h-2 rounded-full bg-green-400 flex-shrink-0" />
-                  <span className="text-white text-sm font-medium">{item}</span>
+          {/* Code-style illustration */}
+          <div className="rounded-2xl bg-slate-800 border border-slate-700 overflow-hidden">
+            <div className="flex items-center gap-2 px-5 py-3.5 border-b border-slate-700">
+              <div className="w-3 h-3 rounded-full bg-red-400/60" />
+              <div className="w-3 h-3 rounded-full bg-yellow-400/60" />
+              <div className="w-3 h-3 rounded-full bg-green-400/60" />
+              <span className="ml-3 text-xs text-slate-500 font-mono">Verifikat A-0042 · 2025-05-17</span>
+            </div>
+            <div className="p-6 font-mono text-sm space-y-2">
+              {[
+                { acc: "1510", name: "Kundfordringar", dr: "18 750", cr: "—", color: "text-emerald-400" },
+                { acc: "3001", name: "Försäljning 25%", dr: "—", cr: "15 000", color: "text-slate-300" },
+                { acc: "2610", name: "Utgående moms 25%", dr: "—", cr: "3 750",  color: "text-slate-300" },
+              ].map(row => (
+                <div key={row.acc} className="flex items-center gap-4">
+                  <span className="text-indigo-400 w-12">{row.acc}</span>
+                  <span className="text-slate-400 flex-1 text-xs">{row.name}</span>
+                  <span className={`w-16 text-right ${row.color}`}>{row.dr}</span>
+                  <span className={`w-16 text-right ${row.color}`}>{row.cr}</span>
                 </div>
               ))}
+              <div className="pt-3 border-t border-slate-700 flex items-center gap-4">
+                <span className="text-slate-600 w-12">—</span>
+                <span className="text-slate-600 flex-1 text-xs">Summa</span>
+                <span className="text-indigo-300 w-16 text-right font-bold">18 750</span>
+                <span className="text-indigo-300 w-16 text-right font-bold">18 750</span>
+              </div>
+              <div className="pt-2">
+                <span className="text-xs text-emerald-400 font-medium">✓ Balanserat</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Testimonials ── */}
+      {/* ── AI section ──────────────────────────────────────────────────────── */}
+      <section id="ai" className="py-28 px-6 bg-gradient-to-b from-white to-indigo-50/40">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+          {/* Chat illustration */}
+          <div className="rounded-2xl bg-white border border-gray-100 shadow-xl shadow-gray-100 overflow-hidden order-last lg:order-first">
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+                <span className="text-white text-xs font-black">E</span>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Endoo AI</p>
+                <p className="text-xs text-gray-400">Ansluten till din bokföring</p>
+              </div>
+              <div className="ml-auto flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-xs text-gray-400">Live</span>
+              </div>
+            </div>
+            <div className="p-5 space-y-4">
+              <div className="flex justify-end">
+                <div className="bg-indigo-600 text-white text-sm px-4 py-2.5 rounded-2xl rounded-tr-sm max-w-xs">
+                  Stämmer mina momsrutor för april?
+                </div>
+              </div>
+              <div className="flex gap-3 items-start">
+                <div className="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-indigo-600 text-xs font-black">E</span>
+                </div>
+                <div className="bg-gray-50 border border-gray-100 text-sm text-gray-700 px-4 py-3 rounded-2xl rounded-tl-sm max-w-sm leading-relaxed">
+                  Jag har granskat din bokföring för april 2025. Ruta 05 visar <strong>142 800 kr</strong> i momspliktiga intäkter och ruta 10 <strong>35 700 kr</strong> i utgående moms. Ingående moms (ruta 48) är <strong>8 250 kr</strong>. Att betala: <strong>27 450 kr</strong>. Allt ser korrekt ut. ✓
+                </div>
+              </div>
+              <div className="flex justify-end">
+                <div className="bg-indigo-600 text-white text-sm px-4 py-2.5 rounded-2xl rounded-tr-sm max-w-xs">
+                  Vilka fakturor är förfallna?
+                </div>
+              </div>
+              <div className="flex gap-3 items-start">
+                <div className="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-indigo-600 text-xs font-black">E</span>
+                </div>
+                <div className="bg-gray-50 border border-gray-100 text-sm text-gray-700 px-4 py-3 rounded-2xl rounded-tl-sm max-w-sm leading-relaxed">
+                  Du har <strong>3 förfallna fakturor</strong> med ett totalt utestående belopp på <strong>54 250 kr</strong>. Äldsta är INV-0089 till Kund AB, förfallen för 14 dagar sedan.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-5">AI-assistent</p>
+            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 leading-tight mb-6">
+              Fråga din AI.<br />Få svar ur din<br />faktiska data.
+            </h2>
+            <p className="text-gray-500 text-lg leading-relaxed mb-8">
+              Endoos AI-assistent är inte ett generiskt chatbot — den läser din bokföring, dina fakturor och ditt lager i realtid och svarar baserat på dina faktiska siffror. Powered by Claude.
+            </p>
+            <ul className="space-y-3 mb-10">
+              {AI_BULLETS.map(b => (
+                <li key={b} className="flex items-center gap-3 text-sm text-gray-600">
+                  <span className="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">✓</span>
+                  {b}
+                </li>
+              ))}
+            </ul>
+            <Link href="/register?plan=pro" className="inline-block px-7 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors">
+              Prova AI-assistenten →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Agency section ──────────────────────────────────────────────────── */}
+      <section id="byra" className="py-28 px-6 bg-indigo-600">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-block px-3.5 py-1.5 bg-white/15 text-white text-xs font-bold rounded-full uppercase tracking-widest mb-6">
+              Byråläge
+            </div>
+            <h2 className="text-4xl sm:text-5xl font-black text-white leading-tight mb-5">
+              Byggt för byråer som<br />hanterar flera kunder
+            </h2>
+            <p className="text-indigo-200 text-lg max-w-2xl mx-auto leading-relaxed">
+              Endoo är det enda ekonomisystemet med inbyggt byråstöd. Arbeta i dina kunders konton, fakturera i deras namn och håll full kontroll — utan att logga ut och in.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-16">
+            {AGENCY_FEATURES.map(f => (
+              <div key={f.title} className="bg-white/10 backdrop-blur rounded-2xl p-6 border border-white/15">
+                <div className="text-2xl mb-4 text-white/60">{f.icon}</div>
+                <h3 className="font-bold text-white mb-2 text-base">{f.title}</h3>
+                <p className="text-indigo-200 text-sm leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Client list illustration */}
+          <div className="max-w-md mx-auto bg-white/10 rounded-2xl border border-white/20 overflow-hidden mb-12">
+            <div className="px-5 py-3.5 border-b border-white/10">
+              <p className="text-white text-sm font-semibold">Mina kundkonton</p>
+            </div>
+            {[
+              { name: "Kund AB",        status: "3 fakturor",          dot: "bg-emerald-400" },
+              { name: "Webbyrån Norr",  status: "1 förfallen · Påminn", dot: "bg-red-400" },
+              { name: "Konsult & Co",   status: "5 aktiva avtal",      dot: "bg-indigo-300" },
+              { name: "Startup XYZ",    status: "Betalad idag ✓",      dot: "bg-emerald-400" },
+              { name: "Kreativa Studio", status: "Bokföring: 2 poster", dot: "bg-amber-400" },
+            ].map(item => (
+              <div key={item.name} className="flex items-center gap-3 px-5 py-3.5 border-b border-white/5 hover:bg-white/5 transition-colors">
+                <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.dot}`} />
+                <span className="text-white text-sm font-medium flex-1">{item.name}</span>
+                <span className="text-indigo-300 text-xs">{item.status}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link
+              href="/register"
+              className="inline-block px-9 py-4 bg-white text-indigo-700 font-bold rounded-2xl hover:bg-indigo-50 transition-colors text-lg shadow-xl shadow-indigo-900/20"
+            >
+              Skapa byråkonto gratis →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── API & integrations ──────────────────────────────────────────────── */}
+      <section id="api" className="py-28 px-6">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-5">API & Integrationer</p>
+            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 leading-tight mb-6">
+              Koppla Endoo till<br />resten av din stack.
+            </h2>
+            <p className="text-gray-500 text-lg leading-relaxed mb-10">
+              REST API med scope-baserade API-nycklar, cursor-paginering och rate limiting. Hämta fakturor, kontakter, bokföring och lager från dina egna system eller via Zapier.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {INTEGRATIONS.map(i => (
+                <div key={i.name} className="p-4 rounded-xl border border-gray-100 bg-gray-50/50">
+                  <p className="font-semibold text-gray-900 text-sm mb-1">{i.name}</p>
+                  <p className="text-xs text-gray-500 leading-relaxed">{i.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Code block */}
+          <div className="rounded-2xl bg-slate-900 overflow-hidden shadow-2xl shadow-slate-200">
+            <div className="flex items-center gap-2 px-5 py-3.5 border-b border-slate-700">
+              <div className="w-3 h-3 rounded-full bg-red-400/60" />
+              <div className="w-3 h-3 rounded-full bg-yellow-400/60" />
+              <div className="w-3 h-3 rounded-full bg-green-400/60" />
+              <span className="ml-3 text-xs text-slate-500 font-mono">GET /api/v1/invoices</span>
+            </div>
+            <div className="p-6 font-mono text-xs leading-relaxed">
+              <div className="text-slate-500 mb-3">{'// Autentisera med Bearer token'}</div>
+              <div>
+                <span className="text-violet-400">curl</span>
+                <span className="text-slate-300"> https://endoo.se/api/v1/invoices \</span>
+              </div>
+              <div className="pl-4">
+                <span className="text-slate-500">-H </span>
+                <span className="text-emerald-400">&quot;Authorization: Bearer endo_live_...&quot;</span>
+              </div>
+              <div className="mt-5 text-slate-500">{'// Svar'}</div>
+              <div className="mt-2 text-slate-300">{'{'}</div>
+              <div className="pl-4">
+                <div><span className="text-blue-400">&quot;object&quot;</span><span className="text-slate-400">: </span><span className="text-emerald-400">&quot;list&quot;</span><span className="text-slate-400">,</span></div>
+                <div><span className="text-blue-400">&quot;data&quot;</span><span className="text-slate-400">: [</span></div>
+                <div className="pl-4 text-slate-400">{'{'}</div>
+                <div className="pl-8"><span className="text-blue-400">&quot;id&quot;</span><span className="text-slate-400">: </span><span className="text-emerald-400">&quot;inv_uuid...&quot;</span><span className="text-slate-400">,</span></div>
+                <div className="pl-8"><span className="text-blue-400">&quot;invoice_number&quot;</span><span className="text-slate-400">: </span><span className="text-emerald-400">&quot;INV-0042&quot;</span><span className="text-slate-400">,</span></div>
+                <div className="pl-8"><span className="text-blue-400">&quot;total_amount&quot;</span><span className="text-slate-400">: </span><span className="text-amber-400">18750</span><span className="text-slate-400">,</span></div>
+                <div className="pl-8"><span className="text-blue-400">&quot;status&quot;</span><span className="text-slate-400">: </span><span className="text-emerald-400">&quot;paid&quot;</span></div>
+                <div className="pl-4 text-slate-400">{'}'}</div>
+                <div className="text-slate-400">],</div>
+                <div><span className="text-blue-400">&quot;has_more&quot;</span><span className="text-slate-400">: </span><span className="text-amber-400">false</span></div>
+              </div>
+              <div className="text-slate-300">{'}'}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ────────────────────────────────────────────────────── */}
       <section className="py-24 px-6 bg-gray-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Vad våra användare säger</h2>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-4">Vad användarna säger</p>
+            <h2 className="text-4xl font-black text-gray-900">Företag som redan kört igång</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {TESTIMONIALS.map(t => (
-              <div key={t.name} className="bg-white rounded-2xl border border-gray-100 p-7 shadow-sm">
-                <p className="text-gray-600 leading-relaxed mb-5 text-sm">"{t.quote}"</p>
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{t.role}</p>
+              <div key={t.name} className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex mb-5">
+                  {[1,2,3,4,5].map(s => (
+                    <span key={s} className="text-amber-400 text-sm">★</span>
+                  ))}
+                </div>
+                <p className="text-gray-600 leading-relaxed mb-6 text-sm">"{t.quote}"</p>
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${t.color}`}>
+                    {t.initials}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{t.role}</p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -309,42 +671,52 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Pricing ── */}
-      <section id="priser" className="py-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Enkla priser, inga dolda avgifter</h2>
-            <p className="text-lg text-gray-500">Börja gratis. Uppgradera när du växer.</p>
+      {/* ── Pricing ─────────────────────────────────────────────────────────── */}
+      <section id="priser" className="py-28 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-20">
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-4">Priser</p>
+            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5">Enkla priser. Inga dolda avgifter.</h2>
+            <p className="text-lg text-gray-500">Börja gratis. Uppgradera när du växer. Inga bindningstider.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 items-stretch">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
             {PLANS.map(p => (
               <div
                 key={p.name}
-                className={`relative rounded-2xl p-8 border flex flex-col ${
+                className={`relative rounded-2xl p-7 border flex flex-col ${
                   p.highlighted
-                    ? "border-indigo-400 shadow-xl shadow-indigo-100 bg-indigo-600 text-white"
-                    : "border-gray-200 bg-white text-gray-900"
+                    ? "border-indigo-500 shadow-2xl shadow-indigo-100 bg-indigo-600 ring-4 ring-indigo-100"
+                    : "border-gray-200 bg-white"
                 }`}
               >
                 {p.highlighted && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 bg-amber-400 text-amber-900 text-xs font-bold rounded-full uppercase tracking-wide">
-                    Populärast
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-amber-400 text-amber-900 text-xs font-black rounded-full uppercase tracking-wide shadow-lg">
+                    Mest populär
                   </div>
                 )}
-                <div className="mb-6">
-                  <h3 className={`font-bold text-lg mb-1 ${p.highlighted ? "text-white" : "text-gray-900"}`}>{p.name}</h3>
+
+                <div className="mb-7">
+                  <h3 className={`font-black text-xl mb-1 ${p.highlighted ? "text-white" : "text-gray-900"}`}>
+                    {p.name}
+                  </h3>
                   <div className="flex items-baseline gap-1 mb-2">
-                    <span className={`text-4xl font-extrabold ${p.highlighted ? "text-white" : "text-gray-900"}`}>{p.price}</span>
-                    <span className={`text-sm ${p.highlighted ? "text-indigo-200" : "text-gray-400"}`}>{p.period}</span>
+                    {p.period ? (
+                      <>
+                        <span className={`text-4xl font-black ${p.highlighted ? "text-white" : "text-gray-900"}`}>{p.price}</span>
+                        <span className={`text-sm ${p.highlighted ? "text-indigo-200" : "text-gray-400"}`}>{p.period}</span>
+                      </>
+                    ) : (
+                      <span className={`text-2xl font-black ${p.highlighted ? "text-white" : "text-gray-900"}`}>{p.price}</span>
+                    )}
                   </div>
                   <p className={`text-sm ${p.highlighted ? "text-indigo-200" : "text-gray-500"}`}>{p.description}</p>
                 </div>
 
                 <ul className="space-y-2.5 flex-1 mb-8">
                   {p.features.map(f => (
-                    <li key={f} className={`flex items-center gap-2.5 text-sm ${p.highlighted ? "text-indigo-100" : "text-gray-600"}`}>
-                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-xs flex-shrink-0 ${p.highlighted ? "bg-white/20 text-white" : "bg-indigo-50 text-indigo-600"}`}>✓</span>
+                    <li key={f} className={`flex items-start gap-2.5 text-sm ${p.highlighted ? "text-indigo-100" : "text-gray-600"}`}>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 ${p.highlighted ? "bg-white/20 text-white" : "bg-indigo-50 text-indigo-600"}`}>✓</span>
                       {f}
                     </li>
                   ))}
@@ -352,10 +724,12 @@ export default function HomePage() {
 
                 <Link
                   href={p.href}
-                  className={`block text-center py-3 rounded-xl font-semibold text-sm transition-colors ${
+                  className={`block text-center py-3.5 rounded-xl font-bold text-sm transition-all ${
                     p.highlighted
                       ? "bg-white text-indigo-700 hover:bg-indigo-50"
-                      : "bg-indigo-600 text-white hover:bg-indigo-700"
+                      : p.name === "Enterprise"
+                        ? "border-2 border-gray-200 text-gray-700 hover:border-indigo-300 hover:text-indigo-600"
+                        : "bg-indigo-600 text-white hover:bg-indigo-700"
                   }`}
                 >
                   {p.cta}
@@ -364,80 +738,162 @@ export default function HomePage() {
             ))}
           </div>
 
-          <p className="text-center text-sm text-gray-400 mt-8">
-            Enterprise-plan? <a href="mailto:hej@endoo.se" className="text-indigo-600 hover:underline">Kontakta oss</a> för skräddarsydda villkor och SLA.
-          </p>
+          <div className="mt-10 text-center">
+            <p className="text-sm text-gray-400">
+              Alla priser exkl. moms. Faktureringscykel: månadsvis. Avsluta när du vill.{" "}
+              <a href="mailto:enterprise@endoo.se" className="text-indigo-600 hover:underline">Kontakta oss</a>{" "}
+              för Enterprise-villkor och SLA.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* ── FAQ ── */}
-      <section id="faq" className="py-24 px-6 bg-gray-50">
+      {/* ── FAQ ─────────────────────────────────────────────────────────────── */}
+      <section id="faq" className="py-28 px-6 bg-gray-50">
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Vanliga frågor</h2>
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-4">FAQ</p>
+            <h2 className="text-4xl font-black text-gray-900">Vanliga frågor</h2>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {FAQS.map(f => (
-              <details key={f.q} className="group bg-white rounded-xl border border-gray-100 px-6 py-5 cursor-pointer">
-                <summary className="flex items-center justify-between font-semibold text-gray-900 list-none">
-                  {f.q}
-                  <span className="ml-4 text-gray-400 group-open:rotate-180 transition-transform text-lg">▼</span>
+              <details key={f.q} className="group bg-white rounded-2xl border border-gray-100 px-7 py-5 cursor-pointer hover:border-indigo-100 transition-colors">
+                <summary className="flex items-center justify-between font-semibold text-gray-900 text-sm list-none gap-4">
+                  <span>{f.q}</span>
+                  <span className="text-gray-300 group-open:text-indigo-500 text-xl flex-shrink-0 transition-colors group-open:rotate-45 duration-200">+</span>
                 </summary>
-                <p className="mt-3 text-sm text-gray-500 leading-relaxed">{f.a}</p>
+                <p className="mt-4 text-sm text-gray-500 leading-relaxed pr-4">{f.a}</p>
               </details>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Final CTA ── */}
-      <section className="py-24 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl font-extrabold text-gray-900 mb-5">
-            Redo att ta kontrollen<br />över din fakturering?
-          </h2>
-          <p className="text-lg text-gray-500 mb-10">
-            Skapa ett gratis konto på under 2 minuter. Inget kreditkort. Inga bindningstider.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/register"
-              className="w-full sm:w-auto px-10 py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors text-lg shadow-lg hover:shadow-xl"
-            >
-              Skapa konto gratis →
+      {/* ── Mid CTA — Byråer ────────────────────────────────────────────────── */}
+      <section className="py-20 px-6 border-t border-gray-100">
+        <div className="max-w-4xl mx-auto grid sm:grid-cols-2 gap-6">
+          <div className="bg-indigo-50 rounded-2xl p-8 border border-indigo-100">
+            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">För frilansare</p>
+            <h3 className="text-xl font-black text-gray-900 mb-3">Kom igång på 2 minuter</h3>
+            <p className="text-sm text-gray-500 leading-relaxed mb-6">
+              Skapa ett konto, lägg till en kund och skicka din första faktura — allt gratis, inga kreditkort.
+            </p>
+            <Link href="/register" className="inline-block px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors">
+              Skapa gratis konto →
             </Link>
-            <Link
-              href="/login"
-              className="w-full sm:w-auto px-10 py-4 border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-lg"
-            >
-              Logga in
+          </div>
+          <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800">
+            <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-3">För byråer</p>
+            <h3 className="text-xl font-black text-white mb-3">Hantera alla dina kunder</h3>
+            <p className="text-sm text-slate-400 leading-relaxed mb-6">
+              Byråläget i Pro-planen låter dig arbeta i kundens konto, fakturera i deras namn och se allt i en vy.
+            </p>
+            <Link href="/register?plan=pro" className="inline-block px-5 py-2.5 bg-white text-slate-900 text-sm font-semibold rounded-xl hover:bg-gray-100 transition-colors">
+              Prova Pro gratis →
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-gray-100 py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
-            <div>
-              <span className="text-xl font-extrabold text-indigo-600">endoo</span>
-              <p className="text-xs text-gray-400 mt-1">Faktureringssystem för moderna byråer</p>
-            </div>
-            <nav className="flex flex-wrap gap-6 text-sm text-gray-500">
-              <a href="#funktioner" className="hover:text-gray-700">Funktioner</a>
-              <a href="#byra"       className="hover:text-gray-700">För byråer</a>
-              <a href="#priser"     className="hover:text-gray-700">Priser</a>
-              <a href="#faq"        className="hover:text-gray-700">FAQ</a>
-              <Link href="/login"   className="hover:text-gray-700">Logga in</Link>
-              <Link href="/register" className="hover:text-gray-700">Registrera</Link>
-            </nav>
+      {/* ── Final CTA ───────────────────────────────────────────────────────── */}
+      <section className="py-28 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="w-16 h-16 rounded-3xl bg-indigo-600 flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-indigo-200">
+            <span className="text-white text-3xl font-black">E</span>
           </div>
-          <div className="border-t border-gray-100 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-gray-400">
-            <span>© {new Date().getFullYear()} Endoo AB · Fakturerings&shy;system · Byggt i Sverige 🇸🇪</span>
-            <div className="flex gap-5">
-              <Link href="/privacy" className="hover:text-gray-600">Integritetspolicy</Link>
-              <Link href="/terms"   className="hover:text-gray-600">Användarvillkor</Link>
+          <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-6 leading-tight">
+            Redo att byta till ett<br />ekonomisystem som<br />faktiskt fungerar?
+          </h2>
+          <p className="text-lg text-gray-500 mb-12 leading-relaxed">
+            Skapa ett konto gratis och upplev skillnaden. Inget kreditkort. Inga bindningstider. Flytta din data när du vill.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/register"
+              className="w-full sm:w-auto px-10 py-4 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all text-lg shadow-xl shadow-indigo-200 hover:shadow-2xl hover:shadow-indigo-200 hover:-translate-y-0.5"
+            >
+              Skapa konto gratis →
+            </Link>
+            <a
+              href="mailto:hej@endoo.se"
+              className="w-full sm:w-auto px-10 py-4 border-2 border-gray-200 text-gray-700 font-semibold rounded-2xl hover:border-indigo-300 hover:text-indigo-600 transition-all text-lg"
+            >
+              Boka en demo
+            </a>
+          </div>
+          <p className="mt-8 text-xs text-gray-400">
+            Inget kreditkort · GDPR-säkert · Data lagras i EU · Byggt och driftat i Sverige 🇸🇪
+          </p>
+        </div>
+      </section>
+
+      {/* ── Footer ──────────────────────────────────────────────────────────── */}
+      <footer className="border-t border-gray-100 bg-gray-50 py-16 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+            {/* Brand */}
+            <div className="col-span-2 md:col-span-1 lg:col-span-1">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
+                  <span className="text-white text-xs font-black">E</span>
+                </div>
+                <span className="text-lg font-extrabold text-gray-900">endoo</span>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Ekonomiplattform för moderna företag och byråer. Byggt i Sverige.
+              </p>
+            </div>
+
+            {/* Produkt */}
+            <div>
+              <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Produkt</p>
+              <nav className="space-y-2.5 text-sm text-gray-500">
+                <a href="#funktioner"   className="block hover:text-gray-800 transition-colors">Funktioner</a>
+                <a href="#bokforing"    className="block hover:text-gray-800 transition-colors">Bokföring</a>
+                <a href="#ai"           className="block hover:text-gray-800 transition-colors">AI-assistent</a>
+                <a href="#byra"         className="block hover:text-gray-800 transition-colors">För byråer</a>
+                <a href="#api"          className="block hover:text-gray-800 transition-colors">API</a>
+                <a href="#priser"       className="block hover:text-gray-800 transition-colors">Priser</a>
+              </nav>
+            </div>
+
+            {/* Lösningar */}
+            <div>
+              <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Lösningar</p>
+              <nav className="space-y-2.5 text-sm text-gray-500">
+                <a href="#byra"         className="block hover:text-gray-800 transition-colors">Redovisningsbyråer</a>
+                <span className="block text-gray-400">Konsulter & frilansare</span>
+                <span className="block text-gray-400">Småföretag</span>
+                <span className="block text-gray-400">E-handel & lager</span>
+              </nav>
+            </div>
+
+            {/* Resurser */}
+            <div>
+              <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Resurser</p>
+              <nav className="space-y-2.5 text-sm text-gray-500">
+                <a href="#faq"          className="block hover:text-gray-800 transition-colors">Vanliga frågor</a>
+                <a href="mailto:hej@endoo.se" className="block hover:text-gray-800 transition-colors">Support</a>
+                <a href="mailto:enterprise@endoo.se" className="block hover:text-gray-800 transition-colors">Enterprise</a>
+              </nav>
+            </div>
+
+            {/* Konto */}
+            <div>
+              <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Konto</p>
+              <nav className="space-y-2.5 text-sm text-gray-500">
+                <Link href="/login"     className="block hover:text-gray-800 transition-colors">Logga in</Link>
+                <Link href="/register"  className="block hover:text-gray-800 transition-colors">Skapa konto</Link>
+              </nav>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+            <span>© {new Date().getFullYear()} Endoo AB · Organisationsnummer: 559XXX-XXXX · Stockholm, Sverige 🇸🇪</span>
+            <div className="flex gap-6">
+              <Link href="/privacy" className="hover:text-gray-600 transition-colors">Integritetspolicy</Link>
+              <Link href="/terms"   className="hover:text-gray-600 transition-colors">Användarvillkor</Link>
+              <Link href="/cookies" className="hover:text-gray-600 transition-colors">Cookies</Link>
             </div>
           </div>
         </div>
