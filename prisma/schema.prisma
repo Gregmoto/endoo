@@ -176,6 +176,19 @@ enum ExtractionStatus {
   failed
 }
 
+enum VatPeriodType {
+  monthly
+  quarterly
+  yearly
+}
+
+enum VatPeriodStatus {
+  open
+  calculated
+  submitted
+  locked
+}
+
 // ─────────────────────────────────────────────
 // ORGANIZATIONS — tenants
 // Every paying account is one row here.
@@ -281,6 +294,9 @@ model Organization {
   // Supplier invoices
   suppliers             Supplier[]
   supplierInvoices      SupplierInvoice[]
+
+  // VAT
+  vatPeriods            VatPeriod[]
 
   @@index([slug])
   @@index([type])
@@ -1287,4 +1303,47 @@ model SupplierInvoice {
   @@index([duplicateHash])
   @@index([organizationId, supplierId, invoiceNumber])
   @@map("supplier_invoices")
+}
+
+// ─────────────────────────────────────────────
+// VAT PERIOD — Momsredovisningsperiod
+// TENANT-SCOPED: organization_id required
+// When locked: amounts are frozen and cannot change.
+// ─────────────────────────────────────────────
+model VatPeriod {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String          @db.Uuid
+  periodType     VatPeriodType
+  periodStart    DateTime        @db.Date
+  periodEnd      DateTime        @db.Date
+  status         VatPeriodStatus @default(open)
+
+  // Calculated amounts (öre) — null until calculated, frozen when locked
+  box05 BigInt?  // Momspliktiga försäljningar 25% (underlag)
+  box06 BigInt?  // Momspliktiga försäljningar 12%
+  box07 BigInt?  // Momspliktiga försäljningar 6%
+  box10 BigInt?  // Utgående moms 25%
+  box11 BigInt?  // Utgående moms 12%
+  box12 BigInt?  // Utgående moms 6%
+  box48 BigInt?  // Ingående moms (avdragsgill)
+  box49 BigInt?  // Att betala (positiv) / Att återfå (negativ)
+
+  // Snapshot hash (SHA-256 of amounts when locked)
+  snapshotHash   String?
+
+  calculatedAt       DateTime?
+  submittedAt        DateTime?
+  submittedByUserId  String?   @db.Uuid
+  lockedAt           DateTime?
+  lockedByUserId     String?   @db.Uuid
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, periodStart, periodEnd])
+  @@index([organizationId, status])
+  @@index([organizationId, periodStart])
+  @@map("vat_periods")
 }

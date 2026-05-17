@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { label: "Avtal",               href: "/contracts",          icon: "↺" },
   { label: "Betalningar",         href: "/payments",           icon: "◎" },
   { label: "Rapporter",           href: "/reports",            icon: "◱" },
+  { label: "Moms",               href: "/tax/vat",            icon: "◰" },
 ]
 
 const BOTTOM_ITEMS = [

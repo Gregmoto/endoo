@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { Sidebar } from "@/components/layout/sidebar"
 import { ImpersonationBanner } from "@/components/layout/ImpersonationBanner"
+import { AiShell } from "@/components/ai/AiShell"
 
 export default async function DashboardLayout({
   children,
@@ -61,9 +62,11 @@ export default async function DashboardLayout({
         userEmail={session.user.email}
         isImpersonating={isImpersonating}
       />
-      <main className={`ml-56 ${isImpersonating ? "mt-10" : ""}`}>
-        {children}
-      </main>
+      <AiShell>
+        <main className={`ml-56 pt-12 ${isImpersonating ? "mt-10" : ""}`}>
+          {children}
+        </main>
+      </AiShell>
     </div>
   )
 }
