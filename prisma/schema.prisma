@@ -166,6 +166,14 @@ enum FiscalYearStatus {
   locked  // archived — no mutations at all
 }
 
+enum ProjectStatus {
+  planning    // skapad men ej startad
+  active      // pågående
+  on_hold     // pausad
+  completed   // avslutad — inga nya postningar
+  archived    // arkiverad — dold i UI
+}
+
 enum AccountingPeriodStatus {
   open    // new journals allowed
   locked  // soft lock — admins can unlock with mandatory reason
@@ -462,6 +470,14 @@ model Organization {
   accountingPeriods     AccountingPeriod[]
   accountingPeriodEvents AccountingPeriodEvent[]
 
+  // Dimensions
+  dimensionAxes         DimensionAxis[]
+  dimensions            Dimension[]
+  journalEntryDimensions JournalEntryDimension[]
+  invoiceLineDimensions  InvoiceLineItemDimension[]
+  supplierInvoiceDimensions SupplierInvoiceDimension[]
+  accountDimensionRules  AccountDimensionRule[]
+
   // Supplier invoices
   suppliers             Supplier[]
   supplierInvoices      SupplierInvoice[]
@@ -572,6 +588,10 @@ model User {
   periodsLocked       AccountingPeriod[]     @relation("PeriodLockedBy")
   periodsClosed       AccountingPeriod[]     @relation("PeriodClosedBy")
   periodEvents        AccountingPeriodEvent[] @relation("PeriodEventUser")
+
+  // Dimensions
+  dimensionsOwned     Dimension[]            @relation("DimensionOwner")
+  dimensionForces     JournalEntryDimension[] @relation("DimensionForceUser")
 
   @@index([email])
   @@index([isPlatformAdmin])
@@ -968,6 +988,7 @@ model InvoiceLineItem {
   invoice      Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   product      Product?     @relation(fields: [productId], references: [id], onDelete: SetNull)
+  dimensions   InvoiceLineItemDimension[]
 
   @@index([invoiceId])
   @@index([organizationId])
@@ -1214,8 +1235,9 @@ model Account {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  journalEntries JournalEntry[]
+  organization      Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  journalEntries    JournalEntry[]
+  dimensionRules    AccountDimensionRule[]
 
   @@unique([organizationId, number])
   @@index([organizationId])
@@ -1366,14 +1388,204 @@ model JournalEntry {
 
   createdAt DateTime @default(now())
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  journal      Journal      @relation(fields: [journalId],      references: [id], onDelete: Restrict)
-  account      Account      @relation(fields: [accountId],      references: [id], onDelete: Restrict)
+  organization Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  journal      Journal                 @relation(fields: [journalId],      references: [id], onDelete: Restrict)
+  account      Account                 @relation(fields: [accountId],      references: [id], onDelete: Restrict)
+  dimensions   JournalEntryDimension[]
 
   @@index([organizationId, journalId])
   @@index([organizationId, accountId])
   @@index([accountId, createdAt(sort: Desc)])
   @@map("journal_entries")
+}
+
+// ─────────────────────────────────────────────
+// DIMENSION AXIS — Dimensionsaxel
+// TENANT-SCOPED: organizationId required
+//
+// Defines a classification axis (e.g. "Kostnadsställe", "Projekt").
+// Three built-in axes (cc, project, unit) are seeded per org.
+// Custom axes require no schema changes.
+// ─────────────────────────────────────────────
+model DimensionAxis {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+
+  code      String   // "cc" | "project" | "unit" | custom slug
+  name      String   // "Kostnadsställe"
+  isBuiltIn Boolean  @default(false)  // built-in axes cannot be deleted
+  isRequired Boolean @default(false)  // require on every journal entry
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  dimensions     Dimension[]
+  accountRules   AccountDimensionRule[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, isActive])
+  @@map("dimension_axes")
+}
+
+// ─────────────────────────────────────────────
+// DIMENSION — Dimensionsvärde
+// TENANT-SCOPED: organizationId required
+//
+// A specific value within an axis, e.g. "IT-avdelningen" within "cc".
+// Project-specific fields (budget, dates, status) are ignored for cc/unit.
+// ─────────────────────────────────────────────
+model Dimension {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+  axisId         String  @db.Uuid
+
+  code        String        // "CC001", "PROJ-042"
+  name        String        // "IT-avdelningen", "Projekt Alpha"
+  description String?
+  parentId    String?  @db.Uuid  // for hierarchical cost centers
+  isActive    Boolean  @default(true)
+
+  // Project-specific (ignored for cc / unit axes)
+  budget    BigInt?       // budgeted amount in öre
+  startDate DateTime?     @db.Date
+  endDate   DateTime?     @db.Date
+  status    ProjectStatus @default(active)
+  ownerId   String?       @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization          Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  axis                  DimensionAxis             @relation(fields: [axisId], references: [id], onDelete: Restrict)
+  parent                Dimension?                @relation("DimensionHierarchy", fields: [parentId], references: [id])
+  children              Dimension[]               @relation("DimensionHierarchy")
+  owner                 User?                     @relation("DimensionOwner", fields: [ownerId], references: [id])
+  journalEntryDimensions JournalEntryDimension[]
+  invoiceLineDimensions  InvoiceLineItemDimension[]
+  supplierInvoiceDimensions SupplierInvoiceDimension[]
+
+  @@unique([organizationId, axisId, code])
+  @@index([organizationId, axisId, isActive])
+  @@index([organizationId, status])
+  @@map("dimensions")
+}
+
+// ─────────────────────────────────────────────
+// JOURNAL ENTRY DIMENSION — Verifikationsraddimension
+// TENANT-SCOPED: organizationId required
+//
+// Links a journal entry line to a dimension with an allocation percentage.
+// Snapshots freeze code/name at tagging time for audit integrity.
+// SUM(percentage per axisId per journalEntryId) must equal 100.
+// Immutable when the accounting period is locked (enforced at app layer).
+// ─────────────────────────────────────────────
+model JournalEntryDimension {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+  journalEntryId String  @db.Uuid
+  dimensionId    String  @db.Uuid
+
+  percentage Decimal @default(100.00) @db.Decimal(7, 4) // 0.0001–100.0000
+
+  // Immutable snapshots — frozen at creation, never updated
+  dimensionCodeSnapshot String  // e.g. "PROJ-042"
+  dimensionNameSnapshot String  // e.g. "Projekt Alpha"
+  axisCodeSnapshot      String  // e.g. "project"
+
+  // Force flag: allows mutation in locked period by super_admin
+  // Logged in audit trail
+  forcedByUserId String? @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Restrict)
+  dimension    Dimension    @relation(fields: [dimensionId],    references: [id], onDelete: Restrict)
+  forcedBy     User?        @relation("DimensionForceUser", fields: [forcedByUserId], references: [id])
+
+  @@unique([journalEntryId, dimensionId])
+  @@index([organizationId, journalEntryId])
+  @@index([organizationId, dimensionId])
+  @@map("journal_entry_dimensions")
+}
+
+// ─────────────────────────────────────────────
+// INVOICE LINE ITEM DIMENSION
+// TENANT-SCOPED: organizationId required
+// Propagated → JournalEntryDimension when invoice is posted.
+// ─────────────────────────────────────────────
+model InvoiceLineItemDimension {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+  lineItemId     String  @db.Uuid
+  dimensionId    String  @db.Uuid
+
+  percentage Decimal @default(100.00) @db.Decimal(7, 4)
+
+  createdAt DateTime @default(now())
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lineItem     InvoiceLineItem @relation(fields: [lineItemId], references: [id], onDelete: Cascade)
+  dimension    Dimension       @relation(fields: [dimensionId], references: [id], onDelete: Restrict)
+
+  @@unique([lineItemId, dimensionId])
+  @@index([organizationId, lineItemId])
+  @@map("invoice_line_item_dimensions")
+}
+
+// ─────────────────────────────────────────────
+// SUPPLIER INVOICE DIMENSION
+// TENANT-SCOPED: organizationId required
+// Header-level dimensions for supplier invoices (no line items in MVP).
+// ─────────────────────────────────────────────
+model SupplierInvoiceDimension {
+  id               String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId   String  @db.Uuid
+  supplierInvoiceId String @db.Uuid
+  dimensionId      String  @db.Uuid
+
+  percentage Decimal @default(100.00) @db.Decimal(7, 4)
+
+  createdAt DateTime @default(now())
+
+  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  supplierInvoice SupplierInvoice @relation(fields: [supplierInvoiceId], references: [id], onDelete: Cascade)
+  dimension       Dimension       @relation(fields: [dimensionId],       references: [id], onDelete: Restrict)
+
+  @@unique([supplierInvoiceId, dimensionId])
+  @@index([organizationId, supplierInvoiceId])
+  @@map("supplier_invoice_dimensions")
+}
+
+// ─────────────────────────────────────────────
+// ACCOUNT DIMENSION RULE
+// TENANT-SCOPED: organizationId required
+//
+// Defines which dimension axes are required for entries on a given account.
+// e.g. account 4xxx requires "project" axis, account 7xxx requires "cc" axis.
+// Validated at post time (postInvoiceSent, postInvoicePaid, manual entry).
+// ─────────────────────────────────────────────
+model AccountDimensionRule {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+  accountId      String  @db.Uuid
+  axisId         String  @db.Uuid
+
+  isRequired Boolean @default(true)  // false = allowed but not required
+
+  createdAt DateTime @default(now())
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  account      Account       @relation(fields: [accountId],      references: [id], onDelete: Cascade)
+  axis         DimensionAxis @relation(fields: [axisId],         references: [id], onDelete: Cascade)
+
+  @@unique([accountId, axisId])
+  @@index([organizationId, accountId])
+  @@map("account_dimension_rules")
 }
 
 // ─────────────────────────────────────────────
@@ -1588,9 +1800,10 @@ model SupplierInvoice {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  supplier         Supplier?    @relation(fields: [supplierId],     references: [id])
+  organization     Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  supplier         Supplier?                @relation(fields: [supplierId],     references: [id])
   approvalRequests ApprovalRequest[]
+  dimensions       SupplierInvoiceDimension[]
 
   @@index([organizationId, status])
   @@index([organizationId, supplierId])
