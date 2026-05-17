@@ -547,6 +547,11 @@ model Organization {
   notificationJobs        NotificationJob[]
   notificationPreferences NotificationPreference[]
 
+  // AI
+  aiSuggestions AiSuggestion[]
+  aiAnomalies   AiAnomaly[]
+  aiLogs        AiLog[]
+
   @@index([slug])
   @@index([type])
   @@index([stripeCustomerId])
@@ -2488,6 +2493,141 @@ model NotificationJob {
   @@index([userId, status])
   @@index([organizationId, createdAt])
   @@map("notification_jobs")
+}
+
+// ─────────────────────────────────────────────
+// AI ENUMS
+// ─────────────────────────────────────────────
+
+enum AiFeature {
+  receipt_scan      // extract data from a receipt/invoice image
+  account_suggest   // suggest debit/credit accounts for a description
+  journal_suggest   // full journal entry proposal for a supplier invoice
+  anomaly_detect    // flag anomalies in existing transactions
+  explain           // explain an accounting concept or account
+}
+
+enum AiSuggestionStatus {
+  pending    // awaiting human review
+  accepted   // approved as-is
+  modified   // approved after user changed fields
+  rejected   // user explicitly rejected
+  expired    // auto-expired after 7 days without review
+}
+
+enum AnomalyType {
+  duplicate_invoice   // same vendor + amount within a short window
+  amount_outlier      // amount > 3σ from vendor's historical invoices
+  wrong_account       // unusual account for this vendor/category
+  vat_mismatch        // VAT rate inconsistent with item category
+}
+
+enum AnomalySeverity {
+  info
+  warning
+  error
+}
+
+enum AnomalyStatus {
+  open
+  acknowledged
+  resolved
+  false_positive
+}
+
+// ─────────────────────────────────────────────
+// AI SUGGESTION — stores each AI proposal pending human review
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model AiSuggestion {
+  id              String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String             @db.Uuid
+  createdByUserId String             @db.Uuid
+
+  feature         AiFeature
+  sourceType      String             // "supplier_invoice" | "journal_entry" | "receipt" | "manual"
+  sourceId        String?            // FK to source record (nullable for ad-hoc)
+
+  // The structured suggestion payload (varies by feature)
+  suggestion      Json
+  confidence      Float              // 0–1 computed score
+  confidenceBreakdown Json           // per-signal scores
+
+  status          AiSuggestionStatus @default(pending)
+  reviewedByUserId String?
+  reviewedAt      DateTime?
+  modifiedFields  Json?              // which fields the user changed before accepting
+  rejectionReason String?
+
+  // Telemetry
+  modelId         String             @default("claude-sonnet-4-6")
+  promptTokens    Int                @default(0)
+  completionTokens Int               @default(0)
+  latencyMs       Int                @default(0)
+
+  createdAt       DateTime           @default(now())
+  expiresAt       DateTime           // suggestions auto-expire after 7 days
+
+  organization    Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, status])
+  @@index([organizationId, sourceType, sourceId])
+  @@index([expiresAt])
+  @@map("ai_suggestions")
+}
+
+// ─────────────────────────────────────────────
+// AI ANOMALY — flagged irregularities for human review
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model AiAnomaly {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String          @db.Uuid
+
+  type            AnomalyType
+  severity        AnomalySeverity
+  description     String
+  explanation     String          @db.Text
+
+  relatedIds      Json            // { invoiceId, journalId, duplicateId, ... }
+
+  status          AnomalyStatus   @default(open)
+  resolvedByUserId String?
+  resolvedAt      DateTime?
+
+  createdAt       DateTime        @default(now())
+
+  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, status])
+  @@index([organizationId, type])
+  @@index([organizationId, createdAt(sort: Desc)])
+  @@map("ai_anomalies")
+}
+
+// ─────────────────────────────────────────────
+// AI LOG — audit trail for every AI call
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model AiLog {
+  id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String     @db.Uuid
+  userId          String?    @db.Uuid
+
+  feature         AiFeature
+  inputHash       String     // SHA-256 of prompt (for dedup analysis)
+  tokensUsed      Int        @default(0)
+  latencyMs       Int        @default(0)
+  success         Boolean
+  errorMessage    String?
+
+  createdAt       DateTime   @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, createdAt(sort: Desc)])
+  @@index([organizationId, feature])
+  @@map("ai_logs")
 }
 
 // Per-user per-org opt-out preferences. Row only exists when user changes a default.
