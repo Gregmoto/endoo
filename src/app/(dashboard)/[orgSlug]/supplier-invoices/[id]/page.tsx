@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useParams, useRouter }              from "next/navigation"
 import Link                                  from "next/link"
+import { TaskWidget } from "@/components/tasks/TaskWidget"
 
 type Invoice = {
   id:                string
@@ -427,6 +428,19 @@ export default function SupplierInvoiceDetailPage() {
               <span><span className="inline-block w-2 h-2 rounded-full bg-red-400 mr-1" />Låg (&lt;70%)</span>
             </div>
           )}
+
+          {/* Tasks */}
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <TaskWidget
+              orgSlug={orgSlug}
+              entityType="supplier_invoice"
+              entityId={id}
+              entityLabel={invoice.invoiceNumber
+                ? `Lev.faktura ${invoice.invoiceNumber}`
+                : invoice.supplierName ?? "Leverantörsfaktura"
+              }
+            />
+          </div>
         </div>
       </div>
     </div>

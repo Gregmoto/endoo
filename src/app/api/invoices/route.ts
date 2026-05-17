@@ -8,6 +8,7 @@ import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
 import { Prisma } from "@prisma/client"
 import { z } from "zod"
+import { indexInvoice } from "@/lib/search/index-entity"
 
 export async function GET(req: Request) {
   try {
@@ -172,6 +173,11 @@ export async function POST(req: Request) {
         after: { invoiceNumber: invoice.invoiceNumber, totalAmount: invoice.totalAmount.toString() },
       },
     }).catch(() => {})
+
+    indexInvoice(ctx.organizationId, {
+      ...invoice,
+      billingName: invoice.billingName ?? invoice.contact?.name ?? null,
+    })
 
     return Response.json(invoice, { status: 201 })
   } catch (err) {

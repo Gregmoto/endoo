@@ -8,6 +8,7 @@ import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
 import { Prisma, ProductType } from "@prisma/client"
 import { z } from "zod"
+import { indexProduct } from "@/lib/search/index-entity"
 
 export async function GET(req: Request) {
   try {
@@ -103,6 +104,8 @@ export async function POST(req: Request) {
         after:          { name: product.name, sku: product.sku, unitPrice: product.unitPrice.toString() },
       },
     }).catch(() => {})
+
+    indexProduct(ctx.organizationId, product)
 
     return Response.json(product, { status: 201 })
   } catch (err) {

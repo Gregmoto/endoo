@@ -547,10 +547,24 @@ model Organization {
   notificationJobs        NotificationJob[]
   notificationPreferences NotificationPreference[]
 
+  // Search
+  searchIndex SearchIndex[]
+
+  // Tasks
+  tasks            Task[]            @relation("OrgTasks")
+  taskAssignments  TaskAssignment[]  @relation("OrgTaskAssignments")
+  taskComments     TaskComment[]     @relation("OrgTaskComments")
+
   // AI
   aiSuggestions AiSuggestion[]
   aiAnomalies   AiAnomaly[]
   aiLogs        AiLog[]
+
+  // Accountant mode
+  agencySnapshots  ClientSnapshot[] @relation("AgencyClientSnapshots")
+  clientSnapshots  ClientSnapshot[] @relation("ClientOrgSnapshots")
+  bulkJobs         BulkJob[]        @relation("AgencyBulkJobs")
+  pinnedByStaff    AgencyClientPin[] @relation("PinnedClients")
 
   @@index([slug])
   @@index([type])
@@ -644,6 +658,13 @@ model User {
   // Integrations
   importFilesUploaded ImportFile[]           @relation("ImportFileUser")
 
+  // Tasks
+  tasksCreated     Task[]           @relation("TaskCreatedBy")
+  tasksCompleted   Task[]           @relation("TaskCompletedBy")
+  taskAssignments  TaskAssignment[] @relation("AssignedTasks")
+  taskAssignedByMe TaskAssignment[] @relation("TasksAssignedByMe")
+  taskComments     TaskComment[]    @relation("TaskCommentAuthor")
+
   @@index([email])
   @@index([isPlatformAdmin])
   @@map("users")
@@ -704,6 +725,9 @@ model OrganizationMember {
 
   // Agency staff can have explicit per-client access grants
   staffAccessGrants AgencyStaffAccess[]
+
+  // Accountant mode
+  clientPins AgencyClientPin[] @relation("MemberPins")
 
   @@unique([organizationId, userId])
   @@index([organizationId])
@@ -2630,6 +2654,112 @@ model AiLog {
   @@map("ai_logs")
 }
 
+// ─────────────────────────────────────────────
+// ACCOUNTANT MODE — Agency client snapshots, bulk jobs, pins
+// ─────────────────────────────────────────────
+
+// Pre-computed health snapshot for each agency↔client pair.
+// Updated hourly by cron; lets the agency dashboard load in one query.
+model ClientSnapshot {
+  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  agencyId    String @db.Uuid
+  clientId    String @db.Uuid
+  clientName  String
+  clientSlug  String
+
+  // Health (0–100)
+  healthScore              Int     @default(0)
+
+  // Invoice metrics
+  overdueInvoiceCount      Int     @default(0)
+  overdueAmountOre         BigInt  @default(0)
+
+  // Supplier invoice backlog
+  unbookedSupplierCount    Int     @default(0)
+
+  // AI signals
+  openAiAnomalyCount       Int     @default(0)
+  pendingAiSuggestionCount Int     @default(0)
+
+  // Activity
+  daysSinceLastActivity    Int?    // null = never posted
+
+  // Upcoming deadlines
+  nextVatDeadlineAt   DateTime?
+  vatDeadlineDaysLeft Int?
+  fiscalYearEndsAt    DateTime?
+  fiscalYearDaysLeft  Int?
+
+  // Onboarding
+  onboardingDone   Boolean @default(false)
+  onboardingChecks Json    @default("{}")  // OnboardingChecks object
+
+  // Task summary
+  openTaskCount    Int @default(0)
+  overdueTaskCount Int @default(0)
+
+  // Serialised alerts for fast rendering
+  alerts       Json @default("[]")   // Alert[]
+  alertCount   Int  @default(0)
+  errorCount   Int  @default(0)
+  warningCount Int  @default(0)
+
+  computedAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  agency Organization @relation("AgencyClientSnapshots", fields: [agencyId], references: [id], onDelete: Cascade)
+  client Organization @relation("ClientOrgSnapshots",    fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@unique([agencyId, clientId])
+  @@index([agencyId, healthScore])
+  @@index([agencyId, alertCount(sort: Desc)])
+  @@index([agencyId, computedAt])
+  @@map("client_snapshots")
+}
+
+// Async bulk operation kicked off by an agency user.
+model BulkJob {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  agencyId        String   @db.Uuid
+  createdByUserId String   @db.Uuid
+
+  type      String   // "refresh_snapshots" | "send_reminder" | "vat_calculate" | "export_report"
+  clientIds String[] // target client org IDs
+
+  status    String @default("pending") // pending | running | done | failed | cancelled
+  progress  Int    @default(0)         // 0–100
+  total     Int    @default(0)
+  processed Int    @default(0)
+
+  result       Json?   // { succeeded: string[], failed: { id, error }[] }
+  errorMessage String?
+
+  createdAt   DateTime  @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  agency Organization @relation("AgencyBulkJobs", fields: [agencyId], references: [id], onDelete: Cascade)
+
+  @@index([agencyId, status])
+  @@index([agencyId, createdAt(sort: Desc)])
+  @@map("bulk_jobs")
+}
+
+// Per-staff pinned clients — shown at top of list and in Cmd+K switcher.
+model AgencyClientPin {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  agencyMemberId String @db.Uuid
+  clientId       String @db.Uuid
+  sortOrder      Int    @default(0)
+
+  agencyMember OrganizationMember @relation("MemberPins",   fields: [agencyMemberId], references: [id], onDelete: Cascade)
+  client       Organization       @relation("PinnedClients", fields: [clientId],       references: [id], onDelete: Cascade)
+
+  @@unique([agencyMemberId, clientId])
+  @@index([agencyMemberId, sortOrder])
+  @@map("agency_client_pins")
+}
+
 // Per-user per-org opt-out preferences. Row only exists when user changes a default.
 model NotificationPreference {
   id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -2649,4 +2779,156 @@ model NotificationPreference {
   @@unique([userId, organizationId, category])
   @@index([userId, organizationId])
   @@map("notification_preferences")
+}
+
+// ─────────────────────────────────────────────
+// GLOBAL SEARCH INDEX
+// Denormalized single-table index for full-text and fuzzy search.
+// Populated inline on entity writes + nightly full re-index cron.
+// TENANT-SCOPED: organization_id required on every query.
+// ─────────────────────────────────────────────
+model SearchIndex {
+  id             String @id @default(cuid())
+  organizationId String @db.Uuid
+
+  entityType String // "contact" | "invoice" | "supplier_invoice" | "product" | "journal" | "member"
+  entityId   String @db.Uuid
+
+  title    String
+  subtitle String?
+  keywords String  @db.Text  // concatenated searchable text; full-text index built on this
+
+  // Relative URL within the org, e.g. "/invoices/abc123"
+  // Frontend prepends "/{orgSlug}" when navigating.
+  url String
+
+  metadata  Json     @default("{}")
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, entityType, entityId])
+  @@index([organizationId])
+  @@index([organizationId, entityType])
+  @@map("search_index")
+}
+
+// ─────────────────────────────────────────────
+// TASK SYSTEM
+// Internal tasks, reminders, and assignments
+// for bookkeeping administration.
+// TENANT-SCOPED: organization_id required.
+// ─────────────────────────────────────────────
+
+enum TaskStatus {
+  open
+  in_progress
+  done
+  cancelled
+
+  @@map("task_status")
+}
+
+enum TaskPriority {
+  low
+  normal
+  high
+  urgent
+
+  @@map("task_priority")
+}
+
+enum TaskEntityType {
+  contact
+  invoice
+  supplier_invoice
+  journal
+  project
+  contract
+
+  @@map("task_entity_type")
+}
+
+model Task {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String        @db.Uuid
+
+  title          String
+  description    String?       @db.Text
+  status         TaskStatus    @default(open)
+  priority       TaskPriority  @default(normal)
+
+  // Polymorphic link to source entity (optional)
+  entityType     TaskEntityType?
+  entityId       String?        @db.Uuid
+
+  // Scheduling
+  dueDate        DateTime?
+  remindAt       DateTime?     // when to fire a reminder notification
+  remindedAt     DateTime?     // set when reminder was sent
+
+  // Completion
+  completedAt       DateTime?
+  completedByUserId String?    @db.Uuid
+
+  // Soft delete
+  deletedAt DateTime?
+
+  createdByUserId String   @db.Uuid
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization Organization @relation("OrgTasks",        fields: [organizationId],   references: [id], onDelete: Cascade)
+  createdBy    User         @relation("TaskCreatedBy",   fields: [createdByUserId],  references: [id])
+  completedBy  User?        @relation("TaskCompletedBy", fields: [completedByUserId], references: [id])
+
+  assignments  TaskAssignment[]
+  comments     TaskComment[]
+
+  @@index([organizationId, status])
+  @@index([organizationId, dueDate])
+  @@index([organizationId, entityType, entityId])
+  @@index([organizationId, createdByUserId])
+  @@map("tasks")
+}
+
+model TaskAssignment {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  taskId           String   @db.Uuid
+  userId           String   @db.Uuid
+  organizationId   String   @db.Uuid
+  assignedByUserId String   @db.Uuid
+  assignedAt       DateTime @default(now())
+
+  task       Task @relation(fields: [taskId],           references: [id], onDelete: Cascade)
+  user       User @relation("AssignedTasks",            fields: [userId],            references: [id])
+  assignedBy User @relation("TasksAssignedByMe",        fields: [assignedByUserId],  references: [id])
+  organization Organization @relation("OrgTaskAssignments", fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, userId])
+  @@index([userId, organizationId])
+  @@index([organizationId])
+  @@map("task_assignments")
+}
+
+model TaskComment {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  taskId         String   @db.Uuid
+  organizationId String   @db.Uuid
+  authorId       String   @db.Uuid
+
+  body      String   @db.Text
+  editedAt  DateTime?
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task         Task         @relation(fields: [taskId],         references: [id], onDelete: Cascade)
+  author       User         @relation("TaskCommentAuthor",      fields: [authorId],       references: [id])
+  organization Organization @relation("OrgTaskComments",        fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([organizationId, authorId])
+  @@map("task_comments")
 }

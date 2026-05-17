@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/layout/sidebar"
 import { MobileNavBar } from "@/components/layout/MobileNavBar"
 import { ImpersonationBanner } from "@/components/layout/ImpersonationBanner"
 import { AiShell } from "@/components/ai/AiShell"
+import { SearchProvider } from "@/components/search/SearchProvider"
 
 export default async function DashboardLayout({
   children,
@@ -52,9 +53,10 @@ export default async function DashboardLayout({
   }
 
   return (
+    <SearchProvider orgSlug={org.slug} orgId={org.id}>
     <div className="min-h-screen bg-gray-50">
       {isImpersonating && agencyName && agencySlug && (
-        <ImpersonationBanner agencyName={agencyName} agencySlug={agencySlug} />
+        <ImpersonationBanner agencyName={agencyName} agencySlug={agencySlug} clientSlug={orgSlug} />
       )}
 
       <Sidebar
@@ -85,5 +87,6 @@ export default async function DashboardLayout({
       {/* Mobile bottom tab bar */}
       <MobileNavBar orgSlug={org.slug} />
     </div>
+    </SearchProvider>
   )
 }

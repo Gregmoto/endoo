@@ -151,6 +151,20 @@ export const AGENCY_PERMISSIONS = {
 // ─────────────────────────────────────────────
 // Union type of all permissions
 // ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+// TASK PERMISSIONS
+// ─────────────────────────────────────────────
+export const TASK_PERMISSIONS = {
+  READ:        "tasks:read",
+  CREATE:      "tasks:create",
+  UPDATE_OWN:  "tasks:update_own",
+  UPDATE_ANY:  "tasks:update_any",
+  DELETE_OWN:  "tasks:delete_own",
+  DELETE_ANY:  "tasks:delete_any",
+  ASSIGN:      "tasks:assign",
+  COMMENT:     "tasks:comment",
+} as const
+
 export type Permission =
   | (typeof PLATFORM_PERMISSIONS)[keyof typeof PLATFORM_PERMISSIONS]
   | (typeof INVOICE_PERMISSIONS)[keyof typeof INVOICE_PERMISSIONS]
@@ -165,6 +179,7 @@ export type Permission =
   | (typeof SUPPLIER_INVOICE_PERMISSIONS)[keyof typeof SUPPLIER_INVOICE_PERMISSIONS]
   | (typeof INVENTORY_PERMISSIONS)[keyof typeof INVENTORY_PERMISSIONS]
   | (typeof AGENCY_PERMISSIONS)[keyof typeof AGENCY_PERMISSIONS]
+  | (typeof TASK_PERMISSIONS)[keyof typeof TASK_PERMISSIONS]
 
 export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(PLATFORM_PERMISSIONS),
@@ -180,4 +195,5 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
   ...Object.values(INVENTORY_PERMISSIONS),
   ...Object.values(AGENCY_PERMISSIONS),
+  ...Object.values(TASK_PERMISSIONS),
 ]

@@ -35,6 +35,7 @@ import {
   SUPPLIER_INVOICE_PERMISSIONS,
   INVENTORY_PERMISSIONS,
   AGENCY_PERMISSIONS,
+  TASK_PERMISSIONS,
   type Permission,
 } from "./permissions"
 
@@ -68,6 +69,7 @@ const SUPER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
   ...Object.values(INVENTORY_PERMISSIONS),
   ...Object.values(AGENCY_PERMISSIONS),
+  ...Object.values(TASK_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -129,6 +131,8 @@ const AGENCY_OWNER_PERMISSIONS: Permission[] = [
   AGENCY_PERMISSIONS.MANAGE_CLIENTS,
   AGENCY_PERMISSIONS.SWITCH_TO_CLIENT,
   AGENCY_PERMISSIONS.GRANT_STAFF_ACCESS,
+  // Tasks — full access
+  ...Object.values(TASK_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -188,6 +192,8 @@ const AGENCY_ADMIN_PERMISSIONS: Permission[] = [
   AGENCY_PERMISSIONS.MANAGE_CLIENTS,
   AGENCY_PERMISSIONS.SWITCH_TO_CLIENT,
   AGENCY_PERMISSIONS.GRANT_STAFF_ACCESS,
+  // Tasks — full access
+  ...Object.values(TASK_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -226,6 +232,13 @@ const AGENCY_STAFF_PERMISSIONS: Permission[] = [
   // Agency (can switch to granted clients)
   AGENCY_PERMISSIONS.READ_CLIENTS,
   AGENCY_PERMISSIONS.SWITCH_TO_CLIENT,
+  // Tasks — create + manage own + comment + assign
+  TASK_PERMISSIONS.READ,
+  TASK_PERMISSIONS.CREATE,
+  TASK_PERMISSIONS.UPDATE_OWN,
+  TASK_PERMISSIONS.DELETE_OWN,
+  TASK_PERMISSIONS.ASSIGN,
+  TASK_PERMISSIONS.COMMENT,
 ]
 
 // ─────────────────────────────────────────────
@@ -241,6 +254,7 @@ const AGENCY_VIEWER_PERMISSIONS: Permission[] = [
   ACCOUNTING_PERMISSIONS.READ,
   SUPPLIER_INVOICE_PERMISSIONS.READ,
   AGENCY_PERMISSIONS.READ_CLIENTS,
+  TASK_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -297,6 +311,8 @@ const CUSTOMER_OWNER_PERMISSIONS: Permission[] = [
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
   // Inventory — full access
   ...Object.values(INVENTORY_PERMISSIONS),
+  // Tasks — full access
+  ...Object.values(TASK_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -344,6 +360,8 @@ const CUSTOMER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
   // Inventory — full access
   ...Object.values(INVENTORY_PERMISSIONS),
+  // Tasks — full access
+  ...Object.values(TASK_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -381,6 +399,12 @@ const CUSTOMER_USER_PERMISSIONS: Permission[] = [
   // Inventory — read + write transactions
   INVENTORY_PERMISSIONS.READ,
   INVENTORY_PERMISSIONS.WRITE,
+  // Tasks — create + manage own + comment
+  TASK_PERMISSIONS.READ,
+  TASK_PERMISSIONS.CREATE,
+  TASK_PERMISSIONS.UPDATE_OWN,
+  TASK_PERMISSIONS.DELETE_OWN,
+  TASK_PERMISSIONS.COMMENT,
 ]
 
 // ─────────────────────────────────────────────
@@ -396,6 +420,7 @@ const CUSTOMER_VIEWER_PERMISSIONS: Permission[] = [
   ACCOUNTING_PERMISSIONS.READ,
   SUPPLIER_INVOICE_PERMISSIONS.READ,
   INVENTORY_PERMISSIONS.READ,
+  TASK_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────

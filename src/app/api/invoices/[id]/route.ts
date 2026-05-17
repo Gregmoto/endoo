@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
 import { z } from "zod"
+import { indexInvoice, removeFromIndex } from "@/lib/search/index-entity"
 
 export async function GET(
   _req: Request,
@@ -146,6 +147,11 @@ export async function PATCH(
       },
     }).catch(() => {})
 
+    indexInvoice(ctx.organizationId, {
+      ...updated,
+      billingName: updated.billingName ?? updated.contact?.name ?? null,
+    })
+
     return Response.json(updated)
   } catch (err) {
     return handleError(err)
@@ -184,6 +190,8 @@ export async function DELETE(
         before:         { invoiceNumber: existing.invoiceNumber, status: existing.status },
       },
     }).catch(() => {})
+
+    removeFromIndex(ctx.organizationId, "invoice", id)
 
     return new Response(null, { status: 204 })
   } catch (err) {

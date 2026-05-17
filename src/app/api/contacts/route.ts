@@ -8,6 +8,7 @@ import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
 import { Prisma } from "@prisma/client"
 import { z } from "zod"
+import { indexContact } from "@/lib/search/index-entity"
 
 export async function GET(req: Request) {
   try {
@@ -123,6 +124,8 @@ export async function POST(req: Request) {
         after:          { name: contact.name, customerNumber: contact.customerNumber, type: contact.type },
       },
     }).catch(() => {})
+
+    indexContact(ctx.organizationId, contact)
 
     return Response.json(contact, { status: 201 })
   } catch (err) {

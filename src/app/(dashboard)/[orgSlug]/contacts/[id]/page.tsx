@@ -5,6 +5,7 @@ import { useParams } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { TaskWidget } from "@/components/tasks/TaskWidget"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -152,7 +153,7 @@ export default function ContactDetailPage() {
         ))}
       </div>
 
-      {tab === "profile"  && <ProfileTab contact={contact} onSaved={setContact} />}
+      {tab === "profile"  && <ProfileTab contact={contact} onSaved={setContact} orgSlug={orgSlug} />}
       {tab === "persons"  && <PersonsTab contactId={id} initialPersons={contact.contactPersons} />}
       {tab === "history"  && <HistoryTab contactId={id} orgSlug={orgSlug} />}
     </div>
@@ -161,7 +162,7 @@ export default function ContactDetailPage() {
 
 // ─── Profile tab ─────────────────────────────────────────────────────────────
 
-function ProfileTab({ contact, onSaved }: { contact: Contact; onSaved: (c: Contact) => void }) {
+function ProfileTab({ contact, onSaved, orgSlug }: { contact: Contact; onSaved: (c: Contact) => void; orgSlug: string }) {
   const [editing, setEditing] = useState(false)
   const [form, setForm]       = useState<Partial<Contact>>(contact)
   const [saving, setSaving]   = useState(false)
@@ -267,6 +268,18 @@ function ProfileTab({ contact, onSaved }: { contact: Contact; onSaved: (c: Conta
             </CardContent>
           </Card>
         )}
+
+        <Card>
+          <CardHeader><CardTitle>Uppgifter</CardTitle></CardHeader>
+          <CardContent>
+            <TaskWidget
+              orgSlug={orgSlug}
+              entityType="contact"
+              entityId={contact.id}
+              entityLabel={contact.name}
+            />
+          </CardContent>
+        </Card>
       </div>
     )
   }

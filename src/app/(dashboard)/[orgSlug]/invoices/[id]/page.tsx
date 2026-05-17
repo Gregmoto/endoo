@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { TaskWidget } from "@/components/tasks/TaskWidget"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -351,6 +352,19 @@ export default function InvoiceDetailPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Tasks */}
+      <Card className="mb-6">
+        <CardHeader><CardTitle>Uppgifter</CardTitle></CardHeader>
+        <CardContent>
+          <TaskWidget
+            orgSlug={orgSlug}
+            entityType="invoice"
+            entityId={id}
+            entityLabel={`Faktura ${invoice.invoiceNumber}`}
+          />
+        </CardContent>
+      </Card>
 
       {/* Modals */}
       {sendModal && (
