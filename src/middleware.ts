@@ -38,13 +38,23 @@ const PUBLIC_ROUTES = [
   "/about",
   "/privacy",
   "/terms",
+  "/cookies",
+  "/konsulter",
+  "/smaforetag",
+  "/e-handel",
+  "/sitemap.xml",
+  "/robots.txt",
 ]
 
 const PUBLIC_PREFIXES = [
   "/invite/",
   "/api/auth/",
+  "/api/v1/",   // external REST API — auth handled per-route via API keys
   "/_next/",
   "/favicon",
+  "/konsulter/",
+  "/smaforetag/",
+  "/e-handel/",
 ]
 
 function isPublic(pathname: string): boolean {
