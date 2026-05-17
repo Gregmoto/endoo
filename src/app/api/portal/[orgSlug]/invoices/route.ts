@@ -1,0 +1,37 @@
+/**
+ * GET /api/portal/[orgSlug]/invoices
+ * List invoices for the authenticated contact.
+ */
+
+import { requirePortalAuth, portalUnauthorized } from "@/lib/portal/auth"
+import { prisma } from "@/lib/prisma"
+
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ orgSlug: string }> }
+) {
+  const { orgSlug } = await params
+
+  let claims: Awaited<ReturnType<typeof requirePortalAuth>>
+  try { claims = await requirePortalAuth(orgSlug) }
+  catch { return portalUnauthorized() }
+
+  const invoices = await prisma.invoice.findMany({
+    where: {
+      organizationId: claims.orgId,
+      contactId:      claims.sub,
+    },
+    select: {
+      id:            true,
+      invoiceNumber: true,
+      status:        true,
+      totalAmount:   true,
+      currency:      true,
+      issueDate:     true,
+      dueDate:       true,
+    },
+    orderBy: { issueDate: "desc" },
+  })
+
+  return Response.json({ invoices })
+}
