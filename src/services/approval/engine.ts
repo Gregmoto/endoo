@@ -19,11 +19,7 @@ import type {
   ApprovalPolicyStep,
   SupplierInvoice,
 } from "@prisma/client"
-
-import {
-  notifyStepApprovers,
-  notifyRequestOutcome,
-} from "./notifications"
+import { dispatchEvent } from "@/lib/notifications/dispatcher"
 
 // ─────────────────────────────────────────────
 // Domain errors
@@ -259,7 +255,30 @@ export async function submitForApproval(
     },
   }).catch(() => {})
 
-  notifyStepApprovers(organizationId, request, firstStep, invoice).catch(() => {})
+  dispatchEvent({
+    organizationId,
+    type:        "approval_submitted",
+    actorUserId: submittedByUserId,
+    entityType:  "SupplierInvoice",
+    entityId:    invoiceId,
+    payload: {
+      _version:           1,
+      href:               `/supplier-invoices/${invoiceId}`,
+      displayTitle:       `Attest begärd: ${invoice.supplierName ?? "Leverantörsfaktura"}`,
+      displaySubtitle:    `${invoice.invoiceNumber ?? ""} — steg ${firstStep.stepOrder}: ${firstStep.name}`,
+      requestId:          request.id,
+      supplierInvoiceId:  invoiceId,
+      supplierName:       invoice.supplierName ?? null,
+      invoiceNumber:      invoice.invoiceNumber ?? null,
+      amountInclVat:      (invoice.amountInclVat ?? 0n).toString(),
+      currency:           invoice.currency,
+      stepId:             firstStep.id,
+      stepName:           firstStep.name,
+      stepOrder:          firstStep.stepOrder,
+      resolvedApproverIds: firstStep.resolvedApproverIds,
+      submittedByUserId,
+    },
+  }).catch((err) => console.error("[approval:engine] notify submit failed", err))
 
   return { autoApproved: false, request }
 }
@@ -403,17 +422,60 @@ export async function castVote(
       where: { requestId, status: "active" },
     })
     if (freshSteps.length > 0) {
-      notifyStepApprovers(
+      const nextStep = freshSteps[0]
+      dispatchEvent({
         organizationId,
-        updatedRequest,
-        freshSteps[0],
-        request.supplierInvoice,
-      ).catch(() => {})
+        type:        "approval_submitted",
+        actorUserId: null,
+        entityType:  "SupplierInvoice",
+        entityId:    request.supplierInvoiceId,
+        payload: {
+          _version:           1,
+          href:               `/supplier-invoices/${request.supplierInvoiceId}`,
+          displayTitle:       `Attest begärd: ${request.supplierInvoice.supplierName ?? "Leverantörsfaktura"}`,
+          displaySubtitle:    `Steg ${nextStep.stepOrder}: ${nextStep.name}`,
+          requestId:          request.id,
+          supplierInvoiceId:  request.supplierInvoiceId,
+          supplierName:       request.supplierInvoice.supplierName ?? null,
+          invoiceNumber:      request.supplierInvoice.invoiceNumber ?? null,
+          amountInclVat:      (request.supplierInvoice.amountInclVat ?? 0n).toString(),
+          currency:           request.supplierInvoice.currency,
+          stepId:             nextStep.id,
+          stepName:           nextStep.name,
+          stepOrder:          nextStep.stepOrder,
+          resolvedApproverIds: nextStep.resolvedApproverIds,
+          submittedByUserId:  request.submittedByUserId,
+        },
+      }).catch((err) => console.error("[approval:engine] notify next-step failed", err))
     }
   }
 
   if (updatedRequest.status === "approved" || updatedRequest.status === "rejected") {
-    notifyRequestOutcome(organizationId, updatedRequest, request.supplierInvoice).catch(() => {})
+    const inv = request.supplierInvoice
+    dispatchEvent({
+      organizationId,
+      type:        updatedRequest.status === "approved" ? "approval_approved" : "approval_rejected",
+      actorUserId: voterUserId,
+      entityType:  "SupplierInvoice",
+      entityId:    request.supplierInvoiceId,
+      payload: {
+        _version:          1,
+        href:              `/supplier-invoices/${request.supplierInvoiceId}`,
+        displayTitle:      updatedRequest.status === "approved"
+          ? `Faktura godkänd: ${inv.supplierName ?? "Leverantörsfaktura"}`
+          : `Faktura avslagen: ${inv.supplierName ?? "Leverantörsfaktura"}`,
+        displaySubtitle:   inv.invoiceNumber ?? undefined,
+        requestId:         request.id,
+        supplierInvoiceId: request.supplierInvoiceId,
+        supplierName:      inv.supplierName ?? null,
+        invoiceNumber:     inv.invoiceNumber ?? null,
+        amountInclVat:     (inv.amountInclVat ?? 0n).toString(),
+        currency:          inv.currency,
+        outcome:           updatedRequest.status as "approved" | "rejected",
+        rejectionReason:   updatedRequest.rejectionReason ?? null,
+        submittedByUserId: request.submittedByUserId,
+      },
+    }).catch((err) => console.error("[approval:engine] notify outcome failed", err))
   }
 
   prisma.auditLog.create({
@@ -477,6 +539,29 @@ export async function withdrawRequest(
       after: { invoiceId: request.supplierInvoiceId },
     },
   }).catch(() => {})
+
+  dispatchEvent({
+    organizationId,
+    type:        "approval_withdrawn",
+    actorUserId: withdrawnByUserId,
+    entityType:  "SupplierInvoice",
+    entityId:    request.supplierInvoiceId,
+    payload: {
+      _version:          1,
+      href:              `/supplier-invoices/${request.supplierInvoiceId}`,
+      displayTitle:      `Attest återkallad: ${request.supplierInvoice.supplierName ?? "Leverantörsfaktura"}`,
+      displaySubtitle:   request.supplierInvoice.invoiceNumber ?? undefined,
+      requestId:         requestId,
+      supplierInvoiceId: request.supplierInvoiceId,
+      supplierName:      request.supplierInvoice.supplierName ?? null,
+      invoiceNumber:     request.supplierInvoice.invoiceNumber ?? null,
+      amountInclVat:     (request.supplierInvoice.amountInclVat ?? 0n).toString(),
+      currency:          request.supplierInvoice.currency,
+      outcome:           "rejected" as const,
+      rejectionReason:   null,
+      submittedByUserId: request.submittedByUserId,
+    },
+  }).catch((err) => console.error("[approval:engine] notify withdraw failed", err))
 
   return withdrawn
 }

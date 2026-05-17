@@ -10,6 +10,7 @@ import { InvoiceStatus } from "@prisma/client"
 import { z } from "zod"
 import { postInvoicePaid } from "@/services/invoices/posting"
 import { PaymentAlreadyPostedError } from "@/lib/accounting/posting/errors"
+import { dispatchEvent } from "@/lib/notifications/dispatcher"
 
 export async function GET(
   _req: Request,
@@ -54,6 +55,7 @@ export async function POST(
 
     const invoice = await prisma.invoice.findFirst({
       where: { id, organizationId: ctx.organizationId, deletedAt: null },
+      include: { contact: { select: { name: true, email: true } } },
     })
     if (!invoice) return Response.json({ error: "Faktura hittades ej" }, { status: 404 })
     if (invoice.status === "draft") {
@@ -117,6 +119,32 @@ export async function POST(
         console.error("[invoices/payments] posting failed", err)
       }
     })
+
+    // Notify: payment recorded (and invoice paid, if fully settled)
+    dispatchEvent({
+      organizationId: ctx.organizationId,
+      type:           newStatus === "paid" ? "invoice_paid" : "payment_recorded",
+      actorUserId:    ctx.userId,
+      entityType:     "Invoice",
+      entityId:       id,
+      payload: {
+        _version:        1,
+        href:            `/invoices/${id}`,
+        displayTitle:    newStatus === "paid"
+          ? `Faktura ${invoice.invoiceNumber} är betald`
+          : `Betalning registrerad på faktura ${invoice.invoiceNumber}`,
+        displaySubtitle: `${(amountOre / 100).toFixed(2)} ${invoice.currency} — ${invoice.contact?.name ?? "Okänd kund"}`,
+        paymentId:       payment.id,
+        invoiceId:       id,
+        invoiceNumber:   invoice.invoiceNumber ?? "–",
+        amountKr:        (amountOre / 100).toFixed(2),
+        totalAmount:     invoice.totalAmount.toString(),
+        currency:        invoice.currency,
+        paymentMethod:   parsed.data.method,
+        contactName:     invoice.contact?.name ?? null,
+        createdByUserId: invoice.createdByUserId ?? ctx.userId,
+      },
+    }).catch((err) => console.error("[invoices/payments] notify failed", err))
 
     prisma.auditLog.create({
       data: {

@@ -249,6 +249,85 @@ enum VoteDecision {
   rejected
 }
 
+// ─── NOTIFICATION ENUMS ───────────────────────────────────────────────────────
+
+enum NotificationEventType {
+  // Invoice
+  invoice_sent
+  invoice_viewed
+  invoice_paid
+  invoice_overdue
+  invoice_voided
+  invoice_reminder_due
+  invoice_credit_note_issued
+  // Payment
+  payment_recorded
+  payment_stripe_failed
+  payment_refunded
+  // Supplier invoice
+  supplier_invoice_uploaded
+  supplier_invoice_extraction_completed
+  supplier_invoice_extraction_failed
+  supplier_invoice_approval_needed
+  supplier_invoice_overdue
+  // Approval
+  approval_submitted
+  approval_vote_cast
+  approval_approved
+  approval_rejected
+  approval_withdrawn
+  approval_reminder_due
+  // Accounting
+  accounting_journal_posted
+  accounting_posting_failed
+  accounting_fiscal_year_closed
+  // VAT
+  vat_period_approaching
+  vat_period_overdue
+  vat_period_submitted
+  // Contracts
+  contract_expiring
+  contract_renewed
+  contract_terminated
+  // Subscription / Stripe
+  subscription_trial_ending
+  subscription_payment_failed
+  subscription_cancelled
+  subscription_upgraded
+  // Team
+  team_member_invited
+  team_member_joined
+  team_member_removed
+  team_role_changed
+  // API / System
+  api_error_spike
+  api_rate_limit_approaching
+  api_key_revoked
+  system_impersonation_started
+}
+
+enum NotificationTemplate {
+  invoice_overdue
+  invoice_paid
+  approval_needed
+  approval_outcome
+  approval_reminder
+  vat_period_approaching
+  contract_expiring
+  subscription_payment_failed
+  member_joined
+  digest
+  generic
+}
+
+enum NotificationJobStatus {
+  pending
+  processing
+  sent
+  failed
+  skipped
+}
+
 // ─────────────────────────────────────────────
 // ORGANIZATIONS — tenants
 // Every paying account is one row here.
@@ -369,6 +448,13 @@ model Organization {
   // Approval workflow
   approvalPolicies      ApprovalPolicy[]
   approvalRequests      ApprovalRequest[]
+
+  // Notifications
+  notificationEvents      NotificationEvent[]
+  activityFeedItems       ActivityFeedItem[]
+  notifications           Notification[]
+  notificationJobs        NotificationJob[]
+  notificationPreferences NotificationPreference[]
 
   @@index([slug])
   @@index([type])
@@ -1694,4 +1780,134 @@ model ApprovalVote {
   @@index([organizationId, stepId])
   @@index([voterUserId])
   @@map("approval_votes")
+}
+
+// ─────────────────────────────────────────────
+// NOTIFICATION & ACTIVITY SYSTEM
+// ─────────────────────────────────────────────
+
+// Immutable event log — the source of truth. Never updated or deleted.
+model NotificationEvent {
+  id              String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String                @db.Uuid
+  type            NotificationEventType
+  actorUserId     String?               @db.Uuid   // null for scheduled/system events
+  entityType      String                            // "Invoice", "Payment", "SupplierInvoice" …
+  entityId        String                            // UUID as string (polymorphic)
+  payload         Json                              // rich context; validated by Zod in dispatcher
+  eventFingerprint String                           // SHA-256 deduplication key
+
+  createdAt       DateTime              @default(now())
+
+  organization    Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  feedItems       ActivityFeedItem[]
+  notifications   Notification[]
+
+  @@unique([organizationId, eventFingerprint])
+  @@index([organizationId, type, createdAt])
+  @@index([organizationId, entityId, createdAt])
+  @@map("notification_events")
+}
+
+// Org-wide activity stream — all members with read access can see this.
+// Titles/hrefs are pre-computed at write time for fast display.
+model ActivityFeedItem {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String    @db.Uuid
+  eventId         String    @db.Uuid
+  actorUserId     String?   @db.Uuid
+  entityType      String
+  entityId        String
+  title           String                // "Faktura INV-042 betalad"
+  body            String?               // optional detail line
+  href            String?               // "/invoices/{id}" — deep link
+  iconKey         String?               // "invoice_paid" — maps to icon in UI
+  category        String                // matches preference category key
+
+  createdAt       DateTime  @default(now())
+  deletedAt       DateTime?
+
+  organization    Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  event           NotificationEvent   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@index([organizationId, entityId])
+  @@map("activity_feed_items")
+}
+
+// Per-user in-app notification inbox — powers the bell icon.
+model Notification {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String    @db.Uuid
+  userId          String    @db.Uuid
+  eventId         String    @db.Uuid
+
+  title           String
+  body            String?
+  href            String?
+  iconKey         String?
+  category        String
+
+  readAt          DateTime?
+  dismissedAt     DateTime?
+  emailSentAt     DateTime?
+  emailJobId      String?   @db.Uuid
+
+  createdAt       DateTime  @default(now())
+
+  organization    Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  event           NotificationEvent   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@index([userId, organizationId, readAt, createdAt])
+  @@index([organizationId, eventId])
+  @@map("notifications")
+}
+
+// Email delivery queue — processed by cron, retry with backoff.
+model NotificationJob {
+  id              String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String                @db.Uuid
+  userId          String                @db.Uuid
+  notificationId  String?               @db.Uuid   // link to Notification row (null for system jobs)
+  channel         String                @default("email")
+  template        NotificationTemplate
+  payload         Json                              // all data needed to render; no DB calls at send time
+  status          NotificationJobStatus @default(pending)
+  attempts        Int                   @default(0)
+  maxAttempts     Int                   @default(5)
+  nextAttemptAt   DateTime              @default(now())
+  processedAt     DateTime?
+  error           String?               @db.Text
+
+  createdAt       DateTime              @default(now())
+
+  organization    Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([notificationId, channel])
+  @@index([status, nextAttemptAt])
+  @@index([userId, status])
+  @@index([organizationId, createdAt])
+  @@map("notification_jobs")
+}
+
+// Per-user per-org opt-out preferences. Row only exists when user changes a default.
+model NotificationPreference {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String    @db.Uuid
+  organizationId  String    @db.Uuid
+  category        String
+
+  inApp           Boolean   @default(true)
+  email           Boolean   @default(true)
+  emailDigest     Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId, category])
+  @@index([userId, organizationId])
+  @@map("notification_preferences")
 }

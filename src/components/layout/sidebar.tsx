@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { cn, stringToColor, initials } from "@/lib/utils"
+import { NotificationBell } from "@/components/notifications/NotificationBell"
 
 const NAV_GROUPS = [
   {
@@ -112,13 +113,16 @@ export function Sidebar({ orgSlug, orgName, orgType, userEmail, isImpersonating 
   return (
     <aside className="fixed inset-y-0 left-0 w-56 bg-white border-r border-gray-100 flex flex-col z-10">
       {/* Logo */}
-      <div className="px-5 py-4 border-b border-gray-100">
-        <span className="text-lg font-bold text-brand-600">Endoo</span>
-        {orgType === "agency" && (
-          <span className="ml-2 text-xs font-medium bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">
-            Byrå
-          </span>
-        )}
+      <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-bold text-brand-600">Endoo</span>
+          {orgType === "agency" && (
+            <span className="text-xs font-medium bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">
+              Byrå
+            </span>
+          )}
+        </div>
+        <NotificationBell />
       </div>
 
       {/* Org switcher */}
