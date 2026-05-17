@@ -40,10 +40,17 @@ export default function RegisterPage() {
     }
 
     // Auto-login after registration
-    await signIn("credentials", {
+    const signInRes = await signIn("credentials", {
       email: form.email, password: form.password, redirect: false,
     })
-    router.push(`/app/${data.orgSlug}`)
+
+    if (signInRes?.error) {
+      // Signed up OK but auto-login failed — send to login page
+      router.push(`/login?registered=1`)
+      return
+    }
+
+    router.push(`/${data.orgSlug}`)
   }
 
   return (
