@@ -3,15 +3,15 @@ import type { Metadata } from "next"
 import { auth } from "@/lib/auth"
 
 export const metadata: Metadata = {
-  title: "Endoo – Ekonomiplattform för moderna företag och byråer",
+  title: "Endoo – Modern ekonomiplattform för företag och byråer",
   description:
-    "Endoo samlar fakturering, bokföring, momsdeklaration, leverantörsfakturor och AI-assistans i ett modernt system. Byggt för Sverige med BAS-kontoplan, SIE-export och byråstöd.",
+    "Endoo samlar fakturering, bokföring, leverantörsfakturor, offerter, kundportal och AI-assistans i ett modernt system. Byggt för Sverige med BAS-kontoplan, SIE-export och inbyggt byråläge.",
   keywords:
-    "faktureringssystem, bokföringsprogram, ekonomisystem, byråsystem, momsdeklaration, SIE-export, BAS-kontoplan, leverantörsfaktura, OCR, AI-bokföring",
+    "ekonomiplattform, faktureringssystem, bokföringsprogram, ekonomisystem, byråsystem, momsdeklaration, SIE-export, BAS-kontoplan, leverantörsfaktura, OCR, AI-bokföring, offertsystem, kundportal",
   openGraph: {
     title: "Endoo – Hela ekonomin. En plattform.",
     description:
-      "Fakturering, bokföring, leverantörsfakturor, moms och AI — i ett modernt system byggt för svenska regler.",
+      "Fakturering, bokföring, leverantörsfakturor, offerter, kundportal och AI — i ett modernt system byggt för svenska regler.",
     url: "https://endoo.se",
     siteName: "Endoo",
     locale: "sv_SE",
@@ -29,6 +29,8 @@ const PLATFORM_FEATURES = [
     description:
       "Skapa, skicka och följ upp fakturor med automatisk numrering, momsberäkning, PDF-export och direktutskick via e-post. Kreditnotor och delbetalningar inkluderat.",
     tag: "Kärna",
+    soon: false,
+    href: "/funktioner#fakturering",
   },
   {
     icon: "↺",
@@ -36,20 +38,26 @@ const PLATFORM_FEATURES = [
     description:
       "Sätt upp återkommande fakturering månadsvis, kvartalsvis eller årsvis. Systemet genererar fakturan automatiskt med snapshotade priser och duplikatskydd.",
     tag: "Automatisering",
+    soon: false,
+    href: "/funktioner#avtal",
   },
   {
     icon: "▤",
     title: "Komplett bokföring",
     description:
-      "Dubbelbokhållning med BAS-kontoplan, verifikationsserier (A, K, L), räkenskapsår och periodlåsning. Automatisk kontering vid fakturering och betalning.",
+      "Dubbelbokhållning med BAS 2024-kontoplan, verifikationsserier, räkenskapsår och periodlåsning. Automatisk kontering vid fakturering och betalning.",
     tag: "Bokföring",
+    soon: false,
+    href: "/funktioner#bokforing",
   },
   {
     icon: "◱",
     title: "Finansiella rapporter",
     description:
-      "Provbalans, resultaträkning och balansräkning i realtid. Huvudbok per konto och SIE4-export för revisorer och årsredovisning.",
+      "Provbalans, resultaträkning och balansräkning i realtid. Huvudbok per konto, SIE4-export för revisorer och momsdeklaration i SKV-format.",
     tag: "Rapporter",
+    soon: false,
+    href: "/funktioner#rapporter",
   },
   {
     icon: "◨",
@@ -57,27 +65,17 @@ const PLATFORM_FEATURES = [
     description:
       "Fotografera eller ladda upp fakturan — AI extraherar leverantör, belopp, OCR-nummer och momssats. Granska, godkänn och bokför med ett klick.",
     tag: "AI",
+    soon: false,
+    href: "/funktioner#leverantorsfakturor",
   },
   {
-    icon: "◰",
-    title: "Momsdeklaration",
+    icon: "◩",
+    title: "Offertsystem",
     description:
-      "Beräkna moms per period automatiskt från bokföringen. Lås perioder med SHA-256-hash för revisionssäker snapshot. Exportera i SKV-format.",
-    tag: "Moms",
-  },
-  {
-    icon: "▣",
-    title: "Lagerhantering",
-    description:
-      "Spåra lagersaldo i realtid med rörligt genomsnitt. Inventering, inköp, försäljning och justeringstransaktioner — append-only ledger som aldrig ljuger.",
-    tag: "Lager",
-  },
-  {
-    icon: "⬡",
-    title: "API & integrationer",
-    description:
-      "REST API med API-nyckelautentisering, scope-baserade behörigheter och rate limiting. Koppla Zapier, er ERP eller egna system mot fakturor, kontakter och bokföring.",
-    tag: "API",
+      "Skapa och skicka professionella offerter som kontakten accepterar online. Konvertera direkt till faktura eller avtal med ett klick.",
+    tag: "Offert",
+    soon: false,
+    href: "/funktioner#offerter",
   },
   {
     icon: "◈",
@@ -85,6 +83,53 @@ const PLATFORM_FEATURES = [
     description:
       "Strukturerat kundregister med org-nummer, VAT-nummer, kontaktpersoner och fakturahistorik. Per-kund betalningsvillkor och standardinställningar.",
     tag: "Kärna",
+    soon: false,
+    href: "/funktioner#kunder",
+  },
+  {
+    icon: "▣",
+    title: "Lagerhantering",
+    description:
+      "Spåra lagersaldo i realtid med rörligt genomsnitt. Inventering, inköp, försäljning och justeringstransaktioner — append-only ledger.",
+    tag: "Lager",
+    soon: false,
+    href: "/funktioner#lager",
+  },
+  {
+    icon: "◫",
+    title: "Kundportal",
+    description:
+      "Ge dina kunder ett eget inlogg via magic link. De ser sina fakturor, laddar ner PDF och granskar sina avtal — utan att kontakta dig.",
+    tag: "Portal",
+    soon: false,
+    href: "/funktioner#kundportal",
+  },
+  {
+    icon: "✍",
+    title: "E-signering",
+    description:
+      "Skicka dokument för digital signering direkt från plattformen. Kunden signerar i webbläsaren — revisionssäkert och juridiskt bindande.",
+    tag: "Dokument",
+    soon: false,
+    href: "/funktioner#esignering",
+  },
+  {
+    icon: "◰",
+    title: "Momsdeklaration",
+    description:
+      "Beräkna moms per period automatiskt från bokföringen. Lås perioder med revisionssäker hash. Exportera i SKV-format.",
+    tag: "Moms",
+    soon: false,
+    href: "/funktioner#moms",
+  },
+  {
+    icon: "⬡",
+    title: "API & integrationer",
+    description:
+      "REST API med API-nyckelautentisering och scope-baserade behörigheter. Koppla era egna system eller tredjepartsverktyg mot fakturor, kontakter och bokföring.",
+    tag: "API",
+    soon: false,
+    href: "/funktioner#api",
   },
 ]
 
@@ -109,7 +154,7 @@ const AGENCY_FEATURES = [
   { icon: "◈", title: "Arbeta i kundkontots namn", desc: "Impersonera kunden och fakturera i deras namn. Full spårbarhet i aktivitetsloggen." },
   { icon: "◫", title: "Rollstyrning per medarbetare", desc: "Sätt åtkomstnivå per byrå-anställd och per kund — ägare, admin eller läsare." },
   { icon: "▦", title: "Byråöversikt", desc: "Se alla dina kundkonton på ett ställe — vilka har förfallna fakturor, aktiva avtal eller öppna ärenden." },
-  { icon: "↺", title: "Separata inställningar", desc: "Varje kundkonto har egna fakturanummer, bankgiro, logotyp och momsperioder." },
+  { icon: "↺", title: "White-label", desc: "Varje kundkonto kan ha egen logotyp, färger och fakturamall. Perfekt för byråer som levererar under eget varumärke." },
 ]
 
 const PLANS = [
@@ -142,6 +187,7 @@ const PLANS = [
       "Avtalsfakturering",
       "Full bokföring & rapporter",
       "Momsdeklaration",
+      "Offertsystem & e-signering",
       "E-postutskick",
     ],
     cta: "Prova Starter",
@@ -161,6 +207,7 @@ const PLANS = [
       "Leverantörsfakturor med OCR",
       "SIE4-export",
       "Lagerhantering",
+      "Kundportal per kund",
       "API-åtkomst",
       "Prioriterad support",
     ],
@@ -179,6 +226,7 @@ const PLANS = [
       "Dedikerat API-stöd",
       "SLA-avtal",
       "Skräddarsydd onboarding",
+      "White-label & custom domain",
       "Revisors-export",
     ],
     cta: "Kontakta oss",
@@ -240,6 +288,14 @@ const FAQS = [
     a: "Ja. Endoo har ett inbyggt byråläge där du kan arbeta direkt i kundkontots namn — fakturera, bokföra och rapportera — med full spårbarhet. Du ser alla dina kundkonton i en vy och kan byta utan att logga ut.",
   },
   {
+    q: "Vad är kundportalen?",
+    a: "Kundportalen är ett eget inlogg för dina kunder. De loggar in via e-post (magic link, inga lösenord) och kan se sina fakturor, ladda ner PDF och granska sina avtal — utan att behöva kontakta dig. Perfekt för byråer och tjänsteföretag.",
+  },
+  {
+    q: "Hur fungerar offertsystemet?",
+    a: "Du skapar en offert i systemet, lägger till rader och skickar den via e-post. Kunden öppnar en länk och accepterar eller avböjer direkt i webbläsaren. Du kan sedan konvertera en accepterad offert till faktura eller avtal med ett klick.",
+  },
+  {
     q: "Fungerar Endoo för svenska momsregler?",
     a: "Absolut. Endoo hanterar 25%, 12% och 6% moms, momsperioder (månadsvis/kvartalsvis/årsvis), låsning av deklarerade perioder med revisionssäker hash och stödjer SKV-format. Fakturor uppfyller Skatteverkets krav på innehåll och numrering.",
   },
@@ -260,7 +316,7 @@ const FAQS = [
 const STATS = [
   { value: "< 2 min", label: "Från registrering till första faktura" },
   { value: "BAS 2024", label: "Kontoplan förinladdad och klar" },
-  { value: "100%", label: "Momshantering enligt SKV-krav" },
+  { value: "12+", label: "Moduler i en plattform" },
   { value: "99.9%", label: "Drifttid — Neon + Vercel infrastruktur" },
 ]
 
@@ -281,13 +337,11 @@ export default async function HomePage() {
             </div>
             <span className="text-lg font-extrabold text-gray-900 tracking-tight">endoo</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
-            <a href="#funktioner"    className="hover:text-gray-900 transition-colors">Funktioner</a>
-            <a href="#bokforing"     className="hover:text-gray-900 transition-colors">Bokföring</a>
-            <a href="#ai"            className="hover:text-gray-900 transition-colors">AI-assistent</a>
-            <a href="#byra"          className="hover:text-gray-900 transition-colors">För byråer</a>
-            <a href="#api"           className="hover:text-gray-900 transition-colors">API</a>
-            <a href="#priser"        className="hover:text-gray-900 transition-colors">Priser</a>
+          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-gray-600">
+            <Link href="/funktioner"  className="hover:text-gray-900 transition-colors">Funktioner</Link>
+            <Link href="/byra"        className="hover:text-gray-900 transition-colors">För byråer</Link>
+            <Link href="/artiklar"    className="hover:text-gray-900 transition-colors">Artiklar</Link>
+            <a    href="#priser"      className="hover:text-gray-900 transition-colors">Priser</a>
           </nav>
           <div className="flex items-center gap-3">
             {orgSlug ? (
@@ -316,7 +370,6 @@ export default async function HomePage() {
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden pt-24 pb-32 px-6">
-        {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-indigo-50/30 to-white -z-10" />
         <div className="absolute top-0 right-0 w-[600px] h-[500px] bg-indigo-100/50 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/4" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-100/40 rounded-full blur-3xl -z-10 -translate-x-1/3 translate-y-1/4" />
@@ -328,14 +381,15 @@ export default async function HomePage() {
           </div>
 
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 leading-[1.05] tracking-tight mb-7">
-            Hela ekonomin.<br />
+            En modern ekonomi-<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
-              En plattform.
+              plattform för alla.
             </span>
           </h1>
 
           <p className="text-xl sm:text-2xl text-gray-500 leading-relaxed mb-12 max-w-3xl mx-auto font-light">
-            Fakturering, bokföring, leverantörsfakturor, momsdeklaration och AI-assistans — i ett modernt system byggt för svenska regler. <span className="text-gray-700 font-medium">Äntligen ett alternativ till Fortnox och Visma som faktiskt känns modernt.</span>
+            Fakturering, bokföring, offerter, kundportal och AI-assistans — samlat i ett modernt system byggt för svenska regler.{" "}
+            <span className="text-gray-700 font-medium">Äntligen ett alternativ till Fortnox och Visma som faktiskt känns 2025.</span>
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -345,12 +399,12 @@ export default async function HomePage() {
             >
               Skapa konto gratis →
             </Link>
-            <a
-              href="#funktioner"
+            <Link
+              href="/funktioner"
               className="w-full sm:w-auto px-9 py-4 bg-white border border-gray-200 text-gray-700 font-semibold rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all text-lg"
             >
               Se alla funktioner
-            </a>
+            </Link>
           </div>
 
           <p className="text-sm text-gray-400">
@@ -380,15 +434,16 @@ export default async function HomePage() {
               Allt ditt företag behöver.<br />Ingenting du inte behöver.
             </h2>
             <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
-              Endoo är ingen samling av hopkopplade moduler — det är en plattform där fakturering, bokföring och rapporter pratar med varandra från dag ett.
+              Endoo är ingen samling hopkopplade moduler — det är en plattform där fakturering, bokföring, offerter och rapporter pratar med varandra från dag ett.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {PLATFORM_FEATURES.map(f => (
-              <div
+              <Link
                 key={f.title}
-                className="group p-7 rounded-2xl border border-gray-100 bg-white hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-50 transition-all cursor-default"
+                href={f.href}
+                className="group p-7 rounded-2xl border border-gray-100 bg-white hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-50 transition-all"
               >
                 <div className="flex items-start justify-between mb-5">
                   <div className="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-xl font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all">
@@ -400,8 +455,14 @@ export default async function HomePage() {
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2.5 text-lg leading-snug">{f.title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{f.description}</p>
-              </div>
+              </Link>
             ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link href="/funktioner" className="inline-flex items-center gap-2 text-indigo-600 font-semibold hover:underline text-sm">
+              Se fullständig funktionslista →
+            </Link>
           </div>
         </div>
       </section>
@@ -425,15 +486,22 @@ export default async function HomePage() {
                 </li>
               ))}
             </ul>
-            <Link
-              href="/register"
-              className="inline-block px-7 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-500 transition-colors"
-            >
-              Starta din bokföring gratis →
-            </Link>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/register"
+                className="inline-block px-7 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-500 transition-colors"
+              >
+                Starta din bokföring gratis →
+              </Link>
+              <Link
+                href="/artiklar/vad-ar-bas-kontoplan"
+                className="inline-block px-7 py-3.5 border border-slate-600 text-slate-300 font-semibold rounded-xl hover:border-slate-400 transition-colors text-sm"
+              >
+                Vad är BAS-kontoplan?
+              </Link>
+            </div>
           </div>
 
-          {/* Code-style illustration */}
           <div className="rounded-2xl bg-slate-800 border border-slate-700 overflow-hidden">
             <div className="flex items-center gap-2 px-5 py-3.5 border-b border-slate-700">
               <div className="w-3 h-3 rounded-full bg-red-400/60" />
@@ -445,7 +513,7 @@ export default async function HomePage() {
               {[
                 { acc: "1510", name: "Kundfordringar", dr: "18 750", cr: "—", color: "text-emerald-400" },
                 { acc: "3001", name: "Försäljning 25%", dr: "—", cr: "15 000", color: "text-slate-300" },
-                { acc: "2610", name: "Utgående moms 25%", dr: "—", cr: "3 750",  color: "text-slate-300" },
+                { acc: "2610", name: "Utgående moms 25%", dr: "—", cr: "3 750", color: "text-slate-300" },
               ].map(row => (
                 <div key={row.acc} className="flex items-center gap-4">
                   <span className="text-indigo-400 w-12">{row.acc}</span>
@@ -471,7 +539,6 @@ export default async function HomePage() {
       {/* ── AI section ──────────────────────────────────────────────────────── */}
       <section id="ai" className="py-28 px-6 bg-gradient-to-b from-white to-indigo-50/40">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-          {/* Chat illustration */}
           <div className="rounded-2xl bg-white border border-gray-100 shadow-xl shadow-gray-100 overflow-hidden order-last lg:order-first">
             <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
               <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
@@ -532,9 +599,65 @@ export default async function HomePage() {
                 </li>
               ))}
             </ul>
-            <Link href="/register?plan=pro" className="inline-block px-7 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors">
-              Prova AI-assistenten →
-            </Link>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/register?plan=pro" className="inline-block px-7 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors">
+                Prova AI-assistenten →
+              </Link>
+              <Link href="/artiklar/ai-bokforing" className="inline-block px-7 py-3.5 border border-gray-200 text-gray-600 font-semibold rounded-xl hover:border-indigo-200 transition-colors text-sm">
+                Så fungerar AI i bokföring
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Offers & Portal section ─────────────────────────────────────────── */}
+      <section className="py-28 px-6 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-4">Offerter & Kundportal</p>
+            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 leading-tight mb-5">
+              Från offert till betald faktura.<br />Allt i ett flöde.
+            </h2>
+            <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
+              Skapa en offert, låt kunden acceptera online, konvertera till faktura med ett klick. Ge kunden ett eget login till sin portal — inga fler mejl om "har ni skickat fakturan?".
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: "◩",
+                title: "Offertsystem",
+                desc: "Skapa och skicka professionella offerter. Kunden accepterar eller avböjer direkt i webbläsaren. Konvertera till faktura eller avtal med ett klick.",
+                badge: null,
+              },
+              {
+                icon: "✍",
+                title: "E-signering",
+                desc: "Skicka avtal och dokument för digital signering. Kunden signerar i webbläsaren — revisionssäkert och juridiskt bindande.",
+                badge: null,
+              },
+              {
+                icon: "◫",
+                title: "Kundportal",
+                desc: "Ge dina kunder ett eget inlogg via magic link. De ser sina fakturor, laddar ner PDF och granskar avtal — utan att behöva fråga dig.",
+                badge: null,
+              },
+            ].map(f => (
+              <div key={f.title} className="bg-white rounded-2xl border border-gray-100 p-7 hover:border-indigo-200 hover:shadow-md transition-all">
+                <div className="flex items-start justify-between mb-5">
+                  <div className="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-xl font-bold">
+                    {f.icon}
+                  </div>
+                  {f.badge && (
+                    <span className="text-xs font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">{f.badge}</span>
+                  )}
+                </div>
+                <h3 className="font-bold text-gray-900 mb-2.5 text-lg">{f.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -564,17 +687,16 @@ export default async function HomePage() {
             ))}
           </div>
 
-          {/* Client list illustration */}
           <div className="max-w-md mx-auto bg-white/10 rounded-2xl border border-white/20 overflow-hidden mb-12">
             <div className="px-5 py-3.5 border-b border-white/10">
               <p className="text-white text-sm font-semibold">Mina kundkonton</p>
             </div>
             {[
-              { name: "Kund AB",        status: "3 fakturor",          dot: "bg-emerald-400" },
-              { name: "Webbyrån Norr",  status: "1 förfallen · Påminn", dot: "bg-red-400" },
-              { name: "Konsult & Co",   status: "5 aktiva avtal",      dot: "bg-indigo-300" },
-              { name: "Startup XYZ",    status: "Betalad idag ✓",      dot: "bg-emerald-400" },
-              { name: "Kreativa Studio", status: "Bokföring: 2 poster", dot: "bg-amber-400" },
+              { name: "Kund AB",          status: "3 fakturor",           dot: "bg-emerald-400" },
+              { name: "Webbyrån Norr",    status: "1 förfallen · Påminn", dot: "bg-red-400" },
+              { name: "Konsult & Co",     status: "5 aktiva avtal",       dot: "bg-indigo-300" },
+              { name: "Startup XYZ",      status: "Betalad idag ✓",       dot: "bg-emerald-400" },
+              { name: "Kreativa Studio",  status: "Bokföring: 2 poster",  dot: "bg-amber-400" },
             ].map(item => (
               <div key={item.name} className="flex items-center gap-3 px-5 py-3.5 border-b border-white/5 hover:bg-white/5 transition-colors">
                 <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.dot}`} />
@@ -584,12 +706,18 @@ export default async function HomePage() {
             ))}
           </div>
 
-          <div className="text-center">
+          <div className="text-center flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/register"
               className="inline-block px-9 py-4 bg-white text-indigo-700 font-bold rounded-2xl hover:bg-indigo-50 transition-colors text-lg shadow-xl shadow-indigo-900/20"
             >
               Skapa byråkonto gratis →
+            </Link>
+            <Link
+              href="/byra"
+              className="inline-block px-9 py-4 border border-white/30 text-white font-semibold rounded-2xl hover:bg-white/10 transition-colors text-lg"
+            >
+              Läs mer om byråläget
             </Link>
           </div>
         </div>
@@ -604,7 +732,7 @@ export default async function HomePage() {
               Koppla Endoo till<br />resten av din stack.
             </h2>
             <p className="text-gray-500 text-lg leading-relaxed mb-10">
-              REST API med scope-baserade API-nycklar, cursor-paginering och rate limiting. Hämta fakturor, kontakter, bokföring och lager från dina egna system eller via Zapier.
+              REST API med scope-baserade API-nycklar, cursor-paginering och rate limiting. Hämta fakturor, kontakter, bokföring och lager från dina egna system eller integrera via tredjepartsverktyg.
             </p>
             <div className="grid sm:grid-cols-2 gap-4">
               {INTEGRATIONS.map(i => (
@@ -616,7 +744,6 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Code block */}
           <div className="rounded-2xl bg-slate-900 overflow-hidden shadow-2xl shadow-slate-200">
             <div className="flex items-center gap-2 px-5 py-3.5 border-b border-slate-700">
               <div className="w-3 h-3 rounded-full bg-red-400/60" />
@@ -669,7 +796,7 @@ export default async function HomePage() {
                     <span key={s} className="text-amber-400 text-sm">★</span>
                   ))}
                 </div>
-                <p className="text-gray-600 leading-relaxed mb-6 text-sm">"{t.quote}"</p>
+                <p className="text-gray-600 leading-relaxed mb-6 text-sm">&ldquo;{t.quote}&rdquo;</p>
                 <div className="flex items-center gap-3">
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${t.color}`}>
                     {t.initials}
@@ -780,14 +907,19 @@ export default async function HomePage() {
               </details>
             ))}
           </div>
+          <div className="text-center mt-10">
+            <Link href="/artiklar" className="text-indigo-600 text-sm font-semibold hover:underline">
+              Fler guider och artiklar om ekonomi →
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* ── Mid CTA — Byråer ────────────────────────────────────────────────── */}
+      {/* ── Mid CTA ─────────────────────────────────────────────────────────── */}
       <section className="py-20 px-6 border-t border-gray-100">
         <div className="max-w-4xl mx-auto grid sm:grid-cols-2 gap-6">
           <div className="bg-indigo-50 rounded-2xl p-8 border border-indigo-100">
-            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">För frilansare</p>
+            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">För frilansare & småföretag</p>
             <h3 className="text-xl font-black text-gray-900 mb-3">Kom igång på 2 minuter</h3>
             <p className="text-sm text-gray-500 leading-relaxed mb-6">
               Skapa ett konto, lägg till en kund och skicka din första faktura — allt gratis, inga kreditkort.
@@ -797,13 +929,13 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800">
-            <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-3">För byråer</p>
+            <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-3">För byråer & redovisningskonsulter</p>
             <h3 className="text-xl font-black text-white mb-3">Hantera alla dina kunder</h3>
             <p className="text-sm text-slate-400 leading-relaxed mb-6">
               Byråläget i Pro-planen låter dig arbeta i kundens konto, fakturera i deras namn och se allt i en vy.
             </p>
-            <Link href="/register?plan=pro" className="inline-block px-5 py-2.5 bg-white text-slate-900 text-sm font-semibold rounded-xl hover:bg-gray-100 transition-colors">
-              Prova Pro gratis →
+            <Link href="/byra" className="inline-block px-5 py-2.5 bg-white text-slate-900 text-sm font-semibold rounded-xl hover:bg-gray-100 transition-colors">
+              Läs mer om byråläget →
             </Link>
           </div>
         </div>
@@ -819,7 +951,7 @@ export default async function HomePage() {
             Redo att byta till ett<br />ekonomisystem som<br />faktiskt fungerar?
           </h2>
           <p className="text-lg text-gray-500 mb-12 leading-relaxed">
-            Skapa ett konto gratis och upplev skillnaden. Inget kreditkort. Inga bindningstider. Flytta din data när du vill.
+            Skapa ett konto gratis och upplev skillnaden. Inget kreditkort. Inga bindningstider. Flytta din data när du vill med SIE-export.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -844,17 +976,17 @@ export default async function HomePage() {
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
       <footer className="border-t border-gray-100 bg-gray-50 py-16 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
             {/* Brand */}
-            <div className="col-span-2 md:col-span-1 lg:col-span-1">
+            <div className="col-span-2 md:col-span-3 lg:col-span-2">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
                   <span className="text-white text-xs font-black">E</span>
                 </div>
                 <span className="text-lg font-extrabold text-gray-900">endoo</span>
               </div>
-              <p className="text-xs text-gray-400 leading-relaxed">
-                Ekonomiplattform för moderna företag och byråer. Byggt i Sverige.
+              <p className="text-xs text-gray-400 leading-relaxed max-w-xs">
+                En modern ekonomiplattform för företag och byråer. Fakturering, bokföring och AI samlat i ett system. Byggt i Sverige.
               </p>
             </div>
 
@@ -862,12 +994,12 @@ export default async function HomePage() {
             <div>
               <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Produkt</p>
               <nav className="space-y-2.5 text-sm text-gray-500">
-                <a href="#funktioner"   className="block hover:text-gray-800 transition-colors">Funktioner</a>
-                <a href="#bokforing"    className="block hover:text-gray-800 transition-colors">Bokföring</a>
-                <a href="#ai"           className="block hover:text-gray-800 transition-colors">AI-assistent</a>
-                <a href="#byra"         className="block hover:text-gray-800 transition-colors">För byråer</a>
-                <a href="#api"          className="block hover:text-gray-800 transition-colors">API</a>
-                <a href="#priser"       className="block hover:text-gray-800 transition-colors">Priser</a>
+                <Link href="/funktioner"         className="block hover:text-gray-800 transition-colors">Alla funktioner</Link>
+                <a href="#bokforing"             className="block hover:text-gray-800 transition-colors">Bokföring</a>
+                <a href="#ai"                    className="block hover:text-gray-800 transition-colors">AI-assistent</a>
+                <Link href="/byra"               className="block hover:text-gray-800 transition-colors">För byråer</Link>
+                <a href="#api"                   className="block hover:text-gray-800 transition-colors">API</a>
+                <a href="#priser"                className="block hover:text-gray-800 transition-colors">Priser</a>
               </nav>
             </div>
 
@@ -875,20 +1007,22 @@ export default async function HomePage() {
             <div>
               <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Lösningar</p>
               <nav className="space-y-2.5 text-sm text-gray-500">
-                <a href="#byra"              className="block hover:text-gray-800 transition-colors">Redovisningsbyråer</a>
-                <Link href="/konsulter"      className="block hover:text-gray-800 transition-colors">Konsulter & frilansare</Link>
-                <Link href="/smaforetag"     className="block hover:text-gray-800 transition-colors">Småföretag</Link>
-                <Link href="/e-handel"       className="block hover:text-gray-800 transition-colors">E-handel & lager</Link>
+                <Link href="/byra"          className="block hover:text-gray-800 transition-colors">Redovisningsbyråer</Link>
+                <Link href="/konsulter"     className="block hover:text-gray-800 transition-colors">Konsulter & frilansare</Link>
+                <Link href="/smaforetag"    className="block hover:text-gray-800 transition-colors">Småföretag</Link>
+                <Link href="/e-handel"      className="block hover:text-gray-800 transition-colors">E-handel & lager</Link>
               </nav>
             </div>
 
-            {/* Resurser */}
+            {/* Artiklar */}
             <div>
-              <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Resurser</p>
+              <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Artiklar</p>
               <nav className="space-y-2.5 text-sm text-gray-500">
-                <a href="#faq"          className="block hover:text-gray-800 transition-colors">Vanliga frågor</a>
-                <a href="mailto:hej@endoo.se" className="block hover:text-gray-800 transition-colors">Support</a>
-                <a href="mailto:enterprise@endoo.se" className="block hover:text-gray-800 transition-colors">Enterprise</a>
+                <Link href="/artiklar"                          className="block hover:text-gray-800 transition-colors">Alla artiklar</Link>
+                <Link href="/artiklar/vad-ar-ett-ekonomisystem" className="block hover:text-gray-800 transition-colors">Vad är ett ekonomisystem?</Link>
+                <Link href="/artiklar/vad-ar-bas-kontoplan"     className="block hover:text-gray-800 transition-colors">BAS-kontoplan</Link>
+                <Link href="/artiklar/digital-fakturering"      className="block hover:text-gray-800 transition-colors">Digital fakturering</Link>
+                <Link href="/artiklar/ai-bokforing"             className="block hover:text-gray-800 transition-colors">AI i bokföring</Link>
               </nav>
             </div>
 
@@ -896,8 +1030,10 @@ export default async function HomePage() {
             <div>
               <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Konto</p>
               <nav className="space-y-2.5 text-sm text-gray-500">
-                <Link href="/login"     className="block hover:text-gray-800 transition-colors">Logga in</Link>
-                <Link href="/register"  className="block hover:text-gray-800 transition-colors">Skapa konto</Link>
+                <Link href="/login"             className="block hover:text-gray-800 transition-colors">Logga in</Link>
+                <Link href="/register"          className="block hover:text-gray-800 transition-colors">Skapa konto</Link>
+                <a href="mailto:hej@endoo.se"   className="block hover:text-gray-800 transition-colors">Support</a>
+                <a href="mailto:enterprise@endoo.se" className="block hover:text-gray-800 transition-colors">Enterprise</a>
               </nav>
             </div>
           </div>

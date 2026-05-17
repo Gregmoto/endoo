@@ -42,19 +42,29 @@ const PUBLIC_ROUTES = [
   "/konsulter",
   "/smaforetag",
   "/e-handel",
+  "/funktioner",
+  "/byra",
+  "/artiklar",
   "/sitemap.xml",
   "/robots.txt",
 ]
 
 const PUBLIC_PREFIXES = [
   "/invite/",
+  "/sign/",       // public e-signing pages — no account required
+  "/q/",          // public quote approval pages — no account required
+  "/portal/",     // customer portal — handles own auth via cookie/JWT
   "/api/auth/",
-  "/api/v1/",   // external REST API — auth handled per-route via API keys
+  "/api/sign/",   // public e-signing API endpoints
+  "/api/q/",      // public quote approval API endpoints
+  "/api/portal/", // customer portal API — handles own auth
+  "/api/v1/",     // external REST API — auth handled per-route via API keys
   "/_next/",
   "/favicon",
   "/konsulter/",
   "/smaforetag/",
   "/e-handel/",
+  "/artiklar/",   // public SEO articles
 ]
 
 function isPublic(pathname: string): boolean {
