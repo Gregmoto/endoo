@@ -574,6 +574,10 @@ model Organization {
   brandingProfile          BrandingProfile?
   emailDomainVerifications EmailDomainVerification[]
 
+  // Email delivery tracking
+  emailDeliveries    EmailDelivery[]
+  emailSuppressions  EmailSuppression[]
+
   // E-signering
   signatureRequests SignatureRequest[] @relation("OrgSignatureRequests")
   quotes            Quote[]            @relation("OrgQuotes")
@@ -2529,6 +2533,7 @@ model NotificationJob {
   createdAt       DateTime              @default(now())
 
   organization    Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  emailDeliveries EmailDelivery[]
 
   @@unique([notificationId, channel])
   @@index([status, nextAttemptAt])
@@ -3313,6 +3318,57 @@ model Quote {
   @@index([organizationId, createdAt(sort: Desc)])
   @@index([contactId])
   @@map("quotes")
+}
+
+// ─────────────────────────────────────────────
+// EMAIL DELIVERY TRACKING
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+
+model EmailDelivery {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId    String    @db.Uuid
+  notificationJobId String?   @db.Uuid
+  recipientEmail    String
+  subject           String?
+  providerMessageId String?   @unique   // Resend message ID
+  status            String    @default("queued") // queued|sent|delivered|bounced|complained|opened|clicked|delayed
+  events            Json      @default("[]")     // [{type,timestamp,data}]
+  errorMessage      String?
+  openedAt          DateTime?
+  clickedAt         DateTime?
+  deliveredAt       DateTime?
+  bouncedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  notificationJob NotificationJob? @relation(fields: [notificationJobId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt(sort: Desc)])
+  @@index([providerMessageId])
+  @@index([notificationJobId])
+  @@index([recipientEmail])
+  @@map("email_deliveries")
+}
+
+// ─────────────────────────────────────────────
+// EMAIL SUPPRESSION LIST
+// Prevents sending to hard-bounced / complained / opted-out addresses
+// ─────────────────────────────────────────────
+
+model EmailSuppression {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  email          String
+  reason         String   // "bounce_hard" | "bounce_soft" | "complained" | "unsubscribed" | "manual"
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, email])
+  @@index([organizationId])
+  @@map("email_suppressions")
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { TaskWidget } from "@/components/tasks/TaskWidget"
 import { SignatureRequestModal } from "@/components/signing/SignatureRequestModal"
 import { SignatureStatusWidget } from "@/components/signing/SignatureStatusWidget"
+import { EmailDeliveryStatusBadge } from "@/components/email/EmailDeliveryStatusBadge"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -150,6 +151,9 @@ export default function InvoiceDetailPage() {
             {invoice.type === "proforma" && (
               <span className="px-2.5 py-1 text-xs rounded-full font-medium bg-purple-100 text-purple-700">Proforma</span>
             )}
+          </div>
+          <div className="mt-1.5">
+            <EmailDeliveryStatusBadge invoiceId={invoice.id} />
           </div>
           <p className="text-sm text-gray-500 mt-1">
             Utfärdat {fmtDate(invoice.issueDate)} · Förfaller {fmtDate(invoice.dueDate)}

@@ -12,7 +12,7 @@
  */
 
 import { prisma }           from "@/lib/prisma"
-import { Resend }           from "resend"
+import { sendEmail }        from "@/lib/email/send"
 import { renderTemplate }   from "@/lib/notifications/templates"
 
 const BACKOFF_MINUTES = [5, 30, 120, 360, 1440]
@@ -34,10 +34,6 @@ export async function GET(req: Request): Promise<Response> {
     return Response.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const resend = process.env.RESEND_API_KEY
-    ? new Resend(process.env.RESEND_API_KEY)
-    : null
-  const from = process.env.EMAIL_FROM ?? "Endoo <noreply@endoo.se>"
   const now  = new Date()
 
   // ── 1. Fetch up to 20 pending jobs ─────────────────────────────────────────
@@ -87,33 +83,45 @@ export async function GET(req: Request): Promise<Response> {
         continue
       }
 
-      // ── 4. Render template ────────────────────────────────────────────────
+      // ── 4. Check suppression list ─────────────────────────────────────────
+      const suppressed = await prisma.emailSuppression.findUnique({
+        where: { organizationId_email: { organizationId: job.organizationId, email: user.email } },
+      })
+      if (suppressed) {
+        await prisma.notificationJob.update({
+          where: { id: job.id },
+          data: { status: "skipped", processedAt: now, error: `Suppressed: ${suppressed.reason}` },
+        })
+        continue
+      }
+
+      // ── 5. Render template ────────────────────────────────────────────────
       const { subject, html } = renderTemplate(
         job.template,
         job.payload as Record<string, unknown>,
       )
 
-      // ── 5. Send email ─────────────────────────────────────────────────────
-      if (!resend) {
-        // Dev mode — no API key configured
-        console.log(
-          `[cron/process-notification-jobs] DEV: would send "${subject}" to ${user.email}`,
-        )
-        await prisma.notificationJob.update({
-          where: { id: job.id },
-          data: {
-            status:      "sent",
-            processedAt: new Date(),
-            error:       null,
-          },
-        })
-        sent++
-        continue
+      // ── 6. Send email ─────────────────────────────────────────────────────
+      const result = await sendEmail({ to: user.email, subject, html })
+
+      // ── 7. Create EmailDelivery record ────────────────────────────────────
+      await prisma.emailDelivery.create({
+        data: {
+          organizationId:    job.organizationId,
+          notificationJobId: job.id,
+          recipientEmail:    user.email,
+          subject,
+          providerMessageId: result.id ?? null,
+          status:            result.error ? "queued" : "sent",
+          errorMessage:      result.error ?? null,
+        },
+      })
+
+      if (result.error) {
+        throw new Error(result.error)
       }
 
-      await resend.emails.send({ from, to: user.email, subject, html })
-
-      // ── 6. Mark success ───────────────────────────────────────────────────
+      // ── 8. Mark success ───────────────────────────────────────────────────
       await prisma.notificationJob.update({
         where: { id: job.id },
         data: {
@@ -124,7 +132,7 @@ export async function GET(req: Request): Promise<Response> {
       })
       sent++
 
-      // ── 7. Update Notification.emailSentAt if linked ──────────────────────
+      // ── 9. Update Notification.emailSentAt if linked ──────────────────────
       if (job.notificationId) {
         prisma.notification
           .update({

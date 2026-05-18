@@ -52,6 +52,11 @@ const BOTTOM_ITEMS = [
   { label: "Audit log",     href: "/audit",    icon: "◷" },
 ]
 
+const SETTINGS_SUB_ITEMS = [
+  { label: "E-post",     href: "/settings/email",      icon: "✉" },
+  { label: "E-postlogg", href: "/settings/email/logs", icon: "◷" },
+]
+
 type Org = { id: string; name: string; slug: string; type: string; role: string }
 
 interface SidebarProps {
@@ -284,18 +289,37 @@ function SidebarContent({
       {/* Bottom nav */}
       <div className="px-3 py-3 border-t border-gray-100 dark:border-gray-800 space-y-0.5 flex-shrink-0">
         {BOTTOM_ITEMS.map((item) => (
-          <Link
-            key={item.href}
-            href={`${base}${item.href}`}
-            onClick={onNavigate}
-            className={cn(
-              "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px]",
-              isActive(item.href) ? "bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400" : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
+          <div key={item.href}>
+            <Link
+              href={`${base}${item.href}`}
+              onClick={onNavigate}
+              className={cn(
+                "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px]",
+                isActive(item.href) ? "bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400" : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
+              )}
+            >
+              <span className="text-base leading-none">{item.icon}</span>
+              {item.label}
+            </Link>
+            {item.href === "/settings" && isActive("/settings/email") && (
+              <div className="ml-4 mt-0.5 space-y-0.5 border-l border-gray-100 dark:border-gray-800 pl-2">
+                {SETTINGS_SUB_ITEMS.map(sub => (
+                  <Link
+                    key={sub.href}
+                    href={`${base}${sub.href}`}
+                    onClick={onNavigate}
+                    className={cn(
+                      "flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors",
+                      isActive(sub.href) ? "bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400" : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
+                    )}
+                  >
+                    <span className="text-sm leading-none">{sub.icon}</span>
+                    {sub.label}
+                  </Link>
+                ))}
+              </div>
             )}
-          >
-            <span className="text-base leading-none">{item.icon}</span>
-            {item.label}
-          </Link>
+          </div>
         ))}
         <div className="flex items-center gap-2 px-3 py-2 mt-1">
           <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-300 flex-shrink-0">

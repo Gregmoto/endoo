@@ -7,6 +7,36 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-05-18
+
+### Added
+- **[E-post infrastruktur]** `src/lib/email/client.ts` — singleton Resend-klient med env-config (`RESEND_FROM_DOMAIN`, `RESEND_FROM_NAME`, `RESEND_WEBHOOK_SECRET`)
+- **[E-post infrastruktur]** `src/lib/email/send.ts` — provider-agnostisk `sendEmail()` med React Email-stöd, bilagor och idempotensnycklar
+- **[E-post mallar]** 11 React Email-komponenter i `src/emails/`: `InvoiceSentEmail` (radartikeltabell), `InvoiceReminderEmail`, `InvoiceOverdueEmail`, `QuoteSentEmail`, `ContractSignatureRequestEmail`, `PortalMagicLinkEmail`, `WelcomeEmail`, `InvitationEmail`, `PasswordResetEmail`, `ApprovalRequestEmail`, `WeeklyAgencyDigestEmail`
+- **[E-post spårning]** `EmailDelivery`-poster skapas vid varje utskick — lagrar mottagare, ämne, Resend-ID, status och events-tidslinje
+- **[E-post spårning]** `POST /api/webhooks/resend` — HMAC-signaturverifiering, hantering av sent/delivered/delayed/bounced/complained/opened/clicked
+- **[E-post spårning]** `GET /api/invoices/[id]/email-delivery` — senaste leveransstatus för en faktura
+- **[E-post spårning]** `EmailDeliveryStatusBadge`-komponent på fakturadetalj-sidan
+- **[Suppressionslista]** Hard bounces + klagomål skapar `EmailSuppression`-poster; 2+ hårda studsningar rensar `Contact.email` och skapar `AuditLog` + `ActivityFeedItem`
+- **[Suppressionslista]** `POST /api/email/suppression/remove` — ta bort adress från suppressionslistan
+- **[Suppressionskontroll]** Notifieringskön kontrollerar suppressionslistan och sätter jobb till `skipped`
+- **[Domänverifiering]** `GET/POST /api/settings/email/domain` — anpassad avsändardomän via Resend Domains API med DNS-poster
+- **[Domänverifiering]** `POST /api/settings/email/domain/verify` — verifiera DNS-poster
+- **[Testutskick]** `POST /api/settings/email/test-send` — testmejl med `EmailDelivery`-loggning
+- **[E-postlogg]** `GET /api/audit/email-logs` — paginerad logg filtrerbar på status och e-postadress
+- **[E-postlogg]** `settings/email/logs` — ny loggsida med expanderbar händelsetidslinje per utskick
+- **[Inställningar]** Uppdaterad `settings/email`-sida: custom domain-setup, DNS-instruktioner, verify-knapp, testutskick-sektion
+- **[Navigering]** "E-postlogg"-submeny i sidomenyn (visas på `/settings/email*`-sidor)
+- **[RBAC]** `EMAIL_PERMISSIONS`: `audit:email_logs:read`, `settings:email:update`
+- **[Env]** `.env.example` utökat med `RESEND_FROM_DOMAIN`, `RESEND_FROM_NAME`, `RESEND_WEBHOOK_SECRET`
+
+### Changed
+- **[E-post infrastruktur]** `process-notification-jobs` — ersätter direkt Resend-anrop med `sendEmail()`, suppression-check och `EmailDelivery`-spårning
+
+### Database
+- **[E-post spårning]** Ny modell `EmailDelivery`: events (JSON-array), openedAt, clickedAt, deliveredAt, bouncedAt, providerMessageId
+- **[Suppressionslista]** Ny modell `EmailSuppression`: per-org blocklist med orsak (bounce_hard/complained/unsubscribed/manual)
+
 ## [0.3.1] - 2026-05-18
 
 ### Added
@@ -83,7 +113,8 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 - Added `SchemaVersion` model för att tracka Prisma-migrations
 - Added `User.lastSeenVersion String?` för att spåra senast sedd version
 
-[Unreleased]: https://github.com/Gregmoto/endoo/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/Gregmoto/endoo/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/Gregmoto/endoo/compare/v0.3.1...v0.5.0
 [0.3.1]: https://github.com/Gregmoto/endoo/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/Gregmoto/endoo/compare/v0.1.0...v0.3.0
 [0.1.0]: https://github.com/Gregmoto/endoo/releases/tag/v0.1.0

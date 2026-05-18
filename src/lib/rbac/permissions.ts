@@ -201,6 +201,14 @@ export const BRANDING_PERMISSIONS = {
   WHITE_LABEL:   "branding:white_label",   // toggle applyToClients (agency-only)
 } as const
 
+// ─────────────────────────────────────────────
+// EMAIL AUDIT PERMISSIONS
+// ─────────────────────────────────────────────
+export const EMAIL_PERMISSIONS = {
+  READ_LOGS:    "audit:email_logs:read",   // view email delivery log
+  MANAGE:       "settings:email:update",   // update email settings
+} as const
+
 export type Permission =
   | (typeof PLATFORM_PERMISSIONS)[keyof typeof PLATFORM_PERMISSIONS]
   | (typeof INVOICE_PERMISSIONS)[keyof typeof INVOICE_PERMISSIONS]
@@ -219,6 +227,7 @@ export type Permission =
   | (typeof SIGNATURE_PERMISSIONS)[keyof typeof SIGNATURE_PERMISSIONS]
   | (typeof QUOTE_PERMISSIONS)[keyof typeof QUOTE_PERMISSIONS]
   | (typeof BRANDING_PERMISSIONS)[keyof typeof BRANDING_PERMISSIONS]
+  | (typeof EMAIL_PERMISSIONS)[keyof typeof EMAIL_PERMISSIONS]
 
 export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(PLATFORM_PERMISSIONS),
@@ -238,4 +247,5 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(SIGNATURE_PERMISSIONS),
   ...Object.values(QUOTE_PERMISSIONS),
   ...Object.values(BRANDING_PERMISSIONS),
+  ...Object.values(EMAIL_PERMISSIONS),
 ]
