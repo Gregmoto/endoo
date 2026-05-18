@@ -90,6 +90,32 @@ Blockerar commit om `package.json` och `src/lib/version.ts` är ur synk.
 - Portal-routes: använd `requirePortalAuth(orgSlug)`
 - Kryptera aldrig känsliga fält direkt i kod — använd `lib/crypto.ts`
 
+### Regler för nya tenant-scoped routes (OBLIGATORISKT)
+
+1. **404 — inte 403** för resurser som tillhör annan org (läcker inte existens)
+
+2. **Prisma-frågor** — alltid `organizationId: ctx.organizationId` i `where`:
+   ```ts
+   prisma.contact.findFirst({ where: { id, organizationId: ctx.organizationId } })
+   ```
+
+3. **Lägg till ett test** i `tests/security/tenant-isolation.test.ts`:
+   - Konfigurera Prisma-mock som oracle (returnerar resurs utan org-filter)
+   - Anropa routen med Org A-session och Org B:s ID
+   - Förvänta 404 och kör `assertNoLeak(res, FORBIDDEN_STRINGS)`
+
+4. **Kör audit** efter implementation:
+   ```bash
+   npm run audit:prisma:strict    # måste ge 0 suspects
+   npm run scan-routes            # uppdaterar route-manifestet
+   npm run test:security          # kör isoleringstesterna
+   ```
+
+5. **Kör inte** `audit:prisma:strict` om du lägger till ett `// audit-ok`-undantag
+   utan att ha förklarat varför i en kommentar på raden ovanför.
+
+Se [SECURITY.md](SECURITY.md) för full dokumentation av isoleringsmodellen.
+
 ## COMMITS
 
 - Committa aldrig utan att tsc --noEmit ger 0 fel

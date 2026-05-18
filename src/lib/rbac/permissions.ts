@@ -20,6 +20,7 @@ export const PLATFORM_PERMISSIONS = {
   VIEW_AUDIT_LOGS:      "platform:view_audit_logs",     // cross-tenant audit log access
   IMPERSONATE_ORG:      "platform:impersonate_org",     // act as any organization
   MANAGE_SETTINGS:      "platform:manage_settings",     // platform-wide config
+  SECURITY_READ:        "platform:security:read",       // tenant-isolation audit report
 } as const
 
 // ─────────────────────────────────────────────

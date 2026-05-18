@@ -17,7 +17,7 @@ export async function GET(
   try { claims = await requirePortalAuth(orgSlug) }
   catch { return portalUnauthorized() }
 
-  const contact = await prisma.contact.findUnique({
+  const contact = await prisma.contact.findUnique({ // audit-ok — claims.sub is contactId from org-bound portal JWT verified by requirePortalAuth(orgSlug)
     where:  { id: claims.sub },
     select: { id: true, name: true, email: true, phone: true, addressLine1: true, city: true, postalCode: true },
   })

@@ -1,0 +1,93 @@
+name: Security Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Block merge if security checks fail
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tenant-isolation:
+    name: Tenant Isolation Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate route manifest
+        run: npm run scan-routes
+        # Manifest is used for coverage reporting in the test run
+
+      - name: Run tenant isolation tests
+        run: npx vitest run tests/security/tenant-isolation.test.ts --reporter=verbose
+        env:
+          # Tests mock Prisma — no real DB needed
+          NODE_ENV: test
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-test-results
+          path: tests/_route-manifest.json
+          retention-days: 30
+
+  audit-prisma:
+    name: Prisma Query Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Prisma audit (strict mode — fails on suspects)
+        run: npm run audit:prisma:strict
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prisma-audit-report
+          path: tests/_audit-prisma-report.json
+          retention-days: 30
+
+  type-check:
+    name: TypeScript — no errors
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit

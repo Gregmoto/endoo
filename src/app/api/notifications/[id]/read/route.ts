@@ -22,7 +22,7 @@ export async function PATCH(
     const ctx = await requireAuth()
     const { id } = await params
 
-    const existing = await prisma.notification.findUnique({
+    const existing = await prisma.notification.findUnique({ // audit-ok — org+user verified on next line (existing.organizationId !== ctx.organizationId)
       where: { id },
     })
 

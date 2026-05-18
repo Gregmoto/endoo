@@ -1,0 +1,2149 @@
+{
+  "generated": "2026-05-18T12:44:07.829Z",
+  "totalRoutes": 173,
+  "byCategory": {
+    "tenant": 135,
+    "public": 15,
+    "cron": 10,
+    "platform": 2,
+    "portal": 11
+  },
+  "routes": [
+    {
+      "path": "/api/accounting/accounts/[id]/dimension-rules",
+      "file": "src/app/api/accounting/accounts/[id]/dimension-rules/route.ts",
+      "methods": [
+        "GET",
+        "POST",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/accounts/[id]",
+      "file": "src/app/api/accounting/accounts/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/accounts",
+      "file": "src/app/api/accounting/accounts/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/accounts/seed-bas",
+      "file": "src/app/api/accounting/accounts/seed-bas/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/dimension-axes/[id]",
+      "file": "src/app/api/accounting/dimension-axes/[id]/route.ts",
+      "methods": [
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/dimension-axes",
+      "file": "src/app/api/accounting/dimension-axes/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/dimensions/[id]/ledger",
+      "file": "src/app/api/accounting/dimensions/[id]/ledger/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/dimensions/[id]",
+      "file": "src/app/api/accounting/dimensions/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/dimensions",
+      "file": "src/app/api/accounting/dimensions/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/journals/[id]/entries/[entryId]/dimensions/[jedId]",
+      "file": "src/app/api/accounting/journals/[id]/entries/[entryId]/dimensions/[jedId]/route.ts",
+      "methods": [
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id",
+        "entryId",
+        "jedId"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/journals/[id]/entries/[entryId]/dimensions",
+      "file": "src/app/api/accounting/journals/[id]/entries/[entryId]/dimensions/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id",
+        "entryId"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/journals/[id]/void",
+      "file": "src/app/api/accounting/journals/[id]/void/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/periods/[id]/lock",
+      "file": "src/app/api/accounting/periods/[id]/lock/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/periods/[id]/unlock",
+      "file": "src/app/api/accounting/periods/[id]/unlock/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/periods",
+      "file": "src/app/api/accounting/periods/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/reports/dimension-pnl",
+      "file": "src/app/api/accounting/reports/dimension-pnl/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/accounting/reports/project/[id]",
+      "file": "src/app/api/accounting/reports/project/[id]/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/activity",
+      "file": "src/app/api/activity/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/agency/bulk",
+      "file": "src/app/api/agency/bulk/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/agency/clients/[id]",
+      "file": "src/app/api/agency/clients/[id]/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/agency/clients",
+      "file": "src/app/api/agency/clients/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/agency/pins",
+      "file": "src/app/api/agency/pins/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/ai/chat",
+      "file": "src/app/api/ai/chat/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/ai/explain",
+      "file": "src/app/api/ai/explain/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/ai/suggest-account",
+      "file": "src/app/api/ai/suggest-account/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/ai/suggest-journal",
+      "file": "src/app/api/ai/suggest-journal/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/ai/suggestions/[id]",
+      "file": "src/app/api/ai/suggestions/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/analytics/dashboard",
+      "file": "src/app/api/analytics/dashboard/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/analytics/realtime",
+      "file": "src/app/api/analytics/realtime/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/analytics/refresh",
+      "file": "src/app/api/analytics/refresh/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/api-keys/[id]",
+      "file": "src/app/api/api-keys/[id]/route.ts",
+      "methods": [
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/api-keys",
+      "file": "src/app/api/api-keys/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/approval-inbox",
+      "file": "src/app/api/approval-inbox/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/approval-policies/[id]",
+      "file": "src/app/api/approval-policies/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/approval-policies",
+      "file": "src/app/api/approval-policies/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/audit/email-logs",
+      "file": "src/app/api/audit/email-logs/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/auth/exit-impersonation",
+      "file": "src/app/api/auth/exit-impersonation/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/auth/impersonate",
+      "file": "src/app/api/auth/impersonate/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/auth/orgs",
+      "file": "src/app/api/auth/orgs/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/auth/permissions",
+      "file": "src/app/api/auth/permissions/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/auth/switch-org",
+      "file": "src/app/api/auth/switch-org/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/changelog",
+      "file": "src/app/api/changelog/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/contacts/[id]/history",
+      "file": "src/app/api/contacts/[id]/history/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/contacts/[id]/persons/[personId]",
+      "file": "src/app/api/contacts/[id]/persons/[personId]/route.ts",
+      "methods": [
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id",
+        "personId"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/contacts/[id]/persons",
+      "file": "src/app/api/contacts/[id]/persons/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/contacts/[id]",
+      "file": "src/app/api/contacts/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/contacts",
+      "file": "src/app/api/contacts/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/contracts/[id]/generate",
+      "file": "src/app/api/contracts/[id]/generate/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/contracts/[id]",
+      "file": "src/app/api/contracts/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/contracts",
+      "file": "src/app/api/contracts/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/cron/approval-reminders",
+      "file": "src/app/api/cron/approval-reminders/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "cron",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/cron/check-overdue",
+      "file": "src/app/api/cron/check-overdue/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "cron",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/cron/contracts",
+      "file": "src/app/api/cron/contracts/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "cron",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/cron/process-notification-jobs",
+      "file": "src/app/api/cron/process-notification-jobs/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "cron",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/cron/process-webhooks",
+      "file": "src/app/api/cron/process-webhooks/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "cron",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/cron/quotes",
+      "file": "src/app/api/cron/quotes/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "cron",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/cron/refresh-snapshots",
+      "file": "src/app/api/cron/refresh-snapshots/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "cron",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/cron/refresh-tokens",
+      "file": "src/app/api/cron/refresh-tokens/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "cron",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/cron/reindex-search",
+      "file": "src/app/api/cron/reindex-search/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "cron",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/cron/sync-integrations",
+      "file": "src/app/api/cron/sync-integrations/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "cron",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/email/suppression/remove",
+      "file": "src/app/api/email/suppression/remove/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/health",
+      "file": "src/app/api/health/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/integrations/[slug]/callback",
+      "file": "src/app/api/integrations/[slug]/callback/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "slug"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/integrations/[slug]/connect",
+      "file": "src/app/api/integrations/[slug]/connect/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "slug"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/integrations/connections/[id]/logs",
+      "file": "src/app/api/integrations/connections/[id]/logs/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/integrations/connections/[id]",
+      "file": "src/app/api/integrations/connections/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/integrations/connections/[id]/sync",
+      "file": "src/app/api/integrations/connections/[id]/sync/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/integrations/connections",
+      "file": "src/app/api/integrations/connections/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/integrations/fortnox/import/confirm",
+      "file": "src/app/api/integrations/fortnox/import/confirm/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/integrations/fortnox/import",
+      "file": "src/app/api/integrations/fortnox/import/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/inventory/[id]/count",
+      "file": "src/app/api/inventory/[id]/count/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/inventory/[id]",
+      "file": "src/app/api/inventory/[id]/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/inventory/[id]/transactions",
+      "file": "src/app/api/inventory/[id]/transactions/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/inventory",
+      "file": "src/app/api/inventory/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/invitations/accept",
+      "file": "src/app/api/invitations/accept/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/invitations",
+      "file": "src/app/api/invitations/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/invoices/[id]/convert-proforma",
+      "file": "src/app/api/invoices/[id]/convert-proforma/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/invoices/[id]/credit-note",
+      "file": "src/app/api/invoices/[id]/credit-note/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/invoices/[id]/email-delivery",
+      "file": "src/app/api/invoices/[id]/email-delivery/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/invoices/[id]/payments/[paymentId]",
+      "file": "src/app/api/invoices/[id]/payments/[paymentId]/route.ts",
+      "methods": [
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id",
+        "paymentId"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/invoices/[id]/payments",
+      "file": "src/app/api/invoices/[id]/payments/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/invoices/[id]/pdf",
+      "file": "src/app/api/invoices/[id]/pdf/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/invoices/[id]",
+      "file": "src/app/api/invoices/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/invoices/[id]/send",
+      "file": "src/app/api/invoices/[id]/send/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/invoices",
+      "file": "src/app/api/invoices/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/journals/[id]",
+      "file": "src/app/api/journals/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/journals",
+      "file": "src/app/api/journals/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/notifications/[id]/read",
+      "file": "src/app/api/notifications/[id]/read/route.ts",
+      "methods": [
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/notifications/preferences",
+      "file": "src/app/api/notifications/preferences/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/notifications/read-all",
+      "file": "src/app/api/notifications/read-all/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/notifications",
+      "file": "src/app/api/notifications/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/onboarding",
+      "file": "src/app/api/onboarding/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/orgs/current",
+      "file": "src/app/api/orgs/current/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/orgs/mine",
+      "file": "src/app/api/orgs/mine/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/orgs",
+      "file": "src/app/api/orgs/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/payments",
+      "file": "src/app/api/payments/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/plans/current",
+      "file": "src/app/api/plans/current/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/plans",
+      "file": "src/app/api/plans/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/platform/organizations/[id]",
+      "file": "src/app/api/platform/organizations/[id]/route.ts",
+      "methods": [
+        "PATCH"
+      ],
+      "category": "platform",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/platform/organizations",
+      "file": "src/app/api/platform/organizations/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "platform",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/portal/[orgSlug]/auth/logout",
+      "file": "src/app/api/portal/[orgSlug]/auth/logout/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "portal",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "orgSlug"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/portal/[orgSlug]/auth/send",
+      "file": "src/app/api/portal/[orgSlug]/auth/send/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "portal",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "orgSlug"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/portal/[orgSlug]/auth/verify",
+      "file": "src/app/api/portal/[orgSlug]/auth/verify/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "portal",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "orgSlug"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/portal/[orgSlug]/contracts",
+      "file": "src/app/api/portal/[orgSlug]/contracts/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "portal",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "orgSlug"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/portal/[orgSlug]/invoices/[id]/pdf",
+      "file": "src/app/api/portal/[orgSlug]/invoices/[id]/pdf/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "portal",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "orgSlug",
+        "id"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/portal/[orgSlug]/invoices/[id]",
+      "file": "src/app/api/portal/[orgSlug]/invoices/[id]/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "portal",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "orgSlug",
+        "id"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/portal/[orgSlug]/invoices",
+      "file": "src/app/api/portal/[orgSlug]/invoices/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "portal",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "orgSlug"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/portal/[orgSlug]/me",
+      "file": "src/app/api/portal/[orgSlug]/me/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "portal",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "orgSlug"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/portal/[orgSlug]/quotes/[id]/pdf",
+      "file": "src/app/api/portal/[orgSlug]/quotes/[id]/pdf/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "portal",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "orgSlug",
+        "id"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/portal/[orgSlug]/quotes/[id]",
+      "file": "src/app/api/portal/[orgSlug]/quotes/[id]/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "portal",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "orgSlug",
+        "id"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/portal/[orgSlug]/quotes",
+      "file": "src/app/api/portal/[orgSlug]/quotes/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "portal",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "orgSlug"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/products/[id]",
+      "file": "src/app/api/products/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/products",
+      "file": "src/app/api/products/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/q/[token]",
+      "file": "src/app/api/q/[token]/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "token"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/quotes/[id]/convert-contract",
+      "file": "src/app/api/quotes/[id]/convert-contract/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/quotes/[id]/convert-invoice",
+      "file": "src/app/api/quotes/[id]/convert-invoice/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/quotes/[id]/pdf",
+      "file": "src/app/api/quotes/[id]/pdf/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/quotes/[id]",
+      "file": "src/app/api/quotes/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/quotes/[id]/send",
+      "file": "src/app/api/quotes/[id]/send/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/quotes",
+      "file": "src/app/api/quotes/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/receipts/scan",
+      "file": "src/app/api/receipts/scan/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/register",
+      "file": "src/app/api/register/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/reports/balance-sheet",
+      "file": "src/app/api/reports/balance-sheet/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/reports/general-ledger",
+      "file": "src/app/api/reports/general-ledger/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/reports/income-statement",
+      "file": "src/app/api/reports/income-statement/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/reports/trial-balance",
+      "file": "src/app/api/reports/trial-balance/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/reports/vat",
+      "file": "src/app/api/reports/vat/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/search",
+      "file": "src/app/api/search/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/account-mappings",
+      "file": "src/app/api/settings/account-mappings/route.ts",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/billing",
+      "file": "src/app/api/settings/billing/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/branding",
+      "file": "src/app/api/settings/branding/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/branding/upload",
+      "file": "src/app/api/settings/branding/upload/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/company",
+      "file": "src/app/api/settings/company/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/email/domain",
+      "file": "src/app/api/settings/email/domain/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/email/domain/verify",
+      "file": "src/app/api/settings/email/domain/verify/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/email",
+      "file": "src/app/api/settings/email/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/email/test-send",
+      "file": "src/app/api/settings/email/test-send/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/invitations/[id]",
+      "file": "src/app/api/settings/invitations/[id]/route.ts",
+      "methods": [
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/invoices",
+      "file": "src/app/api/settings/invoices/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/payments",
+      "file": "src/app/api/settings/payments/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/security/password",
+      "file": "src/app/api/settings/security/password/route.ts",
+      "methods": [
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/security/sessions",
+      "file": "src/app/api/settings/security/sessions/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/settings/users/[memberId]",
+      "file": "src/app/api/settings/users/[memberId]/route.ts",
+      "methods": [
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "memberId"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/settings/users",
+      "file": "src/app/api/settings/users/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/sie/export",
+      "file": "src/app/api/sie/export/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/sign/[token]",
+      "file": "src/app/api/sign/[token]/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "token"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/signatures/[id]/remind",
+      "file": "src/app/api/signatures/[id]/remind/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/signatures/[id]",
+      "file": "src/app/api/signatures/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/signatures",
+      "file": "src/app/api/signatures/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/stripe/checkout",
+      "file": "src/app/api/stripe/checkout/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/stripe/portal",
+      "file": "src/app/api/stripe/portal/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/stripe/webhook",
+      "file": "src/app/api/stripe/webhook/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/supplier-invoices/[id]/approval-requests/[requestId]/vote",
+      "file": "src/app/api/supplier-invoices/[id]/approval-requests/[requestId]/vote/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id",
+        "requestId"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/supplier-invoices/[id]/approval-requests/[requestId]/withdraw",
+      "file": "src/app/api/supplier-invoices/[id]/approval-requests/[requestId]/withdraw/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id",
+        "requestId"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/supplier-invoices/[id]/approval-requests",
+      "file": "src/app/api/supplier-invoices/[id]/approval-requests/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/supplier-invoices/[id]/book",
+      "file": "src/app/api/supplier-invoices/[id]/book/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/supplier-invoices/[id]/extract",
+      "file": "src/app/api/supplier-invoices/[id]/extract/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/supplier-invoices/[id]/pay",
+      "file": "src/app/api/supplier-invoices/[id]/pay/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/supplier-invoices/[id]",
+      "file": "src/app/api/supplier-invoices/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/supplier-invoices",
+      "file": "src/app/api/supplier-invoices/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/suppliers",
+      "file": "src/app/api/suppliers/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/tasks/[id]/comments",
+      "file": "src/app/api/tasks/[id]/comments/route.ts",
+      "methods": [
+        "GET",
+        "POST",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/tasks/[id]",
+      "file": "src/app/api/tasks/[id]/route.ts",
+      "methods": [
+        "GET",
+        "PATCH",
+        "DELETE"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/tasks",
+      "file": "src/app/api/tasks/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/tax/vat-periods/[id]/calculate",
+      "file": "src/app/api/tax/vat-periods/[id]/calculate/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/tax/vat-periods/[id]/lock",
+      "file": "src/app/api/tax/vat-periods/[id]/lock/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/tax/vat-periods/[id]",
+      "file": "src/app/api/tax/vat-periods/[id]/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "id"
+      ],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/tax/vat-periods",
+      "file": "src/app/api/tax/vat-periods/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": true
+    },
+    {
+      "path": "/api/team",
+      "file": "src/app/api/team/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "tenant",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/version",
+      "file": "src/app/api/version/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/webhooks/[slug]",
+      "file": "src/app/api/webhooks/[slug]/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "public",
+      "hasDynamicSegments": true,
+      "dynamicParams": [
+        "slug"
+      ],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/webhooks/resend",
+      "file": "src/app/api/webhooks/resend/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    },
+    {
+      "path": "/api/webhooks/stripe",
+      "file": "src/app/api/webhooks/stripe/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "category": "public",
+      "hasDynamicSegments": false,
+      "dynamicParams": [],
+      "requiresAuth": false
+    }
+  ]
+}

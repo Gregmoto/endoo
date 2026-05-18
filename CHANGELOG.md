@@ -7,6 +7,27 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-05-18
+
+### Added
+- **[Säkerhetstester]** `tests/security/tenant-isolation.test.ts` — 26 tester som verifierar att inga routes läcker data mellan tenants; täcker Contacts, Invoices, Products, Quotes, Journals, Payments, Search, Reports, Portal och Impersonering
+- **[Säkerhetstester]** `tests/security/helpers.ts` — `createMockPrisma()` (oracle-mock), `assertNoLeak()`, `makeCtx()`, `seedOrgBResource()`
+- **[Säkerhetstester]** `tests/security/fixtures.ts` — deterministiska org-IDs, mock-resurser och `FORBIDDEN_STRINGS` för Org B
+- **[Route-introspektör]** `scripts/scan-routes.ts` — skannar `src/app/api/` rekursivt och skriver `tests/_route-manifest.json` med 173 routes kategoriserade som tenant/platform/portal/v1/public/cron
+- **[Prisma-audit]** `scripts/audit-prisma.ts` — statisk analys som flaggar Prisma-anrop utan `organizationId`-filter; stödjer `--strict`-läge (avslut 1) och `// audit-ok`-annotation
+- **[CI]** `.github/workflows/security.yml` — blockerar merge vid fel på tenant-isoleringstest, Prisma-audit och TypeScript-typkontroll
+- **[Platform UI]** `/platform/security/audit-report` — super_admin-sida med route-manifest och Prisma-audit-resultat
+- **[Behörigheter]** `platform:security:read` — ny behörighet för säkerhetsaudit-sidan (tilldelad `super_admin`)
+- **[Dokumentation]** `SECURITY.md` — tenant-isoleringsmodell, säkerhetsrapportering och testdokumentation
+- **[npm-scripts]** `scan-routes`, `audit:prisma`, `audit:prisma:strict`, `test:security`
+
+### Changed
+- **[CLAUDE.md]** Lagt till obligatoriska regler för nya tenant-scoped routes: 404 vs 403, Prisma-filter, testkrav
+- **[Prisma-audit]** Lagt till `// audit-ok`-annotationer på 5 "fetch-then-verify"-mönster; `userAccount` och `agencyClientRelationship` vitlistade som icke-tenant-scopade modeller
+
+### Security
+- **[Audit]** `audit-prisma.ts --strict` passerar med 0 misstänkta frågor på hela `src/`-kodbasen
+
 ## [0.5.1] - 2026-05-18
 
 ### Added
@@ -132,7 +153,9 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 - Added `SchemaVersion` model för att tracka Prisma-migrations
 - Added `User.lastSeenVersion String?` för att spåra senast sedd version
 
-[Unreleased]: https://github.com/Gregmoto/endoo/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/Gregmoto/endoo/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/Gregmoto/endoo/compare/v0.5.1...v0.6.0
+[0.5.1]: https://github.com/Gregmoto/endoo/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/Gregmoto/endoo/compare/v0.3.1...v0.5.0
 [0.3.1]: https://github.com/Gregmoto/endoo/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/Gregmoto/endoo/compare/v0.1.0...v0.3.0

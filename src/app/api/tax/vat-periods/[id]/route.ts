@@ -20,7 +20,7 @@ export async function GET(
 
     const { id } = await params
 
-    const period = await prisma.vatPeriod.findUnique({ where: { id } })
+    const period = await prisma.vatPeriod.findUnique({ where: { id } }) // audit-ok — organizationId verified on next line (period.organizationId !== ctx.organizationId)
 
     if (!period || period.organizationId !== ctx.organizationId) {
       return Response.json({ error: "Hittades inte" }, { status: 404 })

@@ -1,0 +1,2360 @@
+{
+  "generated": "2026-05-18T12:47:07.294Z",
+  "totalSuspects": 0,
+  "totalWhitelisted": 336,
+  "suspects": [],
+  "whitelisted": [
+    {
+      "file": "src/app/api/accounting/accounts/[id]/dimension-rules/route.ts",
+      "line": 29,
+      "model": "account",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/accounting/accounts/seed-bas/route.ts",
+      "line": 35,
+      "model": "account",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/accounting/dimension-axes/route.ts",
+      "line": 24,
+      "model": "dimensionAxis",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/accounting/dimensions/[id]/route.ts",
+      "line": 30,
+      "model": "dimension",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/accounting/dimensions/route.ts",
+      "line": 33,
+      "model": "dimension",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/accounting/journals/[id]/entries/[entryId]/dimensions/route.ts",
+      "line": 33,
+      "model": "journalEntryDimension",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/accounting/journals/[id]/void/route.ts",
+      "line": 40,
+      "model": "journal",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/accounting/periods/[id]/lock/route.ts",
+      "line": 22,
+      "model": "accountingPeriod",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/accounting/periods/[id]/unlock/route.ts",
+      "line": 34,
+      "model": "accountingPeriod",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/accounting/periods/route.ts",
+      "line": 20,
+      "model": "accountingPeriod",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/activity/route.ts",
+      "line": 43,
+      "model": "activityFeedItem",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/agency/bulk/route.ts",
+      "line": 121,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/agency/bulk/route.ts",
+      "line": 99,
+      "model": "bulkJob",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/agency/bulk/route.ts",
+      "line": 60,
+      "model": "bulkJob",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/agency/bulk/route.ts",
+      "line": 67,
+      "model": "bulkJob",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/agency/clients/route.ts",
+      "line": 21,
+      "model": "agencyClientRelationship",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/agency/clients/route.ts",
+      "line": 29,
+      "model": "clientSnapshot",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/agency/clients/route.ts",
+      "line": 40,
+      "model": "organization",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/agency/pins/route.ts",
+      "line": 15,
+      "model": "organizationMember",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/agency/pins/route.ts",
+      "line": 42,
+      "model": "organizationMember",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/agency/pins/route.ts",
+      "line": 48,
+      "model": "agencyClientPin",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/agency/pins/route.ts",
+      "line": 21,
+      "model": "agencyClientPin",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/agency/pins/route.ts",
+      "line": 53,
+      "model": "agencyClientPin",
+      "method": "delete",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/agency/pins/route.ts",
+      "line": 56,
+      "model": "agencyClientPin",
+      "method": "count",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/ai/chat/route.ts",
+      "line": 38,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/ai/suggest-journal/route.ts",
+      "line": 39,
+      "model": "supplierInvoice",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/ai/suggestions/[id]/route.ts",
+      "line": 25,
+      "model": "aiSuggestion",
+      "method": "findUnique",
+      "reason": "EXPLICIT_OK"
+    },
+    {
+      "file": "src/app/api/ai/suggestions/[id]/route.ts",
+      "line": 86,
+      "model": "aiSuggestion",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/ai/suggestions/[id]/route.ts",
+      "line": 43,
+      "model": "aiSuggestion",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/ai/suggestions/[id]/route.ts",
+      "line": 50,
+      "model": "aiSuggestion",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/analytics/dashboard/route.ts",
+      "line": 24,
+      "model": "analyticsSnapshot",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/analytics/dashboard/route.ts",
+      "line": 30,
+      "model": "analyticsSnapshot",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/analytics/realtime/route.ts",
+      "line": 32,
+      "model": "invoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/analytics/realtime/route.ts",
+      "line": 54,
+      "model": "invoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/analytics/realtime/route.ts",
+      "line": 20,
+      "model": "invoice",
+      "method": "aggregate",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/analytics/realtime/route.ts",
+      "line": 43,
+      "model": "payment",
+      "method": "aggregate",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/analytics/refresh/route.ts",
+      "line": 16,
+      "model": "analyticsSnapshot",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/api-keys/[id]/route.ts",
+      "line": 11,
+      "model": "apiKey",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/api-keys/[id]/route.ts",
+      "line": 19,
+      "model": "apiKey",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/api-keys/route.ts",
+      "line": 14,
+      "model": "apiKey",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/api-keys/route.ts",
+      "line": 60,
+      "model": "apiKey",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/approval-inbox/route.ts",
+      "line": 22,
+      "model": "approvalStep",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/approval-policies/[id]/route.ts",
+      "line": 30,
+      "model": "approvalPolicy",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/approval-policies/[id]/route.ts",
+      "line": 56,
+      "model": "approvalPolicy",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/approval-policies/[id]/route.ts",
+      "line": 200,
+      "model": "approvalPolicy",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/approval-policies/[id]/route.ts",
+      "line": 207,
+      "model": "approvalPolicy",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/approval-policies/route.ts",
+      "line": 39,
+      "model": "approvalPolicy",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/audit/email-logs/route.ts",
+      "line": 25,
+      "model": "emailDelivery",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/audit/email-logs/route.ts",
+      "line": 44,
+      "model": "emailDelivery",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/history/route.ts",
+      "line": 20,
+      "model": "contact",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/history/route.ts",
+      "line": 29,
+      "model": "invoice",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/history/route.ts",
+      "line": 44,
+      "model": "auditLog",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/persons/[personId]/route.ts",
+      "line": 30,
+      "model": "contact",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/persons/[personId]/route.ts",
+      "line": 35,
+      "model": "contactPerson",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/persons/[personId]/route.ts",
+      "line": 74,
+      "model": "contact",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/persons/[personId]/route.ts",
+      "line": 79,
+      "model": "contactPerson",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/persons/[personId]/route.ts",
+      "line": 54,
+      "model": "contactPerson",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/persons/[personId]/route.ts",
+      "line": 84,
+      "model": "contactPerson",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/persons/[personId]/route.ts",
+      "line": 48,
+      "model": "contactPerson",
+      "method": "updateMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/persons/route.ts",
+      "line": 29,
+      "model": "contact",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/persons/route.ts",
+      "line": 54,
+      "model": "contact",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/persons/route.ts",
+      "line": 34,
+      "model": "contactPerson",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/persons/route.ts",
+      "line": 67,
+      "model": "contactPerson",
+      "method": "updateMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/route.ts",
+      "line": 22,
+      "model": "contact",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/route.ts",
+      "line": 80,
+      "model": "contact",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/route.ts",
+      "line": 125,
+      "model": "contact",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/route.ts",
+      "line": 91,
+      "model": "contact",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/[id]/route.ts",
+      "line": 130,
+      "model": "contact",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/route.ts",
+      "line": 43,
+      "model": "contact",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/route.ts",
+      "line": 57,
+      "model": "contact",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/route.ts",
+      "line": 106,
+      "model": "contact",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contacts/route.ts",
+      "line": 112,
+      "model": "contact",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/[id]/generate/route.ts",
+      "line": 24,
+      "model": "recurringSchedule",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/[id]/generate/route.ts",
+      "line": 38,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/[id]/generate/route.ts",
+      "line": 115,
+      "model": "recurringSchedule",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/[id]/generate/route.ts",
+      "line": 55,
+      "model": "invoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/[id]/route.ts",
+      "line": 21,
+      "model": "recurringSchedule",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/[id]/route.ts",
+      "line": 82,
+      "model": "recurringSchedule",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/[id]/route.ts",
+      "line": 154,
+      "model": "recurringSchedule",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/[id]/route.ts",
+      "line": 113,
+      "model": "recurringSchedule",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/[id]/route.ts",
+      "line": 162,
+      "model": "recurringSchedule",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/[id]/route.ts",
+      "line": 96,
+      "model": "recurringScheduleLine",
+      "method": "deleteMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/route.ts",
+      "line": 36,
+      "model": "recurringSchedule",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/route.ts",
+      "line": 46,
+      "model": "recurringSchedule",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/contracts/route.ts",
+      "line": 93,
+      "model": "recurringSchedule",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/email/suppression/remove/route.ts",
+      "line": 17,
+      "model": "emailSuppression",
+      "method": "deleteMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/integrations/connections/[id]/logs/route.ts",
+      "line": 23,
+      "model": "connection",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/integrations/connections/[id]/logs/route.ts",
+      "line": 33,
+      "model": "integrationLog",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/integrations/connections/[id]/route.ts",
+      "line": 21,
+      "model": "connection",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/integrations/connections/[id]/route.ts",
+      "line": 50,
+      "model": "connection",
+      "method": "updateMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/integrations/connections/[id]/sync/route.ts",
+      "line": 21,
+      "model": "connection",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/integrations/connections/route.ts",
+      "line": 17,
+      "model": "connection",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/integrations/fortnox/import/confirm/route.ts",
+      "line": 17,
+      "model": "connection",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/integrations/fortnox/import/confirm/route.ts",
+      "line": 59,
+      "model": "importFile",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/integrations/fortnox/import/confirm/route.ts",
+      "line": 95,
+      "model": "importFile",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/integrations/fortnox/import/confirm/route.ts",
+      "line": 106,
+      "model": "importFile",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/inventory/route.ts",
+      "line": 44,
+      "model": "product",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invitations/accept/route.ts",
+      "line": 42,
+      "model": "invitation",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/invitations/route.ts",
+      "line": 49,
+      "model": "user",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/invitations/route.ts",
+      "line": 55,
+      "model": "organizationMember",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/invitations/route.ts",
+      "line": 134,
+      "model": "invitation",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/invitations/route.ts",
+      "line": 69,
+      "model": "invitation",
+      "method": "upsert",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/convert-proforma/route.ts",
+      "line": 26,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/convert-proforma/route.ts",
+      "line": 50,
+      "model": "invoice",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/convert-proforma/route.ts",
+      "line": 45,
+      "model": "invoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/credit-note/route.ts",
+      "line": 28,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/credit-note/route.ts",
+      "line": 56,
+      "model": "invoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/email-delivery/route.ts",
+      "line": 14,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/email-delivery/route.ts",
+      "line": 21,
+      "model": "emailDelivery",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/payments/[paymentId]/route.ts",
+      "line": 19,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/payments/[paymentId]/route.ts",
+      "line": 24,
+      "model": "payment",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/payments/[paymentId]/route.ts",
+      "line": 37,
+      "model": "invoice",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/payments/[paymentId]/route.ts",
+      "line": 36,
+      "model": "payment",
+      "method": "delete",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/payments/route.ts",
+      "line": 24,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/payments/route.ts",
+      "line": 56,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/payments/route.ts",
+      "line": 29,
+      "model": "payment",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/payments/route.ts",
+      "line": 106,
+      "model": "invoice",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/pdf/route.ts",
+      "line": 25,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/route.ts",
+      "line": 22,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/route.ts",
+      "line": 71,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/route.ts",
+      "line": 170,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/route.ts",
+      "line": 123,
+      "model": "invoice",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/route.ts",
+      "line": 178,
+      "model": "invoice",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/route.ts",
+      "line": 113,
+      "model": "invoiceLineItem",
+      "method": "deleteMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/send/route.ts",
+      "line": 30,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/send/route.ts",
+      "line": 41,
+      "model": "organizationSetting",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/[id]/send/route.ts",
+      "line": 100,
+      "model": "invoice",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/route.ts",
+      "line": 45,
+      "model": "invoice",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/route.ts",
+      "line": 54,
+      "model": "invoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/route.ts",
+      "line": 106,
+      "model": "invoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/invoices/route.ts",
+      "line": 116,
+      "model": "invoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/journals/[id]/route.ts",
+      "line": 19,
+      "model": "journal",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/journals/route.ts",
+      "line": 40,
+      "model": "journal",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/journals/route.ts",
+      "line": 39,
+      "model": "journal",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/notifications/[id]/read/route.ts",
+      "line": 25,
+      "model": "notification",
+      "method": "findUnique",
+      "reason": "EXPLICIT_OK"
+    },
+    {
+      "file": "src/app/api/notifications/[id]/read/route.ts",
+      "line": 37,
+      "model": "notification",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/notifications/preferences/route.ts",
+      "line": 24,
+      "model": "notificationPreference",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/notifications/preferences/route.ts",
+      "line": 101,
+      "model": "notificationPreference",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/notifications/preferences/route.ts",
+      "line": 75,
+      "model": "notificationPreference",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/notifications/read-all/route.ts",
+      "line": 21,
+      "model": "notification",
+      "method": "updateMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/notifications/route.ts",
+      "line": 44,
+      "model": "notification",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/notifications/route.ts",
+      "line": 52,
+      "model": "notification",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/onboarding/route.ts",
+      "line": 34,
+      "model": "organizationMember",
+      "method": "findFirst",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/onboarding/route.ts",
+      "line": 66,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/orgs/current/route.ts",
+      "line": 9,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/orgs/current/route.ts",
+      "line": 14,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/orgs/mine/route.ts",
+      "line": 15,
+      "model": "organizationMember",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/orgs/mine/route.ts",
+      "line": 37,
+      "model": "agencyClientRelationship",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/orgs/mine/route.ts",
+      "line": 44,
+      "model": "agencyStaffAccess",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/orgs/route.ts",
+      "line": 83,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/auth/send/route.ts",
+      "line": 39,
+      "model": "contact",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/auth/send/route.ts",
+      "line": 32,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/auth/verify/route.ts",
+      "line": 29,
+      "model": "portalMagicToken",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/auth/verify/route.ts",
+      "line": 39,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/auth/verify/route.ts",
+      "line": 46,
+      "model": "portalMagicToken",
+      "method": "update",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/contracts/route.ts",
+      "line": 20,
+      "model": "recurringSchedule",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/invoices/[id]/pdf/route.ts",
+      "line": 23,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/invoices/[id]/route.ts",
+      "line": 20,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/invoices/route.ts",
+      "line": 20,
+      "model": "invoice",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/me/route.ts",
+      "line": 20,
+      "model": "contact",
+      "method": "findUnique",
+      "reason": "EXPLICIT_OK"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/quotes/[id]/pdf/route.ts",
+      "line": 31,
+      "model": "quote",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/quotes/[id]/route.ts",
+      "line": 20,
+      "model": "quote",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/portal/[orgSlug]/quotes/route.ts",
+      "line": 20,
+      "model": "quote",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/products/[id]/route.ts",
+      "line": 22,
+      "model": "product",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/products/[id]/route.ts",
+      "line": 55,
+      "model": "product",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/products/[id]/route.ts",
+      "line": 104,
+      "model": "product",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/products/[id]/route.ts",
+      "line": 67,
+      "model": "product",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/products/[id]/route.ts",
+      "line": 109,
+      "model": "product",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/products/route.ts",
+      "line": 44,
+      "model": "product",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/products/route.ts",
+      "line": 50,
+      "model": "product",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/products/route.ts",
+      "line": 85,
+      "model": "product",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/products/route.ts",
+      "line": 91,
+      "model": "product",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/[id]/convert-contract/route.ts",
+      "line": 37,
+      "model": "quote",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/[id]/convert-contract/route.ts",
+      "line": 57,
+      "model": "recurringSchedule",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/[id]/convert-invoice/route.ts",
+      "line": 28,
+      "model": "quote",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/[id]/convert-invoice/route.ts",
+      "line": 46,
+      "model": "invoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/[id]/pdf/route.ts",
+      "line": 30,
+      "model": "quote",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/[id]/route.ts",
+      "line": 26,
+      "model": "quote",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/[id]/route.ts",
+      "line": 80,
+      "model": "quote",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/[id]/route.ts",
+      "line": 97,
+      "model": "quote",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/[id]/route.ts",
+      "line": 111,
+      "model": "quote",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/[id]/send/route.ts",
+      "line": 26,
+      "model": "quote",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/[id]/send/route.ts",
+      "line": 46,
+      "model": "quote",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/route.ts",
+      "line": 51,
+      "model": "quote",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/route.ts",
+      "line": 65,
+      "model": "quote",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/quotes/route.ts",
+      "line": 105,
+      "model": "quote",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/account-mappings/route.ts",
+      "line": 26,
+      "model": "organizationSetting",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/account-mappings/route.ts",
+      "line": 81,
+      "model": "account",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/account-mappings/route.ts",
+      "line": 101,
+      "model": "organizationSetting",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/billing/route.ts",
+      "line": 24,
+      "model": "subscription",
+      "method": "findFirst",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/billing/route.ts",
+      "line": 20,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/billing/route.ts",
+      "line": 29,
+      "model": "organizationMember",
+      "method": "count",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/billing/route.ts",
+      "line": 32,
+      "model": "invoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/billing/route.ts",
+      "line": 35,
+      "model": "contact",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/branding/route.ts",
+      "line": 36,
+      "model": "brandingProfile",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/branding/route.ts",
+      "line": 65,
+      "model": "brandingProfile",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/company/route.ts",
+      "line": 37,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/company/route.ts",
+      "line": 78,
+      "model": "organization",
+      "method": "update",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/email/domain/route.ts",
+      "line": 12,
+      "model": "emailDomainVerification",
+      "method": "findFirst",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/email/domain/verify/route.ts",
+      "line": 12,
+      "model": "emailDomainVerification",
+      "method": "findFirst",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/email/domain/verify/route.ts",
+      "line": 35,
+      "model": "emailDomainVerification",
+      "method": "update",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/email/route.ts",
+      "line": 37,
+      "model": "organizationSetting",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/email/route.ts",
+      "line": 95,
+      "model": "organizationSetting",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/invitations/[id]/route.ts",
+      "line": 19,
+      "model": "invitation",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/invitations/[id]/route.ts",
+      "line": 31,
+      "model": "invitation",
+      "method": "delete",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/invoices/route.ts",
+      "line": 33,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/invoices/route.ts",
+      "line": 37,
+      "model": "organizationSetting",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/invoices/route.ts",
+      "line": 104,
+      "model": "organization",
+      "method": "update",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/invoices/route.ts",
+      "line": 127,
+      "model": "organizationSetting",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/payments/route.ts",
+      "line": 32,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/payments/route.ts",
+      "line": 36,
+      "model": "organizationSetting",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/payments/route.ts",
+      "line": 97,
+      "model": "organization",
+      "method": "update",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/payments/route.ts",
+      "line": 120,
+      "model": "organizationSetting",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/settings/security/password/route.ts",
+      "line": 29,
+      "model": "userAccount",
+      "method": "findFirst",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/security/password/route.ts",
+      "line": 43,
+      "model": "userAccount",
+      "method": "update",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/users/[memberId]/route.ts",
+      "line": 32,
+      "model": "organizationMember",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/users/[memberId]/route.ts",
+      "line": 84,
+      "model": "organizationMember",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/users/[memberId]/route.ts",
+      "line": 50,
+      "model": "organizationMember",
+      "method": "update",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/users/[memberId]/route.ts",
+      "line": 100,
+      "model": "organizationMember",
+      "method": "update",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/users/route.ts",
+      "line": 74,
+      "model": "user",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/users/route.ts",
+      "line": 80,
+      "model": "organizationMember",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/users/route.ts",
+      "line": 18,
+      "model": "organizationMember",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/users/route.ts",
+      "line": 30,
+      "model": "invitation",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/settings/users/route.ts",
+      "line": 93,
+      "model": "invitation",
+      "method": "upsert",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/signatures/[id]/remind/route.ts",
+      "line": 23,
+      "model": "signatureRequest",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/signatures/[id]/remind/route.ts",
+      "line": 32,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/signatures/[id]/route.ts",
+      "line": 19,
+      "model": "signatureRequest",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/signatures/[id]/route.ts",
+      "line": 54,
+      "model": "signatureRequest",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/signatures/route.ts",
+      "line": 45,
+      "model": "recurringSchedule",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/signatures/route.ts",
+      "line": 50,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/signatures/route.ts",
+      "line": 105,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/signatures/route.ts",
+      "line": 144,
+      "model": "signatureRequest",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/supplier-invoices/[id]/approval-requests/[requestId]/vote/route.ts",
+      "line": 52,
+      "model": "approvalRequest",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/supplier-invoices/[id]/approval-requests/[requestId]/withdraw/route.ts",
+      "line": 30,
+      "model": "approvalRequest",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/supplier-invoices/[id]/approval-requests/route.ts",
+      "line": 33,
+      "model": "supplierInvoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/supplier-invoices/[id]/approval-requests/route.ts",
+      "line": 41,
+      "model": "approvalRequest",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/supplier-invoices/[id]/extract/route.ts",
+      "line": 25,
+      "model": "supplierInvoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/supplier-invoices/[id]/route.ts",
+      "line": 44,
+      "model": "supplierInvoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/supplier-invoices/[id]/route.ts",
+      "line": 104,
+      "model": "supplierInvoice",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/supplier-invoices/[id]/route.ts",
+      "line": 136,
+      "model": "supplierInvoice",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/supplier-invoices/route.ts",
+      "line": 35,
+      "model": "supplierInvoice",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/supplier-invoices/route.ts",
+      "line": 42,
+      "model": "supplierInvoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/suppliers/route.ts",
+      "line": 34,
+      "model": "supplier",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/[id]/comments/route.ts",
+      "line": 26,
+      "model": "task",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/[id]/comments/route.ts",
+      "line": 53,
+      "model": "task",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/[id]/comments/route.ts",
+      "line": 91,
+      "model": "taskComment",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/[id]/comments/route.ts",
+      "line": 32,
+      "model": "taskComment",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/[id]/comments/route.ts",
+      "line": 102,
+      "model": "taskComment",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/[id]/route.ts",
+      "line": 24,
+      "model": "task",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/[id]/route.ts",
+      "line": 68,
+      "model": "task",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/[id]/route.ts",
+      "line": 146,
+      "model": "task",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/[id]/route.ts",
+      "line": 98,
+      "model": "task",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/[id]/route.ts",
+      "line": 160,
+      "model": "task",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/route.ts",
+      "line": 155,
+      "model": "contact",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/route.ts",
+      "line": 157,
+      "model": "invoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/route.ts",
+      "line": 159,
+      "model": "supplierInvoice",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/route.ts",
+      "line": 161,
+      "model": "journal",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/route.ts",
+      "line": 41,
+      "model": "task",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/tasks/route.ts",
+      "line": 106,
+      "model": "organizationMember",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/app/api/tax/vat-periods/[id]/route.ts",
+      "line": 23,
+      "model": "vatPeriod",
+      "method": "findUnique",
+      "reason": "EXPLICIT_OK"
+    },
+    {
+      "file": "src/app/api/tax/vat-periods/route.ts",
+      "line": 18,
+      "model": "vatPeriod",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/v1/contacts/route.ts",
+      "line": 12,
+      "model": "contact",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/v1/invoices/route.ts",
+      "line": 12,
+      "model": "invoice",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/v1/journals/route.ts",
+      "line": 12,
+      "model": "journal",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/app/api/v1/products/route.ts",
+      "line": 11,
+      "model": "product",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/accounts.ts",
+      "line": 165,
+      "model": "account",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/accounts.ts",
+      "line": 154,
+      "model": "account",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/accounts.ts",
+      "line": 185,
+      "model": "account",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/accounts.ts",
+      "line": 142,
+      "model": "account",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/accounts.ts",
+      "line": 318,
+      "model": "account",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/accounts.ts",
+      "line": 245,
+      "model": "account",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/accounts.ts",
+      "line": 279,
+      "model": "account",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/accounts.ts",
+      "line": 293,
+      "model": "account",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 180,
+      "model": "fiscalYear",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 335,
+      "model": "journalSeries",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 420,
+      "model": "journal",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 431,
+      "model": "journal",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 510,
+      "model": "fiscalYear",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 271,
+      "model": "fiscalYear",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 330,
+      "model": "fiscalYear",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 472,
+      "model": "journal",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 485,
+      "model": "fiscalYear",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 494,
+      "model": "journalSeries",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 525,
+      "model": "account",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 278,
+      "model": "journal",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 128,
+      "model": "fiscalYear",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/journals.ts",
+      "line": 142,
+      "model": "journalSeries",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/posting/account-slots.ts",
+      "line": 46,
+      "model": "organizationSetting",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/accounting/posting/account-slots.ts",
+      "line": 65,
+      "model": "account",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/ai/accounting-context.ts",
+      "line": 42,
+      "model": "supplier",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/ai/accounting-context.ts",
+      "line": 13,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/lib/ai/accounting-context.ts",
+      "line": 18,
+      "model": "account",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/ai/accounting-context.ts",
+      "line": 31,
+      "model": "journal",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/ai/accounting-context.ts",
+      "line": 54,
+      "model": "supplierInvoice",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/ai/accounting-context.ts",
+      "line": 76,
+      "model": "journalEntry",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/compute.ts",
+      "line": 49,
+      "model": "monthlyMetric",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/compute.ts",
+      "line": 114,
+      "model": "contact",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/compute.ts",
+      "line": 119,
+      "model": "invoice",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/compute.ts",
+      "line": 87,
+      "model": "analyticsSnapshot",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/compute.ts",
+      "line": 141,
+      "model": "monthlyMetric",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 183,
+      "model": "vatPeriod",
+      "method": "findFirst",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 24,
+      "model": "invoice",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 152,
+      "model": "recurringSchedule",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 248,
+      "model": "invoice",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 308,
+      "model": "monthlyMetric",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 232,
+      "model": "contact",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 235,
+      "model": "contact",
+      "method": "count",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 96,
+      "model": "invoice",
+      "method": "aggregate",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 120,
+      "model": "payment",
+      "method": "aggregate",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 138,
+      "model": "supplierInvoice",
+      "method": "aggregate",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 197,
+      "model": "invoice",
+      "method": "aggregate",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/analytics/queries.ts",
+      "line": 207,
+      "model": "supplierInvoice",
+      "method": "aggregate",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/api/auth.ts",
+      "line": 33,
+      "model": "apiKey",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/api/auth.ts",
+      "line": 95,
+      "model": "apiKey",
+      "method": "update",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/api/idempotency.ts",
+      "line": 15,
+      "model": "idempotencyKey",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/api/idempotency.ts",
+      "line": 44,
+      "model": "idempotencyKey",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/branding/resolver.ts",
+      "line": 68,
+      "model": "agencyClientRelationship",
+      "method": "findFirst",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/lib/branding/resolver.ts",
+      "line": 61,
+      "model": "brandingProfile",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/notifications/preferences.ts",
+      "line": 24,
+      "model": "notificationPreference",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/notifications/preferences.ts",
+      "line": 38,
+      "model": "notificationPreference",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/notifications/recipients.ts",
+      "line": 6,
+      "model": "organizationMember",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/lib/portal/auth.ts",
+      "line": 98,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/lib/search/index-entity.ts",
+      "line": 45,
+      "model": "searchIndex",
+      "method": "deleteMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/search/index-entity.ts",
+      "line": 12,
+      "model": "searchIndex",
+      "method": "upsert",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/search/reindex.ts",
+      "line": 26,
+      "model": "contact",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/search/reindex.ts",
+      "line": 37,
+      "model": "invoice",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/search/reindex.ts",
+      "line": 48,
+      "model": "supplierInvoice",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/search/reindex.ts",
+      "line": 58,
+      "model": "product",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/search/reindex.ts",
+      "line": 68,
+      "model": "journal",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/search/reindex.ts",
+      "line": 75,
+      "model": "organizationMember",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/lib/search/reindex.ts",
+      "line": 90,
+      "model": "organization",
+      "method": "findMany",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/lib/search/reindex.ts",
+      "line": 21,
+      "model": "searchIndex",
+      "method": "deleteMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/sie/exporter.ts",
+      "line": 37,
+      "model": "fiscalYear",
+      "method": "findUnique",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/sie/exporter.ts",
+      "line": 45,
+      "model": "organization",
+      "method": "findUnique",
+      "reason": "PLATFORM_SCOPED"
+    },
+    {
+      "file": "src/lib/sie/exporter.ts",
+      "line": 52,
+      "model": "account",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    },
+    {
+      "file": "src/lib/sie/exporter.ts",
+      "line": 82,
+      "model": "journal",
+      "method": "findMany",
+      "reason": "HAS_ORG_FILTER"
+    }
+  ]
+}

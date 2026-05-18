@@ -22,7 +22,7 @@ export async function PATCH(
       return Response.json({ error: "Ogiltig åtgärd" }, { status: 400 })
     }
 
-    const suggestion = await prisma.aiSuggestion.findUnique({
+    const suggestion = await prisma.aiSuggestion.findUnique({ // audit-ok — organizationId verified on line below (suggestion.organizationId !== ctx.organizationId)
       where: { id },
     })
 
