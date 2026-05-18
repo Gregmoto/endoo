@@ -7,6 +7,11 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.10.2] - 2026-05-18
+
+### Fixed
+- **[Faktura]** "Registrera betalning" visades dubbelt på förfallna fakturor — det separata `overdue`-blocket var redundant eftersom `overdue` alltid är sant när status är "sent"/"viewed"/"partial", vilket redan täcks av blocket ovanför
+
 ## [0.10.1] - 2026-05-18
 
 ### Fixed

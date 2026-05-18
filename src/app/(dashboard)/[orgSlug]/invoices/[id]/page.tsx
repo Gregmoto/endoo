@@ -195,9 +195,6 @@ export default function InvoiceDetailPage() {
               <Button size="sm" onClick={() => setPayModal(true)}>Registrera betalning</Button>
             </>
           )}
-          {invoice.type === "invoice" && overdue && (
-            <Button size="sm" onClick={() => setPayModal(true)}>Registrera betalning</Button>
-          )}
 
           {/* Quote signing button */}
           {invoice.type === "quote" && ["draft", "sent"].includes(invoice.status) && (
