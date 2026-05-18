@@ -375,6 +375,24 @@ export default function SupplierInvoiceDetailPage() {
                 Journal: <span className="font-mono">{invoice.journalId.slice(0, 8)}…</span>
               </p>
             )}
+
+            {/* Periodisera — shortcut to accrual wizard pre-filled from this invoice */}
+            {(invoice.status === "booked" || invoice.status === "paid") && (
+              <button
+                onClick={() => {
+                  const params = new URLSearchParams({
+                    sourceType:  "supplier_invoice",
+                    sourceId:    invoice.id,
+                    description: invoice.supplierName ? `Periodisering ${invoice.supplierName}` : "Periodisering leverantörsfaktura",
+                    ...(invoice.amountInclVat != null ? { totalSEK: (invoice.amountInclVat / 100).toFixed(2) } : {}),
+                  })
+                  router.push(`/${orgSlug}/accounting/accruals/new?${params}`)
+                }}
+                className="w-full py-2 border border-input bg-card text-sm text-foreground font-medium rounded-lg hover:bg-muted"
+              >
+                Periodisera
+              </button>
+            )}
           </div>
         </div>
 

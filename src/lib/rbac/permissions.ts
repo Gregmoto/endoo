@@ -214,6 +214,17 @@ export const EMAIL_PERMISSIONS = {
 } as const
 
 // ─────────────────────────────────────────────
+// ACCRUAL PERMISSIONS
+// ─────────────────────────────────────────────
+export const ACCRUAL_PERMISSIONS = {
+  READ:    "accounting:accruals:read",
+  CREATE:  "accounting:accruals:create",
+  UPDATE:  "accounting:accruals:update",
+  DELETE:  "accounting:accruals:delete",
+  REVERSE: "accounting:accruals:reverse",
+} as const
+
+// ─────────────────────────────────────────────
 // FIXED ASSET PERMISSIONS
 // ─────────────────────────────────────────────
 export const FIXED_ASSET_PERMISSIONS = {
@@ -252,6 +263,7 @@ export type Permission =
   | (typeof QUOTE_PERMISSIONS)[keyof typeof QUOTE_PERMISSIONS]
   | (typeof BRANDING_PERMISSIONS)[keyof typeof BRANDING_PERMISSIONS]
   | (typeof EMAIL_PERMISSIONS)[keyof typeof EMAIL_PERMISSIONS]
+  | (typeof ACCRUAL_PERMISSIONS)[keyof typeof ACCRUAL_PERMISSIONS]
   | (typeof FIXED_ASSET_PERMISSIONS)[keyof typeof FIXED_ASSET_PERMISSIONS]
   | (typeof DEPRECIATION_PERMISSIONS)[keyof typeof DEPRECIATION_PERMISSIONS]
 
@@ -274,6 +286,7 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(QUOTE_PERMISSIONS),
   ...Object.values(BRANDING_PERMISSIONS),
   ...Object.values(EMAIL_PERMISSIONS),
+  ...Object.values(ACCRUAL_PERMISSIONS),
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
 ]

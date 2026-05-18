@@ -209,6 +209,25 @@ export default function InvoiceDetailPage() {
               Skapa kreditnota
             </Button>
           )}
+
+          {/* Periodisera — pre-fills accrual wizard from this invoice */}
+          {invoice.type === "invoice" && ["sent", "viewed", "partial", "paid"].includes(invoice.status) && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                const qs = new URLSearchParams({
+                  sourceType:  "invoice",
+                  sourceId:    invoice.id,
+                  description: `Periodisering faktura ${invoice.invoiceNumber ?? ""}`.trim(),
+                  totalSEK:    (invoice.totalAmount / 100).toFixed(2),
+                })
+                router.push(`/${orgSlug}/accounting/accruals/new?${qs}`)
+              }}
+            >
+              Periodisera
+            </Button>
+          )}
         </div>
       </div>
 

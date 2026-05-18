@@ -39,6 +39,7 @@ import {
   SIGNATURE_PERMISSIONS,
   QUOTE_PERMISSIONS,
   BRANDING_PERMISSIONS,
+  ACCRUAL_PERMISSIONS,
   FIXED_ASSET_PERMISSIONS,
   DEPRECIATION_PERMISSIONS,
   type Permission,
@@ -77,6 +78,7 @@ const SUPER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(TASK_PERMISSIONS),
   ...Object.values(SIGNATURE_PERMISSIONS),
   ...Object.values(BRANDING_PERMISSIONS),
+  ...Object.values(ACCRUAL_PERMISSIONS),
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
 ]
@@ -150,9 +152,10 @@ const AGENCY_OWNER_PERMISSIONS: Permission[] = [
   ...Object.values(QUOTE_PERMISSIONS),
   // Branding — full access incl. white-label
   ...Object.values(BRANDING_PERMISSIONS),
-  // Fixed assets — full access
+  // Fixed assets + accruals — full access
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
+  ...Object.values(ACCRUAL_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -228,9 +231,10 @@ const AGENCY_ADMIN_PERMISSIONS: Permission[] = [
   BRANDING_PERMISSIONS.READ,
   BRANDING_PERMISSIONS.UPDATE,
   BRANDING_PERMISSIONS.UPLOAD_ASSETS,
-  // Fixed assets — full access
+  // Fixed assets + accruals — full access
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
+  ...Object.values(ACCRUAL_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -287,10 +291,11 @@ const AGENCY_STAFF_PERMISSIONS: Permission[] = [
   QUOTE_PERMISSIONS.CREATE,
   QUOTE_PERMISSIONS.UPDATE,
   QUOTE_PERMISSIONS.SEND,
-  // Fixed assets — read + post depreciation
+  // Fixed assets + accruals — read
   FIXED_ASSET_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.POST,
+  ACCRUAL_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -311,6 +316,7 @@ const AGENCY_VIEWER_PERMISSIONS: Permission[] = [
   QUOTE_PERMISSIONS.READ,
   FIXED_ASSET_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.READ,
+  ACCRUAL_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -377,9 +383,10 @@ const CUSTOMER_OWNER_PERMISSIONS: Permission[] = [
   ...Object.values(QUOTE_PERMISSIONS),
   // Branding — full access
   ...Object.values(BRANDING_PERMISSIONS),
-  // Fixed assets — full access
+  // Fixed assets + accruals — full access
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
+  ...Object.values(ACCRUAL_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -442,9 +449,10 @@ const CUSTOMER_ADMIN_PERMISSIONS: Permission[] = [
   BRANDING_PERMISSIONS.READ,
   BRANDING_PERMISSIONS.UPDATE,
   BRANDING_PERMISSIONS.UPLOAD_ASSETS,
-  // Fixed assets — full access
+  // Fixed assets + accruals — full access
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
+  ...Object.values(ACCRUAL_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -499,10 +507,11 @@ const CUSTOMER_USER_PERMISSIONS: Permission[] = [
   QUOTE_PERMISSIONS.CREATE,
   QUOTE_PERMISSIONS.UPDATE,
   QUOTE_PERMISSIONS.SEND,
-  // Fixed assets — read + post depreciation
+  // Fixed assets + accruals — read
   FIXED_ASSET_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.POST,
+  ACCRUAL_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -522,6 +531,7 @@ const CUSTOMER_VIEWER_PERMISSIONS: Permission[] = [
   QUOTE_PERMISSIONS.READ,
   FIXED_ASSET_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.READ,
+  ACCRUAL_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────

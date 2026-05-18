@@ -7,6 +7,27 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-05-18
+
+### Added
+- **[Periodiseringar]** Prisma-modeller `Accrual` och `AccrualPeriod` med enums `AccrualType`, `AccrualStatus`, `AccrualPeriodStatus` samt migration `20250518_accruals`
+- **[Periodiseringar]** `src/lib/accounting/accruals/periods.ts` — `calculateAccrualPeriods()` och `monthsBetween()`: delar totalbelopp jämnt över månader i öre med BigInt; rest hamnar i sista perioden
+- **[Periodiseringar]** `src/lib/accounting/accruals/post.ts` — `postAccrualPeriod()`: skapar kombinerat verifikat för alla planerade periodiseringar en given månad; `reverseAccrual()`: makulerar bokförda verifikat och markerar periodiseringen återförd
+- **[API]** `GET/POST /api/accounting/accruals` — lista och skapa periodiseringar med direktgenererade perioder
+- **[API]** `GET/PUT/DELETE /api/accounting/accruals/[id]` — detalj, uppdatering och radering
+- **[API]** `POST /api/accounting/accruals/[id]/reverse` — återför periodisering (makulerar verifikat)
+- **[API]** `GET /api/accounting/accruals/preview?period=YYYY-MM` — förhandsgranska planerade perioder utan att bokföra
+- **[Cron]** `GET /api/cron/accruals-monthly` — bokför föregående månads periodiseringar för alla org:ar med planerade perioder (schema: 1:e varje månad kl 03:00)
+- **[UI]** Sidor: `/accounting/accruals` (lista med framsteg och sökning), `/accounting/accruals/new` (formulär med livegranskning av perioddistribution), `/accounting/accruals/[id]` (detalj, periodtabell, återföringsknapp)
+- **[UI]** "Periodisera"-knapp på leverantörsfaktura-detalj (bokförd/betald) och kundfaktura-detalj (skickad/betald) — förifyller nytt periodiseringsformulär via searchParams
+- **[UI]** Sidebar: "Periodiseringar" under Bokföring (gated på `accruals`-feature, pro+)
+- **[RBAC]** `ACCRUAL_PERMISSIONS` (read/create/update/delete/reverse) — tilldelade till owner/admin/staff/viewer per roll
+- **[Plans]** Feature `accruals` tillagd — aktiverad från `pro`-plan och uppåt
+- **[Tests]** 13 enhetstester i `tests/accounting/accruals.test.ts` — täcker perioddistribution med BigInt-rest, idempotens, återföring, tenant-isolation
+
+### Database
+- **[Periodiseringar]** Migration `20250518_accruals`: skapar `accruals` och `accrual_periods` tabeller med enums, index och FK-constraints
+
 ## [0.11.0] - 2026-05-18
 
 ### Added

@@ -27,6 +27,7 @@ export type PlanFeature =
   | "supplier_invoices"
   | "customer_portal"
   | "fixed_assets"
+  | "accruals"
 
 export type PlanLimitKey =
   | "maxUsers"
@@ -111,6 +112,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "project_accounting",
       "webhooks_outgoing",
       "fixed_assets",
+      "accruals",
     ],
   },
 
@@ -144,6 +146,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "custom_branding",
       "time_tracking",
       "fixed_assets",
+      "accruals",
     ],
   },
 }

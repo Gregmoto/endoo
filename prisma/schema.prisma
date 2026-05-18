@@ -162,6 +162,10 @@ enum AuditAction {
   asset_dispose
   asset_write_off
   depreciation_post
+  // Accrual events
+  accrual_create
+  accrual_post
+  accrual_reverse
 }
 
 // ─── ACCOUNTING ENUMS ─────────────────────────────────────────────────────────
@@ -540,6 +544,10 @@ model Organization {
   // Fixed assets
   fixedAssets           FixedAsset[]
   depreciationSchedules DepreciationSchedule[]
+
+  // Accruals
+  accruals              Accrual[]
+  accrualPeriods        AccrualPeriod[]
 
   // API platform
   apiKeys               ApiKey[]
@@ -3541,6 +3549,87 @@ model DepreciationSchedule {
   @@index([organizationId, period, status])
   @@index([fixedAssetId])
   @@map("depreciation_schedules")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ACCRUALS — Periodiseringar (interimsposter)
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum AccrualType {
+  prepaid_expense  // Förutbetald kostnad  (DR 17xx, CR 5xxx/6xxx)
+  accrued_expense  // Upplupet kostnad     (DR 5xxx/6xxx, CR 29xx)
+  prepaid_revenue  // Förutbetald intäkt   (DR 3xxx, CR 28xx)
+  accrued_revenue  // Upplupen intäkt      (DR 17xx, CR 3xxx)
+}
+
+enum AccrualStatus {
+  active     // in progress — some periods may be posted
+  completed  // all periods posted
+  reversed   // fully reversed
+}
+
+enum AccrualPeriodStatus {
+  planned
+  posted
+}
+
+model Accrual {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid
+
+  accrualNumber String  // "AC-2026-0001", unique per org
+  type          AccrualType
+  description   String  @db.Text
+
+  totalAmount BigInt  // öre
+  startDate   DateTime @db.Date
+  endDate     DateTime @db.Date
+  periodCount Int      // derived: months between start and end inclusive
+
+  mainAccount    String  // e.g. "5010" — the P&L account
+  accrualAccount String  // e.g. "1710" — the balance sheet accrual account
+
+  // Source document (optional)
+  sourceType String?  // "supplier_invoice" | "invoice" | "manual"
+  sourceId   String?  @db.Uuid
+
+  status AccrualStatus @default(active)
+  notes  String?       @db.Text
+
+  createdByUserId String? @db.Uuid
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  periods      AccrualPeriod[]
+
+  @@unique([organizationId, accrualNumber])
+  @@index([organizationId, status])
+  @@index([organizationId, type])
+  @@index([organizationId, startDate])
+  @@map("accruals")
+}
+
+model AccrualPeriod {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid
+  accrualId      String @db.Uuid
+
+  period    String  // "YYYY-MM"
+  amount    BigInt  // öre — may differ from totalAmount/periodCount due to rounding
+  journalId String? @db.Uuid
+  status    AccrualPeriodStatus @default(planned)
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accrual      Accrual      @relation(fields: [accrualId],      references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, accrualId, period])
+  @@index([organizationId, period, status])
+  @@index([accrualId])
+  @@map("accrual_periods")
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
