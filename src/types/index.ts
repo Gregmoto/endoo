@@ -12,12 +12,26 @@
 /** Amount in smallest currency unit (e.g. 10000 = 100.00 SEK) */
 export type AmountInMinorUnits = bigint
 
-/** Format amount for display */
+/**
+ * Wire-format money — amount as string of öre/cents to avoid precision loss.
+ * Use this type on all external API interfaces (v1, portal).
+ */
+export type Money = {
+  amount:   string   // öre as decimal string, e.g. "10050"
+  currency: string   // ISO 4217, e.g. "SEK"
+}
+
+/**
+ * Format amount for display.
+ * NOTE: safe only for amounts ≤ 2^53 − 1 öre (≈ 90 trillion SEK).
+ * For larger amounts use `serializeMoney` from @/lib/serialize.
+ */
 export function formatAmount(amount: bigint, currency = "SEK", locale = "sv-SE"): string {
   return new Intl.NumberFormat(locale, {
-    style: "currency",
+    style:                 "currency",
     currency,
     minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(Number(amount) / 100)
 }
 

@@ -1,12 +1,7 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest }                from "next/server"
 import { withApiAuth }               from "@/lib/api/auth"
 import { prisma }                    from "@/lib/prisma"
-
-function serializeInvoice(inv: Record<string, unknown>) {
-  return JSON.parse(
-    JSON.stringify(inv, (_, v) => (typeof v === "bigint" ? v.toString() : v)),
-  )
-}
+import { apiCursor }                 from "@/lib/api/response"
 
 export const GET = withApiAuth("invoices:read", async (req: NextRequest, ctx) => {
   const { searchParams } = new URL(req.url)
@@ -49,10 +44,5 @@ export const GET = withApiAuth("invoices:read", async (req: NextRequest, ctx) =>
   const page       = hasMore ? invoices.slice(0, limit) : invoices
   const nextCursor = hasMore ? page[page.length - 1].id : null
 
-  return NextResponse.json({
-    object:     "list",
-    data:       page.map(serializeInvoice),
-    has_more:   hasMore,
-    next_cursor: nextCursor,
-  })
+  return apiCursor(page, nextCursor, hasMore)
 })

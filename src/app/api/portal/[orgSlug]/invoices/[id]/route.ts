@@ -4,7 +4,8 @@
  */
 
 import { requirePortalAuth, portalUnauthorized } from "@/lib/portal/auth"
-import { prisma } from "@/lib/prisma"
+import { prisma }   from "@/lib/prisma"
+import { apiOk }   from "@/lib/api/response"
 
 export async function GET(
   _req: Request,
@@ -34,5 +35,5 @@ export async function GET(
 
   if (!invoice) return Response.json({ error: "Faktura hittades inte" }, { status: 404 })
 
-  return Response.json({ invoice })
+  return apiOk({ invoice })
 }

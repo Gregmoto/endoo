@@ -4,7 +4,8 @@
  */
 
 import { requirePortalAuth, portalUnauthorized } from "@/lib/portal/auth"
-import { prisma } from "@/lib/prisma"
+import { prisma }   from "@/lib/prisma"
+import { apiOk }   from "@/lib/api/response"
 
 export async function GET(
   _req: Request,
@@ -23,5 +24,5 @@ export async function GET(
 
   if (!contact) return portalUnauthorized()
 
-  return Response.json({ contact, orgName: claims.orgName })
+  return apiOk({ contact, orgName: claims.orgName })
 }

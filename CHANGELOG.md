@@ -7,6 +7,25 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-05-18
+
+### Added
+- **[BigInt-serialisering]** `src/instrumentation.ts` — global `BigInt.prototype.toJSON`-patch vid server-startup; gör alla `Response.json()`-anrop säkra utan ändringar i befintlig kod
+- **[BigInt-serialisering]** `src/lib/serialize.ts` — `toJSON()`, `parseMoney()`, `serializeMoney()`, `Money`/`RichMoney`-typer
+- **[API-helpers]** `src/lib/api/response.ts` — `apiOk()`, `apiError()`, `apiPaginated()`, `apiCursor()` med inbyggd BigInt-säker serialisering
+- **[Pengaformat]** `src/lib/format/money.ts` — `formatMoney()`, `parseMoneyInput()`, `formatMoneyInput()` för display och input-tolkning
+- **[UI-komponenter]** `MoneyInput` — kontrollerat inmatningsfält, emitterar öre-sträng, accepterar komma/punkt som decimaltecken
+- **[UI-komponenter]** `MoneyDisplay` — read-only penningvisning med `showSign`- och `blankZero`-flaggor
+- **[Dokumentation]** `CONTRIBUTING.md` — pengarhanteringsregler, anti-mönster, trådformat och komponentöversikt
+- **[Tester]** 34 tester i `src/__tests__/lib/serialize.test.ts`, `format/money.test.ts`, `api/v1-bigint.test.ts`
+
+### Changed
+- **[API-refaktorering]** v1-routes (`invoices`, `contacts`, `products`, `journals`, `inventory`) migrerade till `apiCursor`-helper — borttagna inline `ser()`/`serializeInvoice()`-funktioner
+- **[API-refaktorering]** Portal-routes (`contracts`, `invoices`, `invoices/[id]`, `me`, `quotes`, `quotes/[id]`, `auth/send`) migrerade till `apiOk`-helper
+- **[API-refaktorering]** `withApiAuth` `Handler`-typ breddad till `Promise<Response>` för att stödja web-standard `Response` (ej bara `NextResponse`)
+- **[API-helpers]** `src/lib/api/handle-error.ts` — använder nu `apiError()` från `@/lib/api/response`
+- **[Typer]** `src/types/index.ts` — lade till `Money`-typ för externt API-kontrakt
+
 ## [0.5.0] - 2026-05-18
 
 ### Added

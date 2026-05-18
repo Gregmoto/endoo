@@ -1,5 +1,6 @@
 import { PlanLimitError } from "@/lib/plans/guard"
-import { PLAN_LABELS } from "@/lib/plans/limits"
+import { PLAN_LABELS }    from "@/lib/plans/limits"
+import { apiError }       from "@/lib/api/response"
 
 /**
  * Central API error handler.
@@ -15,45 +16,41 @@ import { PLAN_LABELS } from "@/lib/plans/limits"
 export function handleApiError(err: unknown, label = "api"): Response {
   if (!err || typeof err !== "object") {
     console.error(`[${label}]`, err)
-    return Response.json({ error: "Internt fel" }, { status: 500 })
+    return apiError("internal_error", "Internt fel")
   }
 
   const e = err as { name?: string; message?: string }
 
   if (e.name === "UnauthenticatedError") {
-    return Response.json({ error: "Ej inloggad" }, { status: 401 })
+    return apiError("unauthorized", "Ej inloggad")
   }
 
   if (e.name === "UnauthorizedError") {
-    return Response.json({ error: "Otillräckliga rättigheter" }, { status: 403 })
+    return apiError("forbidden", "Otillräckliga rättigheter")
   }
 
   if (err instanceof PlanLimitError) {
-    const body =
+    const details =
       err.kind === "feature"
         ? {
-            error: "plan_limit",
-            kind: "feature",
-            feature: err.feature,
-            currentPlan: err.currentPlan,
-            requiredPlan: err.requiredPlan,
+            kind:              "feature",
+            feature:           err.feature,
+            currentPlan:       err.currentPlan,
+            requiredPlan:      err.requiredPlan,
             requiredPlanLabel: PLAN_LABELS[err.requiredPlan],
-            message: err.message,
           }
         : {
-            error: "plan_limit",
-            kind: "limit",
-            limit: err.limitKey,
-            current: err.current,
-            max: err.max,
-            currentPlan: err.currentPlan,
+            kind:         "limit",
+            limit:        err.limitKey,
+            current:      err.current,
+            max:          err.max,
+            currentPlan:  err.currentPlan,
             requiredPlan: err.requiredPlan,
             requiredPlanLabel: PLAN_LABELS[err.requiredPlan],
-            message: err.message,
           }
-    return Response.json(body, { status: 402 })
+    return apiError("payment_required", err.message, 402, { error: "plan_limit", ...details })
   }
 
   console.error(`[${label}]`, err)
-  return Response.json({ error: "Internt fel" }, { status: 500 })
+  return apiError("internal_error", "Internt fel")
 }

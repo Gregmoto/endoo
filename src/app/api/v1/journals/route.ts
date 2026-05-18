@@ -1,10 +1,7 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest }                from "next/server"
 import { withApiAuth }               from "@/lib/api/auth"
 import { prisma }                    from "@/lib/prisma"
-
-function ser(v: unknown) {
-  return JSON.parse(JSON.stringify(v, (_, x) => (typeof x === "bigint" ? x.toString() : x)))
-}
+import { apiCursor }                 from "@/lib/api/response"
 
 export const GET = withApiAuth("journals:read", async (req: NextRequest, ctx) => {
   const { searchParams } = new URL(req.url)
@@ -48,10 +45,5 @@ export const GET = withApiAuth("journals:read", async (req: NextRequest, ctx) =>
   const page       = hasMore ? journals.slice(0, limit) : journals
   const nextCursor = hasMore ? page[page.length - 1].id : null
 
-  return NextResponse.json({
-    object:      "list",
-    data:        ser(page),
-    has_more:    hasMore,
-    next_cursor: nextCursor,
-  })
+  return apiCursor(page, nextCursor, hasMore)
 })

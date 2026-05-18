@@ -4,7 +4,8 @@
  */
 
 import { requirePortalAuth, portalUnauthorized } from "@/lib/portal/auth"
-import { prisma } from "@/lib/prisma"
+import { prisma }   from "@/lib/prisma"
+import { apiOk }   from "@/lib/api/response"
 
 export async function GET(
   _req: Request,
@@ -27,5 +28,5 @@ export async function GET(
 
   if (!quote) return Response.json({ error: "Offert hittades inte" }, { status: 404 })
 
-  return Response.json({ quote })
+  return apiOk({ quote })
 }

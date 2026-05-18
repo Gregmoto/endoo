@@ -12,10 +12,10 @@ export type ApiContext = {
   environment:    string
 }
 
-type Handler = (req: NextRequest, ctx: ApiContext) => Promise<NextResponse>
+type Handler = (req: NextRequest, ctx: ApiContext) => Promise<Response>
 
 export function withApiAuth(requiredScope: string, handler: Handler) {
-  return async (req: NextRequest): Promise<NextResponse> => {
+  return async (req: NextRequest): Promise<Response> => {
     // Extract Bearer token
     const auth = req.headers.get("authorization") ?? ""
     if (!auth.startsWith("Bearer ")) {

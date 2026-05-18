@@ -7,6 +7,7 @@ import { prisma }               from "@/lib/prisma"
 import { generateSignerToken }  from "@/lib/signing/tokens"
 import { sendPortalMagicLink }  from "@/lib/portal/emails"
 import { resolveBranding }      from "@/lib/branding/resolver"
+import { apiOk }                from "@/lib/api/response"
 import { z }                    from "zod"
 
 const EXPIRES_MINUTES = 10
@@ -42,7 +43,7 @@ export async function POST(
 
   // Always return 200 to prevent email enumeration
   if (!contact) {
-    return Response.json({ ok: true })
+    return apiOk({ ok: true })
   }
 
   // Generate token
@@ -71,5 +72,5 @@ export async function POST(
     color:       branding.primaryColor,
   }).catch(err => console.error("[portal/auth/send] email", err))
 
-  return Response.json({ ok: true })
+  return apiOk({ ok: true })
 }
