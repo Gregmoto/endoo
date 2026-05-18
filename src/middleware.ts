@@ -47,6 +47,7 @@ const PUBLIC_ROUTES = [
   "/artiklar",
   "/sitemap.xml",
   "/robots.txt",
+  "/version",
 ]
 
 const PUBLIC_PREFIXES = [
@@ -55,6 +56,9 @@ const PUBLIC_PREFIXES = [
   "/q/",          // public quote approval pages — no account required
   "/portal/",     // customer portal — handles own auth via cookie/JWT
   "/api/auth/",
+  "/api/version",
+  "/api/health",
+  "/api/changelog",
   "/api/sign/",   // public e-signing API endpoints
   "/api/q/",      // public quote approval API endpoints
   "/api/portal/", // customer portal API — handles own auth

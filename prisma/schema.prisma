@@ -627,8 +627,9 @@ model User {
   locale   String @default("sv-SE")
   timezone String @default("Europe/Stockholm")
 
-  lastLoginAt DateTime?
-  lastLoginIp String?
+  lastLoginAt     DateTime?
+  lastLoginIp     String?
+  lastSeenVersion String?   // for WhatsNewModal — updated on dismiss
 
   // Super Admin — bypasses all tenant RLS
   isPlatformAdmin Boolean @default(false)
@@ -3312,4 +3313,21 @@ model Quote {
   @@index([organizationId, createdAt(sort: Desc)])
   @@index([contactId])
   @@map("quotes")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SCHEMA VERSIONING (platform-scoped, not tenant-scoped)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model SchemaVersion {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  version       String   @unique    // e.g. "20260518_001"
+  appVersion    String              // e.g. "0.1.0"
+  migrationName String              // Prisma migration name
+  description   String              // short human-readable description
+  appliedAt     DateTime @default(now())
+  appliedBy     String?             // "auto" or userId
+
+  @@index([version])
+  @@map("schema_versions")
 }

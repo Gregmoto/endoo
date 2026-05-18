@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react"
 import { cn, stringToColor, initials } from "@/lib/utils"
 import { NotificationBell } from "@/components/notifications/NotificationBell"
 import { ThemeToggle } from "@/components/theme/ThemeToggle"
+import { VersionBadge } from "@/components/layout/VersionBadge"
 
 const NAV_GROUPS = [
   {
@@ -282,6 +283,7 @@ function SidebarContent({
           <span className="text-xs text-gray-500 dark:text-gray-400 truncate flex-1">{userEmail}</span>
           <ThemeToggle />
         </div>
+        <VersionBadge />
       </div>
     </div>
   )

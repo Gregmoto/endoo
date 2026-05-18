@@ -1,0 +1,8 @@
+npm run version:check || {
+  echo ""
+  echo "❌ Version-check misslyckades."
+  echo "   Kör: npm run version:bump:patch  (eller :minor / :major)"
+  echo "   Lägg sedan till en post i CHANGELOG.md under [Unreleased]"
+  echo ""
+  exit 1
+}
