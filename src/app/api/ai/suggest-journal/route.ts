@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server"
 import { requireAuth } from "@/lib/rbac/guards"
+import { requireFeature } from "@/lib/plans/guard"
 import { buildAccountingContext } from "@/lib/ai/accounting-context"
 import { buildJournalSuggestPrompt } from "@/lib/ai/prompts"
 import { callStructured } from "@/lib/ai/gateway"
@@ -10,6 +11,7 @@ import type { JournalSuggestResult } from "@/lib/ai/types"
 export async function POST(req: NextRequest) {
   try {
     const ctx = await requireAuth()
+    await requireFeature(ctx.organizationId, "ai_assistant")
 
     const body = await req.json() as {
       supplierInvoiceId?: string

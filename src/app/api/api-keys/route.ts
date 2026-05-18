@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse }  from "next/server"
 import { requireAuth }                from "@/lib/rbac/guards"
 import { prisma }                     from "@/lib/prisma"
+import { getOrgPlan, enforceFeature, enforceLimit } from "@/lib/plans/guard"
+import { handleApiError }             from "@/lib/api/handle-error"
 import { createHash, randomBytes }    from "crypto"
 import { z }                          from "zod"
 
@@ -28,8 +30,8 @@ export async function GET() {
     })
 
     return NextResponse.json({ keys })
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  } catch (err) {
+    return handleApiError(err, "api-keys") as NextResponse
   }
 }
 
@@ -51,6 +53,12 @@ export async function POST(req: NextRequest) {
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
     const { name, scopes, environment, expiresAt, rateLimit } = parsed.data
+
+    // Plan checks: api_access feature + maxApiKeys limit
+    const plan = await getOrgPlan(ctx.organizationId)
+    enforceFeature(plan, "api_access")
+    const keyCount = await prisma.apiKey.count({ where: { organizationId: ctx.organizationId, isActive: true, revokedAt: null } })
+    enforceLimit(plan, "maxApiKeys", keyCount)
 
     // Generate key: env_prefix + 32 random bytes hex
     const prefix    = environment === "test" ? "endo_test_" : "endo_live_"
@@ -84,7 +92,7 @@ export async function POST(req: NextRequest) {
 
     // rawKey returned ONCE — never stored, never retrievable again
     return NextResponse.json({ ...apiKey, key: rawKey }, { status: 201 })
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  } catch (err) {
+    return handleApiError(err, "api-keys") as NextResponse
   }
 }

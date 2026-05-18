@@ -6,6 +6,8 @@
 import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
+import { getOrgPlan, enforceLimit } from "@/lib/plans/guard"
+import { handleApiError } from "@/lib/api/handle-error"
 import { Prisma } from "@prisma/client"
 import { z } from "zod"
 import { indexInvoice } from "@/lib/search/index-entity"
@@ -94,6 +96,17 @@ export async function POST(req: Request) {
     const parsed = CreateSchema.safeParse(body)
     if (!parsed.success) {
       return Response.json({ error: "Ogiltiga uppgifter", details: parsed.error.flatten() }, { status: 400 })
+    }
+
+    // Plan limit: max invoices per month
+    if (parsed.data.type === "invoice") {
+      const plan = await getOrgPlan(ctx.organizationId)
+      const monthStart = new Date()
+      monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0)
+      const monthCount = await prisma.invoice.count({
+        where: { organizationId: ctx.organizationId, type: "invoice", createdAt: { gte: monthStart } },
+      })
+      enforceLimit(plan, "maxInvoicesPerMonth", monthCount)
     }
 
     // Auto-generate invoice number
@@ -186,12 +199,5 @@ export async function POST(req: Request) {
 }
 
 function handleError(err: unknown): Response {
-  if ((err as { name?: string }).name === "UnauthenticatedError") {
-    return Response.json({ error: "Ej inloggad" }, { status: 401 })
-  }
-  if ((err as { name?: string }).name === "UnauthorizedError") {
-    return Response.json({ error: "Otillräckliga rättigheter" }, { status: 403 })
-  }
-  console.error("[invoices]", err)
-  return Response.json({ error: "Internt fel" }, { status: 500 })
+  return handleApiError(err, "invoices")
 }

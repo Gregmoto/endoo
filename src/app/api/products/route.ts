@@ -6,6 +6,8 @@
 import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
+import { getOrgPlan, enforceLimit } from "@/lib/plans/guard"
+import { handleApiError } from "@/lib/api/handle-error"
 import { Prisma, ProductType } from "@prisma/client"
 import { z } from "zod"
 import { indexProduct } from "@/lib/search/index-entity"
@@ -78,6 +80,11 @@ export async function POST(req: Request) {
       return Response.json({ error: "Ogiltiga uppgifter", details: parsed.error.flatten() }, { status: 400 })
     }
 
+    // Plan limit: max products
+    const plan = await getOrgPlan(ctx.organizationId)
+    const productCount = await prisma.product.count({ where: { organizationId: ctx.organizationId, deletedAt: null } })
+    enforceLimit(plan, "maxProducts", productCount)
+
     // Auto-generate SKU if not provided
     let sku = parsed.data.sku
     if (!sku) {
@@ -114,15 +121,8 @@ export async function POST(req: Request) {
 }
 
 function handleError(err: unknown): Response {
-  if ((err as { name?: string }).name === "UnauthenticatedError") {
-    return Response.json({ error: "Ej inloggad" }, { status: 401 })
-  }
-  if ((err as { name?: string }).name === "UnauthorizedError") {
-    return Response.json({ error: "Otillräckliga rättigheter" }, { status: 403 })
-  }
   if ((err as { code?: string }).code === "P2002") {
     return Response.json({ error: "Artikelnumret används redan av en annan artikel" }, { status: 409 })
   }
-  console.error("[products]", err)
-  return Response.json({ error: "Internt fel" }, { status: 500 })
+  return handleApiError(err, "products")
 }

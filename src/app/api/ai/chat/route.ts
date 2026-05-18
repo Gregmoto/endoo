@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server"
 import Anthropic from "@anthropic-ai/sdk"
 import { requireAuth } from "@/lib/rbac/guards"
+import { requireFeature } from "@/lib/plans/guard"
+import { handleApiError } from "@/lib/api/handle-error"
 import { buildAiContext } from "@/services/ai/context-builder"
 import { buildSystemPrompt } from "@/services/ai/system-prompt"
 
@@ -11,6 +13,7 @@ type Message = { role: "user" | "assistant"; content: string }
 export async function POST(req: NextRequest) {
   try {
     const ctx = await requireAuth()
+    await requireFeature(ctx.organizationId, "ai_assistant")
     const { messages }: { messages: Message[] } = await req.json()
 
     if (!messages?.length) {
@@ -84,13 +87,6 @@ export async function POST(req: NextRequest) {
       },
     })
   } catch (err) {
-    if (err instanceof Error) {
-      if (err.message === "Unauthenticated")
-        return Response.json({ error: "Unauthorized" }, { status: 401 })
-      if (err.message === "Unauthorized")
-        return Response.json({ error: "Forbidden" }, { status: 403 })
-    }
-    console.error("[ai/chat]", err)
-    return Response.json({ error: "Internal server error" }, { status: 500 })
+    return handleApiError(err, "ai/chat")
   }
 }

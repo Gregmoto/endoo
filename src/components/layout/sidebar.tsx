@@ -8,6 +8,8 @@ import { cn, stringToColor, initials } from "@/lib/utils"
 import { NotificationBell } from "@/components/notifications/NotificationBell"
 import { ThemeToggle } from "@/components/theme/ThemeToggle"
 import { VersionBadge } from "@/components/layout/VersionBadge"
+import { PLAN_LIMITS, type PlanFeature } from "@/lib/plans/limits"
+import type { Plan } from "@prisma/client"
 
 const NAV_GROUPS = [
   {
@@ -15,11 +17,11 @@ const NAV_GROUPS = [
     items: [
       { label: "Översikt",       href: "",                   icon: "▦" },
       { label: "Fakturor",       href: "/invoices",          icon: "◧" },
-      { label: "Offerter",       href: "/quotes",            icon: "◩" },
-      { label: "Lev.fakturor",   href: "/supplier-invoices", icon: "◨" },
+      { label: "Offerter",       href: "/quotes",            icon: "◩",  feature: "quotes" },
+      { label: "Lev.fakturor",   href: "/supplier-invoices", icon: "◨",  feature: "supplier_invoices" },
       { label: "Betalningar",    href: "/payments",          icon: "◎" },
       { label: "Avtal",          href: "/contracts",         icon: "↺" },
-      { label: "Signeringar",   href: "/signatures",        icon: "✍" },
+      { label: "Signeringar",    href: "/signatures",        icon: "✍",  feature: "e_signing" },
     ],
   },
   {
@@ -27,9 +29,9 @@ const NAV_GROUPS = [
     items: [
       { label: "Verifikat",      href: "/journals",          icon: "◱" },
       { label: "Kontoplan",      href: "/accounts",          icon: "▤" },
-      { label: "Rapporter",      href: "/reports",           icon: "◧" },
-      { label: "Moms",           href: "/tax/vat",           icon: "◰" },
-      { label: "Analys",         href: "/analytics",         icon: "◎" },
+      { label: "Rapporter",      href: "/reports",           icon: "◧",  feature: "basic_reports" },
+      { label: "Moms",           href: "/tax/vat",           icon: "◰",  feature: "vat_periods" },
+      { label: "Analys",         href: "/analytics",         icon: "◎",  feature: "advanced_reports" },
     ],
   },
   {
@@ -37,7 +39,7 @@ const NAV_GROUPS = [
     items: [
       { label: "Kunder",         href: "/contacts",          icon: "◈" },
       { label: "Produkter",      href: "/products",          icon: "◉" },
-      { label: "Lager",          href: "/inventory",         icon: "▣" },
+      { label: "Lager",          href: "/inventory",         icon: "▣",  feature: "inventory" },
     ],
   },
 ]
@@ -56,6 +58,7 @@ interface SidebarProps {
   orgName:              string
   orgType:              "agency" | "customer"
   userEmail:            string
+  orgPlan?:             string
   isImpersonating?:     boolean
   logoUrl?:             string | null
   brandingDisplayName?: string | null
@@ -66,6 +69,7 @@ function SidebarContent({
   orgName,
   orgType,
   userEmail,
+  orgPlan,
   isImpersonating,
   logoUrl,
   brandingDisplayName,
@@ -241,20 +245,36 @@ function SidebarContent({
               {group.label}
             </p>
             <div className="space-y-0.5">
-              {group.items.map((item) => (
-                <Link
-                  key={item.href}
-                  href={`${base}${item.href}`}
-                  onClick={onNavigate}
-                  className={cn(
-                    "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px]",
-                    isActive(item.href) ? "bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
-                  )}
-                >
-                  <span className="text-base leading-none">{item.icon}</span>
-                  {item.label}
-                </Link>
-              ))}
+              {group.items.map((item) => {
+                const locked = item.feature && orgPlan
+                  ? !PLAN_LIMITS[orgPlan as Plan]?.features.includes(item.feature as PlanFeature)
+                  : false
+                return (
+                  <Link
+                    key={item.href}
+                    href={`${base}${item.href}`}
+                    onClick={onNavigate}
+                    className={cn(
+                      "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px]",
+                      locked
+                        ? "text-gray-400 dark:text-gray-600 opacity-60"
+                        : isActive(item.href)
+                          ? "bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400"
+                          : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
+                    )}
+                    title={locked ? "Kräver uppgradering" : undefined}
+                  >
+                    <span className="text-base leading-none">{item.icon}</span>
+                    <span className="flex-1">{item.label}</span>
+                    {locked && (
+                      <svg className="size-3 shrink-0 text-gray-400 dark:text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                    )}
+                  </Link>
+                )
+              })}
             </div>
           </div>
         ))}

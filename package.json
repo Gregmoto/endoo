@@ -1,6 +1,6 @@
 {
   "name": "endoo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -54,6 +54,8 @@
     "vitest": "^4.1.6"
   },
   "lint-staged": {
-    "*.{ts,tsx}": ["tsc --noEmit"]
+    "*.{ts,tsx}": [
+      "tsc --noEmit"
+    ]
   }
 }

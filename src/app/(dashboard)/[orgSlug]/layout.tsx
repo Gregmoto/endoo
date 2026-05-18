@@ -21,7 +21,7 @@ export default async function DashboardLayout({
 
   const org = await prisma.organization.findUnique({
     where: { slug: orgSlug },
-    select: { id: true, name: true, type: true, slug: true, isActive: true },
+    select: { id: true, name: true, type: true, slug: true, isActive: true, plan: true },
   })
 
   if (!org || !org.isActive) redirect("/")
@@ -73,6 +73,7 @@ export default async function DashboardLayout({
         orgName={org.name}
         orgType={org.type as "agency" | "customer"}
         userEmail={session.user.email}
+        orgPlan={org.plan}
         isImpersonating={isImpersonating}
         logoUrl={branding.logoUrl}
         brandingDisplayName={branding.displayName}

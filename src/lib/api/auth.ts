@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { createHash, timingSafeEqual } from "crypto"
 import { prisma }          from "@/lib/prisma"
 import { checkRateLimit }  from "./rate-limit"
+import { getOrgPlan, enforceFeature, PlanLimitError } from "@/lib/plans/guard"
+import { PLAN_LABELS } from "@/lib/plans/limits"
 
 export type ApiContext = {
   organizationId: string
@@ -48,6 +50,20 @@ export function withApiAuth(requiredScope: string, handler: Handler) {
 
     if (apiKey.expiresAt && apiKey.expiresAt < new Date()) {
       return NextResponse.json({ error: "API key expired" }, { status: 401 })
+    }
+
+    // Plan check: api_access feature
+    try {
+      const plan = await getOrgPlan(apiKey.organizationId)
+      enforceFeature(plan, "api_access")
+    } catch (e) {
+      if (e instanceof PlanLimitError) {
+        return NextResponse.json(
+          { error: "plan_limit", kind: "feature", feature: "api_access", requiredPlan: e.requiredPlan, requiredPlanLabel: PLAN_LABELS[e.requiredPlan] },
+          { status: 402 },
+        )
+      }
+      throw e
     }
 
     // Scope check
