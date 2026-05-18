@@ -30,6 +30,8 @@ export type PlanFeature =
   | "accruals"
   | "data_import"
   | "sru_export"
+  | "multiple_price_lists"
+  | "multiple_invoice_templates"
 
 export type PlanLimitKey =
   | "maxUsers"
@@ -119,6 +121,8 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "accruals",
       "data_import",
       "sru_export",
+      "multiple_price_lists",
+      "multiple_invoice_templates",
     ],
   },
 
@@ -155,6 +159,8 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "accruals",
       "data_import",
       "sru_export",
+      "multiple_price_lists",
+      "multiple_invoice_templates",
     ],
   },
 }

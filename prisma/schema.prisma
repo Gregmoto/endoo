@@ -444,6 +444,9 @@ model Organization {
   defaultTaxRate       Decimal @default(0.25) @db.Decimal(5, 4)
   defaultPaymentTermsDays Int  @default(30)
 
+  // Invoicing v2 settings (JSON blob for all configurable defaults)
+  invoicingSettings    Json?
+
   // Locale
   locale   String @default("sv-SE")
   timezone String @default("Europe/Stockholm")
@@ -559,6 +562,16 @@ model Organization {
 
   // SRU export
   sruExports            SruExport[]
+
+  // Invoicing v2
+  paymentTerms          PaymentTerm[]
+  units                 Unit[]
+  currencies            OrgCurrency[]
+  deliveryMethods       DeliveryMethod[]
+  deliveryTerms         DeliveryTerms[]
+  priceLists            PriceList[]
+  invoiceTemplates      InvoiceTemplate2[]
+  exchangeRates         ExchangeRate[]
 
   // API platform
   apiKeys               ApiKey[]
@@ -996,13 +1009,21 @@ model Product {
   isActive    Boolean @default(true)
   metadata    Json    @default("{}")
 
+  // Invoicing v2 fields
+  warehouseLocation String?
+  purchasePrice     BigInt?
+  purchaseAccount   String?
+  salesAccount      String?
+  vatType           String?
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  lineItems     InvoiceLineItem[]
-  inventoryItem InventoryItem?
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lineItems      InvoiceLineItem[]
+  inventoryItem  InventoryItem?
+  priceListItems PriceListItem[]
 
   @@index([organizationId])
   @@unique([organizationId, sku])
@@ -1069,6 +1090,51 @@ model Invoice {
   createdByUserId            String? @db.Uuid
   createdOnBehalfOfAgencyId  String? @db.Uuid
 
+  // ── Invoicing v2 fields ────────────────────────────────────────────────────
+  priceMode             String   @default("excl_vat")  // excl_vat | incl_vat
+  exchangeRate          Decimal? @db.Decimal(12, 6)
+  exchangeRateDate      DateTime?
+  paymentTermsDays      Int?
+  ourReference          String?
+  yourReference         String?
+  yourOrderNumber       String?
+  priceListId           String?  @db.Uuid
+  invoiceLang           String   @default("sv")        // sv | en
+  vatType               String?
+
+  // Delivery details
+  deliveryName          String?
+  deliveryDate          DateTime? @db.Date
+  deliveryLine1         String?
+  deliveryLine2         String?
+  deliveryPostalCode    String?
+  deliveryCity          String?
+  deliveryCountry       String?
+  deliveryMethodId      String?  @db.Uuid
+  deliveryTermsId       String?  @db.Uuid
+
+  // Fees & discounts
+  freightAmount         BigInt   @default(0)
+  invoiceFeeAmount      BigInt   @default(0)
+  invoiceDiscountRate   Decimal? @db.Decimal(5, 4)
+
+  // Denormalized computed totals (v2)
+  netAmount             BigInt   @default(0)
+  grossAmount           BigInt   @default(0)
+  roundingAmount        BigInt   @default(0)
+  freeText              String?  @db.Text
+  shipmentMark          String?
+  cashAccount           String?
+
+  // Inventory
+  inventoryUpdated      Boolean  @default(false)
+  inventoryUpdatedAt    DateTime?
+
+  // Interest invoice relations
+  parentInvoiceId       String?  @db.Uuid
+  isInterestInvoice     Boolean  @default(false)
+  reminderFeeApplied    Boolean  @default(false)
+
   metadata  Json     @default("{}")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1082,8 +1148,13 @@ model Invoice {
   createdByUser  User?         @relation("InvoiceCreatedBy", fields: [createdByUserId], references: [id])
   agencyCreator  Organization? @relation("AgencyCreatedInvoices", fields: [createdOnBehalfOfAgencyId], references: [id])
 
-  lineItems InvoiceLineItem[]
-  payments  Payment[]
+  lineItems       InvoiceLineItem[]
+  payments        Payment[]
+  parentInvoice   Invoice?          @relation("InterestInvoice", fields: [parentInvoiceId], references: [id])
+  interestInvoices Invoice[]        @relation("InterestInvoice")
+  priceList       PriceList?        @relation(fields: [priceListId], references: [id])
+  deliveryMethod  DeliveryMethod?   @relation(fields: [deliveryMethodId], references: [id])
+  deliveryTerms   DeliveryTerms?    @relation(fields: [deliveryTermsId], references: [id])
 
   @@unique([organizationId, invoiceNumber])
   @@index([organizationId])
@@ -1113,6 +1184,17 @@ model InvoiceLineItem {
   discountRate Decimal @default(0) @db.Decimal(5, 4)
   lineTotal   BigInt   // quantity × unitPrice × (1 - discountRate)
   taxAmount   BigInt   // lineTotal × taxRate
+
+  // Invoicing v2 fields
+  articleNumber         String?
+  orderedQuantity       Decimal? @db.Decimal(12, 4)
+  deliveredQuantity     Decimal? @db.Decimal(12, 4)
+  warehouseLocation     String?
+  accountNumber         String?
+  purchasePrice         BigInt?
+  marginPercent         Decimal? @db.Decimal(5, 2)
+  vatType               String?
+  priceIncludesVat      Boolean  @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -3743,4 +3825,182 @@ model SchemaVersion {
 
   @@index([version])
   @@map("schema_versions")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INVOICING V2 — Settings tables
+// All tenant-scoped (organizationId required)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model PaymentTerm {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  code           String   // "30N", "10N", "CONTANT"
+  name           String   // "30 dagar netto"
+  days           Int
+  isActive       Boolean  @default(true)
+  isDefault      Boolean  @default(false)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+  @@map("payment_terms")
+}
+
+model Unit {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  code           String   // "st", "h", "m", "kg"
+  name           String   // "Stycken"
+  isActive       Boolean  @default(true)
+  isDefault      Boolean  @default(false)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+  @@map("units")
+}
+
+model OrgCurrency {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  code           String   // ISO 4217: "SEK", "EUR", "USD"
+  symbol         String?  // "kr", "€", "$"
+  isActive       Boolean  @default(true)
+  isDefault      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+  @@map("org_currencies")
+}
+
+model DeliveryMethod {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  code           String   // "POSTNORD", "DHL", "AVHAMTNING"
+  name           String   // "PostNord", "DHL", "Avhämtning"
+  isActive       Boolean  @default(true)
+  isDefault      Boolean  @default(false)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices     Invoice[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+  @@map("delivery_methods")
+}
+
+model DeliveryTerms {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  code           String   // "EXW", "DAP", "DDP"
+  name           String   // Beskrivning
+  isActive       Boolean  @default(true)
+  isDefault      Boolean  @default(false)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices     Invoice[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+  @@map("delivery_terms")
+}
+
+model PriceList {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  name           String   // "Standard", "Återförsäljare"
+  currency       String   @default("SEK")
+  priceMode      String   @default("excl_vat")  // excl_vat | incl_vat
+  isActive       Boolean  @default(true)
+  isDefault      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  items        PriceListItem[]
+  invoices     Invoice[]
+
+  @@index([organizationId])
+  @@map("price_lists")
+}
+
+model PriceListItem {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  priceListId String   @db.Uuid
+  productId   String   @db.Uuid
+  price       BigInt   // i öre
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  priceList PriceList @relation(fields: [priceListId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId],   references: [id], onDelete: Cascade)
+
+  @@unique([priceListId, productId])
+  @@index([priceListId])
+  @@map("price_list_items")
+}
+
+model InvoiceTemplate2 {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  name           String   // "Standard", "Engelsk export"
+  language       String   @default("sv")
+  showLogo       Boolean  @default(true)
+  showSwishQr    Boolean  @default(false)
+  footerText     String?  @db.Text
+  postalAddress  String?
+  streetAddress  String?
+  phone          String?
+  bankgiro       String?
+  plusgiro       String?
+  iban           String?
+  bic            String?
+  vatNumber      String?
+  fScattCertified Boolean @default(true)
+  isDefault      Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("invoice_templates")
+}
+
+model ExchangeRate {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String? @db.Uuid  // null = global rates fetched by cron
+  fromCurrency String   // "EUR"
+  toCurrency   String   // "SEK"
+  rate         Decimal  @db.Decimal(12, 6)
+  rateDate     DateTime @db.Date
+  source       String   // "riksbank" | "exchangerate.host" | "manual"
+  fetchedAt    DateTime @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([fromCurrency, toCurrency, rateDate, source])
+  @@index([rateDate])
+  @@index([fromCurrency, toCurrency])
+  @@map("exchange_rates")
 }

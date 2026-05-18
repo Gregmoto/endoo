@@ -22,6 +22,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { slugify } from "@/lib/utils"
+import { seedInvoicingDefaults } from "@/lib/invoicing/seed"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
 
@@ -136,6 +137,8 @@ export async function POST(req: Request) {
 
       return { userId: user.id, orgSlug: org.slug, orgId: org.id }
     })
+
+    seedInvoicingDefaults(result.orgId).catch(() => {})
 
     return Response.json(result, { status: 201 })
 

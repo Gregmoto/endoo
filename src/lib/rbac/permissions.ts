@@ -215,6 +215,68 @@ export const EMAIL_PERMISSIONS = {
 } as const
 
 // ─────────────────────────────────────────────
+// INVOICING SETTINGS PERMISSIONS
+// ─────────────────────────────────────────────
+export const INVOICING_SETTINGS_PERMISSIONS = {
+  READ:   "settings:invoicing:read",
+  UPDATE: "settings:invoicing:update",
+} as const
+
+export const PAYMENT_TERMS_PERMISSIONS = {
+  READ:   "settings:payment_terms:read",
+  CREATE: "settings:payment_terms:create",
+  UPDATE: "settings:payment_terms:update",
+  DELETE: "settings:payment_terms:delete",
+} as const
+
+export const UNITS_PERMISSIONS = {
+  READ:   "settings:units:read",
+  CREATE: "settings:units:create",
+  UPDATE: "settings:units:update",
+  DELETE: "settings:units:delete",
+} as const
+
+export const CURRENCIES_PERMISSIONS = {
+  READ:   "settings:currencies:read",
+  CREATE: "settings:currencies:create",
+  UPDATE: "settings:currencies:update",
+  DELETE: "settings:currencies:delete",
+} as const
+
+export const DELIVERY_METHODS_PERMISSIONS = {
+  READ:   "settings:delivery_methods:read",
+  CREATE: "settings:delivery_methods:create",
+  UPDATE: "settings:delivery_methods:update",
+  DELETE: "settings:delivery_methods:delete",
+} as const
+
+export const DELIVERY_TERMS_PERMISSIONS = {
+  READ:   "settings:delivery_terms:read",
+  CREATE: "settings:delivery_terms:create",
+  UPDATE: "settings:delivery_terms:update",
+  DELETE: "settings:delivery_terms:delete",
+} as const
+
+export const PRICE_LISTS_PERMISSIONS = {
+  READ:   "settings:price_lists:read",
+  CREATE: "settings:price_lists:create",
+  UPDATE: "settings:price_lists:update",
+  DELETE: "settings:price_lists:delete",
+} as const
+
+export const INVOICE_TEMPLATES_PERMISSIONS = {
+  READ:   "settings:invoice_templates:read",
+  CREATE: "settings:invoice_templates:create",
+  UPDATE: "settings:invoice_templates:update",
+  DELETE: "settings:invoice_templates:delete",
+} as const
+
+export const EXCHANGE_RATES_PERMISSIONS = {
+  READ:    "exchange_rates:read",
+  REFRESH: "exchange_rates:refresh",
+} as const
+
+// ─────────────────────────────────────────────
 // SRU EXPORT PERMISSIONS
 // ─────────────────────────────────────────────
 export const SRU_EXPORT_PERMISSIONS = {
@@ -262,6 +324,15 @@ export const DEPRECIATION_PERMISSIONS = {
 } as const
 
 export type Permission =
+  | (typeof INVOICING_SETTINGS_PERMISSIONS)[keyof typeof INVOICING_SETTINGS_PERMISSIONS]
+  | (typeof PAYMENT_TERMS_PERMISSIONS)[keyof typeof PAYMENT_TERMS_PERMISSIONS]
+  | (typeof UNITS_PERMISSIONS)[keyof typeof UNITS_PERMISSIONS]
+  | (typeof CURRENCIES_PERMISSIONS)[keyof typeof CURRENCIES_PERMISSIONS]
+  | (typeof DELIVERY_METHODS_PERMISSIONS)[keyof typeof DELIVERY_METHODS_PERMISSIONS]
+  | (typeof DELIVERY_TERMS_PERMISSIONS)[keyof typeof DELIVERY_TERMS_PERMISSIONS]
+  | (typeof PRICE_LISTS_PERMISSIONS)[keyof typeof PRICE_LISTS_PERMISSIONS]
+  | (typeof INVOICE_TEMPLATES_PERMISSIONS)[keyof typeof INVOICE_TEMPLATES_PERMISSIONS]
+  | (typeof EXCHANGE_RATES_PERMISSIONS)[keyof typeof EXCHANGE_RATES_PERMISSIONS]
   | (typeof PLATFORM_PERMISSIONS)[keyof typeof PLATFORM_PERMISSIONS]
   | (typeof INVOICE_PERMISSIONS)[keyof typeof INVOICE_PERMISSIONS]
   | (typeof CONTACT_PERMISSIONS)[keyof typeof CONTACT_PERMISSIONS]
@@ -287,6 +358,15 @@ export type Permission =
   | (typeof DEPRECIATION_PERMISSIONS)[keyof typeof DEPRECIATION_PERMISSIONS]
 
 export const ALL_PERMISSIONS: Permission[] = [
+  ...Object.values(INVOICING_SETTINGS_PERMISSIONS),
+  ...Object.values(PAYMENT_TERMS_PERMISSIONS),
+  ...Object.values(UNITS_PERMISSIONS),
+  ...Object.values(CURRENCIES_PERMISSIONS),
+  ...Object.values(DELIVERY_METHODS_PERMISSIONS),
+  ...Object.values(DELIVERY_TERMS_PERMISSIONS),
+  ...Object.values(PRICE_LISTS_PERMISSIONS),
+  ...Object.values(INVOICE_TEMPLATES_PERMISSIONS),
+  ...Object.values(EXCHANGE_RATES_PERMISSIONS),
   ...Object.values(PLATFORM_PERMISSIONS),
   ...Object.values(INVOICE_PERMISSIONS),
   ...Object.values(CONTACT_PERMISSIONS),

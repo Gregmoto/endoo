@@ -7,6 +7,45 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-05-19
+
+### Added
+- **[Fakturering]** Prisma-modeller: `PaymentTerm`, `Unit`, `OrgCurrency`, `DeliveryMethod`, `DeliveryTerms`, `PriceList`, `PriceListItem`, `InvoiceTemplate2`, `ExchangeRate` — fullständig grund för faktureringsinställningar
+- **[Fakturering]** `Invoice`-modellen utökad med ~30 nya fält: valuta/kurs, leveransuppgifter, varumarkeringar, öresutjämning, påminnelseflaggor m.m.
+- **[Fakturering]** `InvoiceLineItem` utökad med artikelnummer, lagerlokation, inköpspris, marginalprocent, momstyp m.m.
+- **[Fakturering]** `Product` utökad med lagerlokation, inköpspris, konton och momstyp
+- **[Fakturering]** `Organization` utökad med `invoicingSettings JSON` + relationer till alla nya inställningsmodeller
+- **[Beräkningar]** `src/lib/invoicing/calculations.ts` — `calculateInvoice()` med BigInt öre-precision, VAT-uppdelning per momssats, öresutjämning via `applyRounding()`
+- **[Beräkningar]** `src/lib/invoicing/rounding.ts` — `applyRounding()` med banker's rounding + `formatOre()`
+- **[Beräkningar]** `src/lib/invoicing/margin.ts` — täckningsbidrag, marginalprocent, påläggsprocent
+- **[Momstyper]** `src/lib/invoicing/vat-types.ts` — 13 momstyper (SE25/SE12/SE06/SE00/EU-varianter/EXPORT/OMVMOMS/MFRI/VMB25) med momsrutor och BAS-konton
+- **[Valutakurser]** `src/lib/integrations/riksbank/client.ts` — Riksbanken SWEA API-klient med DB-cache, stöd för 24 valutor
+- **[Valutakurser]** `src/lib/integrations/exchangerate-host/client.ts` — fallback-klient för valutakurser
+- **[API]** `GET/PATCH /api/settings/invoicing` — hämta/uppdatera faktureringsinställningar (JSON blob)
+- **[API]** `GET/POST /api/settings/payment-terms`, `PUT/DELETE /api/settings/payment-terms/[id]`
+- **[API]** `GET/POST /api/settings/units`, `PUT/DELETE /api/settings/units/[id]`
+- **[API]** `GET/POST /api/settings/currencies`, `PUT/DELETE /api/settings/currencies/[id]`
+- **[API]** `GET/POST /api/settings/delivery-methods`, `PUT/DELETE /api/settings/delivery-methods/[id]`
+- **[API]** `GET/POST /api/settings/delivery-terms`, `PUT/DELETE /api/settings/delivery-terms/[id]`
+- **[API]** `GET/POST /api/settings/price-lists`, `GET/PUT/DELETE /api/settings/price-lists/[id]`, `POST /api/settings/price-lists/[id]/items`, `PUT/DELETE /api/settings/price-lists/[id]/items/[itemId]`
+- **[API]** `GET/POST /api/settings/invoice-templates`, `PUT/DELETE /api/settings/invoice-templates/[id]`
+- **[API]** `GET /api/settings/vat-types` — read-only lista av momstyper
+- **[API]** `GET /api/exchange-rates` — hämta valutakurs med DB-cache + Riksbanken
+- **[API]** `POST /api/exchange-rates/refresh` — hämta alla aktiva kurser manuellt
+- **[Cron]** `GET /api/cron/exchange-rates` — daglig valutakurshämtning (körs 06:30 CET)
+- **[Seed]** `src/lib/invoicing/seed.ts` — `seedInvoicingDefaults()`: skapar standardbetalningsvillkor, enheter, valutor, leveranssätt, leveransvillkor, prislista och fakturamall för nya organisationer
+- **[Onboarding]** `seedInvoicingDefaults()` anropas vid organisationsskapande i `/api/onboarding` och `/api/register`
+- **[UI]** `/settings/invoicing/` — ny inställningssida för fakturering med 11 flikar: Allmänt, Numrering, Betalningsvillkor, Enheter, Valutor, Leveranssätt, Leveransvillkor, Prislistor, Fakturamall, Påminnelser, Dröjsmålsränta
+- **[UI]** `LookupTable`-komponent — generisk CRUD-tabell för alla uppslagstabeller
+- **[Sidebar]** "Fakturering" länk tillagd i inställningsnavigeringen
+- **[RBAC]** 9 nya permissionsgrupper: `INVOICING_SETTINGS`, `PAYMENT_TERMS`, `UNITS`, `CURRENCIES`, `DELIVERY_METHODS`, `DELIVERY_TERMS`, `PRICE_LISTS`, `INVOICE_TEMPLATES`, `EXCHANGE_RATES`
+- **[Plans]** Features `multiple_price_lists` och `multiple_invoice_templates` (pro+)
+- **[Tests]** 62 enhetstester: `calculateInvoice` (10 scenarier), `applyRounding` (8 scenarier), marginberäkningar (9 scenarier), VAT-typer (35 assertioner)
+- **[Skript]** `scripts/migrate-existing-orgs-invoicing.ts` — idempotent backfill för befintliga organisationer
+
+### Database
+- **[Migration]** `20260518_001_invoicing_v2_foundation`: bakåtkompatibel migration med 9 nya tabeller och ~45 nya kolumner på befintliga tabeller
+
 ## [0.14.0] - 2026-05-19
 
 ### Added

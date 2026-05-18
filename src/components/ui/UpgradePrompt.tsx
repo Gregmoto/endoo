@@ -33,7 +33,9 @@ const FEATURE_LABELS: Record<PlanFeature, string> = {
   fixed_assets:          "Anläggningstillgångar",
   accruals:              "Periodiseringar",
   data_import:           "Dataimport",
-  sru_export:            "SRU-export",
+  sru_export:                    "SRU-export",
+  multiple_price_lists:          "Flera prislistor",
+  multiple_invoice_templates:    "Flera fakturamallar",
 }
 
 interface Props {
