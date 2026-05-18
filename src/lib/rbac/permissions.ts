@@ -213,6 +213,26 @@ export const EMAIL_PERMISSIONS = {
   MANAGE:       "settings:email:update",   // update email settings
 } as const
 
+// ─────────────────────────────────────────────
+// FIXED ASSET PERMISSIONS
+// ─────────────────────────────────────────────
+export const FIXED_ASSET_PERMISSIONS = {
+  READ:    "fixed_assets:read",
+  CREATE:  "fixed_assets:create",
+  UPDATE:  "fixed_assets:update",
+  DISPOSE: "fixed_assets:dispose",   // mark as disposed/written_off
+  DELETE:  "fixed_assets:delete",    // delete active asset (admin only)
+} as const
+
+// ─────────────────────────────────────────────
+// DEPRECIATION PERMISSIONS
+// ─────────────────────────────────────────────
+export const DEPRECIATION_PERMISSIONS = {
+  READ:    "depreciation:read",
+  POST:    "depreciation:post",      // post a depreciation period
+  REVERSE: "depreciation:reverse",   // reverse a posted depreciation
+} as const
+
 export type Permission =
   | (typeof PLATFORM_PERMISSIONS)[keyof typeof PLATFORM_PERMISSIONS]
   | (typeof INVOICE_PERMISSIONS)[keyof typeof INVOICE_PERMISSIONS]
@@ -232,6 +252,8 @@ export type Permission =
   | (typeof QUOTE_PERMISSIONS)[keyof typeof QUOTE_PERMISSIONS]
   | (typeof BRANDING_PERMISSIONS)[keyof typeof BRANDING_PERMISSIONS]
   | (typeof EMAIL_PERMISSIONS)[keyof typeof EMAIL_PERMISSIONS]
+  | (typeof FIXED_ASSET_PERMISSIONS)[keyof typeof FIXED_ASSET_PERMISSIONS]
+  | (typeof DEPRECIATION_PERMISSIONS)[keyof typeof DEPRECIATION_PERMISSIONS]
 
 export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(PLATFORM_PERMISSIONS),
@@ -252,4 +274,6 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(QUOTE_PERMISSIONS),
   ...Object.values(BRANDING_PERMISSIONS),
   ...Object.values(EMAIL_PERMISSIONS),
+  ...Object.values(FIXED_ASSET_PERMISSIONS),
+  ...Object.values(DEPRECIATION_PERMISSIONS),
 ]

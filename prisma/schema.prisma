@@ -157,6 +157,11 @@ enum AuditAction {
   period_close
   fiscal_year_lock
   fiscal_year_unlock
+  // Fixed asset events
+  asset_create
+  asset_dispose
+  asset_write_off
+  depreciation_post
 }
 
 // ─── ACCOUNTING ENUMS ─────────────────────────────────────────────────────────
@@ -531,6 +536,10 @@ model Organization {
   // Inventory
   inventoryItems        InventoryItem[]
   inventoryTransactions InventoryTransaction[]
+
+  // Fixed assets
+  fixedAssets           FixedAsset[]
+  depreciationSchedules DepreciationSchedule[]
 
   // API platform
   apiKeys               ApiKey[]
@@ -2134,6 +2143,7 @@ model SupplierInvoice {
   supplier         Supplier?                @relation(fields: [supplierId],     references: [id])
   approvalRequests ApprovalRequest[]
   dimensions       SupplierInvoiceDimension[]
+  fixedAssets      FixedAsset[]
 
   @@index([organizationId, status])
   @@index([organizationId, supplierId])
@@ -3435,6 +3445,102 @@ model EmailSuppression {
   @@unique([organizationId, email])
   @@index([organizationId])
   @@map("email_suppressions")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FIXED ASSETS — Anläggningstillgångar
+// TENANT-SCOPED: organizationId required on every query
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum DepreciationMethod {
+  linear            // linjär avskrivning
+  declining_balance // degressiv avskrivning
+  tax_book          // räkenskapsenlig (30% declining-balance)
+}
+
+enum FixedAssetStatus {
+  active      // in use
+  disposed    // sold or scrapped — final
+  written_off // fully depreciated — final
+}
+
+enum DepreciationScheduleStatus {
+  planned   // not yet posted
+  posted    // journal created and posted
+  reversed  // reversed by a later journal
+}
+
+model FixedAsset {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid
+
+  assetNumber String  // e.g. "AT-2026-0001", unique per org
+  name        String
+  description String? @db.Text
+  category    String  // "Datorer", "Maskiner", "Inventarier", etc.
+
+  // Linked accounts (BAS account numbers as strings)
+  assetAccount                   String  // e.g. "1220" — DR on acquisition
+  depreciationAccount            String  // e.g. "7832" — DR on depreciation charge
+  accumulatedDepreciationAccount String  // e.g. "1229" — CR on depreciation charge
+
+  // Acquisition
+  acquisitionDate DateTime @db.Date
+  acquisitionCost BigInt               // öre
+  residualValue   BigInt  @default(0) // öre — ignored in tax_book
+
+  // Depreciation policy
+  usefulLifeMonths   Int
+  depreciationMethod DepreciationMethod
+  declineRate        Decimal? @db.Decimal(6, 4) // e.g. 0.2000 for 20%; null for linear/tax_book
+
+  // Status
+  status          FixedAssetStatus @default(active)
+  disposalDate    DateTime?        @db.Date
+  disposalProceeds BigInt?          // öre
+  disposalJournalId String?         @db.Uuid
+
+  // Optional link to the supplier invoice that created this asset
+  supplierInvoiceId String? @db.Uuid
+
+  notes String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization    Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  supplierInvoice SupplierInvoice?  @relation(fields: [supplierInvoiceId], references: [id], onDelete: SetNull)
+  schedules       DepreciationSchedule[]
+
+  @@unique([organizationId, assetNumber])
+  @@index([organizationId, status])
+  @@index([organizationId, category])
+  @@index([organizationId, acquisitionDate])
+  @@map("fixed_assets")
+}
+
+model DepreciationSchedule {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @db.Uuid
+  fixedAssetId   String @db.Uuid
+
+  period              String  // "YYYY-MM"
+  depreciationAmount  BigInt  // öre, monthly charge
+  accumulatedAmount   BigInt  // öre, cumulative after this period
+  bookValue           BigInt  // öre, after this period
+
+  journalId String? @db.Uuid // null until posted
+  status    DepreciationScheduleStatus @default(planned)
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  fixedAsset   FixedAsset   @relation(fields: [fixedAssetId],   references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, fixedAssetId, period])
+  @@index([organizationId, period, status])
+  @@index([fixedAssetId])
+  @@map("depreciation_schedules")
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

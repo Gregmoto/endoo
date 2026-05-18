@@ -7,6 +7,28 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-05-18
+
+### Added
+- **[Anläggningstillgångar]** Prisma-modeller `FixedAsset` och `DepreciationSchedule` med enums `DepreciationMethod`, `FixedAssetStatus`, `DepreciationScheduleStatus` samt migration `20250518_fixed_assets`
+- **[Anläggningstillgångar]** `src/lib/accounting/fixed-assets/schedule.ts` — `calculateSchedule()`: genererar full avskrivningsplan för linjär, degressiv och räkenskapsenlig (30%) metod
+- **[Anläggningstillgångar]** `src/lib/accounting/fixed-assets/depreciation.ts` — `postPeriodDepreciation()` och `previewPeriod()`: bokför månadsavskrivningar som verifikat och uppdaterar `DepreciationSchedule.status`
+- **[Anläggningstillgångar]** `src/lib/accounting/fixed-assets/dispose.ts` — `disposeAsset()`: bokför utrangeringsverifikat (DR ackumulerad avskrivning, CR tillgångskonto, DR likvid, DR/CR vinst/förlust 3973/7973)
+- **[API]** `GET/POST /api/fixed-assets` — lista och skapa anläggningstillgångar
+- **[API]** `GET/PATCH/DELETE /api/fixed-assets/[id]` — detalj, uppdatering och radering
+- **[API]** `POST /api/fixed-assets/[id]/dispose` — utrangera tillgång med bokföring
+- **[API]** `GET /api/fixed-assets/[id]/depreciation-schedule` — hämta avskrivningsplan
+- **[API]** `GET /api/depreciation/preview?period=YYYY-MM` — förhandsgranska period utan att bokföra
+- **[API]** `POST /api/depreciation/post` — bokför avskrivningar för en period
+- **[Cron]** `GET /api/cron/depreciation-monthly` — bokför föregående månads avskrivningar för alla org:ar med aktiva tillgångar (schema: 1:e varje månad)
+- **[UI]** Sidor: `/fixed-assets` (lista), `/fixed-assets/new` (formulär), `/fixed-assets/[id]` (detalj + utrangering), `/depreciation` (periodöversikt + bokföring)
+- **[UI]** Sidebar: "Anläggningstillgångar" och "Avskrivningar" under Bokföring (gated på `fixed_assets`-feature)
+- **[RBAC]** `FIXED_ASSET_PERMISSIONS` (read/create/update/dispose/delete) och `DEPRECIATION_PERMISSIONS` (read/post/reverse) — tilldelade till owner/admin/staff/viewer per roll
+- **[Plans]** Feature `fixed_assets` tillagd — aktiverad från `pro`-plan och uppåt
+
+### Database
+- **[Anläggningstillgångar]** Migration `20250518_fixed_assets`: skapar `fixed_assets` och `depreciation_schedules` tabeller med enums, index och FK-constraints
+
 ## [0.10.2] - 2026-05-18
 
 ### Fixed

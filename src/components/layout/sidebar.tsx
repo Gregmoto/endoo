@@ -33,7 +33,9 @@ const NAV_GROUPS = [
       { label: "Rapporter",       href: "/reports",                                    icon: "◧",  feature: "basic_reports" },
       { label: "Moms",            href: "/tax/vat",                                    icon: "◰",  feature: "vat_periods" },
       { label: "Analys",          href: "/analytics",                                  icon: "◎",  feature: "advanced_reports" },
-      { label: "Årsavslut",       href: "/year-end",                                   icon: "◑" },
+      { label: "Årsavslut",              href: "/year-end",       icon: "◑" },
+      { label: "Anläggningstillgångar", href: "/fixed-assets",   icon: "◫",  feature: "fixed_assets" as const },
+      { label: "Avskrivningar",         href: "/depreciation",   icon: "▦",  feature: "fixed_assets" as const },
     ],
   },
   {
