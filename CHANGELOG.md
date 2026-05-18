@@ -10,6 +10,13 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 ### Added
 - (kommande ändringar listas här tills nästa release)
 
+## [0.2.1] - 2026-05-18
+
+### Fixed
+- **Översiktssidan** — mörkt läge: lade till `dark:` klasser på all text, kort och tabellrader
+- **Översiktssidan** — visar nu användarens `fullName` istället för e-postprefixet
+- **Översiktssidan** — använder nu org-slug för att slå upp korrekt org-ID (inte `session.activeOrganizationId` som pekade på byråns org vid impersonering)
+
 ## [0.2.0] - 2026-05-18
 
 ### Added

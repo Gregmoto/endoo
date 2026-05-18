@@ -2,13 +2,26 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { InvoiceStatusBadge } from "@/components/ui/badge"
-import { formatMoney, formatDate } from "@/lib/utils"
+import { formatMoney } from "@/lib/utils"
 import Link from "next/link"
 
 export default async function DashboardPage({ params }: { params: Promise<{ orgSlug: string }> }) {
   const { orgSlug } = await params
   const session = await auth()
-  const orgId = session?.activeOrganizationId ?? ""
+
+  // Resolve the org being viewed by slug — NOT session.activeOrganizationId
+  // (that may point to an agency when impersonating a customer)
+  const org = await prisma.organization.findUnique({
+    where: { slug: orgSlug },
+    select: { id: true },
+  })
+  const orgId = org?.id ?? ""
+
+  // Fetch current user's display name
+  const user = session?.user?.id
+    ? await prisma.user.findUnique({ where: { id: session.user.id }, select: { fullName: true } })
+    : null
+  const displayName = user?.fullName ?? session?.user?.email?.split("@")[0] ?? "dig"
 
   const [invoiceStats, recentInvoices, contactCount] = await Promise.all([
     prisma.invoice.groupBy({
@@ -39,9 +52,9 @@ export default async function DashboardPage({ params }: { params: Promise<{ orgS
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Översikt</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Välkommen tillbaka, {session?.user?.email?.split("@")[0]}
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Översikt</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          Välkommen tillbaka, {displayName}
         </p>
       </div>
 
@@ -61,30 +74,30 @@ export default async function DashboardPage({ params }: { params: Promise<{ orgS
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Senaste fakturor</CardTitle>
-              <Link href={`/${orgSlug}/invoices`} className="text-xs text-indigo-600 hover:underline">Visa alla</Link>
+              <Link href={`/${orgSlug}/invoices`} className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">Visa alla</Link>
             </div>
           </CardHeader>
           <CardContent className="p-0">
             {recentInvoices.length === 0 ? (
-              <p className="px-6 py-8 text-sm text-gray-400 text-center">
+              <p className="px-6 py-8 text-sm text-gray-400 dark:text-gray-500 text-center">
                 Inga fakturor än.{" "}
-                <Link href={`/${orgSlug}/invoices/new`} className="text-indigo-600 hover:underline">Skapa din första</Link>
+                <Link href={`/${orgSlug}/invoices/new`} className="text-indigo-600 dark:text-indigo-400 hover:underline">Skapa din första</Link>
               </p>
             ) : (
               <table className="w-full text-sm">
                 <tbody>
                   {recentInvoices.map((inv) => (
-                    <tr key={inv.id} className="border-t border-gray-50 hover:bg-gray-50">
+                    <tr key={inv.id} className="border-t border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                       <td className="px-6 py-3">
-                        <Link href={`/${orgSlug}/invoices/${inv.id}`} className="font-medium text-gray-900 hover:text-indigo-600">
+                        <Link href={`/${orgSlug}/invoices/${inv.id}`} className="font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400">
                           {inv.invoiceNumber}
                         </Link>
-                        <p className="text-xs text-gray-400">{inv.contact?.name ?? "—"}</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500">{inv.contact?.name ?? "—"}</p>
                       </td>
                       <td className="px-3 py-3 text-right">
                         <InvoiceStatusBadge status={inv.status} />
                       </td>
-                      <td className="px-6 py-3 text-right font-medium tabular-nums">
+                      <td className="px-6 py-3 text-right font-medium tabular-nums text-gray-900 dark:text-gray-100">
                         {formatMoney(inv.totalAmount)}
                       </td>
                     </tr>
@@ -104,12 +117,12 @@ export default async function DashboardPage({ params }: { params: Promise<{ orgS
               { label: "Bjud in teammedlem", href: `/${orgSlug}/team`,         desc: "Hantera ditt team" },
             ].map((a) => (
               <Link key={a.href} href={a.href}
-                className="flex items-center justify-between p-3 rounded-lg border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50 transition-colors group">
+                className="flex items-center justify-between p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors group">
                 <div>
-                  <p className="text-sm font-medium text-gray-900 group-hover:text-indigo-700">{a.label}</p>
-                  <p className="text-xs text-gray-400">{a.desc}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-indigo-700 dark:group-hover:text-indigo-400">{a.label}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">{a.desc}</p>
                 </div>
-                <span className="text-gray-300 group-hover:text-indigo-500">→</span>
+                <span className="text-gray-300 dark:text-gray-600 group-hover:text-indigo-500">→</span>
               </Link>
             ))}
           </CardContent>
@@ -125,13 +138,13 @@ function StatCard({ label, value, sub, color }: {
   return (
     <Card>
       <CardContent className="py-5">
-        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{label}</p>
+        <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{label}</p>
         <p className={`text-2xl font-bold mt-1 tabular-nums ${
-          color === "green" ? "text-green-600" :
-          color === "red"   ? "text-red-600" :
-          "text-gray-900"
+          color === "green" ? "text-green-600 dark:text-green-400" :
+          color === "red"   ? "text-red-600 dark:text-red-400" :
+          "text-gray-900 dark:text-gray-100"
         }`}>{value}</p>
-        <p className="text-xs text-gray-400 mt-0.5">{sub}</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{sub}</p>
       </CardContent>
     </Card>
   )
