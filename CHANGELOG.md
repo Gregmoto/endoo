@@ -7,8 +7,10 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-05-18
+
 ### Added
-- (kommande ändringar listas här tills nästa release)
+- **[BAS-seed expansion]** Utökar `src/lib/accounting/bas-seed.ts` från ~100 till 497 lövkonton (529 totalt inkl. grupper och klasser) i alla 8 kontokategorier (klass 1–8) — avskrivningskonton, EU-handel, personalförmåner, bokslutsdispositioner och skatter
 
 ## [0.3.0] - 2026-05-18
 
@@ -81,5 +83,7 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 - Added `SchemaVersion` model för att tracka Prisma-migrations
 - Added `User.lastSeenVersion String?` för att spåra senast sedd version
 
-[Unreleased]: https://github.com/Gregmoto/endoo/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Gregmoto/endoo/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/Gregmoto/endoo/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/Gregmoto/endoo/compare/v0.1.0...v0.3.0
 [0.1.0]: https://github.com/Gregmoto/endoo/releases/tag/v0.1.0
