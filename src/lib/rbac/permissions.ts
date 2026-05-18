@@ -215,6 +215,14 @@ export const EMAIL_PERMISSIONS = {
 } as const
 
 // ─────────────────────────────────────────────
+// SRU EXPORT PERMISSIONS
+// ─────────────────────────────────────────────
+export const SRU_EXPORT_PERMISSIONS = {
+  READ:     "accounting:sru:read",     // view SRU export history
+  GENERATE: "accounting:sru:generate", // generate new SRU export
+} as const
+
+// ─────────────────────────────────────────────
 // SIE IMPORT PERMISSIONS
 // ─────────────────────────────────────────────
 export const SIE_IMPORT_PERMISSIONS = {
@@ -272,6 +280,7 @@ export type Permission =
   | (typeof QUOTE_PERMISSIONS)[keyof typeof QUOTE_PERMISSIONS]
   | (typeof BRANDING_PERMISSIONS)[keyof typeof BRANDING_PERMISSIONS]
   | (typeof EMAIL_PERMISSIONS)[keyof typeof EMAIL_PERMISSIONS]
+  | (typeof SRU_EXPORT_PERMISSIONS)[keyof typeof SRU_EXPORT_PERMISSIONS]
   | (typeof SIE_IMPORT_PERMISSIONS)[keyof typeof SIE_IMPORT_PERMISSIONS]
   | (typeof ACCRUAL_PERMISSIONS)[keyof typeof ACCRUAL_PERMISSIONS]
   | (typeof FIXED_ASSET_PERMISSIONS)[keyof typeof FIXED_ASSET_PERMISSIONS]
@@ -296,6 +305,7 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(QUOTE_PERMISSIONS),
   ...Object.values(BRANDING_PERMISSIONS),
   ...Object.values(EMAIL_PERMISSIONS),
+  ...Object.values(SRU_EXPORT_PERMISSIONS),
   ...Object.values(SIE_IMPORT_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
   ...Object.values(FIXED_ASSET_PERMISSIONS),

@@ -7,6 +7,28 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-05-19
+
+### Added
+- **[SRU-export]** Prisma-modell `SruExport` med enums `SruExportType` (k2/k3/ink2) och `SruExportStatus` (draft/final) samt migration `20250519_sru_export`
+- **[SRU-export]** `src/lib/accounting/sru/types.ts` — typdefinitioner för SRU-dokument, fält och blanketter
+- **[SRU-export]** `src/lib/accounting/sru/bas-mapping.ts` — BAS-kontointervall → SRU-fältnummer för INK2R (resultaträkning) och INK2S (balansräkning) med OSÄKERHET-kommentarer på alla approximerade fältmappningar
+- **[SRU-export]** `src/lib/accounting/sru/format.ts` — `generateInfoSru()` och `generateBlankettSru()` — genererar INFO.SRU och BLANKETTER.SRU i Skatteverkets SRU-format; `normalizeOrgNumber()` normaliserar orgnr till 10 siffror utan bindestreck
+- **[SRU-export]** `src/lib/accounting/sru/ink2.ts` — `generateInk2Sru()`: hämtar kontobalanser för ett räkenskapsår och mappar till INK2R + INK2S blanketter
+- **[SRU-export]** `src/lib/accounting/sru/k2.ts` / `k3.ts` — wrappers för K2 (BFNAR 2016:10) och K3 (BFNAR 2012:1) med regelverk-specifika kommentarer
+- **[API]** `POST /api/accounting/sru/generate` — genererar SRU-export för ett räkenskapsår (typ: k2/k3/ink2), kräver feature `sru_export` (pro+)
+- **[API]** `GET /api/accounting/sru/[id]/download` — laddar ner SRU-exporten som ZIP-arkiv (INFO.SRU + BLANKETTER.SRU) utan externa ZIP-beroenden
+- **[API]** `GET /api/accounting/sru` — listar alla SRU-exporter för organisationen
+- **[UI]** SRU-exportsektion på `/year-end/[id]/download`-sidan: välj regelverk (K2/K3/INK2), generera, ladda ner ZIP; inkluderar ansvarsdisklaimer
+- **[UI]** Ny sida `/reports/sru-history` — lista alla genererade SRU-filer med status och nedladdningslänk
+- **[Sidebar]** "SRU-export" under Bokföring → Rapporter (feature-gated på `sru_export`)
+- **[RBAC]** `SRU_EXPORT_PERMISSIONS` (read/generate) — owner/admin/accountant: full access; staff/viewer: read-only
+- **[Plans]** Feature `sru_export` tillagd på pro och enterprise
+- **[Tests]** 15 enhetstester i `tests/accounting/sru-export.test.ts` — orgnr-normalisering, SRU-filgenerering, BAS-kontomappning, `generateInk2Sru` (saknat orgnr, rätt blanketter, taxYear)
+
+### Database
+- **[SRU-export]** Migration `20250519_sru_export`: skapar `sru_exports`-tabell med `SruExportType`- och `SruExportStatus`-enums, FK till räkenskapsår och användare; lägger till `sru_export_generate` till `AuditAction`-enum
+
 ## [0.13.0] - 2026-05-18
 
 ### Added

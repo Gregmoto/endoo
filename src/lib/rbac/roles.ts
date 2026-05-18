@@ -39,6 +39,7 @@ import {
   SIGNATURE_PERMISSIONS,
   QUOTE_PERMISSIONS,
   BRANDING_PERMISSIONS,
+  SRU_EXPORT_PERMISSIONS,
   SIE_IMPORT_PERMISSIONS,
   ACCRUAL_PERMISSIONS,
   FIXED_ASSET_PERMISSIONS,
@@ -79,6 +80,7 @@ const SUPER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(TASK_PERMISSIONS),
   ...Object.values(SIGNATURE_PERMISSIONS),
   ...Object.values(BRANDING_PERMISSIONS),
+  ...Object.values(SRU_EXPORT_PERMISSIONS),
   ...Object.values(SIE_IMPORT_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
   ...Object.values(FIXED_ASSET_PERMISSIONS),
@@ -159,8 +161,9 @@ const AGENCY_OWNER_PERMISSIONS: Permission[] = [
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
-  // SIE import — full access
+  // SIE import + SRU export — full access
   ...Object.values(SIE_IMPORT_PERMISSIONS),
+  ...Object.values(SRU_EXPORT_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -241,8 +244,9 @@ const AGENCY_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
-  // SIE import — full access
+  // SIE import + SRU export — full access
   ...Object.values(SIE_IMPORT_PERMISSIONS),
+  ...Object.values(SRU_EXPORT_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -305,6 +309,7 @@ const AGENCY_STAFF_PERMISSIONS: Permission[] = [
   DEPRECIATION_PERMISSIONS.POST,
   ACCRUAL_PERMISSIONS.READ,
   SIE_IMPORT_PERMISSIONS.READ,
+  SRU_EXPORT_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -327,6 +332,7 @@ const AGENCY_VIEWER_PERMISSIONS: Permission[] = [
   DEPRECIATION_PERMISSIONS.READ,
   ACCRUAL_PERMISSIONS.READ,
   SIE_IMPORT_PERMISSIONS.READ,
+  SRU_EXPORT_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -398,8 +404,9 @@ const CUSTOMER_OWNER_PERMISSIONS: Permission[] = [
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
-  // SIE import — full access
+  // SIE import + SRU export — full access
   ...Object.values(SIE_IMPORT_PERMISSIONS),
+  ...Object.values(SRU_EXPORT_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -467,8 +474,9 @@ const CUSTOMER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
-  // SIE import — full access
+  // SIE import + SRU export — full access
   ...Object.values(SIE_IMPORT_PERMISSIONS),
+  ...Object.values(SRU_EXPORT_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -529,6 +537,7 @@ const CUSTOMER_USER_PERMISSIONS: Permission[] = [
   DEPRECIATION_PERMISSIONS.POST,
   ACCRUAL_PERMISSIONS.READ,
   SIE_IMPORT_PERMISSIONS.READ,
+  SRU_EXPORT_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -550,6 +559,7 @@ const CUSTOMER_VIEWER_PERMISSIONS: Permission[] = [
   DEPRECIATION_PERMISSIONS.READ,
   ACCRUAL_PERMISSIONS.READ,
   SIE_IMPORT_PERMISSIONS.READ,
+  SRU_EXPORT_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────

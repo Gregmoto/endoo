@@ -29,6 +29,7 @@ export type PlanFeature =
   | "fixed_assets"
   | "accruals"
   | "data_import"
+  | "sru_export"
 
 export type PlanLimitKey =
   | "maxUsers"
@@ -117,6 +118,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "fixed_assets",
       "accruals",
       "data_import",
+      "sru_export",
     ],
   },
 
@@ -152,6 +154,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "fixed_assets",
       "accruals",
       "data_import",
+      "sru_export",
     ],
   },
 }

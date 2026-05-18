@@ -31,6 +31,7 @@ const NAV_GROUPS = [
       { label: "Kontoplan",       href: "/accounts",                                   icon: "▤" },
       { label: "Kontomappningar", href: "/settings/accounting/account-mappings",       icon: "◧" },
       { label: "Rapporter",       href: "/reports",                                    icon: "◧",  feature: "basic_reports" },
+      { label: "SRU-export",      href: "/reports/sru-history",                        icon: "◩",  feature: "sru_export" as const },
       { label: "Moms",            href: "/tax/vat",                                    icon: "◰",  feature: "vat_periods" },
       { label: "Analys",          href: "/analytics",                                  icon: "◎",  feature: "advanced_reports" },
       { label: "Årsavslut",              href: "/year-end",       icon: "◑" },

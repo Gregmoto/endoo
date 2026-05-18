@@ -169,6 +169,8 @@ enum AuditAction {
   // SIE import events
   sie_import_preview
   sie_import_execute
+  // SRU export events
+  sru_export_generate
 }
 
 // ─── ACCOUNTING ENUMS ─────────────────────────────────────────────────────────
@@ -555,6 +557,9 @@ model Organization {
   // SIE import
   sieImportJobs         SieImportJob[]
 
+  // SRU export
+  sruExports            SruExport[]
+
   // API platform
   apiKeys               ApiKey[]
   idempotencyKeys       IdempotencyKey[]
@@ -705,6 +710,7 @@ model User {
   // Integrations
   importFilesUploaded ImportFile[]           @relation("ImportFileUser")
   sieImportJobs       SieImportJob[]         @relation("SieImportJobUser")
+  generatedSruExports SruExport[]            @relation("SruExportUser")
 
   // Tasks
   tasksCreated     Task[]           @relation("TaskCreatedBy")
@@ -1409,6 +1415,7 @@ model FiscalYear {
   accountingPeriods AccountingPeriod[]
   closedBy          User?             @relation("FiscalYearClosedBy",   fields: [closedById],   references: [id])
   reopenedBy        User?             @relation("FiscalYearReopenedBy", fields: [reopenedById], references: [id])
+  sruExports        SruExport[]
 
   @@unique([organizationId, name])
   @@index([organizationId, status])
@@ -3680,6 +3687,45 @@ model SieImportJob {
   @@unique([organizationId, fileHash])
   @@index([organizationId, status])
   @@map("sie_import_jobs")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SRU EXPORT
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum SruExportType {
+  k2    // K2 (BFNAR 2016:10) accounting framework
+  k3    // K3 (BFNAR 2012:1) accounting framework
+  ink2  // INK2 corporate income tax declaration
+}
+
+enum SruExportStatus {
+  draft  // generated, not yet submitted to Skatteverket
+  final  // marked as submitted by user
+}
+
+model SruExport {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String          @db.Uuid
+  fiscalYearId   String          @db.Uuid
+
+  type           SruExportType
+  status         SruExportStatus @default(draft)
+
+  infoSru        String          @db.Text  // content of INFO.SRU
+  blankettSru    String          @db.Text  // content of BLANKETTER.SRU
+
+  generatedByUserId String?      @db.Uuid
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  organization  Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  fiscalYear    FiscalYear   @relation(fields: [fiscalYearId],   references: [id], onDelete: Restrict)
+  generatedBy   User?        @relation("SruExportUser", fields: [generatedByUserId], references: [id])
+
+  @@index([organizationId, fiscalYearId])
+  @@index([organizationId, status])
+  @@map("sru_exports")
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
