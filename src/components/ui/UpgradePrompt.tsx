@@ -32,6 +32,7 @@ const FEATURE_LABELS: Record<PlanFeature, string> = {
   customer_portal:       "Kundportal",
   fixed_assets:          "Anläggningstillgångar",
   accruals:              "Periodiseringar",
+  data_import:           "Dataimport",
 }
 
 interface Props {

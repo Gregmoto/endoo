@@ -39,6 +39,7 @@ import {
   SIGNATURE_PERMISSIONS,
   QUOTE_PERMISSIONS,
   BRANDING_PERMISSIONS,
+  SIE_IMPORT_PERMISSIONS,
   ACCRUAL_PERMISSIONS,
   FIXED_ASSET_PERMISSIONS,
   DEPRECIATION_PERMISSIONS,
@@ -78,6 +79,7 @@ const SUPER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(TASK_PERMISSIONS),
   ...Object.values(SIGNATURE_PERMISSIONS),
   ...Object.values(BRANDING_PERMISSIONS),
+  ...Object.values(SIE_IMPORT_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
@@ -133,6 +135,7 @@ const AGENCY_OWNER_PERMISSIONS: Permission[] = [
   ACCOUNTING_PERMISSIONS.MANAGE_ACCOUNTS,
   ACCOUNTING_PERMISSIONS.MANAGE_PERIODS,
   ACCOUNTING_PERMISSIONS.EXPORT,
+  ACCOUNTING_PERMISSIONS.IMPORT_SIE,
   ACCOUNTING_PERMISSIONS.YEAR_END_READ,
   ACCOUNTING_PERMISSIONS.YEAR_END_CLOSE,
   // Supplier invoices — full access (including approvals)
@@ -156,6 +159,8 @@ const AGENCY_OWNER_PERMISSIONS: Permission[] = [
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
+  // SIE import — full access
+  ...Object.values(SIE_IMPORT_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -206,6 +211,7 @@ const AGENCY_ADMIN_PERMISSIONS: Permission[] = [
   ACCOUNTING_PERMISSIONS.MANAGE_ACCOUNTS,
   ACCOUNTING_PERMISSIONS.MANAGE_PERIODS,
   ACCOUNTING_PERMISSIONS.EXPORT,
+  ACCOUNTING_PERMISSIONS.IMPORT_SIE,
   ACCOUNTING_PERMISSIONS.YEAR_END_READ,
   ACCOUNTING_PERMISSIONS.YEAR_END_CLOSE,
   // Supplier invoices — full access
@@ -235,6 +241,8 @@ const AGENCY_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
+  // SIE import — full access
+  ...Object.values(SIE_IMPORT_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -291,11 +299,12 @@ const AGENCY_STAFF_PERMISSIONS: Permission[] = [
   QUOTE_PERMISSIONS.CREATE,
   QUOTE_PERMISSIONS.UPDATE,
   QUOTE_PERMISSIONS.SEND,
-  // Fixed assets + accruals — read
+  // Fixed assets + accruals — read; SIE import — read
   FIXED_ASSET_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.POST,
   ACCRUAL_PERMISSIONS.READ,
+  SIE_IMPORT_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -317,6 +326,7 @@ const AGENCY_VIEWER_PERMISSIONS: Permission[] = [
   FIXED_ASSET_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.READ,
   ACCRUAL_PERMISSIONS.READ,
+  SIE_IMPORT_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -369,6 +379,7 @@ const CUSTOMER_OWNER_PERMISSIONS: Permission[] = [
   ACCOUNTING_PERMISSIONS.MANAGE_ACCOUNTS,
   ACCOUNTING_PERMISSIONS.MANAGE_PERIODS,
   ACCOUNTING_PERMISSIONS.EXPORT,
+  ACCOUNTING_PERMISSIONS.IMPORT_SIE,
   ACCOUNTING_PERMISSIONS.YEAR_END_READ,
   ACCOUNTING_PERMISSIONS.YEAR_END_CLOSE,
   // Supplier invoices — full access
@@ -387,6 +398,8 @@ const CUSTOMER_OWNER_PERMISSIONS: Permission[] = [
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
+  // SIE import — full access
+  ...Object.values(SIE_IMPORT_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -430,6 +443,7 @@ const CUSTOMER_ADMIN_PERMISSIONS: Permission[] = [
   ACCOUNTING_PERMISSIONS.POST,
   ACCOUNTING_PERMISSIONS.MANAGE_ACCOUNTS,
   ACCOUNTING_PERMISSIONS.EXPORT,
+  ACCOUNTING_PERMISSIONS.IMPORT_SIE,
   ACCOUNTING_PERMISSIONS.YEAR_END_READ,
   // Supplier invoices — full access (admins handle AP)
   ...Object.values(SUPPLIER_INVOICE_PERMISSIONS),
@@ -453,6 +467,8 @@ const CUSTOMER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
+  // SIE import — full access
+  ...Object.values(SIE_IMPORT_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -507,11 +523,12 @@ const CUSTOMER_USER_PERMISSIONS: Permission[] = [
   QUOTE_PERMISSIONS.CREATE,
   QUOTE_PERMISSIONS.UPDATE,
   QUOTE_PERMISSIONS.SEND,
-  // Fixed assets + accruals — read
+  // Fixed assets + accruals — read; SIE import — read
   FIXED_ASSET_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.POST,
   ACCRUAL_PERMISSIONS.READ,
+  SIE_IMPORT_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -532,6 +549,7 @@ const CUSTOMER_VIEWER_PERMISSIONS: Permission[] = [
   FIXED_ASSET_PERMISSIONS.READ,
   DEPRECIATION_PERMISSIONS.READ,
   ACCRUAL_PERMISSIONS.READ,
+  SIE_IMPORT_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────

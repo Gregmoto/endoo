@@ -28,6 +28,7 @@ export type PlanFeature =
   | "customer_portal"
   | "fixed_assets"
   | "accruals"
+  | "data_import"
 
 export type PlanLimitKey =
   | "maxUsers"
@@ -61,6 +62,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
     features: [
       "basic_reports",
       "quotes",
+      "data_import",
     ],
   },
 
@@ -82,6 +84,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "customer_portal",
       "inventory",
       "api_access",
+      "data_import",
     ],
   },
 
@@ -113,6 +116,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "webhooks_outgoing",
       "fixed_assets",
       "accruals",
+      "data_import",
     ],
   },
 
@@ -147,6 +151,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "time_tracking",
       "fixed_assets",
       "accruals",
+      "data_import",
     ],
   },
 }

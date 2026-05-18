@@ -112,6 +112,7 @@ export const ACCOUNTING_PERMISSIONS = {
   MANAGE_ACCOUNTS:   "accounting:manage_accounts",   // add/edit custom accounts, deactivate
   MANAGE_PERIODS:    "accounting:manage_periods",    // close fiscal years, lock VAT periods
   EXPORT:            "accounting:export",            // SIE4 export
+  IMPORT_SIE:        "accounting:import:sie",        // SIE 4i/4e import
   YEAR_END_READ:     "accounting:year_end:read",     // view year-end status and closing statements
   YEAR_END_CLOSE:    "accounting:year_end:close",    // execute year-end closing (all periods must be locked)
   YEAR_END_REOPEN:   "accounting:year_end:reopen",   // super_admin only: reopen a closed fiscal year
@@ -214,6 +215,14 @@ export const EMAIL_PERMISSIONS = {
 } as const
 
 // ─────────────────────────────────────────────
+// SIE IMPORT PERMISSIONS
+// ─────────────────────────────────────────────
+export const SIE_IMPORT_PERMISSIONS = {
+  READ:    "accounting:import:sie:read",    // view import jobs and history
+  EXECUTE: "accounting:import:sie",         // upload + execute imports
+} as const
+
+// ─────────────────────────────────────────────
 // ACCRUAL PERMISSIONS
 // ─────────────────────────────────────────────
 export const ACCRUAL_PERMISSIONS = {
@@ -263,6 +272,7 @@ export type Permission =
   | (typeof QUOTE_PERMISSIONS)[keyof typeof QUOTE_PERMISSIONS]
   | (typeof BRANDING_PERMISSIONS)[keyof typeof BRANDING_PERMISSIONS]
   | (typeof EMAIL_PERMISSIONS)[keyof typeof EMAIL_PERMISSIONS]
+  | (typeof SIE_IMPORT_PERMISSIONS)[keyof typeof SIE_IMPORT_PERMISSIONS]
   | (typeof ACCRUAL_PERMISSIONS)[keyof typeof ACCRUAL_PERMISSIONS]
   | (typeof FIXED_ASSET_PERMISSIONS)[keyof typeof FIXED_ASSET_PERMISSIONS]
   | (typeof DEPRECIATION_PERMISSIONS)[keyof typeof DEPRECIATION_PERMISSIONS]
@@ -286,6 +296,7 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(QUOTE_PERMISSIONS),
   ...Object.values(BRANDING_PERMISSIONS),
   ...Object.values(EMAIL_PERMISSIONS),
+  ...Object.values(SIE_IMPORT_PERMISSIONS),
   ...Object.values(ACCRUAL_PERMISSIONS),
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),

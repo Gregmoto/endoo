@@ -166,6 +166,9 @@ enum AuditAction {
   accrual_create
   accrual_post
   accrual_reverse
+  // SIE import events
+  sie_import_preview
+  sie_import_execute
 }
 
 // ─── ACCOUNTING ENUMS ─────────────────────────────────────────────────────────
@@ -549,6 +552,9 @@ model Organization {
   accruals              Accrual[]
   accrualPeriods        AccrualPeriod[]
 
+  // SIE import
+  sieImportJobs         SieImportJob[]
+
   // API platform
   apiKeys               ApiKey[]
   idempotencyKeys       IdempotencyKey[]
@@ -698,6 +704,7 @@ model User {
 
   // Integrations
   importFilesUploaded ImportFile[]           @relation("ImportFileUser")
+  sieImportJobs       SieImportJob[]         @relation("SieImportJobUser")
 
   // Tasks
   tasksCreated     Task[]           @relation("TaskCreatedBy")
@@ -3630,6 +3637,49 @@ model AccrualPeriod {
   @@index([organizationId, period, status])
   @@index([accrualId])
   @@map("accrual_periods")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SIE IMPORT
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum SieImportStatus {
+  pending     // file uploaded, not yet parsed
+  previewed   // dry-run complete, awaiting confirmation
+  importing   // executing import
+  completed   // import done
+  failed      // errored
+}
+
+model SieImportJob {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String          @db.Uuid
+
+  fileName    String
+  fileSize    Int               // bytes
+  fileHash    String            // SHA-256 for dedup
+  charset     String            @default("CP437")
+  sieType     Int?              // 4 (4i) or 4 (4e) — from #SIETYP
+  rawContent  String            @db.Text  // base64-encoded file content
+
+  status      SieImportStatus   @default(pending)
+  previewData Json?             // ParsedSiePreview
+  importOptions Json?           // ImportSieOptions used
+  importResult  Json?           // ImportSieResult
+
+  errorMessage     String?      @db.Text
+  importedByUserId String?      @db.Uuid
+  startedAt        DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  importedBy   User?        @relation("SieImportJobUser", fields: [importedByUserId], references: [id])
+
+  @@unique([organizationId, fileHash])
+  @@index([organizationId, status])
+  @@map("sie_import_jobs")
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

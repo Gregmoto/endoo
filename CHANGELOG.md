@@ -7,6 +7,25 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-05-18
+
+### Added
+- **[SIE-import]** Prisma-modell `SieImportJob` med enum `SieImportStatus` (pending/previewed/importing/completed/failed) samt migration `20250518_sie_import`
+- **[SIE-import]** `src/lib/accounting/sie/parser.ts` — robust SIE 4i/4e-parser: CP437-avkodning, alla standardlabels (#VER, #TRANS, #KONTO, #IB, #UB, #RAR m.fl.), validering av dubbelbokning per VER med radnummer i felmeddelanden
+- **[SIE-import]** `src/lib/accounting/sie/importer.ts` — `previewSieImport()` (dry-run diff) och `executeSieImport()`: kontouppslag/skapande, räkenskapsårsresolvering, hopp över stängda år, skippa dubbletter, per-verifikat felhantering
+- **[API]** `POST /api/accounting/sie/import` — ladda upp SIE-fil, parsning + dry-run, sparar importjobb
+- **[API]** `POST /api/accounting/sie/import/[id]/preview` — kör om dry-run med uppdaterade inställningar (kontomappning, serie, etc.)
+- **[API]** `POST /api/accounting/sie/import/[id]/execute` — exekverar importen (idempotent, 409 om redan klar)
+- **[API]** `GET /api/accounting/sie/import/[id]/status` — hämtar status och resultat för importjobb
+- **[UI]** 5-stegs importguide på `/settings/import/sie`: (1) filuppladdning + charset, (2) parsningsresultat + verifikatförhandsgranskning, (3) kontomappning med diff-vy, (4) bekräftelseformulär med importinställningar, (5) resultat
+- **[UI]** Inställningar → "Importera data" → "SIE-import" i inställningsnavigeringen
+- **[RBAC]** `SIE_IMPORT_PERMISSIONS` (read/execute) + `ACCOUNTING_PERMISSIONS.IMPORT_SIE` — owner/admin: full access; staff/viewer: read-only
+- **[Plans]** Feature `data_import` tillagd på alla planer (free och uppåt)
+- **[Tests]** 15 enhetstester i `tests/accounting/sie-import.test.ts` — parser (CP437, obalans, objeklista), importer (dry-run, stängt år, duplikat, saknade konton, per-verifikat felhantering, tenant-isolation)
+
+### Database
+- **[SIE-import]** Migration `20250518_sie_import`: skapar `sie_import_jobs`-tabell med `SieImportStatus`-enum, unik index på `organizationId + fileHash`, FK till organisations och användare
+
 ## [0.12.0] - 2026-05-18
 
 ### Added

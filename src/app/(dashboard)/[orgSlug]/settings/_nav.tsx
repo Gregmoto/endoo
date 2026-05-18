@@ -24,6 +24,12 @@ const NAV_SECTIONS = [
     ],
   },
   {
+    label: "Importera data",
+    items: [
+      { href: "import/sie", label: "SIE-import" },
+    ],
+  },
+  {
     label: "Utvecklare",
     items: [
       { href: "api", label: "API-nycklar" },
