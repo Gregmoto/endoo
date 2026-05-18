@@ -1,3 +1,5 @@
+export const runtime = "nodejs"
+
 /**
  * GET /api/portal/[orgSlug]/quotes/[id]/pdf
  * Stream the quote PDF for the authenticated contact.

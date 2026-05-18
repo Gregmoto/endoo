@@ -537,7 +537,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── AI section ──────────────────────────────────────────────────────── */}
-      <section id="ai" className="py-28 px-6 bg-gradient-to-b from-white to-indigo-50/40">
+      <section id="ai" className="py-28 px-6 bg-card">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <div className="rounded-2xl bg-card border border shadow-xl shadow-muted overflow-hidden order-last lg:order-first">
             <div className="flex items-center gap-3 px-5 py-4 border-b border">

@@ -1,3 +1,5 @@
+export const runtime = "nodejs"
+
 /**
  * GET /api/quotes/[id]/pdf — generate and stream quote PDF
  */

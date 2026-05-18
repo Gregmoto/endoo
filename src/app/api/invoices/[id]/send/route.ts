@@ -1,3 +1,5 @@
+export const runtime = "nodejs"
+
 /**
  * POST /api/invoices/[id]/send
  *

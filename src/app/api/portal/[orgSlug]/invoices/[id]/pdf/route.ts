@@ -1,3 +1,5 @@
+export const runtime = "nodejs"
+
 /**
  * GET /api/portal/[orgSlug]/invoices/[id]/pdf
  * Stream the invoice PDF for the authenticated contact.

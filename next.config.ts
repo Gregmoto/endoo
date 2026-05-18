@@ -24,9 +24,12 @@ const config: NextConfig = {
     return []
   },
 
-  // Bundle only what we use from heavy packages
+  // @react-pdf/renderer uses Node.js canvas internals — must NOT be bundled by webpack
+  serverExternalPackages: ["@react-pdf/renderer"],
+
+  // Bundle only what we use from heavy packages (client-side)
   experimental: {
-    optimizePackageImports: ["@react-pdf/renderer"],
+    optimizePackageImports: [],
   },
 }
 

@@ -7,6 +7,12 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.10.1] - 2026-05-18
+
+### Fixed
+- **[PDF]** `@react-pdf/renderer` kraschar på Vercel — lagt till `serverExternalPackages: ["@react-pdf/renderer"]` i next.config.ts och `export const runtime = "nodejs"` på alla PDF-routes (invoice, quote, portal-invoice, portal-quote, send)
+- **[Design]** AI-sektionen på landningssidan använde `from-white to-indigo-50/40` (hårdkodad vit) — i dark mode skapade det vit bakgrund med ljus text = oläsbart. Ersatt med `bg-card` som fungerar i båda lägen
+
 ## [0.10.0] - 2026-05-18
 
 ### Added

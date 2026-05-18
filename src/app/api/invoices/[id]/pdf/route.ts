@@ -5,6 +5,8 @@
  * Requires invoices:read permission.
  */
 
+export const runtime = "nodejs"
+
 import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/rbac/guards"
 import { canOrThrow } from "@/lib/rbac/policy"
