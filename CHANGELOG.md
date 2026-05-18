@@ -10,6 +10,18 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 ### Added
 - (kommande ändringar listas här tills nästa release)
 
+## [0.3.0] - 2026-05-18
+
+### Added
+- **BAS 2026** — kontoplan expanderad från ~100 till ~300 konton (alla 8 kontokategorier)
+- `POST /api/accounting/accounts/seed-bas` — importera/reimportera BAS-kontoplan i efterhand (idempotent)
+- `GET /api/settings/account-mappings` — hämta kontomappningar (slot-overrides) per org
+- `PUT /api/settings/account-mappings` — spara kontomappningar med kontonummervalidering
+- `settings/accounting/account-mappings` — ny inställningssida med combobox-sökare per transaktionstyp
+- "Kontomappningar" länk i sidomenyn under Bokföring
+- "Importera BAS 2026"-knapp på kontoplansidan
+- Tom kontoplan visar stor import-CTA istället för tom lista
+
 ## [0.2.1] - 2026-05-18
 
 ### Fixed

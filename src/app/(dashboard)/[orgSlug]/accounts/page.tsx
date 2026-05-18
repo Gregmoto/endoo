@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { Button } from "@/components/ui/button"
 
 type AccountItem = {
   id:           string
@@ -42,6 +43,8 @@ export default function AccountsPage() {
   const [loading,   setLoading]   = useState(true)
   const [search,    setSearch]    = useState("")
   const [typeFilter, setTypeFilter] = useState("")
+  const [seeding,   setSeeding]   = useState(false)
+  const [seedMsg,   setSeedMsg]   = useState<string | null>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -52,6 +55,25 @@ export default function AccountsPage() {
     }
     setLoading(false)
   }, [])
+
+  async function importBas() {
+    setSeeding(true)
+    setSeedMsg(null)
+    const res = await fetch("/api/accounting/accounts/seed-bas", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ confirm: true }),
+    })
+    if (res.ok) {
+      const d = await res.json()
+      setSeedMsg(d.message ?? "Importerad")
+      await load()
+    } else {
+      const d = await res.json()
+      setSeedMsg(d.error ?? "Fel vid import")
+    }
+    setSeeding(false)
+  }
 
   useEffect(() => { load() }, [load])
 
@@ -73,10 +95,23 @@ export default function AccountsPage() {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Kontoplan</h1>
-          <p className="text-sm text-gray-500 mt-0.5">BAS 2024 · {totalActive} aktiva konton</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Kontoplan</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">BAS 2026 · {totalActive} aktiva konton</p>
         </div>
+        <Button variant="outline" size="sm" onClick={importBas} loading={seeding}>
+          Importera BAS 2026
+        </Button>
       </div>
+
+      {seedMsg && (
+        <div className={`mb-4 px-4 py-3 text-sm rounded-lg border ${
+          seedMsg.includes("Fel") || seedMsg.includes("saknas")
+            ? "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800"
+            : "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800"
+        }`}>
+          {seedMsg}
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-6">
@@ -101,6 +136,20 @@ export default function AccountsPage() {
 
       {loading ? (
         <div className="py-16 text-center text-sm text-gray-400">Laddar kontoplan…</div>
+      ) : totalActive === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 gap-5 text-center">
+          <div className="size-16 rounded-full bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500 text-3xl">▤</div>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Ingen kontoplan ännu</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 max-w-sm">
+              Importera BAS 2026-kontoplanen för att komma igång med bokföring.
+              Du kan anpassa den efter import.
+            </p>
+          </div>
+          <Button onClick={importBas} loading={seeding} className="mt-2">
+            Importera BAS 2026 kontoplan
+          </Button>
+        </div>
       ) : (
         <div className="space-y-6">
           {filtered.map(section => (

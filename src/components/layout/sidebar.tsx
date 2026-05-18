@@ -27,11 +27,12 @@ const NAV_GROUPS = [
   {
     label: "Bokföring",
     items: [
-      { label: "Verifikat",      href: "/journals",          icon: "◱" },
-      { label: "Kontoplan",      href: "/accounts",          icon: "▤" },
-      { label: "Rapporter",      href: "/reports",           icon: "◧",  feature: "basic_reports" },
-      { label: "Moms",           href: "/tax/vat",           icon: "◰",  feature: "vat_periods" },
-      { label: "Analys",         href: "/analytics",         icon: "◎",  feature: "advanced_reports" },
+      { label: "Verifikat",       href: "/journals",                                   icon: "◱" },
+      { label: "Kontoplan",       href: "/accounts",                                   icon: "▤" },
+      { label: "Kontomappningar", href: "/settings/accounting/account-mappings",       icon: "◧" },
+      { label: "Rapporter",       href: "/reports",                                    icon: "◧",  feature: "basic_reports" },
+      { label: "Moms",            href: "/tax/vat",                                    icon: "◰",  feature: "vat_periods" },
+      { label: "Analys",          href: "/analytics",                                  icon: "◎",  feature: "advanced_reports" },
     ],
   },
   {
