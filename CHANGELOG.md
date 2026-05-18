@@ -7,6 +7,28 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-05-18
+
+### Added
+- **[Årsavslut]** `src/lib/accounting/year-end/close.ts` — orchestrator `closeFiscalYear()`: validering, omföring (klass 3–8 → 2099), IB-verifikat för nästa räkenskapsår, SHA-256 bokslutsHash och oföränderliga JSON-snapshots av balans- och resultaträkning
+- **[Årsavslut]** `src/lib/accounting/year-end/reopen.ts` — `reopenFiscalYear()`: makulerar omförings- och IB-verifikat, återställer perioder till "locked", rensar stängningsmetadata; kräver `super_admin`
+- **[API]** `POST /api/accounting/fiscal-years/[id]/year-end/validate` — kör förvalidering utan att ändra data
+- **[API]** `POST /api/accounting/fiscal-years/[id]/year-end/close` — genomför årsavslut (kräver `accounting:year_end:close`)
+- **[API]** `POST /api/accounting/fiscal-years/[id]/year-end/reopen` — återöppnar avslutat år (`super_admin` only)
+- **[API]** `GET /api/accounting/fiscal-years/[id]/year-end/closing-statements` — hämtar oföränderliga snapshots från stängningstillfället
+- **[API]** `GET /api/accounting/fiscal-years` — listar alla räkenskapsår för organisationen
+- **[Frontend]** `/(dashboard)/[orgSlug]/year-end/page.tsx` — översiktssida med status per räkenskapsår
+- **[Frontend]** `/(dashboard)/[orgSlug]/year-end/[id]/wizard/page.tsx` — 5-stegs guide: validering → omföringsförhandsvisning → IB-förhandsvisning → bekräftelse → klart
+- **[Frontend]** `/(dashboard)/[orgSlug]/year-end/[id]/download/page.tsx` — bokslutspaket med balans- och resultaträkning + integritetshash
+- **[Sidebar]** "Årsavslut" tillagt under Bokföring-sektionen
+- **[RBAC]** `ACCOUNTING_PERMISSIONS.YEAR_END_READ/CLOSE/REOPEN` — nya rättigheter; owner + admin + staff + viewer tilldelas rätt nivå
+
+### Database
+- **[Migration]** `20250518_fiscal_year_closing`: nio nya kolumner på `fiscal_years` — `closing_journal_id`, `opening_journal_id`, `closing_hash`, `closed_at`, `closed_by_id`, `reopened_at`, `reopened_by_id`, `closed_balance_sheet_snapshot` (JSONB), `closed_income_statement_snapshot` (JSONB)
+
+### Added (Tests)
+- **[Tester]** `tests/accounting/year-end.test.ts` — 8 testfall: valideringsblockering, balanserat omföringsverifikat, tenant-isolering, reopen-logik, snapshot-oföränderlighet
+
 ## [0.9.0] - 2026-05-18
 
 ### Changed

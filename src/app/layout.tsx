@@ -1,12 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme/ThemeProvider"
-import dynamic from "next/dynamic"
-
-const CookieBanner = dynamic(
-  () => import("@/components/ui/CookieBanner").then(m => m.CookieBanner),
-  { ssr: false }
-)
+import { CookieBannerLazy } from "@/components/ui/CookieBannerLazy"
 
 export const viewport: Viewport = {
   width:        "device-width",
@@ -74,7 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ThemeProvider>
           {children}
-          <CookieBanner />
+          <CookieBannerLazy />
         </ThemeProvider>
       </body>
     </html>

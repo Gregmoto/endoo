@@ -107,11 +107,14 @@ export const CONTRACT_PERMISSIONS = {
 // ACCOUNTING PERMISSIONS
 // ─────────────────────────────────────────────
 export const ACCOUNTING_PERMISSIONS = {
-  READ:            "accounting:read",            // view ledger, reports, chart of accounts
-  POST:            "accounting:post",            // post and void journal entries
-  MANAGE_ACCOUNTS: "accounting:manage_accounts", // add/edit custom accounts, deactivate
-  MANAGE_PERIODS:  "accounting:manage_periods",  // close fiscal years, lock VAT periods
-  EXPORT:          "accounting:export",          // SIE4 export
+  READ:              "accounting:read",              // view ledger, reports, chart of accounts
+  POST:              "accounting:post",              // post and void journal entries
+  MANAGE_ACCOUNTS:   "accounting:manage_accounts",   // add/edit custom accounts, deactivate
+  MANAGE_PERIODS:    "accounting:manage_periods",    // close fiscal years, lock VAT periods
+  EXPORT:            "accounting:export",            // SIE4 export
+  YEAR_END_READ:     "accounting:year_end:read",     // view year-end status and closing statements
+  YEAR_END_CLOSE:    "accounting:year_end:close",    // execute year-end closing (all periods must be locked)
+  YEAR_END_REOPEN:   "accounting:year_end:reopen",   // super_admin only: reopen a closed fiscal year
 } as const
 
 // ─────────────────────────────────────────────

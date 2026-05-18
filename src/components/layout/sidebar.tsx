@@ -33,6 +33,7 @@ const NAV_GROUPS = [
       { label: "Rapporter",       href: "/reports",                                    icon: "◧",  feature: "basic_reports" },
       { label: "Moms",            href: "/tax/vat",                                    icon: "◰",  feature: "vat_periods" },
       { label: "Analys",          href: "/analytics",                                  icon: "◎",  feature: "advanced_reports" },
+      { label: "Årsavslut",       href: "/year-end",                                   icon: "◑" },
     ],
   },
   {

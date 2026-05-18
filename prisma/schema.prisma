@@ -672,6 +672,8 @@ model User {
   periodsLocked       AccountingPeriod[]     @relation("PeriodLockedBy")
   periodsClosed       AccountingPeriod[]     @relation("PeriodClosedBy")
   periodEvents        AccountingPeriodEvent[] @relation("PeriodEventUser")
+  fiscalYearsClosed   FiscalYear[]           @relation("FiscalYearClosedBy")
+  fiscalYearsReopened FiscalYear[]           @relation("FiscalYearReopenedBy")
 
   // Dimensions
   dimensionsOwned     Dimension[]            @relation("DimensionOwner")
@@ -1362,12 +1364,27 @@ model FiscalYear {
   status         FiscalYearStatus @default(open)
   isDefault      Boolean          @default(false)
 
+  // Year-end closing fields (populated by closeFiscalYear)
+  closingJournalId  String?  @db.Uuid  // FK to the resultatdisposition journal (3xxx-8xxx→2099)
+  openingJournalId  String?  @db.Uuid  // FK to the IB journal for the next fiscal year
+  closingHash       String?            // SHA-256 of the immutable snapshot payload
+  closedAt          DateTime?
+  closedById        String?  @db.Uuid
+  reopenedAt        DateTime?
+  reopenedById      String?  @db.Uuid
+
+  // Immutable snapshots stored at closing time (JSON)
+  closedBalanceSheetSnapshot   Json?    // AccountSnapshot[] for balance-sheet accounts
+  closedIncomeStatementSnapshot Json?   // AccountSnapshot[] for income-statement accounts
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   organization      Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   journals          Journal[]
   accountingPeriods AccountingPeriod[]
+  closedBy          User?             @relation("FiscalYearClosedBy",   fields: [closedById],   references: [id])
+  reopenedBy        User?             @relation("FiscalYearReopenedBy", fields: [reopenedById], references: [id])
 
   @@unique([organizationId, name])
   @@index([organizationId, status])
