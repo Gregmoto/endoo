@@ -75,7 +75,7 @@ export default function SigningPage() {
   if (state === "loading") {
     return (
       <Shell>
-        <div className="flex items-center justify-center py-24 text-gray-400 text-sm">Laddar…</div>
+        <div className="flex items-center justify-center py-24 text-muted-foreground text-sm">Laddar…</div>
       </Shell>
     )
   }
@@ -87,8 +87,8 @@ export default function SigningPage() {
       <Shell>
         <div className="flex flex-col items-center py-16 text-center px-6">
           <span className="text-4xl mb-4">⚠️</span>
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">Länken är ogiltig</h2>
-          <p className="text-sm text-gray-500 max-w-xs">{error ?? "Denna signeringslänk är ogiltig eller har löpt ut."}</p>
+          <h2 className="text-lg font-semibold text-foreground mb-2">Länken är ogiltig</h2>
+          <p className="text-sm text-muted-foreground max-w-xs">{error ?? "Denna signeringslänk är ogiltig eller har löpt ut."}</p>
         </div>
       </Shell>
     )
@@ -148,15 +148,15 @@ export default function SigningPage() {
 
         {/* Progress */}
         {ctx.totalSigners > 1 && (
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-muted-foreground">
             {ctx.signedCount} av {ctx.totalSigners} signerare klara
           </div>
         )}
 
         {/* PDF viewer */}
         {ctx.documentSnapshotUrl && (
-          <div className="rounded-lg border border-gray-200 overflow-hidden">
-            <div className="bg-gray-50 border-b border-gray-200 px-3 py-2 text-xs text-gray-500 font-medium">
+          <div className="rounded-lg border border overflow-hidden">
+            <div className="bg-muted border-b border px-3 py-2 text-xs text-muted-foreground font-medium">
               Dokument att signera
             </div>
             <iframe
@@ -169,7 +169,7 @@ export default function SigningPage() {
         )}
 
         {!ctx.documentSnapshotUrl && (
-          <div className="rounded-lg border border-dashed border-gray-300 px-6 py-8 text-center text-sm text-gray-400">
+          <div className="rounded-lg border border-dashed border px-6 py-8 text-center text-sm text-muted-foreground">
             Dokumentet är bifogat i e-postinbjudan.<br />Granska det innan du signerar.
           </div>
         )}
@@ -179,7 +179,7 @@ export default function SigningPage() {
           <>
             {/* Signature */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-foreground">
                 Din signatur — skriv ditt fullständiga namn
               </label>
               <input
@@ -198,9 +198,9 @@ export default function SigningPage() {
                 type="checkbox"
                 checked={agreed}
                 onChange={e => setAgreed(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                className="mt-0.5 h-4 w-4 rounded border text-indigo-600 focus:ring-indigo-500"
               />
-              <span className="text-sm text-gray-700 leading-relaxed">
+              <span className="text-sm text-foreground leading-relaxed">
                 Jag har läst och förstår dokumentet ovan och godkänner det med denna elektroniska signatur.
               </span>
             </label>
@@ -216,7 +216,7 @@ export default function SigningPage() {
               </button>
               <button
                 onClick={() => setDeclining(true)}
-                className="px-4 py-3 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+                className="px-4 py-3 rounded-lg border border text-sm text-muted-foreground hover:bg-muted transition-colors"
               >
                 Avböj
               </button>
@@ -225,7 +225,7 @@ export default function SigningPage() {
             {error && <p className="text-sm text-red-600">{error}</p>}
 
             {/* Legal notice */}
-            <p className="text-xs text-gray-400 leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               Giltigt till <strong>{expiry}</strong>. Genom att signera godkänner du att din e-postadress ({ctx.signerEmail}) och
               IP-adress registreras som del av signeringsprocessen i enlighet med eIDAS (EU 910/2014).
             </p>
@@ -237,7 +237,7 @@ export default function SigningPage() {
               Du håller på att avböja att signera detta dokument. Avsändaren meddelas.
             </div>
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">Anledning (valfri)</label>
+              <label className="block text-sm font-medium text-foreground">Anledning (valfri)</label>
               <textarea
                 className={`${CLS} min-h-[80px] resize-none`}
                 placeholder="Berätta gärna varför du avböjer…"
@@ -256,7 +256,7 @@ export default function SigningPage() {
               </button>
               <button
                 onClick={() => setDeclining(false)}
-                className="text-sm text-gray-500 hover:text-gray-700 px-3 py-2.5"
+                className="text-sm text-muted-foreground hover:text-foreground px-3 py-2.5"
               >
                 Tillbaka
               </button>
@@ -272,11 +272,11 @@ export default function SigningPage() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-start justify-center pt-8 pb-16 px-4">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+    <div className="min-h-screen bg-muted flex items-start justify-center pt-8 pb-16 px-4">
+      <div className="w-full max-w-lg bg-card rounded-2xl shadow-lg overflow-hidden border border">
         {children}
-        <div className="px-6 py-4 border-t border-gray-50 text-center">
-          <p className="text-xs text-gray-300">Säker e-signering via <span className="font-semibold text-gray-400">Endoo</span></p>
+        <div className="px-6 py-4 border-t border-border/50 text-center">
+          <p className="text-xs text-gray-300">Säker e-signering via <span className="font-semibold text-muted-foreground">Endoo</span></p>
         </div>
       </div>
     </div>
@@ -297,8 +297,8 @@ function SuccessScreen({
       <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-5 ${bg}`}>
         {icon}
       </div>
-      <h2 className="text-xl font-bold text-gray-900 mb-2">{title}</h2>
-      <p className="text-sm text-gray-500 max-w-xs">{subtitle}</p>
+      <h2 className="text-xl font-bold text-foreground mb-2">{title}</h2>
+      <p className="text-sm text-muted-foreground max-w-xs">{subtitle}</p>
     </div>
   )
 }

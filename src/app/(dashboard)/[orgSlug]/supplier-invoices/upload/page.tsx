@@ -54,12 +54,12 @@ export default function UploadSupplierInvoicePage() {
       <div className="mb-6">
         <Link
           href={`/${orgSlug}/supplier-invoices`}
-          className="text-sm text-gray-500 hover:text-gray-700"
+          className="text-sm text-muted-foreground hover:text-foreground"
         >
           ← Tillbaka
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900 mt-2">Ladda upp leverantörsfaktura</h1>
-        <p className="text-sm text-gray-500 mt-1">PDF eller bild — AI analyserar fakturan automatiskt</p>
+        <h1 className="text-2xl font-bold text-foreground mt-2">Ladda upp leverantörsfaktura</h1>
+        <p className="text-sm text-muted-foreground mt-1">PDF eller bild — AI analyserar fakturan automatiskt</p>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -74,7 +74,7 @@ export default function UploadSupplierInvoicePage() {
               ? "border-indigo-400 bg-indigo-50"
               : file
               ? "border-green-400 bg-green-50"
-              : "border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-white"
+              : "border hover:border bg-muted hover:bg-accent"
           }`}
         >
           <input
@@ -88,8 +88,8 @@ export default function UploadSupplierInvoicePage() {
           {file ? (
             <>
               <span className="text-3xl">📄</span>
-              <p className="text-sm font-medium text-gray-900">{file.name}</p>
-              <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(0)} KB</p>
+              <p className="text-sm font-medium text-foreground">{file.name}</p>
+              <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(0)} KB</p>
               <button
                 type="button"
                 onClick={e => { e.stopPropagation(); setFile(null) }}
@@ -101,10 +101,10 @@ export default function UploadSupplierInvoicePage() {
           ) : (
             <>
               <span className="text-4xl">☁</span>
-              <p className="text-sm font-medium text-gray-700">
+              <p className="text-sm font-medium text-foreground">
                 Dra och släpp, eller <span className="text-indigo-600">välj fil</span>
               </p>
-              <p className="text-xs text-gray-400">PDF, JPG, PNG, WebP — max 10 MB</p>
+              <p className="text-xs text-muted-foreground">PDF, JPG, PNG, WebP — max 10 MB</p>
             </>
           )}
         </div>

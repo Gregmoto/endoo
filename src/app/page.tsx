@@ -326,22 +326,22 @@ export default async function HomePage() {
   const session = await auth()
   const orgSlug = (session as { activeOrgSlug?: string } | null)?.activeOrgSlug
   return (
-    <main className="min-h-screen bg-white text-gray-900">
+    <main className="min-h-screen bg-card text-foreground">
 
       {/* ── Nav ─────────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-100">
+      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur border-b border">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-sm font-black leading-none">E</span>
             </div>
-            <span className="text-lg font-extrabold text-gray-900 tracking-tight">endoo</span>
+            <span className="text-lg font-extrabold text-foreground tracking-tight">endoo</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-gray-600">
-            <Link href="/funktioner"  className="hover:text-gray-900 transition-colors">Funktioner</Link>
-            <Link href="/byra"        className="hover:text-gray-900 transition-colors">För byråer</Link>
-            <Link href="/artiklar"    className="hover:text-gray-900 transition-colors">Artiklar</Link>
-            <a    href="#priser"      className="hover:text-gray-900 transition-colors">Priser</a>
+          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-muted-foreground">
+            <Link href="/funktioner"  className="hover:text-foreground transition-colors">Funktioner</Link>
+            <Link href="/byra"        className="hover:text-foreground transition-colors">För byråer</Link>
+            <Link href="/artiklar"    className="hover:text-foreground transition-colors">Artiklar</Link>
+            <a    href="#priser"      className="hover:text-foreground transition-colors">Priser</a>
           </nav>
           <div className="flex items-center gap-3">
             {orgSlug ? (
@@ -353,7 +353,7 @@ export default async function HomePage() {
               </Link>
             ) : (
               <>
-                <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   Logga in
                 </Link>
                 <Link
@@ -370,26 +370,26 @@ export default async function HomePage() {
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden pt-24 pb-32 px-6">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-indigo-50/30 to-white -z-10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-muted via-indigo-50/30 to-card -z-10" />
         <div className="absolute top-0 right-0 w-[600px] h-[500px] bg-indigo-100/50 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/4" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-100/40 rounded-full blur-3xl -z-10 -translate-x-1/3 translate-y-1/4" />
 
         <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white border border-indigo-100 text-indigo-700 text-xs font-semibold rounded-full mb-10 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-card border border-indigo-100 text-indigo-700 text-xs font-semibold rounded-full mb-10 shadow-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             Nu i beta · Gratis att testa · Byggt i Sverige 🇸🇪
           </div>
 
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 leading-[1.05] tracking-tight mb-7">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-foreground leading-[1.05] tracking-tight mb-7">
             En modern ekonomi-<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
               plattform för alla.
             </span>
           </h1>
 
-          <p className="text-xl sm:text-2xl text-gray-500 leading-relaxed mb-12 max-w-3xl mx-auto font-light">
+          <p className="text-xl sm:text-2xl text-muted-foreground leading-relaxed mb-12 max-w-3xl mx-auto font-light">
             Fakturering, bokföring, offerter, kundportal och AI-assistans — samlat i ett modernt system byggt för svenska regler.{" "}
-            <span className="text-gray-700 font-medium">Äntligen ett alternativ till Fortnox och Visma som faktiskt känns 2025.</span>
+            <span className="text-foreground font-medium">Äntligen ett alternativ till Fortnox och Visma som faktiskt känns 2025.</span>
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -401,25 +401,25 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/funktioner"
-              className="w-full sm:w-auto px-9 py-4 bg-white border border-gray-200 text-gray-700 font-semibold rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all text-lg"
+              className="w-full sm:w-auto px-9 py-4 bg-card border border text-foreground font-semibold rounded-2xl hover:bg-muted hover:border transition-all text-lg"
             >
               Se alla funktioner
             </Link>
           </div>
 
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-muted-foreground">
             Inget kreditkort · Inga bindningstider · GDPR-säkert · Driftas i EU
           </p>
         </div>
       </section>
 
       {/* ── Stats bar ───────────────────────────────────────────────────────── */}
-      <section className="border-y border-gray-100 bg-white py-10">
+      <section className="border-y border bg-card py-10">
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {STATS.map(s => (
             <div key={s.label}>
               <p className="text-2xl sm:text-3xl font-black text-indigo-600 mb-1.5">{s.value}</p>
-              <p className="text-sm text-gray-500 leading-snug">{s.label}</p>
+              <p className="text-sm text-muted-foreground leading-snug">{s.label}</p>
             </div>
           ))}
         </div>
@@ -430,10 +430,10 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-4">Plattformen</p>
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5 leading-tight">
+            <h2 className="text-4xl sm:text-5xl font-black text-foreground mb-5 leading-tight">
               Allt ditt företag behöver.<br />Ingenting du inte behöver.
             </h2>
-            <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Endoo är ingen samling hopkopplade moduler — det är en plattform där fakturering, bokföring, offerter och rapporter pratar med varandra från dag ett.
             </p>
           </div>
@@ -443,18 +443,18 @@ export default async function HomePage() {
               <Link
                 key={f.title}
                 href={f.href}
-                className="group p-7 rounded-2xl border border-gray-100 bg-white hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-50 transition-all"
+                className="group p-7 rounded-2xl border border bg-card hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-50 transition-all"
               >
                 <div className="flex items-start justify-between mb-5">
                   <div className="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-xl font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all">
                     {f.icon}
                   </div>
-                  <span className="text-xs font-semibold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-semibold bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
                     {f.tag}
                   </span>
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2.5 text-lg leading-snug">{f.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{f.description}</p>
+                <h3 className="font-bold text-foreground mb-2.5 text-lg leading-snug">{f.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{f.description}</p>
               </Link>
             ))}
           </div>
@@ -475,14 +475,14 @@ export default async function HomePage() {
             <h2 className="text-4xl sm:text-5xl font-black text-white leading-tight mb-6">
               Riktig bokföring.<br />Inte ett kalkylblad.
             </h2>
-            <p className="text-slate-300 text-lg leading-relaxed mb-10">
+            <p className="text-muted-foreground text-lg leading-relaxed mb-10">
               Endoo har komplett dubbelbokhållning — inte ett förenklat kassaflöde. BAS 2024-kontoplanen är förinladdad och klar. Bokföringen uppdateras automatiskt när du fakturerar, registrerar en betalning eller godkänner en leverantörsfaktura.
             </p>
             <ul className="space-y-3.5 mb-10">
               {ACCOUNTING_BULLETS.map(b => (
                 <li key={b.text} className="flex items-start gap-3">
                   <span className="text-indigo-400 text-sm mt-0.5 flex-shrink-0">{b.icon}</span>
-                  <span className="text-slate-300 text-sm leading-relaxed">{b.text}</span>
+                  <span className="text-muted-foreground text-sm leading-relaxed">{b.text}</span>
                 </li>
               ))}
             </ul>
@@ -495,7 +495,7 @@ export default async function HomePage() {
               </Link>
               <Link
                 href="/artiklar/vad-ar-bas-kontoplan"
-                className="inline-block px-7 py-3.5 border border-slate-600 text-slate-300 font-semibold rounded-xl hover:border-slate-400 transition-colors text-sm"
+                className="inline-block px-7 py-3.5 border border-slate-600 text-muted-foreground font-semibold rounded-xl hover:border-slate-400 transition-colors text-sm"
               >
                 Vad är BAS-kontoplan?
               </Link>
@@ -507,7 +507,7 @@ export default async function HomePage() {
               <div className="w-3 h-3 rounded-full bg-red-400/60" />
               <div className="w-3 h-3 rounded-full bg-yellow-400/60" />
               <div className="w-3 h-3 rounded-full bg-green-400/60" />
-              <span className="ml-3 text-xs text-slate-500 font-mono">Verifikat A-0042 · 2025-05-17</span>
+              <span className="ml-3 text-xs text-muted-foreground font-mono">Verifikat A-0042 · 2025-05-17</span>
             </div>
             <div className="p-6 font-mono text-sm space-y-2">
               {[
@@ -517,14 +517,14 @@ export default async function HomePage() {
               ].map(row => (
                 <div key={row.acc} className="flex items-center gap-4">
                   <span className="text-indigo-400 w-12">{row.acc}</span>
-                  <span className="text-slate-400 flex-1 text-xs">{row.name}</span>
+                  <span className="text-muted-foreground flex-1 text-xs">{row.name}</span>
                   <span className={`w-16 text-right ${row.color}`}>{row.dr}</span>
                   <span className={`w-16 text-right ${row.color}`}>{row.cr}</span>
                 </div>
               ))}
               <div className="pt-3 border-t border-slate-700 flex items-center gap-4">
-                <span className="text-slate-600 w-12">—</span>
-                <span className="text-slate-600 flex-1 text-xs">Summa</span>
+                <span className="text-muted-foreground w-12">—</span>
+                <span className="text-muted-foreground flex-1 text-xs">Summa</span>
                 <span className="text-indigo-300 w-16 text-right font-bold">18 750</span>
                 <span className="text-indigo-300 w-16 text-right font-bold">18 750</span>
               </div>
@@ -539,18 +539,18 @@ export default async function HomePage() {
       {/* ── AI section ──────────────────────────────────────────────────────── */}
       <section id="ai" className="py-28 px-6 bg-gradient-to-b from-white to-indigo-50/40">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-          <div className="rounded-2xl bg-white border border-gray-100 shadow-xl shadow-gray-100 overflow-hidden order-last lg:order-first">
-            <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
+          <div className="rounded-2xl bg-card border border shadow-xl shadow-muted overflow-hidden order-last lg:order-first">
+            <div className="flex items-center gap-3 px-5 py-4 border-b border">
               <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
                 <span className="text-white text-xs font-black">E</span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-900">Endoo AI</p>
-                <p className="text-xs text-gray-400">Ansluten till din bokföring</p>
+                <p className="text-sm font-semibold text-foreground">Endoo AI</p>
+                <p className="text-xs text-muted-foreground">Ansluten till din bokföring</p>
               </div>
               <div className="ml-auto flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-xs text-gray-400">Live</span>
+                <span className="text-xs text-muted-foreground">Live</span>
               </div>
             </div>
             <div className="p-5 space-y-4">
@@ -563,7 +563,7 @@ export default async function HomePage() {
                 <div className="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-indigo-600 text-xs font-black">E</span>
                 </div>
-                <div className="bg-gray-50 border border-gray-100 text-sm text-gray-700 px-4 py-3 rounded-2xl rounded-tl-sm max-w-sm leading-relaxed">
+                <div className="bg-muted border border text-sm text-foreground px-4 py-3 rounded-2xl rounded-tl-sm max-w-sm leading-relaxed">
                   Jag har granskat din bokföring för april 2025. Ruta 05 visar <strong>142 800 kr</strong> i momspliktiga intäkter och ruta 10 <strong>35 700 kr</strong> i utgående moms. Ingående moms (ruta 48) är <strong>8 250 kr</strong>. Att betala: <strong>27 450 kr</strong>. Allt ser korrekt ut. ✓
                 </div>
               </div>
@@ -576,7 +576,7 @@ export default async function HomePage() {
                 <div className="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-indigo-600 text-xs font-black">E</span>
                 </div>
-                <div className="bg-gray-50 border border-gray-100 text-sm text-gray-700 px-4 py-3 rounded-2xl rounded-tl-sm max-w-sm leading-relaxed">
+                <div className="bg-muted border border text-sm text-foreground px-4 py-3 rounded-2xl rounded-tl-sm max-w-sm leading-relaxed">
                   Du har <strong>3 förfallna fakturor</strong> med ett totalt utestående belopp på <strong>54 250 kr</strong>. Äldsta är INV-0089 till Kund AB, förfallen för 14 dagar sedan.
                 </div>
               </div>
@@ -585,15 +585,15 @@ export default async function HomePage() {
 
           <div>
             <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-5">AI-assistent</p>
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 leading-tight mb-6">
+            <h2 className="text-4xl sm:text-5xl font-black text-foreground leading-tight mb-6">
               Fråga din AI.<br />Få svar ur din<br />faktiska data.
             </h2>
-            <p className="text-gray-500 text-lg leading-relaxed mb-8">
+            <p className="text-muted-foreground text-lg leading-relaxed mb-8">
               Endoos AI-assistent är inte ett generiskt chatbot — den läser din bokföring, dina fakturor och ditt lager i realtid och svarar baserat på dina faktiska siffror. Powered by Claude.
             </p>
             <ul className="space-y-3 mb-10">
               {AI_BULLETS.map(b => (
-                <li key={b} className="flex items-center gap-3 text-sm text-gray-600">
+                <li key={b} className="flex items-center gap-3 text-sm text-muted-foreground">
                   <span className="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold flex-shrink-0">✓</span>
                   {b}
                 </li>
@@ -603,7 +603,7 @@ export default async function HomePage() {
               <Link href="/register?plan=pro" className="inline-block px-7 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors">
                 Prova AI-assistenten →
               </Link>
-              <Link href="/artiklar/ai-bokforing" className="inline-block px-7 py-3.5 border border-gray-200 text-gray-600 font-semibold rounded-xl hover:border-indigo-200 transition-colors text-sm">
+              <Link href="/artiklar/ai-bokforing" className="inline-block px-7 py-3.5 border border text-muted-foreground font-semibold rounded-xl hover:border-indigo-200 transition-colors text-sm">
                 Så fungerar AI i bokföring
               </Link>
             </div>
@@ -612,14 +612,14 @@ export default async function HomePage() {
       </section>
 
       {/* ── Offers & Portal section ─────────────────────────────────────────── */}
-      <section className="py-28 px-6 bg-gray-50">
+      <section className="py-28 px-6 bg-muted">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-4">Offerter & Kundportal</p>
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 leading-tight mb-5">
+            <h2 className="text-4xl sm:text-5xl font-black text-foreground leading-tight mb-5">
               Från offert till betald faktura.<br />Allt i ett flöde.
             </h2>
-            <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Skapa en offert, låt kunden acceptera online, konvertera till faktura med ett klick. Ge kunden ett eget login till sin portal — inga fler mejl om "har ni skickat fakturan?".
             </p>
           </div>
@@ -645,7 +645,7 @@ export default async function HomePage() {
                 badge: null,
               },
             ].map(f => (
-              <div key={f.title} className="bg-white rounded-2xl border border-gray-100 p-7 hover:border-indigo-200 hover:shadow-md transition-all">
+              <div key={f.title} className="bg-card rounded-2xl border border p-7 hover:border-indigo-200 hover:shadow-md transition-all">
                 <div className="flex items-start justify-between mb-5">
                   <div className="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-xl font-bold">
                     {f.icon}
@@ -654,8 +654,8 @@ export default async function HomePage() {
                     <span className="text-xs font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">{f.badge}</span>
                   )}
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2.5 text-lg">{f.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+                <h3 className="font-bold text-foreground mb-2.5 text-lg">{f.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -666,7 +666,7 @@ export default async function HomePage() {
       <section id="byra" className="py-28 px-6 bg-indigo-600">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-block px-3.5 py-1.5 bg-white/15 text-white text-xs font-bold rounded-full uppercase tracking-widest mb-6">
+            <div className="inline-block px-3.5 py-1.5 bg-card/15 text-white text-xs font-bold rounded-full uppercase tracking-widest mb-6">
               Byråläge
             </div>
             <h2 className="text-4xl sm:text-5xl font-black text-white leading-tight mb-5">
@@ -679,7 +679,7 @@ export default async function HomePage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-16">
             {AGENCY_FEATURES.map(f => (
-              <div key={f.title} className="bg-white/10 backdrop-blur rounded-2xl p-6 border border-white/15">
+              <div key={f.title} className="bg-card/10 backdrop-blur rounded-2xl p-6 border border-white/15">
                 <div className="text-2xl mb-4 text-white/60">{f.icon}</div>
                 <h3 className="font-bold text-white mb-2 text-base">{f.title}</h3>
                 <p className="text-indigo-200 text-sm leading-relaxed">{f.desc}</p>
@@ -687,7 +687,7 @@ export default async function HomePage() {
             ))}
           </div>
 
-          <div className="max-w-md mx-auto bg-white/10 rounded-2xl border border-white/20 overflow-hidden mb-12">
+          <div className="max-w-md mx-auto bg-card/10 rounded-2xl border border-white/20 overflow-hidden mb-12">
             <div className="px-5 py-3.5 border-b border-white/10">
               <p className="text-white text-sm font-semibold">Mina kundkonton</p>
             </div>
@@ -698,7 +698,7 @@ export default async function HomePage() {
               { name: "Startup XYZ",      status: "Betalad idag ✓",       dot: "bg-emerald-400" },
               { name: "Kreativa Studio",  status: "Bokföring: 2 poster",  dot: "bg-amber-400" },
             ].map(item => (
-              <div key={item.name} className="flex items-center gap-3 px-5 py-3.5 border-b border-white/5 hover:bg-white/5 transition-colors">
+              <div key={item.name} className="flex items-center gap-3 px-5 py-3.5 border-b border-white/5 hover:bg-card/5 transition-colors">
                 <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.dot}`} />
                 <span className="text-white text-sm font-medium flex-1">{item.name}</span>
                 <span className="text-indigo-300 text-xs">{item.status}</span>
@@ -709,13 +709,13 @@ export default async function HomePage() {
           <div className="text-center flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/register"
-              className="inline-block px-9 py-4 bg-white text-indigo-700 font-bold rounded-2xl hover:bg-indigo-50 transition-colors text-lg shadow-xl shadow-indigo-900/20"
+              className="inline-block px-9 py-4 bg-card text-indigo-700 font-bold rounded-2xl hover:bg-indigo-50 transition-colors text-lg shadow-xl shadow-indigo-900/20"
             >
               Skapa byråkonto gratis →
             </Link>
             <Link
               href="/byra"
-              className="inline-block px-9 py-4 border border-white/30 text-white font-semibold rounded-2xl hover:bg-white/10 transition-colors text-lg"
+              className="inline-block px-9 py-4 border border-white/30 text-white font-semibold rounded-2xl hover:bg-card/10 transition-colors text-lg"
             >
               Läs mer om byråläget
             </Link>
@@ -728,17 +728,17 @@ export default async function HomePage() {
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-5">API & Integrationer</p>
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 leading-tight mb-6">
+            <h2 className="text-4xl sm:text-5xl font-black text-foreground leading-tight mb-6">
               Koppla Endoo till<br />resten av din stack.
             </h2>
-            <p className="text-gray-500 text-lg leading-relaxed mb-10">
+            <p className="text-muted-foreground text-lg leading-relaxed mb-10">
               REST API med scope-baserade API-nycklar, cursor-paginering och rate limiting. Hämta fakturor, kontakter, bokföring och lager från dina egna system eller integrera via tredjepartsverktyg.
             </p>
             <div className="grid sm:grid-cols-2 gap-4">
               {INTEGRATIONS.map(i => (
-                <div key={i.name} className="p-4 rounded-xl border border-gray-100 bg-gray-50/50">
-                  <p className="font-semibold text-gray-900 text-sm mb-1">{i.name}</p>
-                  <p className="text-xs text-gray-500 leading-relaxed">{i.desc}</p>
+                <div key={i.name} className="p-4 rounded-xl border border bg-muted/50">
+                  <p className="font-semibold text-foreground text-sm mb-1">{i.name}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{i.desc}</p>
                 </div>
               ))}
             </div>
@@ -749,61 +749,61 @@ export default async function HomePage() {
               <div className="w-3 h-3 rounded-full bg-red-400/60" />
               <div className="w-3 h-3 rounded-full bg-yellow-400/60" />
               <div className="w-3 h-3 rounded-full bg-green-400/60" />
-              <span className="ml-3 text-xs text-slate-500 font-mono">GET /api/v1/invoices</span>
+              <span className="ml-3 text-xs text-muted-foreground font-mono">GET /api/v1/invoices</span>
             </div>
             <div className="p-6 font-mono text-xs leading-relaxed">
-              <div className="text-slate-500 mb-3">{'// Autentisera med Bearer token'}</div>
+              <div className="text-muted-foreground mb-3">{'// Autentisera med Bearer token'}</div>
               <div>
                 <span className="text-violet-400">curl</span>
-                <span className="text-slate-300"> https://endoo.se/api/v1/invoices \</span>
+                <span className="text-muted-foreground"> https://endoo.se/api/v1/invoices \</span>
               </div>
               <div className="pl-4">
-                <span className="text-slate-500">-H </span>
+                <span className="text-muted-foreground">-H </span>
                 <span className="text-emerald-400">&quot;Authorization: Bearer endo_live_...&quot;</span>
               </div>
-              <div className="mt-5 text-slate-500">{'// Svar'}</div>
-              <div className="mt-2 text-slate-300">{'{'}</div>
+              <div className="mt-5 text-muted-foreground">{'// Svar'}</div>
+              <div className="mt-2 text-muted-foreground">{'{'}</div>
               <div className="pl-4">
-                <div><span className="text-blue-400">&quot;object&quot;</span><span className="text-slate-400">: </span><span className="text-emerald-400">&quot;list&quot;</span><span className="text-slate-400">,</span></div>
-                <div><span className="text-blue-400">&quot;data&quot;</span><span className="text-slate-400">: [</span></div>
-                <div className="pl-4 text-slate-400">{'{'}</div>
-                <div className="pl-8"><span className="text-blue-400">&quot;id&quot;</span><span className="text-slate-400">: </span><span className="text-emerald-400">&quot;inv_uuid...&quot;</span><span className="text-slate-400">,</span></div>
-                <div className="pl-8"><span className="text-blue-400">&quot;invoice_number&quot;</span><span className="text-slate-400">: </span><span className="text-emerald-400">&quot;INV-0042&quot;</span><span className="text-slate-400">,</span></div>
-                <div className="pl-8"><span className="text-blue-400">&quot;total_amount&quot;</span><span className="text-slate-400">: </span><span className="text-amber-400">18750</span><span className="text-slate-400">,</span></div>
-                <div className="pl-8"><span className="text-blue-400">&quot;status&quot;</span><span className="text-slate-400">: </span><span className="text-emerald-400">&quot;paid&quot;</span></div>
-                <div className="pl-4 text-slate-400">{'}'}</div>
-                <div className="text-slate-400">],</div>
-                <div><span className="text-blue-400">&quot;has_more&quot;</span><span className="text-slate-400">: </span><span className="text-amber-400">false</span></div>
+                <div><span className="text-blue-400">&quot;object&quot;</span><span className="text-muted-foreground">: </span><span className="text-emerald-400">&quot;list&quot;</span><span className="text-muted-foreground">,</span></div>
+                <div><span className="text-blue-400">&quot;data&quot;</span><span className="text-muted-foreground">: [</span></div>
+                <div className="pl-4 text-muted-foreground">{'{'}</div>
+                <div className="pl-8"><span className="text-blue-400">&quot;id&quot;</span><span className="text-muted-foreground">: </span><span className="text-emerald-400">&quot;inv_uuid...&quot;</span><span className="text-muted-foreground">,</span></div>
+                <div className="pl-8"><span className="text-blue-400">&quot;invoice_number&quot;</span><span className="text-muted-foreground">: </span><span className="text-emerald-400">&quot;INV-0042&quot;</span><span className="text-muted-foreground">,</span></div>
+                <div className="pl-8"><span className="text-blue-400">&quot;total_amount&quot;</span><span className="text-muted-foreground">: </span><span className="text-amber-400">18750</span><span className="text-muted-foreground">,</span></div>
+                <div className="pl-8"><span className="text-blue-400">&quot;status&quot;</span><span className="text-muted-foreground">: </span><span className="text-emerald-400">&quot;paid&quot;</span></div>
+                <div className="pl-4 text-muted-foreground">{'}'}</div>
+                <div className="text-muted-foreground">],</div>
+                <div><span className="text-blue-400">&quot;has_more&quot;</span><span className="text-muted-foreground">: </span><span className="text-amber-400">false</span></div>
               </div>
-              <div className="text-slate-300">{'}'}</div>
+              <div className="text-muted-foreground">{'}'}</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── Testimonials ────────────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-gray-50">
+      <section className="py-24 px-6 bg-muted">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-4">Vad användarna säger</p>
-            <h2 className="text-4xl font-black text-gray-900">Företag som redan kört igång</h2>
+            <h2 className="text-4xl font-black text-foreground">Företag som redan kört igång</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {TESTIMONIALS.map(t => (
-              <div key={t.name} className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm hover:shadow-md transition-shadow">
+              <div key={t.name} className="bg-card rounded-2xl border border p-8 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex mb-5">
                   {[1,2,3,4,5].map(s => (
                     <span key={s} className="text-amber-400 text-sm">★</span>
                   ))}
                 </div>
-                <p className="text-gray-600 leading-relaxed mb-6 text-sm">&ldquo;{t.quote}&rdquo;</p>
+                <p className="text-muted-foreground leading-relaxed mb-6 text-sm">&ldquo;{t.quote}&rdquo;</p>
                 <div className="flex items-center gap-3">
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${t.color}`}>
                     {t.initials}
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{t.role}</p>
+                    <p className="font-semibold text-foreground text-sm">{t.name}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -817,8 +817,8 @@ export default async function HomePage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-20">
             <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-4">Priser</p>
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5">Enkla priser. Inga dolda avgifter.</h2>
-            <p className="text-lg text-gray-500">Börja gratis. Uppgradera när du växer. Inga bindningstider.</p>
+            <h2 className="text-4xl sm:text-5xl font-black text-foreground mb-5">Enkla priser. Inga dolda avgifter.</h2>
+            <p className="text-lg text-muted-foreground">Börja gratis. Uppgradera när du växer. Inga bindningstider.</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
@@ -828,7 +828,7 @@ export default async function HomePage() {
                 className={`relative rounded-2xl p-7 border flex flex-col ${
                   p.highlighted
                     ? "border-indigo-500 shadow-2xl shadow-indigo-100 bg-indigo-600 ring-4 ring-indigo-100"
-                    : "border-gray-200 bg-white"
+                    : "border bg-card"
                 }`}
               >
                 {p.highlighted && (
@@ -838,25 +838,25 @@ export default async function HomePage() {
                 )}
 
                 <div className="mb-7">
-                  <h3 className={`font-black text-xl mb-1 ${p.highlighted ? "text-white" : "text-gray-900"}`}>
+                  <h3 className={`font-black text-xl mb-1 ${p.highlighted ? "text-white" : "text-foreground"}`}>
                     {p.name}
                   </h3>
                   <div className="flex items-baseline gap-1 mb-2">
                     {p.period ? (
                       <>
-                        <span className={`text-4xl font-black ${p.highlighted ? "text-white" : "text-gray-900"}`}>{p.price}</span>
-                        <span className={`text-sm ${p.highlighted ? "text-indigo-200" : "text-gray-400"}`}>{p.period}</span>
+                        <span className={`text-4xl font-black ${p.highlighted ? "text-white" : "text-foreground"}`}>{p.price}</span>
+                        <span className={`text-sm ${p.highlighted ? "text-indigo-200" : "text-muted-foreground"}`}>{p.period}</span>
                       </>
                     ) : (
-                      <span className={`text-2xl font-black ${p.highlighted ? "text-white" : "text-gray-900"}`}>{p.price}</span>
+                      <span className={`text-2xl font-black ${p.highlighted ? "text-white" : "text-foreground"}`}>{p.price}</span>
                     )}
                   </div>
-                  <p className={`text-sm ${p.highlighted ? "text-indigo-200" : "text-gray-500"}`}>{p.description}</p>
+                  <p className={`text-sm ${p.highlighted ? "text-indigo-200" : "text-muted-foreground"}`}>{p.description}</p>
                 </div>
 
                 <ul className="space-y-2.5 flex-1 mb-8">
                   {p.features.map(f => (
-                    <li key={f} className={`flex items-start gap-2.5 text-sm ${p.highlighted ? "text-indigo-100" : "text-gray-600"}`}>
+                    <li key={f} className={`flex items-start gap-2.5 text-sm ${p.highlighted ? "text-indigo-100" : "text-muted-foreground"}`}>
                       <span className={`w-4 h-4 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 ${p.highlighted ? "bg-white/20 text-white" : "bg-indigo-50 text-indigo-600"}`}>✓</span>
                       {f}
                     </li>
@@ -867,9 +867,9 @@ export default async function HomePage() {
                   href={p.href}
                   className={`block text-center py-3.5 rounded-xl font-bold text-sm transition-all ${
                     p.highlighted
-                      ? "bg-white text-indigo-700 hover:bg-indigo-50"
+                      ? "bg-card dark:bg-white text-indigo-700 hover:bg-indigo-50"
                       : p.name === "Enterprise"
-                        ? "border-2 border-gray-200 text-gray-700 hover:border-indigo-300 hover:text-indigo-600"
+                        ? "border-2 border text-foreground hover:border-indigo-300 hover:text-indigo-600"
                         : "bg-indigo-600 text-white hover:bg-indigo-700"
                   }`}
                 >
@@ -880,7 +880,7 @@ export default async function HomePage() {
           </div>
 
           <div className="mt-10 text-center">
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-muted-foreground">
               Alla priser exkl. moms. Faktureringscykel: månadsvis. Avsluta när du vill.{" "}
               <a href="mailto:enterprise@endoo.se" className="text-indigo-600 hover:underline">Kontakta oss</a>{" "}
               för Enterprise-villkor och SLA.
@@ -890,20 +890,20 @@ export default async function HomePage() {
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────────────────── */}
-      <section id="faq" className="py-28 px-6 bg-gray-50">
+      <section id="faq" className="py-28 px-6 bg-muted">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-4">FAQ</p>
-            <h2 className="text-4xl font-black text-gray-900">Vanliga frågor</h2>
+            <h2 className="text-4xl font-black text-foreground">Vanliga frågor</h2>
           </div>
           <div className="space-y-3">
             {FAQS.map(f => (
-              <details key={f.q} className="group bg-white rounded-2xl border border-gray-100 px-7 py-5 cursor-pointer hover:border-indigo-100 transition-colors">
-                <summary className="flex items-center justify-between font-semibold text-gray-900 text-sm list-none gap-4">
+              <details key={f.q} className="group bg-card rounded-2xl border border px-7 py-5 cursor-pointer hover:border-indigo-100 transition-colors">
+                <summary className="flex items-center justify-between font-semibold text-foreground text-sm list-none gap-4">
                   <span>{f.q}</span>
-                  <span className="text-gray-300 group-open:text-indigo-500 text-xl flex-shrink-0 transition-colors group-open:rotate-45 duration-200">+</span>
+                  <span className="text-muted-foreground group-open:text-indigo-500 text-xl flex-shrink-0 transition-colors group-open:rotate-45 duration-200">+</span>
                 </summary>
-                <p className="mt-4 text-sm text-gray-500 leading-relaxed pr-4">{f.a}</p>
+                <p className="mt-4 text-sm text-muted-foreground leading-relaxed pr-4">{f.a}</p>
               </details>
             ))}
           </div>
@@ -916,12 +916,12 @@ export default async function HomePage() {
       </section>
 
       {/* ── Mid CTA ─────────────────────────────────────────────────────────── */}
-      <section className="py-20 px-6 border-t border-gray-100">
+      <section className="py-20 px-6 border-t border">
         <div className="max-w-4xl mx-auto grid sm:grid-cols-2 gap-6">
           <div className="bg-indigo-50 rounded-2xl p-8 border border-indigo-100">
             <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">För frilansare & småföretag</p>
-            <h3 className="text-xl font-black text-gray-900 mb-3">Kom igång på 2 minuter</h3>
-            <p className="text-sm text-gray-500 leading-relaxed mb-6">
+            <h3 className="text-xl font-black text-foreground mb-3">Kom igång på 2 minuter</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-6">
               Skapa ett konto, lägg till en kund och skicka din första faktura — allt gratis, inga kreditkort.
             </p>
             <Link href="/register" className="inline-block px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors">
@@ -931,10 +931,10 @@ export default async function HomePage() {
           <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800">
             <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-3">För byråer & redovisningskonsulter</p>
             <h3 className="text-xl font-black text-white mb-3">Hantera alla dina kunder</h3>
-            <p className="text-sm text-slate-400 leading-relaxed mb-6">
+            <p className="text-sm text-muted-foreground leading-relaxed mb-6">
               Byråläget i Pro-planen låter dig arbeta i kundens konto, fakturera i deras namn och se allt i en vy.
             </p>
-            <Link href="/byra" className="inline-block px-5 py-2.5 bg-white text-slate-900 text-sm font-semibold rounded-xl hover:bg-gray-100 transition-colors">
+            <Link href="/byra" className="inline-block px-5 py-2.5 bg-card text-foreground text-sm font-semibold rounded-xl hover:bg-muted transition-colors">
               Läs mer om byråläget →
             </Link>
           </div>
@@ -947,10 +947,10 @@ export default async function HomePage() {
           <div className="w-16 h-16 rounded-3xl bg-indigo-600 flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-indigo-200">
             <span className="text-white text-3xl font-black">E</span>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-6 leading-tight">
+          <h2 className="text-4xl sm:text-5xl font-black text-foreground mb-6 leading-tight">
             Redo att byta till ett<br />ekonomisystem som<br />faktiskt fungerar?
           </h2>
-          <p className="text-lg text-gray-500 mb-12 leading-relaxed">
+          <p className="text-lg text-muted-foreground mb-12 leading-relaxed">
             Skapa ett konto gratis och upplev skillnaden. Inget kreditkort. Inga bindningstider. Flytta din data när du vill med SIE-export.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -962,19 +962,19 @@ export default async function HomePage() {
             </Link>
             <a
               href="mailto:hej@endoo.se"
-              className="w-full sm:w-auto px-10 py-4 border-2 border-gray-200 text-gray-700 font-semibold rounded-2xl hover:border-indigo-300 hover:text-indigo-600 transition-all text-lg"
+              className="w-full sm:w-auto px-10 py-4 border-2 border text-foreground font-semibold rounded-2xl hover:border-indigo-300 hover:text-indigo-600 transition-all text-lg"
             >
               Boka en demo
             </a>
           </div>
-          <p className="mt-8 text-xs text-gray-400">
+          <p className="mt-8 text-xs text-muted-foreground">
             Inget kreditkort · GDPR-säkert · Data lagras i EU · Byggt och driftat i Sverige 🇸🇪
           </p>
         </div>
       </section>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      <footer className="border-t border-gray-100 bg-gray-50 py-16 px-6">
+      <footer className="border-t border bg-muted py-16 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
             {/* Brand */}
@@ -983,67 +983,67 @@ export default async function HomePage() {
                 <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
                   <span className="text-white text-xs font-black">E</span>
                 </div>
-                <span className="text-lg font-extrabold text-gray-900">endoo</span>
+                <span className="text-lg font-extrabold text-foreground">endoo</span>
               </div>
-              <p className="text-xs text-gray-400 leading-relaxed max-w-xs">
+              <p className="text-xs text-muted-foreground leading-relaxed max-w-xs">
                 En modern ekonomiplattform för företag och byråer. Fakturering, bokföring och AI samlat i ett system. Byggt i Sverige.
               </p>
             </div>
 
             {/* Produkt */}
             <div>
-              <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Produkt</p>
-              <nav className="space-y-2.5 text-sm text-gray-500">
-                <Link href="/funktioner"         className="block hover:text-gray-800 transition-colors">Alla funktioner</Link>
-                <a href="#bokforing"             className="block hover:text-gray-800 transition-colors">Bokföring</a>
-                <a href="#ai"                    className="block hover:text-gray-800 transition-colors">AI-assistent</a>
-                <Link href="/byra"               className="block hover:text-gray-800 transition-colors">För byråer</Link>
-                <a href="#api"                   className="block hover:text-gray-800 transition-colors">API</a>
-                <a href="#priser"                className="block hover:text-gray-800 transition-colors">Priser</a>
+              <p className="text-xs font-bold text-foreground uppercase tracking-wider mb-4">Produkt</p>
+              <nav className="space-y-2.5 text-sm text-muted-foreground">
+                <Link href="/funktioner"         className="block hover:text-foreground transition-colors">Alla funktioner</Link>
+                <a href="#bokforing"             className="block hover:text-foreground transition-colors">Bokföring</a>
+                <a href="#ai"                    className="block hover:text-foreground transition-colors">AI-assistent</a>
+                <Link href="/byra"               className="block hover:text-foreground transition-colors">För byråer</Link>
+                <a href="#api"                   className="block hover:text-foreground transition-colors">API</a>
+                <a href="#priser"                className="block hover:text-foreground transition-colors">Priser</a>
               </nav>
             </div>
 
             {/* Lösningar */}
             <div>
-              <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Lösningar</p>
-              <nav className="space-y-2.5 text-sm text-gray-500">
-                <Link href="/byra"          className="block hover:text-gray-800 transition-colors">Redovisningsbyråer</Link>
-                <Link href="/konsulter"     className="block hover:text-gray-800 transition-colors">Konsulter & frilansare</Link>
-                <Link href="/smaforetag"    className="block hover:text-gray-800 transition-colors">Småföretag</Link>
-                <Link href="/e-handel"      className="block hover:text-gray-800 transition-colors">E-handel & lager</Link>
+              <p className="text-xs font-bold text-foreground uppercase tracking-wider mb-4">Lösningar</p>
+              <nav className="space-y-2.5 text-sm text-muted-foreground">
+                <Link href="/byra"          className="block hover:text-foreground transition-colors">Redovisningsbyråer</Link>
+                <Link href="/konsulter"     className="block hover:text-foreground transition-colors">Konsulter & frilansare</Link>
+                <Link href="/smaforetag"    className="block hover:text-foreground transition-colors">Småföretag</Link>
+                <Link href="/e-handel"      className="block hover:text-foreground transition-colors">E-handel & lager</Link>
               </nav>
             </div>
 
             {/* Artiklar */}
             <div>
-              <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Artiklar</p>
-              <nav className="space-y-2.5 text-sm text-gray-500">
-                <Link href="/artiklar"                          className="block hover:text-gray-800 transition-colors">Alla artiklar</Link>
-                <Link href="/artiklar/vad-ar-ett-ekonomisystem" className="block hover:text-gray-800 transition-colors">Vad är ett ekonomisystem?</Link>
-                <Link href="/artiklar/vad-ar-bas-kontoplan"     className="block hover:text-gray-800 transition-colors">BAS-kontoplan</Link>
-                <Link href="/artiklar/digital-fakturering"      className="block hover:text-gray-800 transition-colors">Digital fakturering</Link>
-                <Link href="/artiklar/ai-bokforing"             className="block hover:text-gray-800 transition-colors">AI i bokföring</Link>
+              <p className="text-xs font-bold text-foreground uppercase tracking-wider mb-4">Artiklar</p>
+              <nav className="space-y-2.5 text-sm text-muted-foreground">
+                <Link href="/artiklar"                          className="block hover:text-foreground transition-colors">Alla artiklar</Link>
+                <Link href="/artiklar/vad-ar-ett-ekonomisystem" className="block hover:text-foreground transition-colors">Vad är ett ekonomisystem?</Link>
+                <Link href="/artiklar/vad-ar-bas-kontoplan"     className="block hover:text-foreground transition-colors">BAS-kontoplan</Link>
+                <Link href="/artiklar/digital-fakturering"      className="block hover:text-foreground transition-colors">Digital fakturering</Link>
+                <Link href="/artiklar/ai-bokforing"             className="block hover:text-foreground transition-colors">AI i bokföring</Link>
               </nav>
             </div>
 
             {/* Konto */}
             <div>
-              <p className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4">Konto</p>
-              <nav className="space-y-2.5 text-sm text-gray-500">
-                <Link href="/login"             className="block hover:text-gray-800 transition-colors">Logga in</Link>
-                <Link href="/register"          className="block hover:text-gray-800 transition-colors">Skapa konto</Link>
-                <a href="mailto:hej@endoo.se"   className="block hover:text-gray-800 transition-colors">Support</a>
-                <a href="mailto:enterprise@endoo.se" className="block hover:text-gray-800 transition-colors">Enterprise</a>
+              <p className="text-xs font-bold text-foreground uppercase tracking-wider mb-4">Konto</p>
+              <nav className="space-y-2.5 text-sm text-muted-foreground">
+                <Link href="/login"             className="block hover:text-foreground transition-colors">Logga in</Link>
+                <Link href="/register"          className="block hover:text-foreground transition-colors">Skapa konto</Link>
+                <a href="mailto:hej@endoo.se"   className="block hover:text-foreground transition-colors">Support</a>
+                <a href="mailto:enterprise@endoo.se" className="block hover:text-foreground transition-colors">Enterprise</a>
               </nav>
             </div>
           </div>
 
-          <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+          <div className="border-t border pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
             <span>© {new Date().getFullYear()} Endoo · Byggt i Sverige 🇸🇪</span>
             <div className="flex gap-6">
-              <Link href="/privacy" className="hover:text-gray-600 transition-colors">Integritetspolicy</Link>
-              <Link href="/terms"   className="hover:text-gray-600 transition-colors">Användarvillkor</Link>
-              <Link href="/cookies" className="hover:text-gray-600 transition-colors">Cookies</Link>
+              <Link href="/privacy" className="hover:text-muted-foreground transition-colors">Integritetspolicy</Link>
+              <Link href="/terms"   className="hover:text-muted-foreground transition-colors">Användarvillkor</Link>
+              <Link href="/cookies" className="hover:text-muted-foreground transition-colors">Cookies</Link>
             </div>
           </div>
         </div>

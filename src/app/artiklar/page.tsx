@@ -100,24 +100,24 @@ const categoryColors: Record<string, string> = {
 
 export default function ArtiklarPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-card">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-100">
+      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur border-b border">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-sm font-black leading-none">E</span>
             </div>
-            <span className="text-lg font-extrabold text-gray-900 tracking-tight">endoo</span>
+            <span className="text-lg font-extrabold text-foreground tracking-tight">endoo</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
-            <Link href="/funktioner" className="hover:text-gray-900 transition-colors">Funktioner</Link>
-            <Link href="/byra" className="hover:text-gray-900 transition-colors">För byråer</Link>
-            <Link href="/artiklar" className="hover:text-gray-900 transition-colors">Artiklar</Link>
-            <a href="/#priser" className="hover:text-gray-900 transition-colors">Priser</a>
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
+            <Link href="/funktioner" className="hover:text-foreground transition-colors">Funktioner</Link>
+            <Link href="/byra" className="hover:text-foreground transition-colors">För byråer</Link>
+            <Link href="/artiklar" className="hover:text-foreground transition-colors">Artiklar</Link>
+            <a href="/#priser" className="hover:text-foreground transition-colors">Priser</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900">Logga in</Link>
+            <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground">Logga in</Link>
             <Link href="/register" className="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
               Kom igång gratis
             </Link>
@@ -126,12 +126,12 @@ export default function ArtiklarPage() {
       </header>
 
       {/* Hero */}
-      <div className="bg-gradient-to-b from-gray-50 to-white py-16 px-6 border-b border-gray-100">
+      <div className="bg-gradient-to-b from-gray-50 to-white py-16 px-6 border-b border">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl font-black text-gray-900 leading-tight mb-4">
+          <h1 className="text-4xl sm:text-5xl font-black text-foreground leading-tight mb-4">
             Artiklar om ekonomi och bokföring
           </h1>
-          <p className="text-xl text-gray-500 leading-relaxed">
+          <p className="text-xl text-muted-foreground leading-relaxed">
             Guider, förklaringar och tips för dig som driver företag.
           </p>
         </div>
@@ -144,17 +144,17 @@ export default function ArtiklarPage() {
             <Link
               key={article.slug}
               href={`/artiklar/${article.slug}`}
-              className="group block bg-white border border-gray-200 rounded-2xl p-6 hover:border-indigo-300 hover:shadow-md transition-all duration-200"
+              className="group block bg-card border border rounded-2xl p-6 hover:border-indigo-300 hover:shadow-md transition-all duration-200"
             >
               <span
-                className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full mb-4 ${categoryColors[article.category] ?? "bg-gray-100 text-gray-600"}`}
+                className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full mb-4 ${categoryColors[article.category] ?? "bg-muted text-muted-foreground"}`}
               >
                 {article.category}
               </span>
-              <h2 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors leading-snug">
+              <h2 className="text-lg font-bold text-foreground mb-2 group-hover:text-indigo-600 transition-colors leading-snug">
                 {article.title}
               </h2>
-              <p className="text-sm text-gray-500 leading-relaxed">{article.description}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{article.description}</p>
               <span className="mt-4 inline-block text-xs font-semibold text-indigo-600 group-hover:underline">
                 Läs artikeln →
               </span>
@@ -166,8 +166,8 @@ export default function ArtiklarPage() {
       {/* CTA */}
       <section className="max-w-3xl mx-auto px-6 pb-16">
         <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-black text-gray-900 mb-3">Prova Endoo gratis</h2>
-          <p className="text-gray-600 mb-6">Kom igång på 2 minuter. Inget kreditkort.</p>
+          <h2 className="text-2xl font-black text-foreground mb-3">Prova Endoo gratis</h2>
+          <p className="text-muted-foreground mb-6">Kom igång på 2 minuter. Inget kreditkort.</p>
           <Link
             href="/register"
             className="inline-block px-8 py-3.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors"
@@ -178,12 +178,12 @@ export default function ArtiklarPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 bg-gray-50 py-10 px-6 text-center text-xs text-gray-400">
-        <Link href="/" className="font-semibold text-gray-600 hover:text-gray-900">endoo.se</Link>
+      <footer className="border-t border bg-muted py-10 px-6 text-center text-xs text-muted-foreground">
+        <Link href="/" className="font-semibold text-muted-foreground hover:text-foreground">endoo.se</Link>
         {" · "}
-        <Link href="/artiklar" className="hover:text-gray-600">Artiklar</Link>
+        <Link href="/artiklar" className="hover:text-muted-foreground">Artiklar</Link>
         {" · "}
-        <Link href="/privacy" className="hover:text-gray-600">Integritetspolicy</Link>
+        <Link href="/privacy" className="hover:text-muted-foreground">Integritetspolicy</Link>
         {" · © "}{new Date().getFullYear()} Endoo
       </footer>
     </main>

@@ -52,8 +52,8 @@ export default function AlertsPage() {
   return (
     <div className="p-6 max-w-5xl mx-auto">
       <div className="mb-5">
-        <h1 className="text-2xl font-bold text-gray-900">Varningar</h1>
-        <p className="text-sm text-gray-400 mt-0.5">Aktiva varningar över alla klienter</p>
+        <h1 className="text-2xl font-bold text-foreground">Varningar</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">Aktiva varningar över alla klienter</p>
       </div>
 
       {/* Summary row */}
@@ -79,24 +79,24 @@ export default function AlertsPage() {
       {loading ? (
         <div className="space-y-2">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-14 bg-gray-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-14 bg-muted rounded-xl animate-pulse" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
         <div className="py-20 text-center">
           <p className="text-4xl mb-3">✓</p>
-          <p className="font-semibold text-gray-900">Inga aktiva varningar</p>
-          <p className="text-sm text-gray-400 mt-1">Alla klienter är inom normala parametrar</p>
+          <p className="font-semibold text-foreground">Inga aktiva varningar</p>
+          <p className="text-sm text-muted-foreground mt-1">Alla klienter är inom normala parametrar</p>
         </div>
       ) : (
-        <div className="bg-white border border-gray-100 rounded-xl overflow-hidden">
+        <div className="bg-card border border rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Allvarlighet</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Klient</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Meddelande</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Hälsa</th>
+              <tr className="border-b border">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Allvarlighet</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Klient</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Meddelande</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Hälsa</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
@@ -104,16 +104,16 @@ export default function AlertsPage() {
               {filtered.map((row, i) => {
                 const hl = healthLabel(row.healthScore)
                 return (
-                  <tr key={i} className="border-t border-gray-50 hover:bg-gray-50">
+                  <tr key={i} className="border-t border-border/50 hover:bg-muted">
                     <td className="px-4 py-3">
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${SEVERITY_CLS[row.severity]}`}>
                         {SEVERITY_LABEL[row.severity]}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <p className="font-medium text-gray-900">{row.clientName}</p>
+                      <p className="font-medium text-foreground">{row.clientName}</p>
                     </td>
-                    <td className="px-4 py-3 text-gray-600">
+                    <td className="px-4 py-3 text-muted-foreground">
                       {row.message}{row.count && row.count > 1 ? ` (${row.count})` : ""}
                     </td>
                     <td className="px-4 py-3 text-right">

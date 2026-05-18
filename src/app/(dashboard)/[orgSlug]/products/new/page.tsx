@@ -77,11 +77,11 @@ export default function NewProductPage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="mb-6 flex items-center gap-3">
-        <Link href={`/${params.orgSlug}/products`} className="text-sm text-gray-500 hover:text-gray-700">
+        <Link href={`/${params.orgSlug}/products`} className="text-sm text-muted-foreground hover:text-foreground">
           ← Produkter
         </Link>
         <span className="text-gray-300">/</span>
-        <h1 className="text-2xl font-bold text-gray-900">Ny artikel</h1>
+        <h1 className="text-2xl font-bold text-foreground">Ny artikel</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -165,7 +165,7 @@ export default function NewProductPage() {
               </Field>
             </div>
             {form.unitPriceKr && (
-              <div className="p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+              <div className="p-3 bg-muted rounded-lg text-sm text-muted-foreground">
                 <span className="font-medium">Pris inkl. moms: </span>
                 {((parseFloat(form.unitPriceKr || "0") * (1 + parseFloat(form.taxRatePct || "25") / 100))).toLocaleString("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {form.currency}
               </div>
@@ -193,7 +193,7 @@ const cls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ou
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">{label}</label>
+      <label className="block text-xs font-medium text-muted-foreground mb-1.5">{label}</label>
       {children}
     </div>
   )

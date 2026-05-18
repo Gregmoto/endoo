@@ -87,7 +87,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ orgS
               <table className="w-full text-sm">
                 <tbody>
                   {recentInvoices.map((inv) => (
-                    <tr key={inv.id} className="border-t border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <tr key={inv.id} className="border-t border-gray-100 dark:border-gray-800 hover:bg-muted dark:hover:bg-gray-800/50 transition-colors">
                       <td className="px-6 py-3">
                         <Link href={`/${orgSlug}/invoices/${inv.id}`} className="font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400">
                           {inv.invoiceNumber}

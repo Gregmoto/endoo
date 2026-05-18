@@ -581,7 +581,9 @@ model Organization {
   // E-signering
   signatureRequests SignatureRequest[] @relation("OrgSignatureRequests")
   quotes            Quote[]            @relation("OrgQuotes")
-  portalMagicTokens PortalMagicToken[] @relation("OrgPortalTokens")
+  portalMagicTokens  PortalMagicToken[]  @relation("OrgPortalTokens")
+  portalAuthAttempts PortalAuthAttempt[] @relation("OrgPortalAuthAttempts")
+  trustedDevices     TrustedDevice[]     @relation("OrgTrustedDevices")
 
   @@index([slug])
   @@index([type])
@@ -905,6 +907,7 @@ model Contact {
   contactPersons    ContactPerson[]
   quotes            Quote[]
   portalMagicTokens PortalMagicToken[] @relation("ContactPortalTokens")
+  trustedDevices    TrustedDevice[]    @relation("ContactTrustedDevices")
 
   @@index([organizationId])
   @@index([organizationId, email])
@@ -3242,14 +3245,22 @@ model SignatureEvent {
 // ─────────────────────────────────────────────
 
 model PortalMagicToken {
-  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  organizationId String   @db.Uuid
-  contactId      String   @db.Uuid
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String    @db.Uuid
+  contactId      String    @db.Uuid
   email          String
-  tokenHash      String   @unique
+  tokenHash      String    @unique
   expiresAt      DateTime
   usedAt         DateTime?
-  createdAt      DateTime @default(now())
+  createdAt      DateTime  @default(now())
+
+  // Security metadata recorded at send time
+  requestIp      String?
+  userAgent      String?
+
+  // Set when IP mismatch requires a secondary 6-digit code challenge
+  // Value is SHA-256 hex of the code; cleared after use
+  pendingCode    String?
 
   organization Organization @relation("OrgPortalTokens", fields: [organizationId], references: [id], onDelete: Cascade)
   contact      Contact      @relation("ContactPortalTokens", fields: [contactId], references: [id], onDelete: Cascade)
@@ -3257,6 +3268,44 @@ model PortalMagicToken {
   @@index([organizationId])
   @@index([tokenHash])
   @@map("portal_magic_tokens")
+}
+
+model PortalAuthAttempt {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  contactId      String?  @db.Uuid
+  email          String
+  ip             String
+  userAgent      String
+  success        Boolean
+  failureReason  String?
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation("OrgPortalAuthAttempts", fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([ip, createdAt])
+  @@map("portal_auth_attempts")
+}
+
+model TrustedDevice {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String    @db.Uuid
+  contactId      String    @db.Uuid
+  deviceId       String    @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  label          String?
+  lastUsedAt     DateTime  @default(now())
+  ipPrefix       String
+  userAgent      String
+  createdAt      DateTime  @default(now())
+  revokedAt      DateTime?
+
+  organization Organization @relation("OrgTrustedDevices", fields: [organizationId], references: [id], onDelete: Cascade)
+  contact      Contact      @relation("ContactTrustedDevices", fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, contactId])
+  @@index([deviceId])
+  @@map("trusted_devices")
 }
 
 // ─────────────────────────────────────────────

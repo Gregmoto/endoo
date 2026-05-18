@@ -68,21 +68,21 @@ export default function BalanceSheetPage() {
   function renderSection(section: Section) {
     return (
       <div key={section.title} className="mb-4">
-        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide px-2 py-1.5 bg-gray-50 rounded">
+        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-2 py-1.5 bg-muted rounded">
           {section.title}
         </div>
         {section.rows.map((row) => (
-          <div key={row.number} className="flex justify-between items-center px-2 py-1.5 hover:bg-gray-50 rounded text-sm">
-            <span className="text-gray-700">
-              <span className="font-mono text-xs text-gray-400 mr-2">{row.number}</span>
+          <div key={row.number} className="flex justify-between items-center px-2 py-1.5 hover:bg-muted rounded text-sm">
+            <span className="text-foreground">
+              <span className="font-mono text-xs text-muted-foreground mr-2">{row.number}</span>
               {row.name}
             </span>
-            <span className="font-mono text-gray-800">{fmtOre(row.displayBalance)}</span>
+            <span className="font-mono text-foreground">{fmtOre(row.displayBalance)}</span>
           </div>
         ))}
-        <div className="flex justify-between items-center px-2 py-1.5 border-t border-gray-100 mt-1">
-          <span className="text-xs font-semibold text-gray-600">Summa {section.title}</span>
-          <span className="font-mono font-semibold text-sm text-gray-800">{fmtOre(section.subtotal)}</span>
+        <div className="flex justify-between items-center px-2 py-1.5 border-t border mt-1">
+          <span className="text-xs font-semibold text-muted-foreground">Summa {section.title}</span>
+          <span className="font-mono font-semibold text-sm text-foreground">{fmtOre(section.subtotal)}</span>
         </div>
       </div>
     )
@@ -91,30 +91,30 @@ export default function BalanceSheetPage() {
   return (
     <div className="p-8 max-w-5xl">
       <div className="flex items-center gap-3 mb-6">
-        <Link href={`/${orgSlug}/reports`} className="text-sm text-gray-500 hover:text-gray-700">
+        <Link href={`/${orgSlug}/reports`} className="text-sm text-muted-foreground hover:text-foreground">
           ← Rapporter
         </Link>
         <span className="text-gray-300">/</span>
-        <h1 className="text-xl font-bold text-gray-900">Balansrapport</h1>
+        <h1 className="text-xl font-bold text-foreground">Balansrapport</h1>
       </div>
 
       <div className="flex items-end gap-4 mb-6 flex-wrap">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-gray-600">Räkenskapsår från (för årets resultat)</label>
+          <label className="text-xs font-medium text-muted-foreground">Räkenskapsår från (för årets resultat)</label>
           <input
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="border border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-gray-600">Balansdatum</label>
+          <label className="text-xs font-medium text-muted-foreground">Balansdatum</label>
           <input
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="border border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
         </div>
         <button
@@ -135,22 +135,22 @@ export default function BalanceSheetPage() {
       {report && (
         <>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
-              <h2 className="font-semibold text-gray-900 mb-4 text-base">Tillgångar</h2>
+            <div className="bg-card border border rounded-xl p-5">
+              <h2 className="font-semibold text-foreground mb-4 text-base">Tillgångar</h2>
               {assetSections.map(renderSection)}
-              <div className="flex justify-between items-center px-2 py-2 border-t-2 border-gray-300 mt-2">
-                <span className="font-bold text-gray-900">Summa tillgångar</span>
-                <span className="font-mono font-bold text-gray-900">{fmtOre(report.totalAssets)}</span>
+              <div className="flex justify-between items-center px-2 py-2 border-t-2 border mt-2">
+                <span className="font-bold text-foreground">Summa tillgångar</span>
+                <span className="font-mono font-bold text-foreground">{fmtOre(report.totalAssets)}</span>
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
-              <h2 className="font-semibold text-gray-900 mb-4 text-base">Skulder &amp; Eget kapital</h2>
+            <div className="bg-card border border rounded-xl p-5">
+              <h2 className="font-semibold text-foreground mb-4 text-base">Skulder &amp; Eget kapital</h2>
               {liabSections.map(renderSection)}
               {equitySections.map(renderSection)}
-              <div className="flex justify-between items-center px-2 py-2 border-t-2 border-gray-300 mt-2">
-                <span className="font-bold text-gray-900">Summa skulder &amp; EK</span>
-                <span className="font-mono font-bold text-gray-900">
+              <div className="flex justify-between items-center px-2 py-2 border-t-2 border mt-2">
+                <span className="font-bold text-foreground">Summa skulder &amp; EK</span>
+                <span className="font-mono font-bold text-foreground">
                   {fmtOre(
                     String(BigInt(report.totalLiabilities) + BigInt(report.totalEquity))
                   )}

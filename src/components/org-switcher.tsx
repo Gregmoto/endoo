@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { useOrg } from "@/hooks/use-org"
 import { useState } from "react"
+import { CHART } from "@/lib/analytics/chart-colors"
 
 // ─────────────────────────────────────────────
 // Types (returned by /api/orgs/mine — created later)
@@ -71,16 +72,7 @@ export function ImpersonationBanner() {
   return (
     <div
       role="alert"
-      style={{
-        background: "#f59e0b",
-        color: "#000",
-        padding: "0.5rem 1rem",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        fontSize: "0.875rem",
-        fontWeight: 500,
-      }}
+      className="flex items-center justify-between px-4 py-2 text-sm font-medium bg-amber-400 text-foreground"
     >
       <span>
         Du hanterar just nu: <strong>{session.impersonatingOrgSlug}</strong>
@@ -88,14 +80,7 @@ export function ImpersonationBanner() {
       <button
         onClick={exitImpersonation}
         disabled={loading}
-        style={{
-          background: "rgba(0,0,0,0.15)",
-          border: "none",
-          borderRadius: "4px",
-          padding: "0.25rem 0.75rem",
-          cursor: "pointer",
-          fontWeight: 600,
-        }}
+        className="bg-black/15 border-none rounded px-3 py-1 cursor-pointer font-semibold disabled:opacity-50"
       >
         {loading ? "Lämnar…" : "← Tillbaka till byrån"}
       </button>
@@ -149,45 +134,21 @@ export function OrgSwitcher({ orgs }: OrgSwitcherProps) {
   const currentOrgName = activeOrg?.name ?? session?.activeOrgSlug ?? "Välj konto"
 
   return (
-    <div style={{ position: "relative" }}>
+    <div className="relative">
       {/* Trigger button */}
       <button
         onClick={() => setOpen((v) => !v)}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.5rem",
-          padding: "0.5rem 0.75rem",
-          background: "transparent",
-          border: "1px solid #e5e7eb",
-          borderRadius: "6px",
-          cursor: "pointer",
-          fontWeight: 600,
-          minWidth: "180px",
-        }}
+        className="flex items-center gap-2 px-3 py-2 bg-transparent border rounded-md cursor-pointer font-semibold min-w-[180px]"
       >
-        <span style={{ flex: 1, textAlign: "left" }}>{currentOrgName}</span>
-        <span style={{ fontSize: "0.75rem" }}>{open ? "▲" : "▼"}</span>
+        <span className="flex-1 text-left">{currentOrgName}</span>
+        <span className="text-xs">{open ? "▲" : "▼"}</span>
       </button>
 
       {/* Dropdown */}
       {open && (
-        <div
-          style={{
-            position: "absolute",
-            top: "calc(100% + 4px)",
-            left: 0,
-            minWidth: "240px",
-            background: "#fff",
-            border: "1px solid #e5e7eb",
-            borderRadius: "8px",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
-            zIndex: 50,
-            overflow: "hidden",
-          }}
-        >
+        <div className="absolute top-[calc(100%+4px)] left-0 min-w-[240px] bg-card border rounded-lg shadow-lg z-50 overflow-hidden">
           {/* Own accounts */}
-          <div style={{ padding: "0.375rem 0.75rem", fontSize: "0.7rem", color: "#6b7280", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+          <div className="px-3 py-1.5 text-[0.7rem] text-muted-foreground font-semibold uppercase tracking-wide">
             Dina konton
           </div>
 
@@ -196,22 +157,14 @@ export function OrgSwitcher({ orgs }: OrgSwitcherProps) {
               <button
                 onClick={() => switchOrg(org.id)}
                 disabled={loading === org.id}
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.5rem",
-                  padding: "0.5rem 0.75rem",
-                  background: activeOrg?.id === org.id ? "#f3f4f6" : "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  textAlign: "left",
-                }}
+                className={`w-full flex items-center gap-2 px-3 py-2 border-none cursor-pointer text-left ${
+                  activeOrg?.id === org.id ? "bg-muted" : "bg-transparent hover:bg-accent"
+                } disabled:opacity-50`}
               >
                 <OrgAvatar org={org} size={24} />
                 <div>
-                  <div style={{ fontWeight: 500, fontSize: "0.875rem" }}>{org.name}</div>
-                  <div style={{ fontSize: "0.7rem", color: "#6b7280" }}>
+                  <div className="font-medium text-sm text-foreground">{org.name}</div>
+                  <div className="text-[0.7rem] text-muted-foreground">
                     {org.type === "agency" ? "Byrå" : "Kund"} · {roleLabel(org.role)}
                   </div>
                 </div>
@@ -220,8 +173,8 @@ export function OrgSwitcher({ orgs }: OrgSwitcherProps) {
 
               {/* Agency: show managed clients inline */}
               {org.type === "agency" && org.clients && org.clients.length > 0 && (
-                <div style={{ borderTop: "1px solid #f3f4f6" }}>
-                  <div style={{ padding: "0.25rem 0.75rem 0.25rem 1.5rem", fontSize: "0.7rem", color: "#9ca3af", fontWeight: 600, textTransform: "uppercase" }}>
+                <div className="border-t">
+                  <div className="px-3 py-1 pl-6 text-[0.7rem] text-muted-foreground font-semibold uppercase">
                     Kunder
                   </div>
                   {org.clients.map((client) => (
@@ -229,23 +182,15 @@ export function OrgSwitcher({ orgs }: OrgSwitcherProps) {
                       key={client.id}
                       onClick={() => impersonate(client.id)}
                       disabled={loading === client.id}
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
-                        padding: "0.375rem 0.75rem 0.375rem 1.75rem",
-                        background: session?.impersonatingOrganizationId === client.id ? "#fef3c7" : "transparent",
-                        border: "none",
-                        cursor: "pointer",
-                        textAlign: "left",
-                      }}
+                      className={`w-full flex items-center gap-2 px-3 py-1.5 pl-7 border-none cursor-pointer text-left ${
+                        session?.impersonatingOrganizationId === client.id ? "bg-amber-50" : "bg-transparent hover:bg-accent"
+                      } disabled:opacity-50`}
                     >
                       <OrgAvatar org={client} size={20} />
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 500, fontSize: "0.8125rem" }}>{client.name}</div>
+                      <div className="flex-1">
+                        <div className="font-medium text-[0.8125rem] text-foreground">{client.name}</div>
                         {client.accessLevel !== "full" && (
-                          <div style={{ fontSize: "0.675rem", color: "#f59e0b" }}>
+                          <div className="text-[0.675rem] text-amber-500">
                             {accessLevelLabel(client.accessLevel)}
                           </div>
                         )}
@@ -263,7 +208,7 @@ export function OrgSwitcher({ orgs }: OrgSwitcherProps) {
       {/* Close on outside click */}
       {open && (
         <div
-          style={{ position: "fixed", inset: 0, zIndex: 40 }}
+          className="fixed inset-0 z-40"
           onClick={() => setOpen(false)}
         />
       )}
@@ -298,11 +243,11 @@ function OrgAvatar({ org, size }: { org: { name: string; logoUrl?: string | null
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        color: "#fff",
         fontSize: size * 0.45,
         fontWeight: 700,
         flexShrink: 0,
       }}
+      className="text-white"
     >
       {org.name.charAt(0).toUpperCase()}
     </div>
@@ -312,14 +257,12 @@ function OrgAvatar({ org, size }: { org: { name: string; logoUrl?: string | null
 function Spinner() {
   return (
     <div
+      className="border-2 border-border rounded-full flex-shrink-0"
       style={{
         width: 14,
         height: 14,
-        border: "2px solid #e5e7eb",
-        borderTopColor: "#6b7280",
-        borderRadius: "50%",
+        borderTopColor: "var(--muted-foreground)",
         animation: "spin 0.6s linear infinite",
-        flexShrink: 0,
       }}
     />
   )
@@ -352,6 +295,6 @@ function stringToColor(str: string): string {
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash)
   }
-  const colors = ["#6366f1","#8b5cf6","#ec4899","#f59e0b","#10b981","#3b82f6","#ef4444"]
+  const colors = [CHART.indigo, CHART.violet, CHART.pink, CHART.amber, CHART.emerald, CHART.blue, CHART.red]
   return colors[Math.abs(hash) % colors.length]
 }

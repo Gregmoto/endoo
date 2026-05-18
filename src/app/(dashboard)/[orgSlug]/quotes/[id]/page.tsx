@@ -147,7 +147,7 @@ export default function QuoteDetailPage() {
   // ── Loading ────────────────────────────────────────────────────────────────
 
   if (loading) {
-    return <div className="p-8 text-sm text-gray-400">Laddar…</div>
+    return <div className="p-8 text-sm text-muted-foreground">Laddar…</div>
   }
 
   if (error || !quote) {
@@ -175,13 +175,13 @@ export default function QuoteDetailPage() {
       <div className="mb-6 flex items-start justify-between gap-3 flex-wrap">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Link href={`/${orgSlug}/quotes`} className="text-gray-400 hover:text-gray-600 text-sm">← Offerter</Link>
+            <Link href={`/${orgSlug}/quotes`} className="text-muted-foreground hover:text-muted-foreground text-sm">← Offerter</Link>
           </div>
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-gray-900 font-mono">{quote.number}</h1>
+            <h1 className="text-xl font-bold text-foreground font-mono">{quote.number}</h1>
             <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${st.cls}`}>{st.label}</span>
           </div>
-          {quote.title && <p className="text-sm text-gray-500 mt-0.5">{quote.title}</p>}
+          {quote.title && <p className="text-sm text-muted-foreground mt-0.5">{quote.title}</p>}
         </div>
 
         {/* Actions */}
@@ -241,23 +241,23 @@ export default function QuoteDetailPage() {
         <Card>
           <CardContent className="p-5 grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Kund</p>
-              <p className="text-sm font-medium text-gray-900">{quote.contactName}</p>
-              {quote.contactEmail && <p className="text-xs text-gray-400">{quote.contactEmail}</p>}
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Kund</p>
+              <p className="text-sm font-medium text-foreground">{quote.contactName}</p>
+              {quote.contactEmail && <p className="text-xs text-muted-foreground">{quote.contactEmail}</p>}
             </div>
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Skapad</p>
-              <p className="text-sm font-medium text-gray-900">{fmtDate(quote.createdAt)}</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Skapad</p>
+              <p className="text-sm font-medium text-foreground">{fmtDate(quote.createdAt)}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Giltig t.o.m.</p>
-              <p className={`text-sm font-medium ${quote.validUntil && new Date(quote.validUntil) < new Date() && !["accepted", "declined", "expired"].includes(quote.status) ? "text-amber-600" : "text-gray-900"}`}>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Giltig t.o.m.</p>
+              <p className={`text-sm font-medium ${quote.validUntil && new Date(quote.validUntil) < new Date() && !["accepted", "declined", "expired"].includes(quote.status) ? "text-amber-600" : "text-foreground"}`}>
                 {fmtDate(quote.validUntil)}
               </p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Svar</p>
-              <p className="text-sm font-medium text-gray-900">{fmtDate(quote.respondedAt)}</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Svar</p>
+              <p className="text-sm font-medium text-foreground">{fmtDate(quote.respondedAt)}</p>
             </div>
           </CardContent>
         </Card>
@@ -268,12 +268,12 @@ export default function QuoteDetailPage() {
             <CardHeader><CardTitle>Historik</CardTitle></CardHeader>
             <CardContent className="p-5">
               <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2 text-gray-600"><span className="w-24 text-xs text-gray-400">Skapad</span>{fmtDate(quote.createdAt)}</div>
-                {quote.sentAt     && <div className="flex items-center gap-2 text-gray-600"><span className="w-24 text-xs text-gray-400">Skickad</span>{fmtDate(quote.sentAt)}</div>}
-                {quote.viewedAt   && <div className="flex items-center gap-2 text-gray-600"><span className="w-24 text-xs text-gray-400">Öppnad</span>{fmtDate(quote.viewedAt)}</div>}
+                <div className="flex items-center gap-2 text-muted-foreground"><span className="w-24 text-xs text-muted-foreground">Skapad</span>{fmtDate(quote.createdAt)}</div>
+                {quote.sentAt     && <div className="flex items-center gap-2 text-muted-foreground"><span className="w-24 text-xs text-muted-foreground">Skickad</span>{fmtDate(quote.sentAt)}</div>}
+                {quote.viewedAt   && <div className="flex items-center gap-2 text-muted-foreground"><span className="w-24 text-xs text-muted-foreground">Öppnad</span>{fmtDate(quote.viewedAt)}</div>}
                 {quote.respondedAt && (
                   <div className={`flex items-center gap-2 font-medium ${quote.status === "accepted" ? "text-green-700" : "text-red-700"}`}>
-                    <span className="w-24 text-xs text-gray-400">Svar</span>
+                    <span className="w-24 text-xs text-muted-foreground">Svar</span>
                     {quote.status === "accepted" ? "✓ Godkänd" : "✗ Avböjd"} — {fmtDate(quote.respondedAt)}
                   </div>
                 )}
@@ -289,7 +289,7 @@ export default function QuoteDetailPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 text-xs text-gray-500">
+                  <tr className="border-b border text-xs text-muted-foreground">
                     <th className="px-5 py-3 text-left font-medium">Beskrivning</th>
                     <th className="px-5 py-3 text-right font-medium">Antal</th>
                     <th className="px-5 py-3 text-left font-medium">Enhet</th>
@@ -303,12 +303,12 @@ export default function QuoteDetailPage() {
                     const net   = l.quantity * (l.unitPriceKr ?? 0) * (1 - (l.discountRate ?? 0))
                     const total = net * (1 + (l.taxRate ?? 0))
                     return (
-                      <tr key={i} className="border-t border-gray-50">
-                        <td className="px-5 py-3 text-gray-900">{l.description}</td>
-                        <td className="px-5 py-3 text-right text-gray-500 tabular-nums">{l.quantity}</td>
-                        <td className="px-5 py-3 text-gray-500">{l.unit}</td>
+                      <tr key={i} className="border-t border-border/50">
+                        <td className="px-5 py-3 text-foreground">{l.description}</td>
+                        <td className="px-5 py-3 text-right text-muted-foreground tabular-nums">{l.quantity}</td>
+                        <td className="px-5 py-3 text-muted-foreground">{l.unit}</td>
                         <td className="px-5 py-3 text-right tabular-nums">{fmt(l.unitPriceKr ?? 0, cur)}</td>
-                        <td className="px-5 py-3 text-right text-gray-500">{Math.round((l.taxRate ?? 0) * 100)}%</td>
+                        <td className="px-5 py-3 text-right text-muted-foreground">{Math.round((l.taxRate ?? 0) * 100)}%</td>
                         <td className="px-5 py-3 text-right font-medium tabular-nums">{fmt(total, cur)}</td>
                       </tr>
                     )
@@ -316,11 +316,11 @@ export default function QuoteDetailPage() {
                 </tbody>
               </table>
             </div>
-            <div className="border-t border-gray-100 px-5 py-4 flex justify-end">
+            <div className="border-t border px-5 py-4 flex justify-end">
               <div className="w-52 space-y-1">
-                <div className="flex justify-between text-sm text-gray-500"><span>Netto</span><span className="tabular-nums">{fmt(totals.subtotal, cur)}</span></div>
-                <div className="flex justify-between text-sm text-gray-500"><span>Moms</span><span className="tabular-nums">{fmt(totals.tax, cur)}</span></div>
-                <div className="flex justify-between text-base font-bold text-gray-900 border-t border-gray-200 pt-1"><span>Totalt</span><span className="tabular-nums">{fmt(totals.total, cur)}</span></div>
+                <div className="flex justify-between text-sm text-muted-foreground"><span>Netto</span><span className="tabular-nums">{fmt(totals.subtotal, cur)}</span></div>
+                <div className="flex justify-between text-sm text-muted-foreground"><span>Moms</span><span className="tabular-nums">{fmt(totals.tax, cur)}</span></div>
+                <div className="flex justify-between text-base font-bold text-foreground border-t border pt-1"><span>Totalt</span><span className="tabular-nums">{fmt(totals.total, cur)}</span></div>
               </div>
             </div>
           </CardContent>
@@ -332,14 +332,14 @@ export default function QuoteDetailPage() {
             <CardContent className="p-5 space-y-3">
               {quote.notes && (
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Meddelande</p>
-                  <p className="text-sm text-gray-700 whitespace-pre-wrap">{quote.notes}</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Meddelande</p>
+                  <p className="text-sm text-foreground whitespace-pre-wrap">{quote.notes}</p>
                 </div>
               )}
               {quote.terms && (
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Villkor</p>
-                  <p className="text-sm text-gray-700 whitespace-pre-wrap">{quote.terms}</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Villkor</p>
+                  <p className="text-sm text-foreground whitespace-pre-wrap">{quote.terms}</p>
                 </div>
               )}
             </CardContent>
@@ -358,12 +358,12 @@ export default function QuoteDetailPage() {
       {/* Contract conversion modal */}
       {showContractModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Skapa avtal från offert</h2>
+          <div className="bg-card rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4">
+            <h2 className="text-lg font-bold text-foreground mb-4">Skapa avtal från offert</h2>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Faktureringsfrekvens</label>
-                <select className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500" value={contractFreq} onChange={e => setContractFreq(e.target.value)}>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Faktureringsfrekvens</label>
+                <select className="w-full px-3 py-2.5 text-sm border border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500" value={contractFreq} onChange={e => setContractFreq(e.target.value)}>
                   <option value="monthly">Månadsvis</option>
                   <option value="quarterly">Kvartalsvis</option>
                   <option value="yearly">Årsvis</option>
@@ -372,8 +372,8 @@ export default function QuoteDetailPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Startdatum</label>
-                <input type="date" className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500" value={contractStart} onChange={e => setContractStart(e.target.value)} />
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Startdatum</label>
+                <input type="date" className="w-full px-3 py-2.5 text-sm border border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500" value={contractStart} onChange={e => setContractStart(e.target.value)} />
               </div>
             </div>
             <div className="flex gap-2 mt-5">

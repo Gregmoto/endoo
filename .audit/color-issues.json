@@ -1,0 +1,1564 @@
+{
+  "errors": [],
+  "warnings": [
+    {
+      "file": "src/app/(auth)/invite/[token]/page.tsx",
+      "line": 63,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/accounts/page.tsx",
+      "line": 162,
+      "match": "opacity-70",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/inventory/[id]/page.tsx",
+      "line": 154,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/inventory/[id]/page.tsx",
+      "line": 218,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/inventory/[id]/page.tsx",
+      "line": 218,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/inventory/[id]/page.tsx",
+      "line": 253,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/inventory/[id]/page.tsx",
+      "line": 253,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/inventory/page.tsx",
+      "line": 65,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/journals/[id]/page.tsx",
+      "line": 99,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/journals/[id]/page.tsx",
+      "line": 99,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/journals/[id]/page.tsx",
+      "line": 108,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/journals/page.tsx",
+      "line": 94,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/page.tsx",
+      "line": 90,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/reports/balance-sheet/page.tsx",
+      "line": 123,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/reports/balance-sheet/page.tsx",
+      "line": 123,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/reports/general-ledger/page.tsx",
+      "line": 119,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/reports/general-ledger/page.tsx",
+      "line": 119,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/reports/income-statement/page.tsx",
+      "line": 99,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/reports/income-statement/page.tsx",
+      "line": 99,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/reports/trial-balance/page.tsx",
+      "line": 118,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/reports/trial-balance/page.tsx",
+      "line": 118,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/reports/vat/page.tsx",
+      "line": 114,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/reports/vat/page.tsx",
+      "line": 114,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/settings/api/page.tsx",
+      "line": 109,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/settings/api/page.tsx",
+      "line": 128,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/settings/api/page.tsx",
+      "line": 197,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/settings/api/page.tsx",
+      "line": 197,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/settings/billing/page.tsx",
+      "line": 236,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/settings/email/logs/page.tsx",
+      "line": 141,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/settings/email/logs/page.tsx",
+      "line": 220,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/settings/email/logs/page.tsx",
+      "line": 230,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/[id]/page.tsx",
+      "line": 297,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/[id]/page.tsx",
+      "line": 297,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/[id]/page.tsx",
+      "line": 319,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/[id]/page.tsx",
+      "line": 319,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/[id]/page.tsx",
+      "line": 332,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/[id]/page.tsx",
+      "line": 355,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/[id]/page.tsx",
+      "line": 355,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/[id]/page.tsx",
+      "line": 388,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/[id]/page.tsx",
+      "line": 388,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/page.tsx",
+      "line": 82,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/page.tsx",
+      "line": 94,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/upload/page.tsx",
+      "line": 119,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/upload/page.tsx",
+      "line": 119,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/tasks/page.tsx",
+      "line": 108,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/tasks/page.tsx",
+      "line": 247,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/tasks/page.tsx",
+      "line": 209,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/tax/vat/page.tsx",
+      "line": 159,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/tax/vat/page.tsx",
+      "line": 194,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/tax/vat/page.tsx",
+      "line": 194,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/tax/vat/page.tsx",
+      "line": 274,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/tax/vat/page.tsx",
+      "line": 280,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/tax/vat/page.tsx",
+      "line": 280,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/team/page.tsx",
+      "line": 108,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/team/page.tsx",
+      "line": 108,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/team/page.tsx",
+      "line": 130,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/ai-bokforing/page.tsx",
+      "line": 19,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/ai-bokforing/page.tsx",
+      "line": 31,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/ai-bokforing/page.tsx",
+      "line": 125,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/avtalsfakturering/page.tsx",
+      "line": 19,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/avtalsfakturering/page.tsx",
+      "line": 31,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/avtalsfakturering/page.tsx",
+      "line": 130,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/bokforing-smaforetag/page.tsx",
+      "line": 19,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/bokforing-smaforetag/page.tsx",
+      "line": 31,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/bokforing-smaforetag/page.tsx",
+      "line": 154,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/digital-fakturering/page.tsx",
+      "line": 19,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/digital-fakturering/page.tsx",
+      "line": 31,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/digital-fakturering/page.tsx",
+      "line": 134,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/ekonomisystem-byra/page.tsx",
+      "line": 23,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/ekonomisystem-byra/page.tsx",
+      "line": 35,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/ekonomisystem-byra/page.tsx",
+      "line": 130,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/page.tsx",
+      "line": 109,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/page.tsx",
+      "line": 121,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/page.tsx",
+      "line": 173,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-balansrapport/page.tsx",
+      "line": 19,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-balansrapport/page.tsx",
+      "line": 31,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-balansrapport/page.tsx",
+      "line": 135,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-bas-kontoplan/page.tsx",
+      "line": 19,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-bas-kontoplan/page.tsx",
+      "line": 31,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-bas-kontoplan/page.tsx",
+      "line": 159,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-ett-ekonomisystem/page.tsx",
+      "line": 19,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-ett-ekonomisystem/page.tsx",
+      "line": 31,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-ett-ekonomisystem/page.tsx",
+      "line": 196,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-huvudbok/page.tsx",
+      "line": 19,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-huvudbok/page.tsx",
+      "line": 31,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-huvudbok/page.tsx",
+      "line": 172,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-resultatrapport/page.tsx",
+      "line": 19,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-resultatrapport/page.tsx",
+      "line": 31,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-resultatrapport/page.tsx",
+      "line": 160,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-sie-fil/page.tsx",
+      "line": 19,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-sie-fil/page.tsx",
+      "line": 31,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/artiklar/vad-ar-sie-fil/page.tsx",
+      "line": 155,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/byra/page.tsx",
+      "line": 156,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/byra/page.tsx",
+      "line": 168,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/byra/page.tsx",
+      "line": 179,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/byra/page.tsx",
+      "line": 182,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/byra/page.tsx",
+      "line": 198,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/byra/page.tsx",
+      "line": 386,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/byra/page.tsx",
+      "line": 401,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/byra/page.tsx",
+      "line": 327,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/byra/page.tsx",
+      "line": 331,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/byra/page.tsx",
+      "line": 335,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/byra/page.tsx",
+      "line": 342,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/cookies/page.tsx",
+      "line": 45,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/e-handel/page.tsx",
+      "line": 35,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/e-handel/page.tsx",
+      "line": 41,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/e-handel/page.tsx",
+      "line": 60,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/e-handel/page.tsx",
+      "line": 73,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/e-handel/page.tsx",
+      "line": 79,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/e-handel/page.tsx",
+      "line": 106,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/funktioner/page.tsx",
+      "line": 284,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/funktioner/page.tsx",
+      "line": 296,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/funktioner/page.tsx",
+      "line": 314,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/funktioner/page.tsx",
+      "line": 363,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/funktioner/page.tsx",
+      "line": 384,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/funktioner/page.tsx",
+      "line": 397,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/konsulter/page.tsx",
+      "line": 28,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/konsulter/page.tsx",
+      "line": 34,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/konsulter/page.tsx",
+      "line": 53,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/konsulter/page.tsx",
+      "line": 86,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/not-found.tsx",
+      "line": 13,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/not-found.tsx",
+      "line": 25,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/onboarding/page.tsx",
+      "line": 114,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/onboarding/page.tsx",
+      "line": 149,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/onboarding/page.tsx",
+      "line": 149,
+      "match": "opacity-60",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 336,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 350,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 361,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 398,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 449,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 475,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 492,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 545,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 558,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 571,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 603,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 669,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 672,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 683,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 684,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 692,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 703,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 718,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 927,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 933,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 948,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 959,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 984,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 841,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 847,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 851,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 860,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/page.tsx",
+      "line": 868,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/platform/design-system/page.tsx",
+      "line": 50,
+      "match": "opacity-70",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/platform/layout.tsx",
+      "line": 19,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/platform/layout.tsx",
+      "line": 29,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/app/platform/layout.tsx",
+      "line": 29,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/platform/organizations/[id]/OrgStatusToggle.tsx",
+      "line": 25,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/platform/organizations/[id]/page.tsx",
+      "line": 50,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/platform/organizations/page.tsx",
+      "line": 147,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/auth/verify/page.tsx",
+      "line": 67,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/auth/verify/page.tsx",
+      "line": 72,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/contracts/page.tsx",
+      "line": 60,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/contracts/page.tsx",
+      "line": 63,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/contracts/page.tsx",
+      "line": 87,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/invoices/[id]/page.tsx",
+      "line": 66,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/invoices/[id]/page.tsx",
+      "line": 98,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/invoices/[id]/page.tsx",
+      "line": 126,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/invoices/[id]/page.tsx",
+      "line": 134,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/invoices/page.tsx",
+      "line": 59,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/invoices/page.tsx",
+      "line": 85,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/layout.tsx",
+      "line": 40,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/layout.tsx",
+      "line": 43,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/layout.tsx",
+      "line": 52,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/login/page.tsx",
+      "line": 43,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/login/page.tsx",
+      "line": 63,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/page.tsx",
+      "line": 55,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/page.tsx",
+      "line": 63,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/page.tsx",
+      "line": 64,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/page.tsx",
+      "line": 86,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/page.tsx",
+      "line": 88,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/page.tsx",
+      "line": 116,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/quotes/[id]/page.tsx",
+      "line": 82,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/quotes/[id]/page.tsx",
+      "line": 117,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/quotes/[id]/page.tsx",
+      "line": 123,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/quotes/[id]/page.tsx",
+      "line": 143,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/quotes/page.tsx",
+      "line": 56,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/quotes/page.tsx",
+      "line": 60,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/portal/[orgSlug]/quotes/page.tsx",
+      "line": 82,
+      "match": "style={{ color:",
+      "suggestion": "use Tailwind text- class instead of inline style color"
+    },
+    {
+      "file": "src/app/privacy/page.tsx",
+      "line": 56,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/q/[token]/page.tsx",
+      "line": 140,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/q/[token]/page.tsx",
+      "line": 205,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/q/[token]/page.tsx",
+      "line": 236,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/q/[token]/page.tsx",
+      "line": 236,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/sign/[token]/page.tsx",
+      "line": 135,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/sign/[token]/page.tsx",
+      "line": 213,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/sign/[token]/page.tsx",
+      "line": 253,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/sign/[token]/page.tsx",
+      "line": 253,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/smaforetag/page.tsx",
+      "line": 39,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/smaforetag/page.tsx",
+      "line": 45,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/smaforetag/page.tsx",
+      "line": 64,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/smaforetag/page.tsx",
+      "line": 133,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/terms/page.tsx",
+      "line": 56,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/agency/BulkActionBar.tsx",
+      "line": 49,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/agency/BulkActionBar.tsx",
+      "line": 58,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/agency/BulkActionBar.tsx",
+      "line": 68,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/agency/BulkActionBar.tsx",
+      "line": 80,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/agency/HealthPanel.tsx",
+      "line": 120,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/agency/HealthPanel.tsx",
+      "line": 133,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/ai/AiButton.tsx",
+      "line": 10,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ai/AiDrawer.tsx",
+      "line": 241,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/ai/AiDrawer.tsx",
+      "line": 247,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ai/AiDrawer.tsx",
+      "line": 195,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ai/SuggestionReview.tsx",
+      "line": 205,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ai/SuggestionReview.tsx",
+      "line": 205,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/ai/SuggestionReview.tsx",
+      "line": 241,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ai/SuggestionReview.tsx",
+      "line": 241,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/layout/ImpersonationBanner.tsx",
+      "line": 56,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/layout/ImpersonationBanner.tsx",
+      "line": 82,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/layout/ImpersonationBanner.tsx",
+      "line": 99,
+      "match": "opacity-70",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/layout/ImpersonationBanner.tsx",
+      "line": 105,
+      "match": "opacity-60",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/layout/MobileNavBar.tsx",
+      "line": 58,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/layout/sidebar.tsx",
+      "line": 158,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/components/layout/sidebar.tsx",
+      "line": 161,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/layout/sidebar.tsx",
+      "line": 184,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/layout/sidebar.tsx",
+      "line": 362,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/components/layout/sidebar.tsx",
+      "line": 401,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/components/layout/sidebar.tsx",
+      "line": 263,
+      "match": "opacity-60",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/notifications/NotificationBell.tsx",
+      "line": 56,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/notifications/NotificationDrawer.tsx",
+      "line": 124,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/org-switcher.tsx",
+      "line": 250,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/org-switcher.tsx",
+      "line": 160,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/org-switcher.tsx",
+      "line": 185,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/signing/SignatureRequestModal.tsx",
+      "line": 169,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/signing/SignatureRequestModal.tsx",
+      "line": 169,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/signing/SignatureStatusWidget.tsx",
+      "line": 213,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/signing/SignatureStatusWidget.tsx",
+      "line": 221,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/tasks/TaskCreateForm.tsx",
+      "line": 98,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/tasks/TaskCreateForm.tsx",
+      "line": 98,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/tasks/TaskDrawer.tsx",
+      "line": 163,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/tasks/TaskDrawer.tsx",
+      "line": 277,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/tasks/TaskDrawer.tsx",
+      "line": 337,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/tasks/TaskDrawer.tsx",
+      "line": 114,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/tasks/TaskWidget.tsx",
+      "line": 128,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/tasks/TaskWidget.tsx",
+      "line": 147,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/theme/ThemeToggle.tsx",
+      "line": 20,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/components/ui/CameraCapture.tsx",
+      "line": 102,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ui/CameraCapture.tsx",
+      "line": 137,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ui/CameraCapture.tsx",
+      "line": 202,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ui/CameraCapture.tsx",
+      "line": 218,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ui/CookieBanner.tsx",
+      "line": 80,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/components/ui/CookieBanner.tsx",
+      "line": 86,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ui/CookieBanner.tsx",
+      "line": 145,
+      "match": "hover:bg-gray-800",
+      "suggestion": "hover:bg-accent"
+    },
+    {
+      "file": "src/components/ui/CookieBanner.tsx",
+      "line": 151,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ui/UpgradePrompt.tsx",
+      "line": 74,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ui/WhatsNewModal.tsx",
+      "line": 66,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ui/WhatsNewModal.tsx",
+      "line": 111,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/ui/button.tsx",
+      "line": 22,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/ui/input.tsx",
+      "line": 21,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    }
+  ],
+  "summary": {
+    "totalErrors": 0,
+    "totalWarnings": 259,
+    "filesAffected": 83
+  }
+}

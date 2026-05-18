@@ -53,15 +53,15 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
     <div className="w-full max-w-sm px-4">
       <div className="mb-8 text-center">
         <span className="text-2xl font-bold text-indigo-600">Endoo</span>
-        <p className="mt-1 text-sm text-gray-500">Du har blivit inbjuden</p>
+        <p className="mt-1 text-sm text-muted-foreground">Du har blivit inbjuden</p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-        <div className="flex rounded-lg border border-gray-200 p-1 mb-6">
+      <div className="bg-card rounded-2xl border border shadow-sm p-8">
+        <div className="flex rounded-lg border border p-1 mb-6">
           {(["existing", "new"] as const).map((s) => (
             <button key={s} type="button" onClick={() => setScenario(s)}
               className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                scenario === s ? "bg-indigo-600 text-white" : "text-gray-600 hover:text-gray-900"
+                scenario === s ? "bg-indigo-600 text-white" : "text-muted-foreground hover:text-foreground"
               }`}>
               {s === "existing" ? "Jag har konto" : "Nytt konto"}
             </button>
@@ -78,7 +78,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
             </>
           )}
           {scenario === "existing" && (
-            <p className="text-sm text-gray-600 bg-gray-50 px-4 py-3 rounded-lg">
+            <p className="text-sm text-muted-foreground bg-muted px-4 py-3 rounded-lg">
               Logga in med ditt befintliga konto för att acceptera inbjudan.
             </p>
           )}

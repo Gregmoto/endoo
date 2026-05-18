@@ -40,12 +40,12 @@ function VatRow({
   const num = Number(value)
   const color = positive !== undefined
     ? num > 0 ? "text-red-700" : "text-green-700"
-    : "text-gray-800"
+    : "text-foreground"
 
   return (
-    <div className={`flex items-center gap-4 px-4 py-3 border-b border-gray-100 ${bold ? "bg-gray-50" : ""}`}>
-      <div className="w-16 text-xs font-mono font-semibold text-gray-500 flex-shrink-0">Ruta {box}</div>
-      <div className={`flex-1 text-sm ${bold ? "font-semibold text-gray-900" : "text-gray-700"}`}>{label}</div>
+    <div className={`flex items-center gap-4 px-4 py-3 border-b border ${bold ? "bg-muted" : ""}`}>
+      <div className="w-16 text-xs font-mono font-semibold text-muted-foreground flex-shrink-0">Ruta {box}</div>
+      <div className={`flex-1 text-sm ${bold ? "font-semibold text-foreground" : "text-foreground"}`}>{label}</div>
       <div className={`font-mono text-sm ${bold ? "font-bold text-base" : ""} ${color}`}>
         {fmtOre(value)} kr
       </div>
@@ -82,30 +82,30 @@ export default function VatPage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="flex items-center gap-3 mb-6">
-        <Link href={`/${orgSlug}/reports`} className="text-sm text-gray-500 hover:text-gray-700">
+        <Link href={`/${orgSlug}/reports`} className="text-sm text-muted-foreground hover:text-foreground">
           ← Rapporter
         </Link>
-        <span className="text-gray-300">/</span>
-        <h1 className="text-xl font-bold text-gray-900">Momsrapport</h1>
+        <span className="text-muted-foreground">/</span>
+        <h1 className="text-xl font-bold text-foreground">Momsrapport</h1>
       </div>
 
       <div className="flex items-end gap-4 mb-6 flex-wrap">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-gray-600">Från</label>
+          <label className="text-xs font-medium text-muted-foreground">Från</label>
           <input
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="border border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-gray-600">Till</label>
+          <label className="text-xs font-medium text-muted-foreground">Till</label>
           <input
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="border border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
         </div>
         <button
@@ -124,9 +124,9 @@ export default function VatPage() {
       )}
 
       {report && (
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-          <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+        <div className="bg-card border border rounded-xl overflow-hidden">
+          <div className="px-4 py-3 bg-muted border-b border">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
               Momspliktiga försäljningar (underlag)
             </p>
           </div>
@@ -134,19 +134,19 @@ export default function VatPage() {
           <VatRow box="06" label="Momspliktiga försäljningar 12%"  value={report.box06} />
           <VatRow box="07" label="Momspliktiga försäljningar 6%"   value={report.box07} />
 
-          <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 border-t border-t-gray-200">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Utgående moms</p>
+          <div className="px-4 py-3 bg-muted border-b border border-t border">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Utgående moms</p>
           </div>
           <VatRow box="10" label="Utgående moms 25%" value={report.box10} />
           <VatRow box="11" label="Utgående moms 12%" value={report.box11} />
           <VatRow box="12" label="Utgående moms 6%"  value={report.box12} />
 
-          <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 border-t border-t-gray-200">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Ingående moms</p>
+          <div className="px-4 py-3 bg-muted border-b border border-t border">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Ingående moms</p>
           </div>
           <VatRow box="48" label="Ingående moms (avdragsgill)" value={report.box48} />
 
-          <div className="border-t-2 border-gray-300">
+          <div className="border-t-2 border">
             <VatRow
               box="49"
               label={Number(report.box49) >= 0 ? "Moms att betala" : "Moms att få tillbaka"}

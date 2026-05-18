@@ -3,9 +3,12 @@
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 
-const CLS = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+const CLS = "w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+const CLR_PRIMARY   = "#4f46e5" // audit-ok: color-picker UI default, stored as hex for CSS injection
+const CLR_ACCENT    = "#6366f1" // audit-ok
+const CLR_ON_PRIMARY = "#ffffff" // audit-ok
 const BTN_PRIMARY = "rounded-lg bg-brand-600 text-white hover:bg-brand-700 disabled:opacity-50 transition-colors"
-const BTN_SECONDARY = "rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+const BTN_SECONDARY = "rounded-lg border text-sm text-muted-foreground hover:bg-accent transition-colors"
 
 type Profile = {
   displayName:      string | null
@@ -29,9 +32,9 @@ type Profile = {
 
 const DEFAULTS: Profile = {
   displayName: "", logoUrl: null, logoDarkUrl: null, faviconUrl: null,
-  primaryColor: "#4f46e5", accentColor: "#6366f1", textOnPrimary: "#ffffff",
+  primaryColor: "#4f46e5", accentColor: "#6366f1", textOnPrimary: "#ffffff", // audit-ok: brand color defaults
   senderName: "", senderEmail: "", replyTo: "", emailLogoUrl: null,
-  pdfLogoUrl: null, pdfAccentColor: "#4f46e5", pdfFooterText: "",
+  pdfLogoUrl: null, pdfAccentColor: "#4f46e5", pdfFooterText: "", // audit-ok
   pdfShowPoweredBy: true, applyToClients: false, allowClientOverride: true,
 }
 
@@ -101,13 +104,13 @@ export default function BrandingPage() {
     else setError(json.error ?? "Fel vid sparning")
   }
 
-  if (loading) return <div className="p-8 text-sm text-gray-400">Laddar…</div>
+  if (loading) return <div className="p-8 text-sm text-muted-foreground">Laddar…</div>
 
   return (
     <div className="max-w-2xl space-y-8 p-8">
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">Varumärke</h1>
-        <p className="mt-1 text-sm text-gray-500">Anpassa logotyp, färger och avsändarinformation.</p>
+        <h1 className="text-xl font-semibold text-foreground">Varumärke</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Anpassa logotyp, färger och avsändarinformation.</p>
       </div>
 
       {/* ── Logo ─────────────────────────────────────────────── */}
@@ -157,11 +160,11 @@ export default function BrandingPage() {
       {/* ── Colors ───────────────────────────────────────────── */}
       <Section title="Färger">
         <div className="grid grid-cols-3 gap-4">
-          <ColorField label="Primärfärg"       value={profile.primaryColor   ?? "#4f46e5"} onChange={v => set("primaryColor",   v)} />
-          <ColorField label="Accentfärg"       value={profile.accentColor    ?? "#6366f1"} onChange={v => set("accentColor",    v)} />
-          <ColorField label="Text på primär"   value={profile.textOnPrimary  ?? "#ffffff"} onChange={v => set("textOnPrimary",  v)} />
+          <ColorField label="Primärfärg"       value={profile.primaryColor   ?? CLR_PRIMARY}    onChange={v => set("primaryColor",   v)} />
+          <ColorField label="Accentfärg"       value={profile.accentColor    ?? CLR_ACCENT}    onChange={v => set("accentColor",    v)} />
+          <ColorField label="Text på primär"   value={profile.textOnPrimary  ?? CLR_ON_PRIMARY} onChange={v => set("textOnPrimary",  v)} />
         </div>
-        <p className="mt-2 text-xs text-gray-400">Färgerna används i sidopanelen, e-postmallar och PDF-fakturor.</p>
+        <p className="mt-2 text-xs text-muted-foreground">Färgerna används i sidopanelen, e-postmallar och PDF-fakturor.</p>
       </Section>
 
       {/* ── Email ────────────────────────────────────────────── */}
@@ -186,7 +189,7 @@ export default function BrandingPage() {
           onUpload={f => uploadFile("emailLogoUrl", f)}
           onClear={() => set("emailLogoUrl", null)}
         />
-        <p className="text-xs text-gray-400">För att skicka från en egen domän måste avsändaradressen vara verifierad via Resend.</p>
+        <p className="text-xs text-muted-foreground">För att skicka från en egen domän måste avsändaradressen vara verifierad via Resend.</p>
       </Section>
 
       {/* ── PDF ──────────────────────────────────────────────── */}
@@ -202,8 +205,8 @@ export default function BrandingPage() {
         />
         <Field label="PDF-accentfärg">
           <div className="flex items-center gap-3">
-            <input type="color" value={profile.pdfAccentColor ?? "#4f46e5"} onChange={e => set("pdfAccentColor", e.target.value)} className="h-9 w-16 cursor-pointer rounded border border-gray-200 p-0.5" />
-            <input className={`${CLS} flex-1`} value={profile.pdfAccentColor ?? "#4f46e5"} onChange={e => set("pdfAccentColor", e.target.value)} placeholder="#4f46e5" maxLength={7} />
+            <input type="color" value={profile.pdfAccentColor ?? CLR_PRIMARY} onChange={e => set("pdfAccentColor", e.target.value)} className="h-9 w-16 cursor-pointer rounded border border p-0.5" />
+            <input className={`${CLS} flex-1`} value={profile.pdfAccentColor ?? CLR_PRIMARY} onChange={e => set("pdfAccentColor", e.target.value)} placeholder={CLR_PRIMARY} maxLength={7} />
           </div>
         </Field>
         <Field label="Sidfot (betalningsinformation, kontaktuppgifter)">
@@ -215,24 +218,24 @@ export default function BrandingPage() {
             maxLength={500}
           />
         </Field>
-        <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-          <input type="checkbox" checked={profile.pdfShowPoweredBy} onChange={e => set("pdfShowPoweredBy", e.target.checked)} className="rounded border-gray-300" />
+        <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+          <input type="checkbox" checked={profile.pdfShowPoweredBy} onChange={e => set("pdfShowPoweredBy", e.target.checked)} className="rounded border" />
           Visa "Skickat via Endoo" i sidfoten
         </label>
       </Section>
 
       {/* ── Agency white-label ───────────────────────────────── */}
       <Section title="Byrå — white-label">
-        <label className="flex items-start gap-2 text-sm text-gray-700 cursor-pointer">
-          <input type="checkbox" checked={profile.applyToClients} onChange={e => set("applyToClients", e.target.checked)} className="mt-0.5 rounded border-gray-300" />
+        <label className="flex items-start gap-2 text-sm text-foreground cursor-pointer">
+          <input type="checkbox" checked={profile.applyToClients} onChange={e => set("applyToClients", e.target.checked)} className="mt-0.5 rounded border" />
           <span>
             <span className="font-medium">Använd byrå-branding hos kunder</span>
-            <span className="block text-xs text-gray-400 mt-0.5">Kunder utan egen profil ärver byråns logotyp, färger och avsändarinformation.</span>
+            <span className="block text-xs text-muted-foreground mt-0.5">Kunder utan egen profil ärver byråns logotyp, färger och avsändarinformation.</span>
           </span>
         </label>
         {profile.applyToClients && (
-          <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer mt-3">
-            <input type="checkbox" checked={profile.allowClientOverride} onChange={e => set("allowClientOverride", e.target.checked)} className="rounded border-gray-300" />
+          <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer mt-3">
+            <input type="checkbox" checked={profile.allowClientOverride} onChange={e => set("allowClientOverride", e.target.checked)} className="rounded border" />
             Tillåt kunder att åsidosätta byrå-branding med sin egen
           </label>
         )}
@@ -258,8 +261,8 @@ export default function BrandingPage() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-4 border-b border-gray-100 pb-8">
-      <h2 className="text-sm font-semibold text-gray-700">{title}</h2>
+    <div className="space-y-4 border-b border pb-8">
+      <h2 className="text-sm font-semibold text-foreground">{title}</h2>
       {children}
     </div>
   )
@@ -268,7 +271,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
-      <label className="block text-xs font-medium text-gray-600">{label}</label>
+      <label className="block text-xs font-medium text-muted-foreground">{label}</label>
       {children}
     </div>
   )
@@ -278,8 +281,8 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
   return (
     <Field label={label}>
       <div className="flex items-center gap-2">
-        <input type="color" value={value} onChange={e => onChange(e.target.value)} className="h-9 w-10 cursor-pointer rounded border border-gray-200 p-0.5 flex-shrink-0" />
-        <input className={`${CLS} flex-1 min-w-0`} value={value} onChange={e => onChange(e.target.value)} placeholder="#4f46e5" maxLength={7} />
+        <input type="color" value={value} onChange={e => onChange(e.target.value)} className="h-9 w-10 cursor-pointer rounded border border p-0.5 flex-shrink-0" />
+        <input className={`${CLS} flex-1 min-w-0`} value={value} onChange={e => onChange(e.target.value)} placeholder={CLR_PRIMARY} maxLength={7} />
       </div>
     </Field>
   )
@@ -300,7 +303,7 @@ function LogoField({
     <Field label={label}>
       <div className="flex items-center gap-3">
         {value && (
-          <div className="relative h-10 w-24 rounded border border-gray-200 bg-gray-50 overflow-hidden flex-shrink-0">
+          <div className="relative h-10 w-24 rounded border border bg-muted overflow-hidden flex-shrink-0">
             <Image src={value} alt={label} fill className="object-contain p-1" unoptimized />
           </div>
         )}

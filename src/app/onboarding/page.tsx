@@ -54,11 +54,11 @@ export default function OnboardingPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <span className="text-2xl font-extrabold text-indigo-600 tracking-tight">endoo</span>
-          <p className="mt-3 text-gray-500 text-sm">Välkommen! Skapa ditt konto för att komma igång.</p>
+          <p className="mt-3 text-muted-foreground text-sm">Välkommen! Skapa ditt konto för att komma igång.</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-          <h1 className="text-xl font-bold text-gray-900 mb-6">Berätta om ditt företag</h1>
+        <div className="bg-card rounded-2xl shadow-sm border border p-8">
+          <h1 className="text-xl font-bold text-foreground mb-6">Berätta om ditt företag</h1>
 
           <form onSubmit={submit} className="space-y-5">
             {/* Company name */}
@@ -108,8 +108,8 @@ export default function OnboardingPage() {
                       onChange={set("type")}
                       className="sr-only"
                     />
-                    <span className="text-sm font-semibold text-gray-900">{opt.label}</span>
-                    <span className="text-xs text-gray-500 leading-snug">{opt.desc}</span>
+                    <span className="text-sm font-semibold text-foreground">{opt.label}</span>
+                    <span className="text-xs text-muted-foreground leading-snug">{opt.desc}</span>
                     {form.type === opt.value && (
                       <span className="absolute top-3 right-3 w-4 h-4 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[10px] font-bold">✓</span>
                     )}
@@ -153,14 +153,14 @@ export default function OnboardingPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
+        <p className="text-center text-xs text-muted-foreground mt-6">
           Du kan ändra dessa uppgifter senare under Inställningar.
         </p>
 
         <div className="text-center mt-4">
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="text-xs text-gray-400 hover:text-gray-600 underline underline-offset-2"
+            className="text-xs text-muted-foreground hover:text-muted-foreground underline underline-offset-2"
           >
             Logga ut
           </button>

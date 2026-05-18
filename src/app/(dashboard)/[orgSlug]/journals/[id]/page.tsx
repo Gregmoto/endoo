@@ -63,7 +63,7 @@ export default function JournalDetailPage() {
     setActing(false)
   }
 
-  if (loading) return <div className="p-6 text-sm text-gray-400">Laddar…</div>
+  if (loading) return <div className="p-6 text-sm text-muted-foreground">Laddar…</div>
   if (!journal) return <div className="p-6 text-sm text-red-500">Verifikat hittades inte.</div>
 
   const totalDebit  = journal.entries.reduce((s, e) => s + Number(e.debit), 0)
@@ -72,7 +72,7 @@ export default function JournalDetailPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <Link href={`/${orgSlug}/journals`} className="text-sm text-gray-500 hover:text-gray-700">
+      <Link href={`/${orgSlug}/journals`} className="text-sm text-muted-foreground hover:text-foreground">
         ← Bokföring
       </Link>
 
@@ -80,13 +80,13 @@ export default function JournalDetailPage() {
       <div className="mt-4 mb-6 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-2xl font-bold text-gray-900 font-mono">{journal.reference}</h1>
+            <h1 className="text-2xl font-bold text-foreground font-mono">{journal.reference}</h1>
             <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full ${STATUS_COLOR[journal.status]}`}>
               {STATUS_LABEL[journal.status]}
             </span>
           </div>
-          <p className="text-gray-500 text-sm">{journal.description}</p>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-muted-foreground text-sm">{journal.description}</p>
+          <p className="text-xs text-muted-foreground mt-1">
             {new Date(journal.date).toLocaleDateString("sv-SE")} · {journal.series.name} · Räkenskapsår {journal.fiscalYear.name}
             {journal.postedAt && ` · Bokförd ${new Date(journal.postedAt).toLocaleDateString("sv-SE")}`}
           </p>
@@ -116,40 +116,40 @@ export default function JournalDetailPage() {
       {error && <p className="mb-4 text-sm text-red-600 bg-red-50 px-4 py-2 rounded-lg">{error}</p>}
 
       {/* Journal entries */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden mb-6">
+      <div className="bg-card rounded-xl border border shadow-sm overflow-hidden mb-6">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50/50">
-              <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Konto</th>
-              <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Beskrivning</th>
-              <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Momskod</th>
-              <th className="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Debet</th>
-              <th className="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Kredit</th>
+            <tr className="border-b border bg-muted/50">
+              <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Konto</th>
+              <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Beskrivning</th>
+              <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Momskod</th>
+              <th className="px-5 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wide">Debet</th>
+              <th className="px-5 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wide">Kredit</th>
             </tr>
           </thead>
           <tbody>
             {journal.entries.map(e => (
-              <tr key={e.id} className="border-t border-gray-50">
+              <tr key={e.id} className="border-t border-border/50">
                 <td className="px-5 py-2.5">
                   <span className="font-mono text-xs text-indigo-700 font-semibold">{e.account.number}</span>
-                  <span className="ml-2 text-gray-700">{e.account.name}</span>
+                  <span className="ml-2 text-foreground">{e.account.name}</span>
                 </td>
-                <td className="px-5 py-2.5 text-gray-500 text-xs">{e.description ?? "—"}</td>
-                <td className="px-5 py-2.5 text-gray-400 text-xs font-mono">{e.vatCode ?? "—"}</td>
-                <td className="px-5 py-2.5 text-right tabular-nums text-gray-900">
+                <td className="px-5 py-2.5 text-muted-foreground text-xs">{e.description ?? "—"}</td>
+                <td className="px-5 py-2.5 text-muted-foreground text-xs font-mono">{e.vatCode ?? "—"}</td>
+                <td className="px-5 py-2.5 text-right tabular-nums text-foreground">
                   {Number(e.debit) > 0 ? fmt(e.debit) : ""}
                 </td>
-                <td className="px-5 py-2.5 text-right tabular-nums text-gray-900">
+                <td className="px-5 py-2.5 text-right tabular-nums text-foreground">
                   {Number(e.credit) > 0 ? fmt(e.credit) : ""}
                 </td>
               </tr>
             ))}
           </tbody>
           <tfoot>
-            <tr className="border-t-2 border-gray-200 bg-gray-50/50">
-              <td colSpan={3} className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Summa</td>
-              <td className="px-5 py-3 text-right tabular-nums font-bold text-gray-900">{fmt(String(totalDebit))}</td>
-              <td className="px-5 py-3 text-right tabular-nums font-bold text-gray-900">{fmt(String(totalCredit))}</td>
+            <tr className="border-t-2 border bg-muted/50">
+              <td colSpan={3} className="px-5 py-3 text-xs font-semibold text-muted-foreground uppercase">Summa</td>
+              <td className="px-5 py-3 text-right tabular-nums font-bold text-foreground">{fmt(String(totalDebit))}</td>
+              <td className="px-5 py-3 text-right tabular-nums font-bold text-foreground">{fmt(String(totalCredit))}</td>
             </tr>
             <tr>
               <td colSpan={5} className="px-5 py-2 text-xs">
@@ -164,7 +164,7 @@ export default function JournalDetailPage() {
       </div>
 
       {journal.voidOf && (
-        <div className="text-sm text-gray-500 bg-gray-50 rounded-lg px-4 py-3">
+        <div className="text-sm text-muted-foreground bg-muted rounded-lg px-4 py-3">
           Detta verifikat återför{" "}
           <Link href={`/${orgSlug}/journals/${journal.voidOf}`} className="text-indigo-600 hover:underline font-mono">
             {journal.voidOf.slice(0, 8)}…

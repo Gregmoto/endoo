@@ -63,8 +63,8 @@ export function AgencyKpiStrip({ kpis, activeFilter, onFilterChange }: Props) {
           }`}
         >
           <p className={`text-2xl font-bold tabular-nums ${t.color}`}>{t.value}</p>
-          <p className="text-xs font-semibold text-gray-700 mt-0.5">{t.label}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{t.sub}</p>
+          <p className="text-xs font-semibold text-foreground mt-0.5">{t.label}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{t.sub}</p>
         </button>
       ))}
     </div>

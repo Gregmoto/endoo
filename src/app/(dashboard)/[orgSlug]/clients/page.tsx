@@ -115,8 +115,8 @@ export default function AgencyClientsPage() {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="mb-5">
-        <h1 className="text-2xl font-bold text-gray-900">Klienter</h1>
-        <p className="text-sm text-gray-400 mt-0.5">Realtidshälsa och status för alla dina kunder</p>
+        <h1 className="text-2xl font-bold text-foreground">Klienter</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">Realtidshälsa och status för alla dina kunder</p>
       </div>
 
       <AgencyKpiStrip
@@ -133,12 +133,12 @@ export default function AgencyClientsPage() {
             placeholder="Sök klient…"
             value={search}
             onChange={e => handleSearchChange(e.target.value)}
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-brand-400"
+            className="w-full text-sm border border rounded-lg px-3 py-1.5 bg-card focus:outline-none focus:ring-1 focus:ring-brand-400"
           />
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">Sortera:</span>
+          <span className="text-xs text-muted-foreground">Sortera:</span>
           {SORT_OPTIONS.map(opt => (
             <button
               key={opt.value}
@@ -146,7 +146,7 @@ export default function AgencyClientsPage() {
               className={`text-xs px-2.5 py-1 rounded-full font-medium transition-colors ${
                 sort === opt.value
                   ? "bg-brand-100 text-brand-700"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-muted text-muted-foreground hover:bg-accent"
               }`}
             >
               {opt.label}
@@ -156,7 +156,7 @@ export default function AgencyClientsPage() {
 
         <button
           onClick={handleSelectAll}
-          className="text-xs text-gray-500 hover:text-gray-800 transition-colors ml-auto"
+          className="text-xs text-muted-foreground hover:text-foreground transition-colors ml-auto"
         >
           {allSelected ? "Avmarkera alla" : someSelected ? `${selected.size} valda` : "Välj alla"}
         </button>
@@ -166,14 +166,14 @@ export default function AgencyClientsPage() {
       {loading ? (
         <div className="space-y-2">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-16 bg-muted rounded-xl animate-pulse" />
           ))}
         </div>
       ) : sorted.length === 0 ? (
         <div className="py-20 text-center">
           <p className="text-4xl mb-3">◈</p>
-          <p className="font-medium text-gray-900">Inga klienter hittades</p>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="font-medium text-foreground">Inga klienter hittades</p>
+          <p className="text-sm text-muted-foreground mt-1">
             {filter !== "all" ? "Prova att ta bort filtret" : "Koppla klienter via plattformsinställningarna"}
           </p>
           {filter !== "all" && (

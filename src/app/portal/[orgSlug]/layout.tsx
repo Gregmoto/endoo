@@ -26,21 +26,21 @@ export default async function PortalLayout({
   if (!org) notFound()
 
   const branding = await resolveBranding(org.id)
-  const color    = branding.primaryColor ?? "#4f46e5"
+  const color    = branding.primaryColor ?? "#4f46e5" // audit-ok: branding color injected as CSS variable
   const name     = branding.displayName  ?? org.name
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f9fafb", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "var(--muted)", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" }}>
       {/* Top bar */}
       <header style={{ background: color, padding: "0 24px", height: 56, display: "flex", alignItems: "center" }}>
         {branding.logoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={branding.logoUrl} alt={name} style={{ height: 32, objectFit: "contain" }} />
         ) : (
-          <span style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>{name}</span>
+          <span style={{ color: "var(--background)", fontWeight: 700, fontSize: 18 }}>{name}</span>
         )}
         <span style={{ flex: 1 }} />
-        <span style={{ color: "rgba(255,255,255,.7)", fontSize: 12 }}>Kundportal</span>
+        <span style={{ color: "rgba(255,255,255,.7)", fontSize: 12 }}>Kundportal</span> {/* audit-ok — semi-transparent white over dynamic brand color header */}
       </header>
 
       {/* Page content */}
@@ -49,7 +49,7 @@ export default async function PortalLayout({
       </main>
 
       {/* Footer */}
-      <footer style={{ textAlign: "center", padding: "24px", fontSize: 11, color: "#9ca3af" }}>
+      <footer style={{ textAlign: "center", padding: "24px", fontSize: 11, color: "var(--muted-foreground)" }}>
         Kundportal via Endoo
       </footer>
     </div>

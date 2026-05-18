@@ -48,50 +48,50 @@ const SECTIONS = [
 
 export default function TermsPage() {
   return (
-    <main className="min-h-screen bg-white">
-      <header className="border-b border-gray-100 py-4 px-6">
+    <main className="min-h-screen bg-card">
+      <header className="border-b border py-4 px-6">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-xs font-black">E</span>
             </div>
-            <span className="font-extrabold text-gray-900">endoo</span>
+            <span className="font-extrabold text-foreground">endoo</span>
           </Link>
-          <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">← Tillbaka</Link>
+          <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">← Tillbaka</Link>
         </div>
       </header>
 
       <article className="max-w-3xl mx-auto px-6 py-16">
         <p className="text-sm text-indigo-600 font-semibold uppercase tracking-widest mb-3">Juridik</p>
-        <h1 className="text-4xl font-black text-gray-900 mb-3">Användarvillkor</h1>
-        <p className="text-sm text-gray-400 mb-12">Senast uppdaterad: maj 2025 · Gäller från och med registreringsdatum</p>
+        <h1 className="text-4xl font-black text-foreground mb-3">Användarvillkor</h1>
+        <p className="text-sm text-muted-foreground mb-12">Senast uppdaterad: maj 2025 · Gäller från och med registreringsdatum</p>
 
-        <p className="text-lg text-gray-600 leading-relaxed mb-10">
+        <p className="text-lg text-muted-foreground leading-relaxed mb-10">
           Genom att skapa ett konto eller använda Endoo accepterar du dessa villkor. Läs igenom dem noggrant.
         </p>
 
         <div className="space-y-10">
           {SECTIONS.map(s => (
             <section key={s.title}>
-              <h2 className="text-lg font-bold text-gray-900 mb-3">{s.title}</h2>
-              <p className="text-gray-600 leading-relaxed text-sm">{s.content}</p>
+              <h2 className="text-lg font-bold text-foreground mb-3">{s.title}</h2>
+              <p className="text-muted-foreground leading-relaxed text-sm">{s.content}</p>
             </section>
           ))}
         </div>
 
-        <div className="mt-12 p-6 bg-gray-50 rounded-2xl border border-gray-100">
-          <p className="font-semibold text-gray-900 mb-1">Frågor om villkoren?</p>
-          <p className="text-sm text-gray-600">
+        <div className="mt-12 p-6 bg-muted rounded-2xl border border">
+          <p className="font-semibold text-foreground mb-1">Frågor om villkoren?</p>
+          <p className="text-sm text-muted-foreground">
             Kontakta oss på{" "}
             <a href="mailto:hej@endoo.se" className="text-indigo-600 hover:underline">hej@endoo.se</a>.
           </p>
         </div>
       </article>
 
-      <footer className="border-t border-gray-100 py-8 px-6">
-        <div className="max-w-3xl mx-auto flex gap-6 text-sm text-gray-400">
-          <Link href="/privacy" className="hover:text-gray-600">Integritetspolicy</Link>
-          <Link href="/cookies" className="hover:text-gray-600">Cookies</Link>
+      <footer className="border-t border py-8 px-6">
+        <div className="max-w-3xl mx-auto flex gap-6 text-sm text-muted-foreground">
+          <Link href="/privacy" className="hover:text-muted-foreground">Integritetspolicy</Link>
+          <Link href="/cookies" className="hover:text-muted-foreground">Cookies</Link>
         </div>
       </footer>
     </main>

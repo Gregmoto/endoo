@@ -71,7 +71,7 @@ export function BottomSheet({
         style={{ maxHeight }}
         className={cn(
           "relative w-full md:max-w-lg md:rounded-2xl",
-          "rounded-t-2xl bg-white shadow-2xl",
+          "rounded-t-2xl bg-card shadow-2xl",
           "flex flex-col overflow-hidden",
           "animate-slide-up",
           className,
@@ -84,11 +84,11 @@ export function BottomSheet({
 
         {/* Header */}
         {title && (
-          <div className="flex-shrink-0 flex items-center justify-between px-5 pb-3 pt-1 border-b border-gray-100">
-            <h2 className="text-base font-semibold text-gray-900">{title}</h2>
+          <div className="flex-shrink-0 flex items-center justify-between px-5 pb-3 pt-1 border-b border">
+            <h2 className="text-base font-semibold text-foreground">{title}</h2>
             <button
               onClick={onClose}
-              className="p-2 -mr-1 rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
+              className="p-2 -mr-1 rounded-full hover:bg-muted text-muted-foreground transition-colors"
               aria-label="Stäng"
             >
               ✕

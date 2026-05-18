@@ -104,8 +104,8 @@ export default function CompanySettingsPage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Företagsuppgifter</h1>
-        <p className="text-sm text-gray-500 mt-1">Uppgifter som visas på fakturor och i systemet</p>
+        <h1 className="text-2xl font-bold text-foreground">Företagsuppgifter</h1>
+        <p className="text-sm text-muted-foreground mt-1">Uppgifter som visas på fakturor och i systemet</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -224,21 +224,21 @@ export default function CompanySettingsPage() {
               <div className="flex gap-3 items-center">
                 <input
                   type="color"
-                  value={form.primaryColor || "#4f46e5"}
+                  value={form.primaryColor || "#4f46e5"} // audit-ok
                   onChange={e => setForm(f => ({ ...f, primaryColor: e.target.value }))}
-                  className="w-10 h-10 rounded border border-gray-200 cursor-pointer p-0.5"
+                  className="w-10 h-10 rounded border border cursor-pointer p-0.5"
                 />
                 <input
                   value={form.primaryColor}
                   onChange={set("primaryColor")}
                   className={cls + " font-mono"}
-                  placeholder="#4f46e5"
+                  placeholder="#4f46e5" // audit-ok
                   maxLength={7}
                 />
               </div>
             </Field>
             <Field label="Logotyp">
-              <p className="text-xs text-gray-500 mt-1">Logotypuppladdning kommer i en kommande uppdatering.</p>
+              <p className="text-xs text-muted-foreground mt-1">Logotypuppladdning kommer i en kommande uppdatering.</p>
             </Field>
           </CardContent>
         </Card>
@@ -254,12 +254,12 @@ export default function CompanySettingsPage() {
   )
 }
 
-const cls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+const cls = "w-full px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">
+      <label className="block text-xs font-medium text-muted-foreground mb-1.5">
         {label}{required && <span className="text-red-500 ml-0.5">*</span>}
       </label>
       {children}

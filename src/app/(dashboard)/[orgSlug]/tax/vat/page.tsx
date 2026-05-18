@@ -151,8 +151,8 @@ export default function VatPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Momsdeklaration</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Hantera och lås momsperioder</p>
+          <h1 className="text-2xl font-bold text-foreground">Momsdeklaration</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Hantera och lås momsperioder</p>
         </div>
         <button
           onClick={() => setShowNew(v => !v)}
@@ -164,32 +164,32 @@ export default function VatPage() {
 
       {/* New period form */}
       {showNew && (
-        <div className="bg-white rounded-xl border border-indigo-100 shadow-sm p-5 mb-6">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">Skapa ny momsperiod</h3>
+        <div className="bg-card rounded-xl border border-indigo-100 shadow-sm p-5 mb-6">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Skapa ny momsperiod</h3>
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="text-xs font-medium text-gray-600">Periodicitet</label>
+              <label className="text-xs font-medium text-muted-foreground">Periodicitet</label>
               <select value={newType} onChange={e => setNewType(e.target.value)}
-                className="mt-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                className="mt-1 w-full px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300">
                 <option value="monthly">Månadsvis</option>
                 <option value="quarterly">Kvartalsvis</option>
                 <option value="yearly">Helårsvis</option>
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600">Från</label>
+              <label className="text-xs font-medium text-muted-foreground">Från</label>
               <input type="date" value={newStart} onChange={e => setNewStart(e.target.value)}
-                className="mt-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                className="mt-1 w-full px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600">Till</label>
+              <label className="text-xs font-medium text-muted-foreground">Till</label>
               <input type="date" value={newEnd} onChange={e => setNewEnd(e.target.value)}
-                className="mt-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                className="mt-1 w-full px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
             </div>
           </div>
           {error && <p className="mt-3 text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
           <div className="mt-4 flex gap-2 justify-end">
-            <button onClick={() => setShowNew(false)} className="px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">Avbryt</button>
+            <button onClick={() => setShowNew(false)} className="px-3 py-2 text-sm text-muted-foreground hover:bg-muted rounded-lg">Avbryt</button>
             <button onClick={createPeriod} disabled={!newStart || !newEnd || working}
               className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50">
               {working ? "Skapar…" : "Skapa"}
@@ -201,11 +201,11 @@ export default function VatPage() {
       <div className="grid grid-cols-5 gap-4">
         {/* Period list */}
         <div className="col-span-2">
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="bg-card rounded-xl border border shadow-sm overflow-hidden">
             {loading ? (
-              <div className="py-10 text-center text-sm text-gray-400">Laddar…</div>
+              <div className="py-10 text-center text-sm text-muted-foreground">Laddar…</div>
             ) : periods.length === 0 ? (
-              <div className="py-12 text-center text-sm text-gray-400">
+              <div className="py-12 text-center text-sm text-muted-foreground">
                 <p>Inga perioder än.</p>
                 <button onClick={() => setShowNew(true)} className="mt-2 text-indigo-600 hover:underline text-xs">
                   Skapa din första period →
@@ -222,15 +222,15 @@ export default function VatPage() {
                   return (
                     <li key={p.id}
                       onClick={() => { setSelected(p); setError("") }}
-                      className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors border-b border-gray-50 last:border-0 ${
-                        selected?.id === p.id ? "bg-indigo-50" : "hover:bg-gray-50"
+                      className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors border-b border-border/50 last:border-0 ${
+                        selected?.id === p.id ? "bg-indigo-50" : "hover:bg-accent"
                       } ${i === 0 ? "" : ""}`}
                     >
                       <div>
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-foreground">
                           {fmtDate(p.periodStart)} – {fmtDate(p.periodEnd)}
                         </p>
-                        <p className="text-xs text-gray-400">{TYPE_LABEL[p.periodType]}</p>
+                        <p className="text-xs text-muted-foreground">{TYPE_LABEL[p.periodType]}</p>
                         {late && <p className="text-xs text-red-500 font-medium mt-0.5">Förfallen!</p>}
                         {soon && <p className="text-xs text-amber-600 mt-0.5">Förfaller om {days} dagar</p>}
                       </div>
@@ -248,30 +248,30 @@ export default function VatPage() {
         {/* Detail panel */}
         <div className="col-span-3">
           {!selected ? (
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm py-16 flex items-center justify-center">
-              <p className="text-sm text-gray-400">Välj en period för att se detaljer</p>
+            <div className="bg-card rounded-xl border border shadow-sm py-16 flex items-center justify-center">
+              <p className="text-sm text-muted-foreground">Välj en period för att se detaljer</p>
             </div>
           ) : (
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+            <div className="bg-card rounded-xl border border shadow-sm p-6">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h2 className="text-base font-semibold text-gray-900">
+                  <h2 className="text-base font-semibold text-foreground">
                     {fmtDate(selected.periodStart)} – {fmtDate(selected.periodEnd)}
                   </h2>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     Förfaller {vatDueDate(selected).toLocaleDateString("sv-SE")}
                     {selected.status !== "locked" && selected.status !== "submitted" && (() => {
                       const d = daysUntil(vatDueDate(selected).toISOString())
                       return d < 0
                         ? <span className="ml-1 text-red-500 font-medium">({Math.abs(d)} dagar sedan)</span>
-                        : <span className="ml-1 text-gray-500">(om {d} dagar)</span>
+                        : <span className="ml-1 text-muted-foreground">(om {d} dagar)</span>
                     })()}
                   </p>
                 </div>
                 <div className="flex gap-2">
                   {selected.status !== "locked" && (
                     <button onClick={() => calculate(selected.id)} disabled={working}
-                      className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors">
+                      className="px-3 py-1.5 text-sm border border rounded-lg hover:bg-muted disabled:opacity-50 transition-colors">
                       {working ? "…" : "Beräkna"}
                     </button>
                   )}
@@ -287,12 +287,12 @@ export default function VatPage() {
               {error && <p className="mb-4 text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
 
               {selected.box10 == null && selected.status === "open" ? (
-                <p className="text-sm text-gray-400 italic py-4">Klicka "Beräkna" för att hämta momsbelopp från bokföringen.</p>
+                <p className="text-sm text-muted-foreground italic py-4">Klicka "Beräkna" för att hämta momsbelopp från bokföringen.</p>
               ) : (
                 <div className="space-y-4">
                   {/* Section A */}
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
                       A. Momspliktiga försäljningar
                     </p>
                     <div className="space-y-1">
@@ -301,12 +301,12 @@ export default function VatPage() {
                         { ruta: "06", label: "Skattepliktig försäljning 12 %", val: selected.box06 },
                         { ruta: "07", label: "Skattepliktig försäljning 6 %",  val: selected.box07 },
                       ].map(r => (
-                        <div key={r.ruta} className="flex items-center justify-between py-1.5 border-b border-gray-50">
-                          <span className="text-sm text-gray-700">
-                            <span className="font-mono text-xs text-gray-400 w-8 inline-block">Ruta {r.ruta}</span>
+                        <div key={r.ruta} className="flex items-center justify-between py-1.5 border-b border-border/50">
+                          <span className="text-sm text-foreground">
+                            <span className="font-mono text-xs text-muted-foreground w-8 inline-block">Ruta {r.ruta}</span>
                             {" "}{r.label}
                           </span>
-                          <span className="text-sm tabular-nums text-gray-900">{fmt(r.val)}</span>
+                          <span className="text-sm tabular-nums text-foreground">{fmt(r.val)}</span>
                         </div>
                       ))}
                     </div>
@@ -314,7 +314,7 @@ export default function VatPage() {
 
                   {/* Section B */}
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
                       B. Utgående moms
                     </p>
                     <div className="space-y-1">
@@ -323,12 +323,12 @@ export default function VatPage() {
                         { ruta: "11", label: "Utgående moms 12 %", val: selected.box11 },
                         { ruta: "12", label: "Utgående moms 6 %",  val: selected.box12 },
                       ].map(r => (
-                        <div key={r.ruta} className="flex items-center justify-between py-1.5 border-b border-gray-50">
-                          <span className="text-sm text-gray-700">
-                            <span className="font-mono text-xs text-gray-400 w-8 inline-block">Ruta {r.ruta}</span>
+                        <div key={r.ruta} className="flex items-center justify-between py-1.5 border-b border-border/50">
+                          <span className="text-sm text-foreground">
+                            <span className="font-mono text-xs text-muted-foreground w-8 inline-block">Ruta {r.ruta}</span>
                             {" "}{r.label}
                           </span>
-                          <span className="text-sm tabular-nums text-gray-900">{fmt(r.val)}</span>
+                          <span className="text-sm tabular-nums text-foreground">{fmt(r.val)}</span>
                         </div>
                       ))}
                     </div>
@@ -336,15 +336,15 @@ export default function VatPage() {
 
                   {/* Section C */}
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
                       C. Ingående moms
                     </p>
-                    <div className="flex items-center justify-between py-1.5 border-b border-gray-50">
-                      <span className="text-sm text-gray-700">
-                        <span className="font-mono text-xs text-gray-400 w-8 inline-block">Ruta 48</span>
+                    <div className="flex items-center justify-between py-1.5 border-b border-border/50">
+                      <span className="text-sm text-foreground">
+                        <span className="font-mono text-xs text-muted-foreground w-8 inline-block">Ruta 48</span>
                         {" "}Ingående moms (avdragsgill)
                       </span>
-                      <span className="text-sm tabular-nums text-gray-900">{fmt(selected.box48)}</span>
+                      <span className="text-sm tabular-nums text-foreground">{fmt(selected.box48)}</span>
                     </div>
                   </div>
 
@@ -355,8 +355,8 @@ export default function VatPage() {
                       : "bg-green-50 border border-green-100"
                   }`}>
                     <div>
-                      <span className="font-mono text-xs text-gray-400">Ruta 49</span>
-                      <p className="text-sm font-semibold text-gray-900 mt-0.5">
+                      <span className="font-mono text-xs text-muted-foreground">Ruta 49</span>
+                      <p className="text-sm font-semibold text-foreground mt-0.5">
                         {Number(selected.box49 ?? 0) >= 0 ? "Moms att betala" : "Moms att återfå"}
                       </p>
                     </div>
@@ -368,7 +368,7 @@ export default function VatPage() {
                   </div>
 
                   {selected.lockedAt && (
-                    <p className="text-xs text-gray-400 text-center pt-1">
+                    <p className="text-xs text-muted-foreground text-center pt-1">
                       Låst {new Date(selected.lockedAt).toLocaleDateString("sv-SE")}
                     </p>
                   )}

@@ -176,15 +176,15 @@ export function CommandPalette({ open, onClose, orgSlug, orgId }: Props) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+        className="w-full max-w-xl bg-card rounded-2xl shadow-2xl overflow-hidden flex flex-col"
         style={{ maxHeight: "70vh" }}
         onClick={e => e.stopPropagation()}
       >
         {/* Input row */}
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100">
-          <span className="text-gray-400 flex-shrink-0">
+        <div className="flex items-center gap-3 px-4 py-3 border-b border">
+          <span className="text-muted-foreground flex-shrink-0">
             {loading
-              ? <span className="inline-block w-4 h-4 border-2 border-gray-300 border-t-brand-500 rounded-full animate-spin" />
+              ? <span className="inline-block w-4 h-4 border-2 border border-t-brand-500 rounded-full animate-spin" />
               : <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" /></svg>
             }
           </span>
@@ -195,24 +195,24 @@ export function CommandPalette({ open, onClose, orgSlug, orgId }: Props) {
             value={query}
             onChange={e => handleQueryChange(e.target.value)}
             onKeyDown={onKey}
-            className="flex-1 text-sm outline-none placeholder-gray-400 text-gray-900"
+            className="flex-1 text-sm outline-none placeholder:text-muted-foreground text-foreground"
             autoComplete="off"
             spellCheck={false}
           />
           {query && (
             <button
               onClick={() => { setQuery(""); setResults([]); inputRef.current?.focus() }}
-              className="text-gray-400 hover:text-gray-600 flex-shrink-0 text-xs"
+              className="text-muted-foreground hover:text-muted-foreground flex-shrink-0 text-xs"
             >
               ✕
             </button>
           )}
-          <kbd className="hidden sm:inline text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded flex-shrink-0">Esc</kbd>
+          <kbd className="hidden sm:inline text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded flex-shrink-0">Esc</kbd>
         </div>
 
         {/* Type filter chips */}
         {showResults && (
-          <div className="flex items-center gap-1.5 px-4 py-2 border-b border-gray-50 overflow-x-auto">
+          <div className="flex items-center gap-1.5 px-4 py-2 border-b border-border/50 overflow-x-auto">
             {TYPE_FILTERS.map(f => (
               <button
                 key={f.value}
@@ -220,7 +220,7 @@ export function CommandPalette({ open, onClose, orgSlug, orgId }: Props) {
                 className={`flex-shrink-0 text-xs px-2.5 py-1 rounded-full font-medium transition-colors ${
                   typeFilter === f.value
                     ? "bg-brand-100 text-brand-700"
-                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                    : "bg-muted text-muted-foreground hover:bg-accent"
                 }`}
               >
                 {f.label}
@@ -235,7 +235,7 @@ export function CommandPalette({ open, onClose, orgSlug, orgId }: Props) {
           {/* Recent items */}
           {showRecents && (
             <div>
-              <p className="px-4 pt-2 pb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Senaste</p>
+              <p className="px-4 pt-2 pb-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Senaste</p>
               {recents.map((r, i) => (
                 <ResultRow
                   key={r.entityId}
@@ -256,7 +256,7 @@ export function CommandPalette({ open, onClose, orgSlug, orgId }: Props) {
           {showResults && !showEmpty && (
             Object.entries(grouped).map(([type, items]) => (
               <div key={type}>
-                <p className="px-4 pt-2 pb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                <p className="px-4 pt-2 pb-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                   {ENTITY_LABELS[type as SearchEntityType]}
                 </p>
                 {items.map(r => {
@@ -282,21 +282,21 @@ export function CommandPalette({ open, onClose, orgSlug, orgId }: Props) {
           {/* Empty state */}
           {showEmpty && (
             <div className="px-4 py-10 text-center">
-              <p className="text-sm text-gray-500">Inga resultat för <strong>"{query}"</strong></p>
-              <p className="text-xs text-gray-400 mt-1">Prova att söka på fakturanummer, kundnamn eller produkt</p>
+              <p className="text-sm text-muted-foreground">Inga resultat för <strong>"{query}"</strong></p>
+              <p className="text-xs text-muted-foreground mt-1">Prova att söka på fakturanummer, kundnamn eller produkt</p>
             </div>
           )}
 
           {/* No recents + no query */}
           {!showResults && !showRecents && (
-            <div className="px-4 py-10 text-center text-sm text-gray-400">
+            <div className="px-4 py-10 text-center text-sm text-muted-foreground">
               Börja skriva för att söka…
             </div>
           )}
         </div>
 
         {/* Footer hints */}
-        <div className="px-4 py-2 border-t border-gray-100 flex items-center gap-4 text-xs text-gray-400">
+        <div className="px-4 py-2 border-t border flex items-center gap-4 text-xs text-muted-foreground">
           <span>↑↓ navigera</span>
           <span>↵ öppna</span>
           <span>⌘↵ ny flik</span>
@@ -327,13 +327,13 @@ function ResultRow({
       onClick={e => onClick(e.metaKey || e.ctrlKey)}
       onMouseEnter={onMouseEnter}
       className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${
-        selected ? "bg-brand-50" : "hover:bg-gray-50"
+        selected ? "bg-brand-50" : "hover:bg-accent"
       }`}
     >
-      <span className="flex-shrink-0 w-5 text-center text-sm text-gray-400">{icon}</span>
+      <span className="flex-shrink-0 w-5 text-center text-sm text-muted-foreground">{icon}</span>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-900 truncate">{title}</p>
-        {subtitle && <p className="text-xs text-gray-400 truncate mt-0.5">{subtitle}</p>}
+        <p className="text-sm font-medium text-foreground truncate">{title}</p>
+        {subtitle && <p className="text-xs text-muted-foreground truncate mt-0.5">{subtitle}</p>}
       </div>
     </button>
   )

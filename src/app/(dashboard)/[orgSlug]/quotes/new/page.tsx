@@ -157,8 +157,8 @@ export default function NewQuotePage() {
   return (
     <div className="p-4 sm:p-8 max-w-4xl">
       <div className="mb-6 flex items-center gap-3">
-        <Link href={`/${orgSlug}/quotes`} className="text-gray-400 hover:text-gray-600 text-sm">← Offerter</Link>
-        <h1 className="text-xl font-bold text-gray-900">Ny offert</h1>
+        <Link href={`/${orgSlug}/quotes`} className="text-muted-foreground hover:text-muted-foreground text-sm">← Offerter</Link>
+        <h1 className="text-xl font-bold text-foreground">Ny offert</h1>
       </div>
 
       <div className="space-y-4">
@@ -167,7 +167,7 @@ export default function NewQuotePage() {
           <CardHeader><CardTitle>Mottagare</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Kund</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Kund</label>
               <select
                 value={form.contactId}
                 onChange={e => onContactChange(e.target.value)}
@@ -179,11 +179,11 @@ export default function NewQuotePage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Namn <span className="text-red-500">*</span></label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Namn <span className="text-red-500">*</span></label>
                 <input className={fieldCls} value={form.contactName} onChange={e => setField("contactName", e.target.value)} placeholder="Kundens namn" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">E-post</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">E-post</label>
                 <input className={fieldCls} type="email" value={form.contactEmail} onChange={e => setField("contactEmail", e.target.value)} placeholder="kund@example.com" />
               </div>
             </div>
@@ -195,18 +195,18 @@ export default function NewQuotePage() {
           <CardHeader><CardTitle>Detaljer</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Rubrik (valfri)</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Rubrik (valfri)</label>
               <input className={fieldCls} value={form.title} onChange={e => setField("title", e.target.value)} placeholder="t.ex. Webbutveckling Q3 2026" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Valuta</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Valuta</label>
                 <select className={fieldCls} value={form.currency} onChange={e => setField("currency", e.target.value)}>
                   <option>SEK</option><option>EUR</option><option>USD</option><option>NOK</option><option>DKK</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Giltig till</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Giltig till</label>
                 <input className={fieldCls} type="date" value={form.validUntil} onChange={e => setField("validUntil", e.target.value)} />
               </div>
             </div>
@@ -220,7 +220,7 @@ export default function NewQuotePage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm min-w-[640px]">
                 <thead>
-                  <tr className="border-b border-gray-100 text-xs text-gray-500">
+                  <tr className="border-b border text-xs text-muted-foreground">
                     <th className="pb-2 text-left font-medium">Beskrivning</th>
                     <th className="pb-2 text-right font-medium w-16">Antal</th>
                     <th className="pb-2 text-left font-medium w-16">Enhet</th>
@@ -234,10 +234,10 @@ export default function NewQuotePage() {
                   {lines.map((l, i) => {
                     const { total: lt } = lineTotal(l)
                     return (
-                      <tr key={l.id} className="border-b border-gray-50">
+                      <tr key={l.id} className="border-b border-border/50">
                         <td className="py-2 pr-2">
                           <select
-                            className={`${inputCls} mb-1 text-xs text-gray-500`}
+                            className={`${inputCls} mb-1 text-xs text-muted-foreground`}
                             value={l.productId ?? ""}
                             onChange={e => e.target.value ? pickProduct(i, e.target.value) : setLine(i, { productId: null })}
                           >
@@ -282,9 +282,9 @@ export default function NewQuotePage() {
             {/* Totals */}
             <div className="mt-4 flex justify-end">
               <div className="w-56 space-y-1">
-                <div className="flex justify-between text-sm text-gray-500"><span>Netto</span><span className="tabular-nums">{fmt(subtotal)} {form.currency}</span></div>
-                <div className="flex justify-between text-sm text-gray-500"><span>Moms</span><span className="tabular-nums">{fmt(tax)} {form.currency}</span></div>
-                <div className="flex justify-between text-base font-bold text-gray-900 border-t border-gray-200 pt-1"><span>Totalt</span><span className="tabular-nums">{fmt(total)} {form.currency}</span></div>
+                <div className="flex justify-between text-sm text-muted-foreground"><span>Netto</span><span className="tabular-nums">{fmt(subtotal)} {form.currency}</span></div>
+                <div className="flex justify-between text-sm text-muted-foreground"><span>Moms</span><span className="tabular-nums">{fmt(tax)} {form.currency}</span></div>
+                <div className="flex justify-between text-base font-bold text-foreground border-t border pt-1"><span>Totalt</span><span className="tabular-nums">{fmt(total)} {form.currency}</span></div>
               </div>
             </div>
           </CardContent>
@@ -295,15 +295,15 @@ export default function NewQuotePage() {
           <CardHeader><CardTitle>Meddelande och villkor</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Meddelande till kund</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Meddelande till kund</label>
               <textarea className={`${fieldCls} min-h-[80px] resize-none`} value={form.notes} onChange={e => setField("notes", e.target.value)} placeholder="Visas i e-post och på PDF…" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Villkor</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Villkor</label>
               <textarea className={`${fieldCls} min-h-[60px] resize-none`} value={form.terms} onChange={e => setField("terms", e.target.value)} placeholder="Betalningsvillkor, leveransvillkor…" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Intern anteckning</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Intern anteckning</label>
               <textarea className={`${fieldCls} min-h-[60px] resize-none`} value={form.internalNote} onChange={e => setField("internalNote", e.target.value)} placeholder="Syns bara internt…" />
             </div>
           </CardContent>
@@ -321,7 +321,7 @@ export default function NewQuotePage() {
             {saving ? "Skickar…" : "Spara och skicka"}
           </Button>
           {!form.contactEmail && (
-            <p className="text-xs text-gray-400 self-center">Fyll i e-post för att kunna skicka direkt</p>
+            <p className="text-xs text-muted-foreground self-center">Fyll i e-post för att kunna skicka direkt</p>
           )}
         </div>
       </div>

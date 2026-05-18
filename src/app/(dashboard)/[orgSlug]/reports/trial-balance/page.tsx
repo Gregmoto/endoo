@@ -86,30 +86,30 @@ export default function TrialBalancePage() {
   return (
     <div className="p-8 max-w-5xl">
       <div className="flex items-center gap-3 mb-6">
-        <Link href={`/${orgSlug}/reports`} className="text-sm text-gray-500 hover:text-gray-700">
+        <Link href={`/${orgSlug}/reports`} className="text-sm text-muted-foreground hover:text-foreground">
           ← Rapporter
         </Link>
         <span className="text-gray-300">/</span>
-        <h1 className="text-xl font-bold text-gray-900">Provbalans</h1>
+        <h1 className="text-xl font-bold text-foreground">Provbalans</h1>
       </div>
 
       <div className="flex items-end gap-4 mb-6 flex-wrap">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-gray-600">Från</label>
+          <label className="text-xs font-medium text-muted-foreground">Från</label>
           <input
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="border border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-gray-600">Till</label>
+          <label className="text-xs font-medium text-muted-foreground">Till</label>
           <input
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="border border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
         </div>
         <button
@@ -128,15 +128,15 @@ export default function TrialBalancePage() {
       )}
 
       {report && (
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div className="bg-card border border rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left px-4 py-3 font-medium text-gray-600 w-20">Kontonr</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Kontonamn</th>
-                <th className="text-right px-4 py-3 font-medium text-gray-600 w-36">Debet</th>
-                <th className="text-right px-4 py-3 font-medium text-gray-600 w-36">Kredit</th>
-                <th className="text-right px-4 py-3 font-medium text-gray-600 w-36">Saldo</th>
+              <tr className="bg-muted border-b border">
+                <th className="text-left px-4 py-3 font-medium text-muted-foreground w-20">Kontonr</th>
+                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Kontonamn</th>
+                <th className="text-right px-4 py-3 font-medium text-muted-foreground w-36">Debet</th>
+                <th className="text-right px-4 py-3 font-medium text-muted-foreground w-36">Kredit</th>
+                <th className="text-right px-4 py-3 font-medium text-muted-foreground w-36">Saldo</th>
               </tr>
             </thead>
             <tbody>
@@ -144,22 +144,22 @@ export default function TrialBalancePage() {
                 .sort()
                 .map((cls) => (
                   <>
-                    <tr key={`cls-${cls}`} className="bg-gray-50 border-t border-gray-100">
-                      <td colSpan={5} className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <tr key={`cls-${cls}`} className="bg-muted border-t border">
+                      <td colSpan={5} className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                         {CLASS_LABELS[cls] ?? `Klass ${cls}`}
                       </td>
                     </tr>
                     {grouped[cls].map((row) => (
-                      <tr key={row.accountId} className="border-t border-gray-50 hover:bg-gray-50">
-                        <td className="px-4 py-2.5 font-mono text-gray-500 text-xs">{row.number}</td>
-                        <td className="px-4 py-2.5 text-gray-800">{row.name}</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-gray-700">
+                      <tr key={row.accountId} className="border-t border-border/50 hover:bg-muted">
+                        <td className="px-4 py-2.5 font-mono text-muted-foreground text-xs">{row.number}</td>
+                        <td className="px-4 py-2.5 text-foreground">{row.name}</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-foreground">
                           {row.debit !== "0" ? fmtOre(row.debit) : ""}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono text-gray-700">
+                        <td className="px-4 py-2.5 text-right font-mono text-foreground">
                           {row.credit !== "0" ? fmtOre(row.credit) : ""}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono text-gray-700">
+                        <td className="px-4 py-2.5 text-right font-mono text-foreground">
                           {fmtOre(row.net)}
                         </td>
                       </tr>
@@ -168,11 +168,11 @@ export default function TrialBalancePage() {
                 ))}
             </tbody>
             <tfoot>
-              <tr className="border-t-2 border-gray-300 bg-gray-50 font-semibold">
+              <tr className="border-t-2 border bg-muted font-semibold">
                 <td className="px-4 py-3" />
-                <td className="px-4 py-3 text-gray-700">Totalt</td>
-                <td className="px-4 py-3 text-right font-mono text-gray-900">{fmtOre(report.totalDebit)}</td>
-                <td className="px-4 py-3 text-right font-mono text-gray-900">{fmtOre(report.totalCredit)}</td>
+                <td className="px-4 py-3 text-foreground">Totalt</td>
+                <td className="px-4 py-3 text-right font-mono text-foreground">{fmtOre(report.totalDebit)}</td>
+                <td className="px-4 py-3 text-right font-mono text-foreground">{fmtOre(report.totalCredit)}</td>
                 <td className="px-4 py-3 text-right">
                   {report.balanced ? (
                     <span className="text-green-600 text-xs font-medium">✓ Balanserad</span>

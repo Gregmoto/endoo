@@ -169,7 +169,7 @@ export default function AccountMappingsPage() {
                       >
                         {account
                           ? <span><span className="font-mono text-indigo-600 dark:text-indigo-400">{account.number}</span> — {account.name}</span>
-                          : <span className="text-gray-400">{current || "Välj konto…"}</span>
+                          : <span className="text-muted-foreground">{current || "Välj konto…"}</span>
                         }
                       </button>
 
@@ -186,7 +186,7 @@ export default function AccountMappingsPage() {
                           </div>
                           <div className="max-h-48 overflow-y-auto">
                             {filtered.length === 0 ? (
-                              <p className="px-3 py-2 text-sm text-gray-400">Inga konton hittades</p>
+                              <p className="px-3 py-2 text-sm text-muted-foreground">Inga konton hittades</p>
                             ) : filtered.map(a => (
                               <button
                                 key={a.id}

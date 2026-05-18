@@ -94,7 +94,7 @@ export function SignatureStatusWidget({ entityType, entityId, onRequestSign, ref
     <div className="space-y-3">
       {/* Header row */}
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-700">E-signering</h3>
+        <h3 className="text-sm font-semibold text-foreground">E-signering</h3>
         {!hasActive && (
           <button
             onClick={onRequestSign}
@@ -105,11 +105,11 @@ export function SignatureStatusWidget({ entityType, entityId, onRequestSign, ref
         )}
       </div>
 
-      {loading && <p className="text-xs text-gray-400">Laddar…</p>}
+      {loading && <p className="text-xs text-muted-foreground">Laddar…</p>}
 
       {!loading && requests.length === 0 && (
-        <div className="rounded-lg border border-dashed border-gray-200 px-4 py-5 text-center">
-          <p className="text-sm text-gray-400 mb-2">Inget signeringsförlopp</p>
+        <div className="rounded-lg border border-dashed border px-4 py-5 text-center">
+          <p className="text-sm text-muted-foreground mb-2">Inget signeringsförlopp</p>
           <button
             onClick={onRequestSign}
             className="text-sm font-medium text-indigo-600 hover:text-indigo-800"
@@ -134,7 +134,7 @@ export function SignatureStatusWidget({ entityType, entityId, onRequestSign, ref
       {/* Past requests (collapsed) */}
       {past.length > 0 && (
         <details className="group">
-          <summary className="cursor-pointer text-xs text-gray-400 hover:text-gray-600 list-none flex items-center gap-1">
+          <summary className="cursor-pointer text-xs text-muted-foreground hover:text-muted-foreground list-none flex items-center gap-1">
             <span className="group-open:rotate-90 transition-transform inline-block">▶</span>
             Historik ({past.length})
           </summary>
@@ -164,12 +164,12 @@ function RequestCard({
   const expiry = fmtDate(req.expiresAt)
 
   return (
-    <div className="rounded-lg border border-gray-100 bg-white p-3 text-sm space-y-2">
+    <div className="rounded-lg border border bg-card p-3 text-sm space-y-2">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="font-medium text-gray-800 truncate text-xs">{req.title}</p>
+          <p className="font-medium text-foreground truncate text-xs">{req.title}</p>
           {!compact && expiry && (
-            <p className="text-[11px] text-gray-400 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               {isActive ? `Giltig till ${expiry}` : `Utgick ${expiry}`}
             </p>
           )}
@@ -186,8 +186,8 @@ function RequestCard({
           return (
             <div key={signer.id} className="flex items-center gap-2 text-[12px]">
               <span className={`font-bold text-sm leading-none ${s.cls}`}>{s.icon}</span>
-              <span className="text-gray-700 truncate flex-1">{signer.name}</span>
-              <span className="text-gray-400 text-[11px]">
+              <span className="text-foreground truncate flex-1">{signer.name}</span>
+              <span className="text-muted-foreground text-[11px]">
                 {signer.status === "signed"   && fmtDate(signer.signedAt)}
                 {signer.status === "declined" && "Avböjt"}
                 {signer.status === "viewed"   && "Sett"}
@@ -197,7 +197,7 @@ function RequestCard({
           )
         })}
         {req.signers.filter(s => s.role === "cc").map(s => (
-          <div key={s.id} className="flex items-center gap-2 text-[12px] text-gray-400">
+          <div key={s.id} className="flex items-center gap-2 text-[12px] text-muted-foreground">
             <span className="text-sm leading-none">CC</span>
             <span className="truncate">{s.name}</span>
           </div>
@@ -206,7 +206,7 @@ function RequestCard({
 
       {/* Actions */}
       {isActive && !compact && (
-        <div className="flex items-center gap-2 pt-1 border-t border-gray-50">
+        <div className="flex items-center gap-2 pt-1 border-t border-border/50">
           <button
             onClick={onRemind}
             disabled={reminding}

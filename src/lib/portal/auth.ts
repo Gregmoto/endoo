@@ -23,6 +23,12 @@ export type PortalClaims = {
   email: string
 }
 
+export type TrustedDeviceClaims = {
+  deviceId: string
+  sub:      string  // contactId
+  org:      string  // organizationId
+}
+
 export class PortalAuthError extends Error {
   constructor(message = "Portal authentication required") {
     super(message)
@@ -102,6 +108,60 @@ export async function requirePortalAuth(
   if (!org || org.id !== claims.org) throw new PortalAuthError()
 
   return { ...claims, orgId: org.id, orgName: org.name }
+}
+
+// ─── IP helpers ──────────────────────────────────────────────────────────────
+
+export function ipPrefix(ip: string): string {
+  if (ip.includes(":")) {
+    // IPv6 — first 4 groups
+    return ip.split(":").slice(0, 4).join(":")
+  }
+  // IPv4 — first 3 octets (/24)
+  return ip.split(".").slice(0, 3).join(".")
+}
+
+export function getClientIp(req: Request): string {
+  const fwd = req.headers.get("x-forwarded-for")
+  if (fwd) return fwd.split(",")[0].trim()
+  return req.headers.get("x-real-ip") ?? "unknown"
+}
+
+// ─── Trusted device cookie ───────────────────────────────────────────────────
+
+export const TRUSTED_DEVICE_COOKIE = "portal_trusted_device"
+
+export const TRUSTED_DEVICE_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure:   process.env.NODE_ENV === "production",
+  sameSite: "lax" as const,
+  maxAge:   60 * 60 * 24 * 30,
+  path:     "/",
+}
+
+export async function signTrustedDeviceJwt(claims: TrustedDeviceClaims): Promise<string> {
+  return new SignJWT({ deviceId: claims.deviceId, org: claims.org })
+    .setProtectedHeader({ alg: "HS256" })
+    .setSubject(claims.sub)
+    .setAudience("endoo-portal-device")
+    .setIssuedAt()
+    .setExpirationTime("30d")
+    .sign(secret())
+}
+
+export async function verifyTrustedDeviceJwt(token: string): Promise<TrustedDeviceClaims> {
+  const { payload } = await jwtVerify(token, secret(), { audience: "endoo-portal-device" })
+  if (
+    typeof payload.sub      !== "string" ||
+    typeof payload.deviceId !== "string" ||
+    typeof payload.org      !== "string"
+  ) throw new PortalAuthError("Malformed trusted-device token")
+
+  return {
+    deviceId: payload.deviceId as string,
+    sub:      payload.sub,
+    org:      payload.org as string,
+  }
 }
 
 // ─── portalAuthResponse ──────────────────────────────────────────────────────

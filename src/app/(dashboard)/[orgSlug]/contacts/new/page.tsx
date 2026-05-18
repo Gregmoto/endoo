@@ -99,11 +99,11 @@ export default function NewContactPage() {
   return (
     <div className="p-8 max-w-3xl">
       <div className="mb-6 flex items-center gap-3">
-        <Link href={`/${params.orgSlug}/contacts`} className="text-sm text-gray-500 hover:text-gray-700">
+        <Link href={`/${params.orgSlug}/contacts`} className="text-sm text-muted-foreground hover:text-foreground">
           ← Kunder
         </Link>
         <span className="text-gray-300">/</span>
-        <h1 className="text-2xl font-bold text-gray-900">Ny kontakt</h1>
+        <h1 className="text-2xl font-bold text-foreground">Ny kontakt</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -189,7 +189,7 @@ export default function NewContactPage() {
 
         {/* Leveransadress */}
         <Card>
-          <CardHeader><CardTitle>Leveransadress <span className="text-sm font-normal text-gray-400">(om annan)</span></CardTitle></CardHeader>
+          <CardHeader><CardTitle>Leveransadress <span className="text-sm font-normal text-muted-foreground">(om annan)</span></CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <Field label="Adressrad 1">
               <input value={form.deliveryLine1} onChange={set("deliveryLine1")} className={cls} placeholder="Lagergatan 5" />
@@ -265,7 +265,7 @@ const cls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ou
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">{label}</label>
+      <label className="block text-xs font-medium text-muted-foreground mb-1.5">{label}</label>
       {children}
     </div>
   )

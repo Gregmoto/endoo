@@ -28,7 +28,7 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  draft:        "bg-gray-100 text-gray-600",
+  draft:        "bg-muted text-muted-foreground",
   extracting:   "bg-blue-100 text-blue-700",
   needs_review: "bg-yellow-100 text-yellow-700",
   approved:     "bg-indigo-100 text-indigo-700",
@@ -74,8 +74,8 @@ export default function SupplierInvoicesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Leverantörsfakturor</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{total} fakturor totalt</p>
+          <h1 className="text-2xl font-bold text-foreground">Leverantörsfakturor</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{total} fakturor totalt</p>
         </div>
         <Link
           href={`/${orgSlug}/supplier-invoices/upload`}
@@ -94,7 +94,7 @@ export default function SupplierInvoicesPage() {
             className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
               status === s
                 ? "bg-indigo-600 text-white border-indigo-600"
-                : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                : "bg-card text-muted-foreground border hover:border"
             }`}
           >
             {s === "" ? "Alla" : STATUS_LABEL[s] ?? s}
@@ -103,12 +103,12 @@ export default function SupplierInvoicesPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="py-12 text-center text-sm text-gray-400">Laddar…</div>
+          <div className="py-12 text-center text-sm text-muted-foreground">Laddar…</div>
         ) : invoices.length === 0 ? (
           <div className="py-16 text-center">
-            <p className="text-gray-400 text-sm">Inga fakturor hittades</p>
+            <p className="text-muted-foreground text-sm">Inga fakturor hittades</p>
             <Link
               href={`/${orgSlug}/supplier-invoices/upload`}
               className="mt-3 inline-block text-sm text-indigo-600 hover:underline"
@@ -119,9 +119,9 @@ export default function SupplierInvoicesPage() {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border">
                 {["Leverantör", "Fakturanr", "Datum", "Förfaller", "Belopp", "Status", ""].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">
                     {h}
                   </th>
                 ))}
@@ -131,19 +131,19 @@ export default function SupplierInvoicesPage() {
               {invoices.map(inv => (
                 <tr
                   key={inv.id}
-                  className="border-t border-gray-50 hover:bg-gray-50 cursor-pointer"
+                  className="border-t border-border/50 hover:bg-muted cursor-pointer"
                   onClick={() => router.push(`/${orgSlug}/supplier-invoices/${inv.id}`)}
                 >
-                  <td className="px-5 py-3 font-medium text-gray-900">
-                    {inv.supplier?.name ?? inv.supplierName ?? <span className="text-gray-400 italic">Okänd</span>}
+                  <td className="px-5 py-3 font-medium text-foreground">
+                    {inv.supplier?.name ?? inv.supplierName ?? <span className="text-muted-foreground italic">Okänd</span>}
                   </td>
-                  <td className="px-5 py-3 text-gray-600 font-mono text-xs">
+                  <td className="px-5 py-3 text-muted-foreground font-mono text-xs">
                     {inv.invoiceNumber ?? "—"}
                   </td>
-                  <td className="px-5 py-3 text-gray-600">
+                  <td className="px-5 py-3 text-muted-foreground">
                     {inv.invoiceDate ? new Date(inv.invoiceDate).toLocaleDateString("sv-SE") : "—"}
                   </td>
-                  <td className="px-5 py-3 text-gray-600">
+                  <td className="px-5 py-3 text-muted-foreground">
                     {inv.dueDate
                       ? (() => {
                           const d    = new Date(inv.dueDate)
@@ -156,11 +156,11 @@ export default function SupplierInvoicesPage() {
                         })()
                       : "—"}
                   </td>
-                  <td className="px-5 py-3 text-gray-900 font-medium tabular-nums">
+                  <td className="px-5 py-3 text-foreground font-medium tabular-nums">
                     {formatAmount(inv.amountInclVat, inv.currency)}
                   </td>
                   <td className="px-5 py-3">
-                    <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${STATUS_COLOR[inv.status] ?? "bg-gray-100 text-gray-600"}`}>
+                    <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${STATUS_COLOR[inv.status] ?? "bg-muted text-muted-foreground"}`}>
                       {STATUS_LABEL[inv.status] ?? inv.status}
                     </span>
                   </td>
@@ -176,20 +176,20 @@ export default function SupplierInvoicesPage() {
 
       {/* Pagination */}
       {pages > 1 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
+        <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
           <span>Sida {page} av {pages}</span>
           <div className="flex gap-2">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-3 py-1.5 border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50"
+              className="px-3 py-1.5 border border rounded-lg disabled:opacity-40 hover:bg-muted"
             >
               ← Föregående
             </button>
             <button
               onClick={() => setPage(p => Math.min(pages, p + 1))}
               disabled={page === pages}
-              className="px-3 py-1.5 border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50"
+              className="px-3 py-1.5 border border rounded-lg disabled:opacity-40 hover:bg-muted"
             >
               Nästa →
             </button>

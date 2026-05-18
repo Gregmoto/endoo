@@ -77,40 +77,40 @@ export default function GeneralLedgerPage() {
   return (
     <div className="p-8 max-w-6xl">
       <div className="flex items-center gap-3 mb-6">
-        <Link href={`/${orgSlug}/reports`} className="text-sm text-gray-500 hover:text-gray-700">
+        <Link href={`/${orgSlug}/reports`} className="text-sm text-muted-foreground hover:text-foreground">
           ← Rapporter
         </Link>
         <span className="text-gray-300">/</span>
-        <h1 className="text-xl font-bold text-gray-900">Huvudbok</h1>
+        <h1 className="text-xl font-bold text-foreground">Huvudbok</h1>
       </div>
 
       <div className="flex items-end gap-4 mb-6 flex-wrap">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-gray-600">Från</label>
+          <label className="text-xs font-medium text-muted-foreground">Från</label>
           <input
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="border border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-gray-600">Till</label>
+          <label className="text-xs font-medium text-muted-foreground">Till</label>
           <input
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+            className="border border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-gray-600">Konton (kommaseparerat, tomt = alla)</label>
+          <label className="text-xs font-medium text-muted-foreground">Konton (kommaseparerat, tomt = alla)</label>
           <input
             type="text"
             value={accountFilter}
             onChange={(e) => setAcctFilter(e.target.value)}
             placeholder="t.ex. 1510,3001"
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400 w-52"
+            className="border border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400 w-52"
           />
         </div>
         <button
@@ -129,49 +129,49 @@ export default function GeneralLedgerPage() {
       )}
 
       {report && report.accountEntries.length === 0 && (
-        <p className="text-sm text-gray-500">Inga verifikat hittades för perioden.</p>
+        <p className="text-sm text-muted-foreground">Inga verifikat hittades för perioden.</p>
       )}
 
       {report && report.accountEntries.map((acct) => (
-        <div key={acct.accountId} className="mb-8 bg-white border border-gray-200 rounded-xl overflow-hidden">
-          <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center gap-3">
-            <span className="font-mono font-bold text-gray-900">{acct.accountNumber}</span>
-            <span className="font-semibold text-gray-800">{acct.accountName}</span>
-            <span className="ml-auto text-xs text-gray-500">
+        <div key={acct.accountId} className="mb-8 bg-card border border rounded-xl overflow-hidden">
+          <div className="px-4 py-3 bg-muted border-b border flex items-center gap-3">
+            <span className="font-mono font-bold text-foreground">{acct.accountNumber}</span>
+            <span className="font-semibold text-foreground">{acct.accountName}</span>
+            <span className="ml-auto text-xs text-muted-foreground">
               IB: <span className="font-mono">{fmtOre(acct.openingBalance)}</span>
             </span>
           </div>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
-                <th className="text-left px-4 py-2 font-medium text-gray-500 w-28">Datum</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-500 w-24">Verifikat</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-500">Beskrivning</th>
-                <th className="text-right px-4 py-2 font-medium text-gray-500 w-32">Debet</th>
-                <th className="text-right px-4 py-2 font-medium text-gray-500 w-32">Kredit</th>
-                <th className="text-right px-4 py-2 font-medium text-gray-500 w-36">Saldo</th>
+              <tr className="border-b border">
+                <th className="text-left px-4 py-2 font-medium text-muted-foreground w-28">Datum</th>
+                <th className="text-left px-4 py-2 font-medium text-muted-foreground w-24">Verifikat</th>
+                <th className="text-left px-4 py-2 font-medium text-muted-foreground">Beskrivning</th>
+                <th className="text-right px-4 py-2 font-medium text-muted-foreground w-32">Debet</th>
+                <th className="text-right px-4 py-2 font-medium text-muted-foreground w-32">Kredit</th>
+                <th className="text-right px-4 py-2 font-medium text-muted-foreground w-36">Saldo</th>
               </tr>
             </thead>
             <tbody>
               {acct.entries.map((entry) => (
-                <tr key={entry.entryId} className="border-t border-gray-50 hover:bg-gray-50">
-                  <td className="px-4 py-2 font-mono text-xs text-gray-600">{fmtDate(entry.date)}</td>
-                  <td className="px-4 py-2 font-mono text-xs text-gray-600">{entry.reference}</td>
-                  <td className="px-4 py-2 text-gray-700 truncate max-w-xs">{entry.description}</td>
-                  <td className="px-4 py-2 text-right font-mono text-gray-700">
+                <tr key={entry.entryId} className="border-t border-border/50 hover:bg-muted">
+                  <td className="px-4 py-2 font-mono text-xs text-muted-foreground">{fmtDate(entry.date)}</td>
+                  <td className="px-4 py-2 font-mono text-xs text-muted-foreground">{entry.reference}</td>
+                  <td className="px-4 py-2 text-foreground truncate max-w-xs">{entry.description}</td>
+                  <td className="px-4 py-2 text-right font-mono text-foreground">
                     {entry.debit !== "0" ? fmtOre(entry.debit) : ""}
                   </td>
-                  <td className="px-4 py-2 text-right font-mono text-gray-700">
+                  <td className="px-4 py-2 text-right font-mono text-foreground">
                     {entry.credit !== "0" ? fmtOre(entry.credit) : ""}
                   </td>
-                  <td className="px-4 py-2 text-right font-mono text-gray-800">{fmtOre(entry.runningBalance)}</td>
+                  <td className="px-4 py-2 text-right font-mono text-foreground">{fmtOre(entry.runningBalance)}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
-              <tr className="border-t-2 border-gray-200 bg-gray-50 font-semibold">
-                <td colSpan={5} className="px-4 py-2.5 text-sm text-gray-700">Utgående saldo</td>
-                <td className="px-4 py-2.5 text-right font-mono text-gray-900">{fmtOre(acct.closingBalance)}</td>
+              <tr className="border-t-2 border bg-muted font-semibold">
+                <td colSpan={5} className="px-4 py-2.5 text-sm text-foreground">Utgående saldo</td>
+                <td className="px-4 py-2.5 text-right font-mono text-foreground">{fmtOre(acct.closingBalance)}</td>
               </tr>
             </tfoot>
           </table>

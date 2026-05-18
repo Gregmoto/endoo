@@ -1,6 +1,6 @@
 {
   "name": "endoo",
-  "version": "0.6.0",
+  "version": "0.9.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -21,6 +21,9 @@
     "scan-routes": "tsx scripts/scan-routes.ts",
     "audit:prisma": "tsx scripts/audit-prisma.ts",
     "audit:prisma:strict": "tsx scripts/audit-prisma.ts --strict",
+    "audit:colors": "tsx scripts/audit-colors.ts",
+    "migrate:colors": "tsx scripts/migrate-colors.ts --dry-run",
+    "migrate:colors:apply": "tsx scripts/migrate-colors.ts",
     "test:security": "tsx scripts/scan-routes.ts && vitest run tests/security/",
     "prepare": "husky"
   },
@@ -63,5 +66,8 @@
     "*.{ts,tsx}": [
       "tsc --noEmit"
     ]
-  }
+  },
+  "browserslist": [
+    "defaults and supports es6-module"
+  ]
 }

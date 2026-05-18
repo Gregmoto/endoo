@@ -138,7 +138,7 @@ export default function EmailLogsPage() {
                 <>
                   <tr
                     key={item.id}
-                    className="border-t border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors"
+                    className="border-t border-gray-50 dark:border-gray-800 hover:bg-muted dark:hover:bg-gray-800/50 cursor-pointer transition-colors"
                     onClick={() => setExpanded(expanded === item.id ? null : item.id)}
                   >
                     <td className="px-5 py-3 text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
@@ -217,7 +217,7 @@ export default function EmailLogsPage() {
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page <= 1}
-            className="px-3 py-1.5 text-sm border border-gray-200 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+            className="px-3 py-1.5 text-sm border border-gray-200 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-muted dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
           >
             ← Föregående
           </button>
@@ -227,7 +227,7 @@ export default function EmailLogsPage() {
           <button
             onClick={() => setPage(p => Math.min(data.pages, p + 1))}
             disabled={page >= data.pages}
-            className="px-3 py-1.5 text-sm border border-gray-200 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+            className="px-3 py-1.5 text-sm border border-gray-200 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-muted dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
           >
             Nästa →
           </button>

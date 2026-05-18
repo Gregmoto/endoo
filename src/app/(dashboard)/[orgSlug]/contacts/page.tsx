@@ -69,8 +69,8 @@ export default function ContactsPage() {
       {/* Header */}
       <div className="mb-5 flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Kunder</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{total} kunder totalt</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Kunder</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{total} kunder totalt</p>
         </div>
         <Link href={`/${orgSlug}/contacts/new`}>
           <Button className="min-h-[44px] px-4">+ Ny kontakt</Button>
@@ -84,12 +84,12 @@ export default function ContactsPage() {
           placeholder="Sök namn, e-post, org.nr, kundnr…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full sm:flex-1 sm:min-w-0 sm:max-w-xs px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full sm:flex-1 sm:min-w-0 sm:max-w-xs px-3 py-2.5 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
         <select
           value={status}
           onChange={e => setStatus(e.target.value)}
-          className="w-full sm:w-auto px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+          className="w-full sm:w-auto px-3 py-2.5 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-card"
         >
           <option value="">Alla statusar</option>
           <option value="active">Aktiv</option>
@@ -101,7 +101,7 @@ export default function ContactsPage() {
         <select
           value={type}
           onChange={e => setType(e.target.value)}
-          className="w-full sm:w-auto px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+          className="w-full sm:w-auto px-3 py-2.5 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-card"
         >
           <option value="">Alla typer</option>
           <option value="business">Företag</option>
@@ -112,14 +112,14 @@ export default function ContactsPage() {
       <Card>
         <CardContent className="p-0">
           {loading ? (
-            <div className="py-16 text-center text-sm text-gray-400">Laddar…</div>
+            <div className="py-16 text-center text-sm text-muted-foreground">Laddar…</div>
           ) : contacts.length === 0 ? (
             <div className="py-16 text-center px-4">
               <svg className="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              <p className="font-medium text-gray-900 mb-1">Inga kunder hittades</p>
-              <p className="text-sm text-gray-400 mt-1 mb-4">Lägg till din första kund</p>
+              <p className="font-medium text-foreground mb-1">Inga kunder hittades</p>
+              <p className="text-sm text-muted-foreground mt-1 mb-4">Lägg till din första kund</p>
               <Link href={`/${orgSlug}/contacts/new`}>
                 <Button className="min-h-[44px]">+ Ny kontakt</Button>
               </Link>
@@ -130,13 +130,13 @@ export default function ContactsPage() {
               <div className="hidden sm:block overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-100">
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Kund</th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Kundnr</th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Kontaktperson</th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Typ</th>
-                      <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Fakturor</th>
+                    <tr className="border-b border">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Kund</th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Kundnr</th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Kontaktperson</th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Typ</th>
+                      <th className="px-6 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Fakturor</th>
                       <th className="px-6 py-3" />
                     </tr>
                   </thead>
@@ -147,31 +147,31 @@ export default function ContactsPage() {
                       return (
                         <tr
                           key={c.id}
-                          className="border-t border-gray-50 hover:bg-gray-50 cursor-pointer"
+                          className="border-t border-border/50 hover:bg-muted cursor-pointer"
                           onClick={() => router.push(`/${orgSlug}/contacts/${c.id}`)}
                         >
                           <td className="px-6 py-3">
-                            <p className="font-medium text-gray-900">{c.name}</p>
-                            {c.city && <p className="text-xs text-gray-400">{c.city}</p>}
+                            <p className="font-medium text-foreground">{c.name}</p>
+                            {c.city && <p className="text-xs text-muted-foreground">{c.city}</p>}
                           </td>
-                          <td className="px-6 py-3 text-gray-500 font-mono text-xs">{c.customerNumber ?? "—"}</td>
+                          <td className="px-6 py-3 text-muted-foreground font-mono text-xs">{c.customerNumber ?? "—"}</td>
                           <td className="px-6 py-3">
                             <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${s.cls}`}>{s.label}</span>
                           </td>
                           <td className="px-6 py-3">
                             {primary ? (
                               <div>
-                                <p className="text-gray-800">{primary.name}</p>
-                                {primary.email && <p className="text-xs text-gray-400">{primary.email}</p>}
+                                <p className="text-foreground">{primary.name}</p>
+                                {primary.email && <p className="text-xs text-muted-foreground">{primary.email}</p>}
                               </div>
                             ) : (
-                              <span className="text-gray-400">—</span>
+                              <span className="text-muted-foreground">—</span>
                             )}
                           </td>
-                          <td className="px-6 py-3 text-gray-500 text-xs">
+                          <td className="px-6 py-3 text-muted-foreground text-xs">
                             {c.type === "business" ? "Företag" : "Privatperson"}
                           </td>
-                          <td className="px-6 py-3 text-right text-gray-600">{c._count.invoices}</td>
+                          <td className="px-6 py-3 text-right text-muted-foreground">{c._count.invoices}</td>
                           <td className="px-6 py-3 text-right">
                             <Link
                               href={`/${orgSlug}/contacts/${c.id}`}
@@ -196,7 +196,7 @@ export default function ContactsPage() {
                   return (
                     <button
                       key={c.id}
-                      className="w-full text-left px-4 py-3.5 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                      className="w-full text-left px-4 py-3.5 hover:bg-muted active:bg-muted transition-colors"
                       onClick={() => router.push(`/${orgSlug}/contacts/${c.id}`)}
                     >
                       <div className="flex items-start justify-between gap-2">
@@ -206,19 +206,19 @@ export default function ContactsPage() {
                               {s.label}
                             </span>
                             {c.customerNumber && (
-                              <span className="font-mono text-xs text-gray-400">{c.customerNumber}</span>
+                              <span className="font-mono text-xs text-muted-foreground">{c.customerNumber}</span>
                             )}
                           </div>
-                          <p className="font-medium text-gray-900 text-sm truncate">{c.name}</p>
+                          <p className="font-medium text-foreground text-sm truncate">{c.name}</p>
                           {primary?.email ? (
-                            <p className="text-xs text-gray-400 mt-0.5 truncate">{primary.email}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5 truncate">{primary.email}</p>
                           ) : c.city ? (
-                            <p className="text-xs text-gray-400 mt-0.5">{c.city}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">{c.city}</p>
                           ) : null}
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <p className="text-xs text-gray-500">{c._count.invoices} fakturor</p>
-                          <p className="text-xs text-gray-400 mt-0.5">
+                          <p className="text-xs text-muted-foreground">{c._count.invoices} fakturor</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
                             {c.type === "business" ? "Företag" : "Privatperson"}
                           </p>
                         </div>
@@ -234,20 +234,20 @@ export default function ContactsPage() {
 
       {/* Pagination — touch-friendly */}
       {pages > 1 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-gray-500 gap-3">
+        <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground gap-3">
           <span className="text-xs">Sida {page} av {pages}</span>
           <div className="flex gap-2">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-4 py-2.5 border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50 active:bg-gray-100 min-h-[44px] transition-colors"
+              className="px-4 py-2.5 border border rounded-lg disabled:opacity-40 hover:bg-muted active:bg-muted min-h-[44px] transition-colors"
             >
               ← Föregående
             </button>
             <button
               onClick={() => setPage(p => Math.min(pages, p + 1))}
               disabled={page === pages}
-              className="px-4 py-2.5 border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50 active:bg-gray-100 min-h-[44px] transition-colors"
+              className="px-4 py-2.5 border border rounded-lg disabled:opacity-40 hover:bg-muted active:bg-muted min-h-[44px] transition-colors"
             >
               Nästa →
             </button>

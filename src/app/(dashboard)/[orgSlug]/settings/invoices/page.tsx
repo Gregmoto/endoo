@@ -94,8 +94,8 @@ export default function InvoiceSettingsPage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Fakturainställningar</h1>
-        <p className="text-sm text-gray-500 mt-1">Standardvärden som används när du skapar fakturor</p>
+        <h1 className="text-2xl font-bold text-foreground">Fakturainställningar</h1>
+        <p className="text-sm text-muted-foreground mt-1">Standardvärden som används när du skapar fakturor</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -116,7 +116,7 @@ export default function InvoiceSettingsPage() {
                 />
               </Field>
             </div>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-muted-foreground">
               Fakturor numreras som <span className="font-mono">{form.invoicePrefix}-{String(form.invoiceSequenceStart).padStart(4, "0")}</span>
             </p>
           </CardContent>
@@ -225,7 +225,7 @@ const cls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ou
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">{label}</label>
+      <label className="block text-xs font-medium text-muted-foreground mb-1.5">{label}</label>
       {children}
     </div>
   )

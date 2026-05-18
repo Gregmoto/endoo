@@ -81,7 +81,7 @@ export default function QuoteApprovalPage() {
   if (state === "loading") {
     return (
       <Shell>
-        <div className="flex items-center justify-center py-24 text-gray-400 text-sm">Laddar…</div>
+        <div className="flex items-center justify-center py-24 text-muted-foreground text-sm">Laddar…</div>
       </Shell>
     )
   }
@@ -93,8 +93,8 @@ export default function QuoteApprovalPage() {
       <Shell>
         <div className="flex flex-col items-center py-16 text-center px-6">
           <span className="text-4xl mb-4">⚠️</span>
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">Länken är ogiltig</h2>
-          <p className="text-sm text-gray-500 max-w-xs">{error ?? "Denna offertlänk är ogiltig eller har löpt ut."}</p>
+          <h2 className="text-lg font-semibold text-foreground mb-2">Länken är ogiltig</h2>
+          <p className="text-sm text-muted-foreground max-w-xs">{error ?? "Denna offertlänk är ogiltig eller har löpt ut."}</p>
         </div>
       </Shell>
     )
@@ -152,9 +152,9 @@ export default function QuoteApprovalPage() {
         )}
 
         {/* Line items */}
-        <div className="rounded-lg border border-gray-100 overflow-hidden">
-          <div className="bg-gray-50 px-4 py-2 border-b border-gray-100">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Innehåll</p>
+        <div className="rounded-lg border border overflow-hidden">
+          <div className="bg-muted px-4 py-2 border-b border">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Innehåll</p>
           </div>
           <table className="w-full text-sm">
             <tbody>
@@ -162,12 +162,12 @@ export default function QuoteApprovalPage() {
                 const net   = l.quantity * (l.unitPriceKr ?? 0) * (1 - (l.discountRate ?? 0))
                 const total = net * (1 + (l.taxRate ?? 0))
                 return (
-                  <tr key={i} className="border-b border-gray-50 last:border-0">
+                  <tr key={i} className="border-b border-border/50 last:border-0">
                     <td className="px-4 py-3">
-                      <p className="font-medium text-gray-900">{l.description}</p>
-                      <p className="text-xs text-gray-400">{l.quantity} {l.unit} × {fmt(l.unitPriceKr ?? 0, cur)}</p>
+                      <p className="font-medium text-foreground">{l.description}</p>
+                      <p className="text-xs text-muted-foreground">{l.quantity} {l.unit} × {fmt(l.unitPriceKr ?? 0, cur)}</p>
                     </td>
-                    <td className="px-4 py-3 text-right font-medium text-gray-900 tabular-nums whitespace-nowrap">
+                    <td className="px-4 py-3 text-right font-medium text-foreground tabular-nums whitespace-nowrap">
                       {fmt(total, cur)}
                     </td>
                   </tr>
@@ -175,14 +175,14 @@ export default function QuoteApprovalPage() {
               })}
             </tbody>
           </table>
-          <div className="bg-gray-50 border-t border-gray-100 px-4 py-3 space-y-1">
-            <div className="flex justify-between text-sm text-gray-500">
+          <div className="bg-muted border-t border px-4 py-3 space-y-1">
+            <div className="flex justify-between text-sm text-muted-foreground">
               <span>Netto</span><span className="tabular-nums">{fmt(subtotalKr, cur)}</span>
             </div>
-            <div className="flex justify-between text-sm text-gray-500">
+            <div className="flex justify-between text-sm text-muted-foreground">
               <span>Moms</span><span className="tabular-nums">{fmt(taxKr, cur)}</span>
             </div>
-            <div className="flex justify-between text-base font-bold text-gray-900 pt-1 border-t border-gray-200">
+            <div className="flex justify-between text-base font-bold text-foreground pt-1 border-t border">
               <span>Totalt</span><span className="tabular-nums">{fmt(totalKr, cur)}</span>
             </div>
           </div>
@@ -190,8 +190,8 @@ export default function QuoteApprovalPage() {
 
         {/* Terms */}
         {ctx.terms && (
-          <div className="text-xs text-gray-500 leading-relaxed bg-gray-50 rounded-lg px-4 py-3">
-            <p className="font-semibold text-gray-600 mb-1 uppercase tracking-wide text-[10px]">Villkor</p>
+          <div className="text-xs text-muted-foreground leading-relaxed bg-muted rounded-lg px-4 py-3">
+            <p className="font-semibold text-muted-foreground mb-1 uppercase tracking-wide text-[10px]">Villkor</p>
             {ctx.terms}
           </div>
         )}
@@ -208,7 +208,7 @@ export default function QuoteApprovalPage() {
             </button>
             <button
               onClick={() => setDeclining(true)}
-              className="w-full rounded-lg border border-gray-200 text-sm text-gray-600 py-2.5 hover:bg-gray-50 transition-colors"
+              className="w-full rounded-lg border border text-sm text-muted-foreground py-2.5 hover:bg-muted transition-colors"
             >
               Avböj
             </button>
@@ -220,7 +220,7 @@ export default function QuoteApprovalPage() {
               Du håller på att avböja denna offert. Avsändaren meddelas.
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Anledning (valfri)</label>
+              <label className="block text-sm font-medium text-foreground mb-1">Anledning (valfri)</label>
               <textarea
                 className={`${CLS} min-h-[72px] resize-none`}
                 placeholder="Berätta gärna varför du avböjer…"
@@ -239,7 +239,7 @@ export default function QuoteApprovalPage() {
               </button>
               <button
                 onClick={() => setDeclining(false)}
-                className="text-sm text-gray-500 hover:text-gray-700 px-3 py-2.5"
+                className="text-sm text-muted-foreground hover:text-foreground px-3 py-2.5"
               >
                 Tillbaka
               </button>
@@ -248,7 +248,7 @@ export default function QuoteApprovalPage() {
         )}
 
         {expiry && (
-          <p className="text-xs text-gray-400 text-center">
+          <p className="text-xs text-muted-foreground text-center">
             Offerten är giltig till och med <strong>{expiry}</strong>.
           </p>
         )}
@@ -259,11 +259,11 @@ export default function QuoteApprovalPage() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-start justify-center pt-8 pb-16 px-4">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+    <div className="min-h-screen bg-muted flex items-start justify-center pt-8 pb-16 px-4">
+      <div className="w-full max-w-lg bg-card rounded-2xl shadow-lg overflow-hidden border border">
         {children}
-        <div className="px-6 py-4 border-t border-gray-50 text-center">
-          <p className="text-xs text-gray-300">Offert via <span className="font-semibold text-gray-400">Endoo</span></p>
+        <div className="px-6 py-4 border-t border-border/50 text-center">
+          <p className="text-xs text-gray-300">Offert via <span className="font-semibold text-muted-foreground">Endoo</span></p>
         </div>
       </div>
     </div>
@@ -279,8 +279,8 @@ function SuccessScreen({ icon, color, title, subtitle }: {
       <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-5 ${bg}`}>
         {icon}
       </div>
-      <h2 className="text-xl font-bold text-gray-900 mb-2">{title}</h2>
-      <p className="text-sm text-gray-500 max-w-xs">{subtitle}</p>
+      <h2 className="text-xl font-bold text-foreground mb-2">{title}</h2>
+      <p className="text-sm text-muted-foreground max-w-xs">{subtitle}</p>
     </div>
   )
 }

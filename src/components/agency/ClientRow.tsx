@@ -23,8 +23,8 @@ export function ClientRow({ client, selected, onSelect, pinned, onPin, onRefresh
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-all ${
-      expanded ? "border-brand-300 shadow-sm" : "border-gray-100 hover:border-gray-200"
-    } ${selected ? "bg-blue-50/40" : "bg-white"}`}>
+      expanded ? "border-brand-300 shadow-sm" : "border hover:border"
+    } ${selected ? "bg-blue-50/40" : "bg-card"}`}>
 
       {/* Main row */}
       <div className="flex items-center gap-3 px-4 py-3">
@@ -35,13 +35,13 @@ export function ClientRow({ client, selected, onSelect, pinned, onPin, onRefresh
           checked={selected}
           onChange={e => onSelect(client.clientId, e.target.checked)}
           onClick={e => e.stopPropagation()}
-          className="h-4 w-4 rounded border-gray-300 text-brand-600 flex-shrink-0"
+          className="h-4 w-4 rounded border text-brand-600 flex-shrink-0"
         />
 
         {/* Pin */}
         <button
           onClick={e => { e.stopPropagation(); onPin(client.clientId) }}
-          className={`flex-shrink-0 text-sm transition-colors ${pinned ? "text-brand-500" : "text-gray-300 hover:text-gray-400"}`}
+          className={`flex-shrink-0 text-sm transition-colors ${pinned ? "text-brand-500" : "text-muted-foreground hover:text-muted-foreground"}`}
           title={pinned ? "Avnåla" : "Nåla"}
         >
           {pinned ? "★" : "☆"}
@@ -53,7 +53,7 @@ export function ClientRow({ client, selected, onSelect, pinned, onPin, onRefresh
           onClick={() => setExpanded(v => !v)}
         >
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-gray-900 truncate">{client.clientName}</span>
+            <span className="font-semibold text-foreground truncate">{client.clientName}</span>
             {hasError && (
               <span className="flex-shrink-0 inline-flex items-center gap-0.5 text-xs font-medium text-red-700 bg-red-50 px-1.5 py-0.5 rounded-full">
                 ● {client.errorCount}
@@ -65,7 +65,7 @@ export function ClientRow({ client, selected, onSelect, pinned, onPin, onRefresh
               </span>
             )}
           </div>
-          <p className="text-xs text-gray-400 truncate mt-0.5">{client.clientSlug}</p>
+          <p className="text-xs text-muted-foreground truncate mt-0.5">{client.clientSlug}</p>
         </button>
 
         {/* Health score badge */}
@@ -77,11 +77,11 @@ export function ClientRow({ client, selected, onSelect, pinned, onPin, onRefresh
         {/* VAT deadline */}
         <div className="flex-shrink-0 hidden md:block w-24 text-right">
           {client.vatDeadlineDaysLeft !== null ? (
-            <span className={`text-xs font-medium ${client.vatDeadlineDaysLeft <= 30 ? "text-indigo-700" : "text-gray-500"}`}>
+            <span className={`text-xs font-medium ${client.vatDeadlineDaysLeft <= 30 ? "text-indigo-700" : "text-muted-foreground"}`}>
               Moms {client.vatDeadlineDaysLeft}d
             </span>
           ) : (
-            <span className="text-xs text-gray-300">—</span>
+            <span className="text-xs text-muted-foreground">—</span>
           )}
         </div>
 
@@ -97,7 +97,7 @@ export function ClientRow({ client, selected, onSelect, pinned, onPin, onRefresh
         {/* Expand toggle */}
         <button
           onClick={() => setExpanded(v => !v)}
-          className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+          className="flex-shrink-0 text-muted-foreground hover:text-muted-foreground transition-colors"
         >
           <span className={`inline-block transition-transform text-xs ${expanded ? "rotate-180" : ""}`}>▼</span>
         </button>

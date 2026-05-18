@@ -95,8 +95,8 @@ export default function AccountsPage() {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Kontoplan</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">BAS 2026 · {totalActive} aktiva konton</p>
+          <h1 className="text-2xl font-bold text-foreground">Kontoplan</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">BAS 2026 · {totalActive} aktiva konton</p>
         </div>
         <Button variant="outline" size="sm" onClick={importBas} loading={seeding}>
           Importera BAS 2026
@@ -120,12 +120,12 @@ export default function AccountsPage() {
           placeholder="Sök kontonummer eller namn…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-64 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-64 px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
         />
         <select
           value={typeFilter}
           onChange={e => setTypeFilter(e.target.value)}
-          className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="px-3 py-2 text-sm border border rounded-lg bg-card focus:outline-none focus:ring-2 focus:ring-indigo-300"
         >
           <option value="">Alla kontotyper</option>
           {Object.entries(TYPE_LABEL).map(([k, v]) => (
@@ -135,13 +135,13 @@ export default function AccountsPage() {
       </div>
 
       {loading ? (
-        <div className="py-16 text-center text-sm text-gray-400">Laddar kontoplan…</div>
+        <div className="py-16 text-center text-sm text-muted-foreground">Laddar kontoplan…</div>
       ) : totalActive === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 gap-5 text-center">
           <div className="size-16 rounded-full bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500 text-3xl">▤</div>
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Ingen kontoplan ännu</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 max-w-sm">
+            <h2 className="text-lg font-semibold text-foreground">Ingen kontoplan ännu</h2>
+            <p className="text-sm text-muted-foreground mt-1 max-w-sm">
               Importera BAS 2026-kontoplanen för att komma igång med bokföring.
               Du kan anpassa den efter import.
             </p>
@@ -153,9 +153,9 @@ export default function AccountsPage() {
       ) : (
         <div className="space-y-6">
           {filtered.map(section => (
-            <div key={section.type} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+            <div key={section.type} className="bg-card rounded-xl border border shadow-sm overflow-hidden">
               {/* Section header */}
-              <div className={`px-5 py-3 border-b flex items-center gap-3 ${TYPE_COLOR[section.type] ?? "bg-gray-50 text-gray-700 border-gray-100"}`}>
+              <div className={`px-5 py-3 border-b flex items-center gap-3 ${TYPE_COLOR[section.type] ?? "bg-muted text-foreground border"}`}>
                 <h2 className="text-sm font-bold uppercase tracking-wide">
                   {TYPE_LABEL[section.type] ?? section.label}
                 </h2>
@@ -164,25 +164,25 @@ export default function AccountsPage() {
 
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-50">
-                    <th className="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide w-20">Nr</th>
-                    <th className="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Kontonamn</th>
-                    <th className="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide w-20">Sida</th>
-                    <th className="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide w-24">Momskod</th>
-                    <th className="px-5 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide w-20">Status</th>
+                  <tr className="border-b border-border/50">
+                    <th className="px-5 py-2.5 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide w-20">Nr</th>
+                    <th className="px-5 py-2.5 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Kontonamn</th>
+                    <th className="px-5 py-2.5 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide w-20">Sida</th>
+                    <th className="px-5 py-2.5 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide w-24">Momskod</th>
+                    <th className="px-5 py-2.5 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide w-20">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {section.accounts.map(a => (
-                    <tr key={a.id} className={`border-t border-gray-50 ${!a.isActive ? "opacity-40" : ""}`}>
+                    <tr key={a.id} className={`border-t border ${!a.isActive ? "opacity-40" : ""}`}>
                       <td className="px-5 py-2.5 font-mono text-xs font-semibold text-indigo-700">{a.number}</td>
-                      <td className="px-5 py-2.5 text-gray-900">
+                      <td className="px-5 py-2.5 text-foreground">
                         {a.name}
                         {a.description && (
-                          <span className="ml-2 text-xs text-gray-400">{a.description}</span>
+                          <span className="ml-2 text-xs text-muted-foreground">{a.description}</span>
                         )}
                       </td>
-                      <td className="px-5 py-2.5 text-xs text-gray-500 capitalize">{a.normalSide === "debit" ? "Debet" : "Kredit"}</td>
+                      <td className="px-5 py-2.5 text-xs text-muted-foreground capitalize">{a.normalSide === "debit" ? "Debet" : "Kredit"}</td>
                       <td className="px-5 py-2.5">
                         {a.vatCode && (
                           <span className="text-xs font-mono bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded">
@@ -192,10 +192,10 @@ export default function AccountsPage() {
                       </td>
                       <td className="px-5 py-2.5">
                         {a.isSystem && (
-                          <span className="text-xs text-gray-400">BAS</span>
+                          <span className="text-xs text-muted-foreground">BAS</span>
                         )}
                         {!a.isActive && (
-                          <span className="text-xs text-gray-300">Inaktiv</span>
+                          <span className="text-xs text-muted-foreground">Inaktiv</span>
                         )}
                       </td>
                     </tr>
@@ -205,7 +205,7 @@ export default function AccountsPage() {
             </div>
           ))}
           {filtered.length === 0 && (
-            <div className="py-16 text-center text-sm text-gray-400">Inga konton matchar sökningen.</div>
+            <div className="py-16 text-center text-sm text-muted-foreground">Inga konton matchar sökningen.</div>
           )}
         </div>
       )}

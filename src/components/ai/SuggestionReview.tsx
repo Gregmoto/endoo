@@ -42,11 +42,11 @@ function BreakdownRow({ label, value }: { label: string; value: number }) {
   const color = pct >= 85 ? "bg-green-400" : pct >= 60 ? "bg-yellow-400" : "bg-red-400"
   return (
     <div className="flex items-center gap-2 text-xs">
-      <span className="text-gray-500 w-40 flex-shrink-0">{label}</span>
-      <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+      <span className="text-muted-foreground w-40 flex-shrink-0">{label}</span>
+      <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
         <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
-      <span className="text-gray-600 w-8 text-right">{pct}%</span>
+      <span className="text-muted-foreground w-8 text-right">{pct}%</span>
     </div>
   )
 }
@@ -111,12 +111,12 @@ export function SuggestionReview({
   }
 
   return (
-    <div className="rounded-xl border border-indigo-100 bg-white shadow-sm overflow-hidden">
+    <div className="rounded-xl border border-indigo-100 bg-card shadow-sm overflow-hidden">
       {/* Header */}
       <div className="px-4 py-3 bg-indigo-50 border-b border-indigo-100 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-indigo-600">✦</span>
-          <span className="font-semibold text-gray-900 text-sm">AI-konteringsförslag</span>
+          <span className="font-semibold text-foreground text-sm">AI-konteringsförslag</span>
         </div>
         <ConfidenceBadge score={confidence} />
       </div>
@@ -131,7 +131,7 @@ export function SuggestionReview({
       )}
 
       {/* Explanation */}
-      <div className="px-4 py-2.5 text-xs text-gray-600 bg-gray-50 border-b border-gray-100">
+      <div className="px-4 py-2.5 text-xs text-muted-foreground bg-muted border-b border">
         {explanation}
       </div>
 
@@ -139,36 +139,36 @@ export function SuggestionReview({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50/50">
-              <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500">Konto</th>
-              <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500">Beskrivning</th>
-              <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500">Momskod</th>
-              <th className="px-4 py-2 text-right text-xs font-semibold text-gray-500">Debet</th>
-              <th className="px-4 py-2 text-right text-xs font-semibold text-gray-500">Kredit</th>
+            <tr className="border-b border bg-muted/50">
+              <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">Konto</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">Beskrivning</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">Momskod</th>
+              <th className="px-4 py-2 text-right text-xs font-semibold text-muted-foreground">Debet</th>
+              <th className="px-4 py-2 text-right text-xs font-semibold text-muted-foreground">Kredit</th>
             </tr>
           </thead>
           <tbody>
             {editedEntries.map((entry, i) => (
-              <tr key={i} className="border-t border-gray-50">
+              <tr key={i} className="border-t border-border/50">
                 <td className="px-4 py-2">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-mono text-xs text-gray-500">{entry.accountNumber}</span>
-                    <span className="text-xs text-gray-700">{entry.accountName}</span>
+                    <span className="font-mono text-xs text-muted-foreground">{entry.accountNumber}</span>
+                    <span className="text-xs text-foreground">{entry.accountName}</span>
                   </div>
                 </td>
                 <td className="px-4 py-2">
                   <input
                     value={entry.description ?? ""}
                     onChange={e => updateEntry(i, "description", e.target.value || null)}
-                    className="text-xs border-0 bg-transparent focus:ring-0 text-gray-600 w-full"
+                    className="text-xs border-0 bg-transparent focus:ring-0 text-muted-foreground w-full"
                     placeholder="—"
                   />
                 </td>
-                <td className="px-4 py-2 text-xs text-gray-500">{entry.vatCode ?? "—"}</td>
-                <td className="px-4 py-2 text-right tabular-nums font-medium text-gray-900 text-xs">
+                <td className="px-4 py-2 text-xs text-muted-foreground">{entry.vatCode ?? "—"}</td>
+                <td className="px-4 py-2 text-right tabular-nums font-medium text-foreground text-xs">
                   {entry.debit > 0 ? fmtOre(entry.debit) : ""}
                 </td>
-                <td className="px-4 py-2 text-right tabular-nums font-medium text-gray-900 text-xs">
+                <td className="px-4 py-2 text-right tabular-nums font-medium text-foreground text-xs">
                   {entry.credit > 0 ? fmtOre(entry.credit) : ""}
                 </td>
               </tr>
@@ -178,11 +178,11 @@ export function SuggestionReview({
       </div>
 
       {/* Confidence breakdown (collapsible) */}
-      <div className="px-4 py-2 border-t border-gray-100">
+      <div className="px-4 py-2 border-t border">
         <button
           type="button"
           onClick={() => setShowBreakdown(v => !v)}
-          className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1"
+          className="text-xs text-muted-foreground hover:text-muted-foreground flex items-center gap-1"
         >
           {showBreakdown ? "▲" : "▼"} Konfidensanalys
         </button>
@@ -197,7 +197,7 @@ export function SuggestionReview({
 
       {/* Actions */}
       {!rejecting ? (
-        <div className="px-4 py-3 border-t border-gray-100 flex items-center gap-2 flex-wrap">
+        <div className="px-4 py-3 border-t border flex items-center gap-2 flex-wrap">
           <button
             type="button"
             onClick={handleAccept}
@@ -210,7 +210,7 @@ export function SuggestionReview({
             type="button"
             onClick={() => setRejecting(true)}
             disabled={submitting}
-            className="px-4 py-2 border border-gray-200 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 border border text-muted-foreground text-sm font-medium rounded-lg hover:bg-muted transition-colors"
           >
             Avvisa
           </button>
@@ -218,20 +218,20 @@ export function SuggestionReview({
             <button
               type="button"
               onClick={() => setEditedEntries(entries)}
-              className="text-xs text-gray-400 hover:text-gray-600"
+              className="text-xs text-muted-foreground hover:text-muted-foreground"
             >
               Återställ
             </button>
           )}
         </div>
       ) : (
-        <div className="px-4 py-3 border-t border-gray-100 space-y-2">
+        <div className="px-4 py-3 border-t border space-y-2">
           <input
             autoFocus
             value={rejectReason}
             onChange={e => setRejectReason(e.target.value)}
             placeholder="Varför avvisas förslaget? (hjälper AI att lära sig)"
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-400"
+            className="w-full px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-1 focus:ring-red-400"
           />
           <div className="flex gap-2">
             <button
@@ -245,7 +245,7 @@ export function SuggestionReview({
             <button
               type="button"
               onClick={() => { setRejecting(false); setRejectReason("") }}
-              className="px-3 py-1.5 border border-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-50"
+              className="px-3 py-1.5 border border text-muted-foreground text-sm rounded-lg hover:bg-muted"
             >
               Avbryt
             </button>

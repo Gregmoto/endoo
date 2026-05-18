@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useParams } from "next/navigation"
 import type { MonthPoint } from "@/lib/analytics/queries"
+import { CHART } from "@/lib/analytics/chart-colors"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -99,7 +100,7 @@ function BarChart({
           x1={padL} x2={w - padR}
           y1={padT + (h - padT - padB) * (1 - t)}
           y2={padT + (h - padT - padB) * (1 - t)}
-          stroke="#f3f4f6" strokeWidth={1}
+          stroke="var(--muted)" strokeWidth={1}
         />
       ))}
 
@@ -130,7 +131,7 @@ function BarChart({
               y={h - padB + 14}
               textAnchor="middle"
               fontSize={9}
-              fill="#9ca3af"
+              fill="var(--muted-foreground)"
             >
               {monthLabel(pt.label)}
             </text>
@@ -176,7 +177,7 @@ function LineChart({
           x1={padL} x2={w - padR}
           y1={padT + innerH * (1 - t)}
           y2={padT + innerH * (1 - t)}
-          stroke="#f3f4f6" strokeWidth={1}
+          stroke="var(--muted)" strokeWidth={1}
         />
       ))}
 
@@ -202,7 +203,7 @@ function LineChart({
           y={h - padB + 14}
           textAnchor="middle"
           fontSize={9}
-          fill="#9ca3af"
+          fill="var(--muted-foreground)"
         >
           {monthLabel(pt.label)}
         </text>
@@ -214,7 +215,7 @@ function LineChart({
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 function Skeleton({ className = "" }: { className?: string }) {
-  return <div className={`bg-gray-100 animate-pulse rounded-lg ${className}`} />
+  return <div className={`bg-muted animate-pulse rounded-lg ${className}`} />
 }
 
 // ─── KPI card ─────────────────────────────────────────────────────────────────
@@ -229,11 +230,11 @@ function KpiCard({
   loading?: boolean
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 px-5 py-4">
-      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">{label}</p>
+    <div className="bg-card rounded-2xl border border px-5 py-4">
+      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">{label}</p>
       {loading
         ? <Skeleton className="h-7 w-28 mb-1" />
-        : <p className="text-2xl font-bold text-gray-900 tabular-nums">{value}</p>
+        : <p className="text-2xl font-bold text-foreground tabular-nums">{value}</p>
       }
       {sub && (loading
         ? <Skeleton className="h-4 w-20 mt-1" />
@@ -251,9 +252,9 @@ function Widget({ title, children, action }: {
   action?: React.ReactNode
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5">
+    <div className="bg-card rounded-2xl border border p-5">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm font-semibold text-gray-700">{title}</p>
+        <p className="text-sm font-semibold text-foreground">{title}</p>
         {action}
       </div>
       {children}
@@ -273,13 +274,13 @@ function AgingBar({ bucket, label, color, total }: {
   return (
     <div>
       <div className="flex items-center justify-between text-xs mb-1">
-        <span className="text-gray-500">{label}</span>
-        <span className="font-medium text-gray-700 tabular-nums">
+        <span className="text-muted-foreground">{label}</span>
+        <span className="font-medium text-foreground tabular-nums">
           {fmtKr(bucket.amountOre, true)}
-          <span className="text-gray-400 ml-1">({bucket.count})</span>
+          <span className="text-muted-foreground ml-1">({bucket.count})</span>
         </span>
       </div>
-      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
         <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
       </div>
     </div>
@@ -294,7 +295,7 @@ function Legend({ items }: { items: { label: string; color: string }[] }) {
       {items.map(it => (
         <div key={it.label} className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: it.color }} />
-          <span className="text-xs text-gray-500">{it.label}</span>
+          <span className="text-xs text-muted-foreground">{it.label}</span>
         </div>
       ))}
     </div>
@@ -358,19 +359,19 @@ export default function AnalyticsPage() {
     ? (snap.vatInputOre / snap.vatOutputOre) * 100
     : 0
 
-  const mrrChangeCls = !snap ? "text-gray-400"
+  const mrrChangeCls = !snap ? "text-muted-foreground"
     : snap.mrrChange > 0 ? "text-green-600"
     : snap.mrrChange < 0 ? "text-red-500"
-    : "text-gray-400"
+    : "text-muted-foreground"
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Analys</h1>
+          <h1 className="text-2xl font-bold text-foreground">Analys</h1>
           {snap && (
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Uppdaterad {new Date(snap.computedAt).toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit" })}
             </p>
           )}
@@ -378,7 +379,7 @@ export default function AnalyticsPage() {
         <button
           onClick={refresh}
           disabled={refreshing}
-          className="text-xs font-medium px-3 py-1.5 border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 disabled:opacity-40 transition-colors"
+          className="text-xs font-medium px-3 py-1.5 border border rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-40 transition-colors"
         >
           {refreshing ? "Uppdaterar…" : "↺ Uppdatera"}
         </button>
@@ -402,7 +403,7 @@ export default function AnalyticsPage() {
           label="Förfallna"
           value={rt ? String(rt.overdueCount) : "—"}
           sub="just nu"
-          subCls={rt && rt.overdueCount > 0 ? "text-red-500" : "text-gray-400"}
+          subCls={rt && rt.overdueCount > 0 ? "text-red-500" : "text-muted-foreground"}
           loading={rtLoading}
         />
         <KpiCard
@@ -457,11 +458,11 @@ export default function AnalyticsPage() {
             <Skeleton className="h-36 w-full" />
           ) : (
             <>
-              <Legend items={[{ label: "Fakturerat (exkl. moms)", color: "#6366f1" }]} />
+              <Legend items={[{ label: "Fakturerat (exkl. moms)", color: CHART.indigo }]} />
               <BarChart
                 data={trend}
                 keys={[{ key: "revenueOre", label: "Fakturerat" }]}
-                colors={["#6366f1"]}
+                colors={[CHART.indigo]}
                 height={140}
               />
             </>
@@ -474,8 +475,8 @@ export default function AnalyticsPage() {
           ) : (
             <>
               <Legend items={[
-                { label: "In",  color: "#22c55e" },
-                { label: "Ut",  color: "#f87171" },
+                { label: "In",  color: CHART.green },
+                { label: "Ut",  color: CHART.redLight },
               ]} />
               <BarChart
                 data={trend}
@@ -483,7 +484,7 @@ export default function AnalyticsPage() {
                   { key: "cashInOre",  label: "Inbetalningar" },
                   { key: "cashOutOre", label: "Utbetalningar" },
                 ]}
-                colors={["#22c55e", "#f87171"]}
+                colors={[CHART.green, CHART.redLight]}
                 height={140}
               />
             </>
@@ -498,21 +499,21 @@ export default function AnalyticsPage() {
             <Skeleton className="h-40 w-full" />
           ) : snap && agingTotal > 0 ? (
             <div className="space-y-3">
-              <div className="text-2xl font-bold text-gray-900 tabular-nums mb-4">
+              <div className="text-2xl font-bold text-foreground tabular-nums mb-4">
                 {fmtKr(snap.outstandingAmountOre, true)}
-                <span className="text-sm font-normal text-gray-400 ml-2">
+                <span className="text-sm font-normal text-muted-foreground ml-2">
                   {snap.outstandingCount} fakturor
                 </span>
               </div>
-              <AgingBar bucket={snap.agingBuckets.current} label="Ej förfallna"    color="#22c55e" total={agingTotal} />
-              <AgingBar bucket={snap.agingBuckets.late30}  label="1–30 dagar sen"  color="#f59e0b" total={agingTotal} />
-              <AgingBar bucket={snap.agingBuckets.late60}  label="31–60 dagar sen" color="#f97316" total={agingTotal} />
-              <AgingBar bucket={snap.agingBuckets.late90}  label="60+ dagar sen"   color="#ef4444" total={agingTotal} />
+              <AgingBar bucket={snap.agingBuckets.current} label="Ej förfallna"    color={CHART.green}  total={agingTotal} />
+              <AgingBar bucket={snap.agingBuckets.late30}  label="1–30 dagar sen"  color={CHART.amber}  total={agingTotal} />
+              <AgingBar bucket={snap.agingBuckets.late60}  label="31–60 dagar sen" color={CHART.orange} total={agingTotal} />
+              <AgingBar bucket={snap.agingBuckets.late90}  label="60+ dagar sen"   color={CHART.red}    total={agingTotal} />
             </div>
           ) : (
             <div className="py-10 text-center">
               <p className="text-3xl mb-2">✓</p>
-              <p className="text-sm text-gray-400">Inga utestående fordringar</p>
+              <p className="text-sm text-muted-foreground">Inga utestående fordringar</p>
             </div>
           )}
         </Widget>
@@ -523,9 +524,9 @@ export default function AnalyticsPage() {
           ) : snap ? (
             <div className="space-y-4">
               {snap.nextVatDueDate && (
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-muted-foreground">
                   Förfaller:{" "}
-                  <span className="font-medium text-gray-700">
+                  <span className="font-medium text-foreground">
                     {new Date(snap.nextVatDueDate).toLocaleDateString("sv-SE")}
                   </span>
                 </p>
@@ -533,35 +534,35 @@ export default function AnalyticsPage() {
 
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-xs text-gray-400 mb-0.5">Utgående moms</p>
-                  <p className="font-semibold text-gray-900 tabular-nums">{fmtKr(snap.vatOutputOre, true)}</p>
+                  <p className="text-xs text-muted-foreground mb-0.5">Utgående moms</p>
+                  <p className="font-semibold text-foreground tabular-nums">{fmtKr(snap.vatOutputOre, true)}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400 mb-0.5">Ingående moms</p>
+                  <p className="text-xs text-muted-foreground mb-0.5">Ingående moms</p>
                   <p className="font-semibold text-green-600 tabular-nums">−{fmtKr(snap.vatInputOre, true)}</p>
                 </div>
               </div>
 
               {/* VAT gauge */}
               <div>
-                <div className="flex justify-between text-xs text-gray-400 mb-1">
+                <div className="flex justify-between text-xs text-muted-foreground mb-1">
                   <span>Ingående avräkning</span>
                   <span>{vatPct.toFixed(0)}%</span>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{
                       width: `${Math.min(vatPct, 100)}%`,
-                      background: vatPct >= 80 ? "#22c55e" : vatPct >= 40 ? "#f59e0b" : "#6366f1",
+                      background: vatPct >= 80 ? CHART.green : vatPct >= 40 ? CHART.amber : CHART.indigo,
                     }}
                   />
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-gray-100">
+              <div className="pt-2 border-t border">
                 <div className="flex justify-between items-baseline">
-                  <span className="text-xs text-gray-500">Att betala (netto)</span>
+                  <span className="text-xs text-muted-foreground">Att betala (netto)</span>
                   <span className={`text-lg font-bold tabular-nums ${snap.vatLiabilityOre > 0 ? "text-red-600" : "text-green-600"}`}>
                     {fmtKr(Math.abs(snap.vatLiabilityOre), true)}
                     {snap.vatLiabilityOre < 0 && <span className="text-xs font-normal ml-1 text-green-500">att få tillbaka</span>}
@@ -571,7 +572,7 @@ export default function AnalyticsPage() {
             </div>
           ) : (
             <div className="py-10 text-center">
-              <p className="text-sm text-gray-400">Ingen momsperiod hittad</p>
+              <p className="text-sm text-muted-foreground">Ingen momsperiod hittad</p>
             </div>
           )}
         </Widget>
@@ -584,11 +585,11 @@ export default function AnalyticsPage() {
             <Skeleton className="h-36 w-full" />
           ) : (
             <>
-              <Legend items={[{ label: "MRR", color: "#8b5cf6" }]} />
+              <Legend items={[{ label: "MRR", color: CHART.violet }]} />
               <LineChart
                 data={trend}
                 keys={[{ key: "mrrOre", label: "MRR" }]}
-                colors={["#8b5cf6"]}
+                colors={[CHART.violet]}
                 height={140}
               />
             </>
@@ -602,23 +603,23 @@ export default function AnalyticsPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <p className="text-xs text-gray-400 mb-1">Snittdagar till betalning</p>
+                  <p className="text-xs text-muted-foreground mb-1">Snittdagar till betalning</p>
                   {snap.avgDaysToPayment != null ? (
                     <p className={`text-2xl font-bold tabular-nums ${
                       snap.avgDaysToPayment <= 0 ? "text-green-600"
-                      : snap.avgDaysToPayment <= 10 ? "text-gray-900"
+                      : snap.avgDaysToPayment <= 10 ? "text-foreground"
                       : snap.avgDaysToPayment <= 30 ? "text-amber-600"
                       : "text-red-600"
                     }`}>
                       {snap.avgDaysToPayment > 0 ? "+" : ""}{snap.avgDaysToPayment.toFixed(1)} d
                     </p>
                   ) : (
-                    <p className="text-2xl font-bold text-gray-300">—</p>
+                    <p className="text-2xl font-bold text-muted-foreground">—</p>
                   )}
-                  <p className="text-xs text-gray-400 mt-0.5">efter förfallodatum</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">efter förfallodatum</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400 mb-1">Andel sena betalningar</p>
+                  <p className="text-xs text-muted-foreground mb-1">Andel sena betalningar</p>
                   {snap.latePaymentRate != null ? (
                     <p className={`text-2xl font-bold tabular-nums ${
                       snap.latePaymentRate < 0.1 ? "text-green-600"
@@ -628,19 +629,19 @@ export default function AnalyticsPage() {
                       {(snap.latePaymentRate * 100).toFixed(0)}%
                     </p>
                   ) : (
-                    <p className="text-2xl font-bold text-gray-300">—</p>
+                    <p className="text-2xl font-bold text-muted-foreground">—</p>
                   )}
-                  <p className="text-xs text-gray-400 mt-0.5">senaste 12 månader</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">senaste 12 månader</p>
                 </div>
               </div>
 
               {snap.latePaymentRate != null && (
                 <div>
-                  <div className="flex justify-between text-xs text-gray-400 mb-1">
+                  <div className="flex justify-between text-xs text-muted-foreground mb-1">
                     <span>I tid</span>
                     <span>Sena</span>
                   </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden flex">
+                  <div className="h-2 bg-muted rounded-full overflow-hidden flex">
                     <div
                       className="h-full bg-green-400 rounded-l-full transition-all"
                       style={{ width: `${(1 - snap.latePaymentRate) * 100}%` }}
@@ -655,7 +656,7 @@ export default function AnalyticsPage() {
             </div>
           ) : (
             <div className="py-10 text-center">
-              <p className="text-sm text-gray-400">Ingen data</p>
+              <p className="text-sm text-muted-foreground">Ingen data</p>
             </div>
           )}
         </Widget>
@@ -668,11 +669,11 @@ export default function AnalyticsPage() {
             <Skeleton className="h-28 w-full" />
           ) : (
             <>
-              <Legend items={[{ label: "Nya kunder", color: "#06b6d4" }]} />
+              <Legend items={[{ label: "Nya kunder", color: CHART.cyan }]} />
               <BarChart
                 data={trend}
                 keys={[{ key: "newContactCount", label: "Nya kunder" }]}
-                colors={["#06b6d4"]}
+                colors={[CHART.cyan]}
                 height={110}
               />
             </>
@@ -680,7 +681,7 @@ export default function AnalyticsPage() {
         </Widget>
       </div>
 
-      <p className="text-center text-xs text-gray-300 pb-4">
+      <p className="text-center text-xs text-muted-foreground pb-4">
         Alla belopp exkl. moms om inget annat anges · Uppdateras var 60:e minut
       </p>
     </div>

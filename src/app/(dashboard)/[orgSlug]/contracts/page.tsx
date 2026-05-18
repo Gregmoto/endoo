@@ -64,8 +64,8 @@ export default function ContractsPage() {
     <div className="p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Avtalsfakturering</h1>
-          <p className="text-sm text-gray-500 mt-1">{total} avtal totalt</p>
+          <h1 className="text-2xl font-bold text-foreground">Avtalsfakturering</h1>
+          <p className="text-sm text-muted-foreground mt-1">{total} avtal totalt</p>
         </div>
         <Link href={`/${orgSlug}/contracts/new`}>
           <Button size="sm">+ Nytt avtal</Button>
@@ -78,12 +78,12 @@ export default function ContractsPage() {
           placeholder="Sök avtalsnr, namn…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="flex-1 max-w-xs px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="flex-1 max-w-xs px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
         <select
           value={status}
           onChange={e => setStatus(e.target.value)}
-          className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+          className="px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-card"
         >
           <option value="">Alla statusar</option>
           <option value="draft">Utkast</option>
@@ -97,12 +97,12 @@ export default function ContractsPage() {
       <Card>
         <CardContent className="p-0">
           {loading ? (
-            <div className="py-16 text-center text-sm text-gray-400">Laddar…</div>
+            <div className="py-16 text-center text-sm text-muted-foreground">Laddar…</div>
           ) : contracts.length === 0 ? (
             <div className="py-16 text-center">
               <p className="text-4xl mb-3">↺</p>
-              <p className="font-medium text-gray-900">Inga avtal hittades</p>
-              <p className="text-sm text-gray-400 mt-1 mb-4">Skapa ditt första återkommande avtal</p>
+              <p className="font-medium text-foreground">Inga avtal hittades</p>
+              <p className="text-sm text-muted-foreground mt-1 mb-4">Skapa ditt första återkommande avtal</p>
               <Link href={`/${orgSlug}/contracts/new`}>
                 <Button size="sm">+ Nytt avtal</Button>
               </Link>
@@ -110,13 +110,13 @@ export default function ContractsPage() {
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Avtal</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Kund</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Intervall</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Nästa faktura</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Fakturor</th>
+                <tr className="border-b border">
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Avtal</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Kund</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Intervall</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Nästa faktura</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Status</th>
+                  <th className="px-5 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Fakturor</th>
                   <th className="px-5 py-3"></th>
                 </tr>
               </thead>
@@ -126,22 +126,22 @@ export default function ContractsPage() {
                   return (
                     <tr
                       key={c.id}
-                      className="border-t border-gray-50 hover:bg-gray-50 cursor-pointer"
+                      className="border-t border-border/50 hover:bg-muted cursor-pointer"
                       onClick={() => router.push(`/${orgSlug}/contracts/${c.id}`)}
                     >
                       <td className="px-5 py-3">
-                        <p className="font-medium text-gray-900">{c.name}</p>
-                        {c.contractNumber && <p className="text-xs text-gray-400 font-mono">{c.contractNumber}</p>}
+                        <p className="font-medium text-foreground">{c.name}</p>
+                        {c.contractNumber && <p className="text-xs text-muted-foreground font-mono">{c.contractNumber}</p>}
                       </td>
-                      <td className="px-5 py-3 text-gray-700">{c.contact?.name ?? <span className="text-gray-400">—</span>}</td>
-                      <td className="px-5 py-3 text-gray-500">{FREQ_LABELS[c.frequency] ?? c.frequency}</td>
-                      <td className="px-5 py-3 text-gray-500">
+                      <td className="px-5 py-3 text-foreground">{c.contact?.name ?? <span className="text-muted-foreground">—</span>}</td>
+                      <td className="px-5 py-3 text-muted-foreground">{FREQ_LABELS[c.frequency] ?? c.frequency}</td>
+                      <td className="px-5 py-3 text-muted-foreground">
                         {c.status === "active" ? new Date(c.nextIssueDate).toLocaleDateString("sv-SE") : "—"}
                       </td>
                       <td className="px-5 py-3">
                         <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${st.cls}`}>{st.label}</span>
                       </td>
-                      <td className="px-5 py-3 text-right text-gray-600">{c._count.invoices}</td>
+                      <td className="px-5 py-3 text-right text-muted-foreground">{c._count.invoices}</td>
                       <td className="px-5 py-3 text-right">
                         <Link
                           href={`/${orgSlug}/contracts/${c.id}`}
@@ -161,15 +161,15 @@ export default function ContractsPage() {
       </Card>
 
       {pages > 1 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
+        <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
           <span>Sida {page} av {pages}</span>
           <div className="flex gap-2">
             <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-              className="px-3 py-1.5 border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50">
+              className="px-3 py-1.5 border border rounded-lg disabled:opacity-40 hover:bg-muted">
               ← Föregående
             </button>
             <button onClick={() => setPage(p => Math.min(pages, p + 1))} disabled={page === pages}
-              className="px-3 py-1.5 border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50">
+              className="px-3 py-1.5 border border rounded-lg disabled:opacity-40 hover:bg-muted">
               Nästa →
             </button>
           </div>

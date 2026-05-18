@@ -19,10 +19,10 @@ export type ResolvedBranding = {
 }
 
 export const ENDOO_DEFAULTS: Omit<ResolvedBranding, "displayName" | "logoUrl" | "logoDarkUrl" | "faviconUrl" | "senderName" | "senderEmail" | "replyTo" | "emailLogoUrl" | "pdfLogoUrl" | "pdfFooterText"> = {
-  primaryColor:    "#4f46e5",
-  accentColor:     "#6366f1",
-  textOnPrimary:   "#ffffff",
-  pdfAccentColor:  "#4f46e5",
+  primaryColor:    "#4f46e5", // audit-ok: default brand color stored as hex for CSS injection
+  accentColor:     "#6366f1", // audit-ok
+  textOnPrimary:   "#ffffff", // audit-ok
+  pdfAccentColor:  "#4f46e5", // audit-ok
   pdfShowPoweredBy: true,
   source:          "default",
 }

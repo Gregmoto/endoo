@@ -77,7 +77,7 @@ export function BulkActionBar({ selectedIds, onClear, onDone }: Props) {
       <button
         onClick={onClear}
         disabled={running}
-        className="text-gray-400 hover:text-white ml-1 transition-colors"
+        className="text-muted-foreground hover:text-white ml-1 transition-colors"
         title="Avmarkera alla"
       >
         ✕

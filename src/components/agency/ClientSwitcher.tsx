@@ -76,12 +76,12 @@ export function ClientSwitcher({ open, onClose }: Props) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden"
+        className="w-full max-w-lg bg-card rounded-2xl shadow-2xl overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Search input */}
-        <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100">
-          <span className="text-gray-400 text-sm">⌘</span>
+        <div className="flex items-center gap-2 px-4 py-3 border-b border">
+          <span className="text-muted-foreground text-sm">⌘</span>
           <input
             ref={inputRef}
             type="text"
@@ -91,15 +91,15 @@ export function ClientSwitcher({ open, onClose }: Props) {
             onKeyDown={onKey}
             className="flex-1 text-sm outline-none placeholder-gray-400"
           />
-          <span className="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Esc</span>
+          <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">Esc</span>
         </div>
 
         {/* Results */}
         <div className="max-h-80 overflow-y-auto py-1">
           {loading ? (
-            <div className="px-4 py-8 text-center text-sm text-gray-400">Laddar…</div>
+            <div className="px-4 py-8 text-center text-sm text-muted-foreground">Laddar…</div>
           ) : filtered.length === 0 ? (
-            <div className="px-4 py-8 text-center text-sm text-gray-400">Inga klienter hittades</div>
+            <div className="px-4 py-8 text-center text-sm text-muted-foreground">Inga klienter hittades</div>
           ) : (
             filtered.map((c, i) => {
               const hl = healthLabel(c.healthScore)
@@ -109,13 +109,13 @@ export function ClientSwitcher({ open, onClose }: Props) {
                   key={c.clientId}
                   onClick={() => navigate(c)}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${
-                    i === cursor ? "bg-brand-50" : "hover:bg-gray-50"
+                    i === cursor ? "bg-brand-50" : "hover:bg-accent"
                   }`}
                 >
                   {pinned && <span className="text-brand-400 flex-shrink-0 text-sm">★</span>}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{c.clientName}</p>
-                    <p className="text-xs text-gray-400 truncate">{c.clientSlug}</p>
+                    <p className="text-sm font-medium text-foreground truncate">{c.clientName}</p>
+                    <p className="text-xs text-muted-foreground truncate">{c.clientSlug}</p>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     {c.errorCount > 0 && (
@@ -134,7 +134,7 @@ export function ClientSwitcher({ open, onClose }: Props) {
         </div>
 
         {/* Footer hint */}
-        <div className="px-4 py-2 border-t border-gray-100 flex items-center gap-3 text-xs text-gray-400">
+        <div className="px-4 py-2 border-t border flex items-center gap-3 text-xs text-muted-foreground">
           <span>↑↓ navigera</span>
           <span>↵ öppna</span>
           <span>Esc stäng</span>

@@ -73,15 +73,15 @@ export function AccountSuggest({ description, amountOre, onSelect, disabled }: A
   return (
     <div ref={containerRef} className="absolute left-0 right-0 top-full mt-1 z-30">
       {loading && suggestions.length === 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 text-xs text-gray-400 flex items-center gap-2">
+        <div className="bg-card border border rounded-lg shadow-lg px-3 py-2 text-xs text-muted-foreground flex items-center gap-2">
           <span className="animate-spin inline-block w-3 h-3 border-2 border-brand-300 border-t-brand-600 rounded-full" />
           AI föreslår konton…
         </div>
       )}
 
       {open && suggestions.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-          <div className="px-3 py-1.5 border-b border-gray-50 flex items-center gap-1.5 text-[10px] font-semibold text-indigo-600 uppercase tracking-wide">
+        <div className="bg-card border border rounded-lg shadow-lg overflow-hidden">
+          <div className="px-3 py-1.5 border-b border-border/50 flex items-center gap-1.5 text-[10px] font-semibold text-indigo-600 uppercase tracking-wide">
             <span>✦</span> AI-förslag
           </div>
           {suggestions.map((s) => (
@@ -89,12 +89,12 @@ export function AccountSuggest({ description, amountOre, onSelect, disabled }: A
               key={s.accountNumber}
               type="button"
               onClick={() => { onSelect(s); setOpen(false) }}
-              className="w-full px-3 py-2.5 text-left hover:bg-indigo-50 transition-colors border-b border-gray-50 last:border-0"
+              className="w-full px-3 py-2.5 text-left hover:bg-indigo-50 transition-colors border-b border-border/50 last:border-0"
             >
               <div className="flex items-center gap-2">
                 {confidenceDot(s.confidence)}
-                <span className="font-mono text-xs font-semibold text-gray-700">{s.accountNumber}</span>
-                <span className="text-sm text-gray-800 flex-1">{s.accountName}</span>
+                <span className="font-mono text-xs font-semibold text-foreground">{s.accountNumber}</span>
+                <span className="text-sm text-foreground flex-1">{s.accountName}</span>
                 <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${
                   s.side === "debit"
                     ? "bg-blue-50 text-blue-700"
@@ -103,7 +103,7 @@ export function AccountSuggest({ description, amountOre, onSelect, disabled }: A
                   {s.side === "debit" ? "D" : "K"}
                 </span>
               </div>
-              <p className="text-xs text-gray-400 mt-0.5 ml-4 pl-2.5">{s.reason}</p>
+              <p className="text-xs text-muted-foreground mt-0.5 ml-4 pl-2.5">{s.reason}</p>
             </button>
           ))}
         </div>

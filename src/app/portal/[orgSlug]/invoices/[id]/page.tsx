@@ -61,15 +61,15 @@ export default async function PortalInvoiceDetailPage({
         <h2 style={h2}>Rader</h2>
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 12 }}>
           <thead>
-            <tr style={{ borderBottom: "1px solid #e5e7eb" }}>
+            <tr style={{ borderBottom: "1px solid var(--border)" }}>
               {["Beskrivning", "Antal", "À-pris", "Summa"].map(h => (
-                <th key={h} style={{ textAlign: "left", fontSize: 11, color: "#6b7280", padding: "6px 8px", fontWeight: 600 }}>{h}</th>
+                <th key={h} style={{ textAlign: "left", fontSize: 11, color: "var(--muted-foreground)", padding: "6px 8px", fontWeight: 600 }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {invoice.lineItems.map(l => (
-              <tr key={l.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
+              <tr key={l.id} style={{ borderBottom: "1px solid var(--muted)" }}>
                 <td style={td}>{l.description}</td>
                 <td style={td}>{Number(l.quantity)} {l.unit}</td>
                 <td style={td}>{(Number(l.unitPrice) / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2 })}</td>
@@ -87,7 +87,7 @@ export default async function PortalInvoiceDetailPage({
             {Number(invoice.discountAmount) > 0 && (
               <TotalRow label="Rabatt" value={-Number(invoice.discountAmount)} currency={invoice.currency} />
             )}
-            <div style={{ borderTop: "2px solid #111827", marginTop: 8, paddingTop: 8, display: "flex", justifyContent: "space-between", fontWeight: 700 }}>
+            <div style={{ borderTop: "2px solid var(--foreground)", marginTop: 8, paddingTop: 8, display: "flex", justifyContent: "space-between", fontWeight: 700 }}>
               <span>Totalt</span>
               <span>{(Number(invoice.totalAmount) / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2 })} {invoice.currency}</span>
             </div>
@@ -95,7 +95,7 @@ export default async function PortalInvoiceDetailPage({
               <TotalRow label="Betalt" value={-Number(invoice.paidAmount)} currency={invoice.currency} />
             )}
             {balanceDue > 0 && (
-              <div style={{ display: "flex", justifyContent: "space-between", color: "#dc2626", fontWeight: 700, marginTop: 4 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", color: "var(--destructive)", fontWeight: 700, marginTop: 4 }}>
                 <span>Att betala</span>
                 <span>{(balanceDue / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2 })} {invoice.currency}</span>
               </div>
@@ -109,7 +109,7 @@ export default async function PortalInvoiceDetailPage({
         <div style={card}>
           <h2 style={h2}>Betalningar</h2>
           {invoice.payments.map(p => (
-            <div key={p.id} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #f3f4f6", fontSize: 14 }}>
+            <div key={p.id} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--muted)", fontSize: 14 }}>
               <span>{new Date(p.paymentDate).toLocaleDateString("sv-SE")} · {p.method}</span>
               <span style={{ fontWeight: 600 }}>{(Number(p.amount) / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2 })} {invoice.currency}</span>
             </div>
@@ -123,7 +123,7 @@ export default async function PortalInvoiceDetailPage({
 function MetaItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div style={{ fontSize: 11, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>{label}</div>
+      <div style={{ fontSize: 11, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>{label}</div>
       <div style={{ fontWeight: 600, fontSize: 14 }}>{value}</div>
     </div>
   )
@@ -131,16 +131,16 @@ function MetaItem({ label, value }: { label: string; value: string }) {
 
 function TotalRow({ label, value, currency }: { label: string; value: number; currency: string }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#6b7280", padding: "3px 0" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "var(--muted-foreground)", padding: "3px 0" }}>
       <span>{label}</span>
       <span>{(value / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2 })} {currency}</span>
     </div>
   )
 }
 
-const h1: React.CSSProperties      = { margin: 0, fontSize: 22, fontWeight: 700, color: "#111827", flex: 1 }
-const h2: React.CSSProperties      = { margin: "0 0 4px", fontSize: 16, fontWeight: 700, color: "#111827" }
-const backLink: React.CSSProperties = { color: "#4f46e5", textDecoration: "none", fontSize: 14 }
-const card: React.CSSProperties    = { background: "#fff", borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 3px rgba(0,0,0,.07)" }
-const pdfBtn: React.CSSProperties  = { padding: "8px 16px", background: "#4f46e5", color: "#fff", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 600 }
-const td: React.CSSProperties      = { padding: "8px", fontSize: 13, color: "#374151" }
+const h1: React.CSSProperties      = { margin: 0, fontSize: 22, fontWeight: 700, color: "var(--foreground)", flex: 1 }
+const h2: React.CSSProperties      = { margin: "0 0 4px", fontSize: 16, fontWeight: 700, color: "var(--foreground)" }
+const backLink: React.CSSProperties = { color: "var(--primary)", textDecoration: "none", fontSize: 14 }
+const card: React.CSSProperties    = { background: "var(--card)", borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 3px rgba(0,0,0,.07)" }
+const pdfBtn: React.CSSProperties  = { padding: "8px 16px", background: "var(--primary)", color: "var(--background)", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 600 }
+const td: React.CSSProperties      = { padding: "8px", fontSize: 13, color: "var(--foreground)" }

@@ -77,15 +77,15 @@ export default async function PortalQuoteDetailPage({
         <h2 style={h2}>Rader</h2>
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 12 }}>
           <thead>
-            <tr style={{ borderBottom: "1px solid #e5e7eb" }}>
+            <tr style={{ borderBottom: "1px solid var(--border)" }}>
               {["Beskrivning", "Antal", "À-pris", "Summa"].map(h => (
-                <th key={h} style={{ textAlign: "left", fontSize: 11, color: "#6b7280", padding: "6px 8px", fontWeight: 600 }}>{h}</th>
+                <th key={h} style={{ textAlign: "left", fontSize: 11, color: "var(--muted-foreground)", padding: "6px 8px", fontWeight: 600 }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {lines.map((l, i) => (
-              <tr key={i} style={{ borderBottom: "1px solid #f3f4f6" }}>
+              <tr key={i} style={{ borderBottom: "1px solid var(--muted)" }}>
                 <td style={td}>{l.description}</td>
                 <td style={td}>{l.quantity} {l.unit ?? "st"}</td>
                 <td style={td}>{(l.unitPriceKr ?? 0).toLocaleString("sv-SE", { minimumFractionDigits: 2 })}</td>
@@ -100,7 +100,7 @@ export default async function PortalQuoteDetailPage({
             <TotalRow label="Netto"  value={subtotalKr} currency={cur} />
             {discountKr > 0 && <TotalRow label="Rabatt" value={-discountKr} currency={cur} />}
             <TotalRow label="Moms"   value={taxKr} currency={cur} />
-            <div style={{ borderTop: "2px solid #111827", marginTop: 8, paddingTop: 8, display: "flex", justifyContent: "space-between", fontWeight: 700 }}>
+            <div style={{ borderTop: "2px solid var(--foreground)", marginTop: 8, paddingTop: 8, display: "flex", justifyContent: "space-between", fontWeight: 700 }}>
               <span>Totalt</span>
               <span>{totalKr.toLocaleString("sv-SE", { minimumFractionDigits: 2 })} {cur}</span>
             </div>
@@ -114,13 +114,13 @@ export default async function PortalQuoteDetailPage({
           {quote.notes && (
             <div style={{ marginBottom: quote.terms ? 16 : 0 }}>
               <div style={metaLabel}>Kommentar</div>
-              <p style={{ margin: 0, fontSize: 14, color: "#374151", lineHeight: 1.6 }}>{quote.notes}</p>
+              <p style={{ margin: 0, fontSize: 14, color: "var(--foreground)", lineHeight: 1.6 }}>{quote.notes}</p>
             </div>
           )}
           {quote.terms && (
             <div>
               <div style={metaLabel}>Villkor</div>
-              <p style={{ margin: 0, fontSize: 14, color: "#374151", lineHeight: 1.6 }}>{quote.terms}</p>
+              <p style={{ margin: 0, fontSize: 14, color: "var(--foreground)", lineHeight: 1.6 }}>{quote.terms}</p>
             </div>
           )}
         </div>
@@ -140,17 +140,17 @@ function MetaItem({ label, value }: { label: string; value: string }) {
 
 function TotalRow({ label, value, currency }: { label: string; value: number; currency: string }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#6b7280", padding: "3px 0" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "var(--muted-foreground)", padding: "3px 0" }}>
       <span>{label}</span>
       <span>{value.toLocaleString("sv-SE", { minimumFractionDigits: 2 })} {currency}</span>
     </div>
   )
 }
 
-const h1: React.CSSProperties       = { margin: 0, fontSize: 22, fontWeight: 700, color: "#111827", flex: 1 }
-const h2: React.CSSProperties       = { margin: "0 0 4px", fontSize: 16, fontWeight: 700, color: "#111827" }
-const backLink: React.CSSProperties  = { color: "#4f46e5", textDecoration: "none", fontSize: 14 }
-const card: React.CSSProperties     = { background: "#fff", borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 3px rgba(0,0,0,.07)" }
-const pdfBtn: React.CSSProperties   = { padding: "8px 16px", background: "#4f46e5", color: "#fff", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 600 }
-const td: React.CSSProperties       = { padding: "8px", fontSize: 13, color: "#374151" }
-const metaLabel: React.CSSProperties = { fontSize: 11, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }
+const h1: React.CSSProperties       = { margin: 0, fontSize: 22, fontWeight: 700, color: "var(--foreground)", flex: 1 }
+const h2: React.CSSProperties       = { margin: "0 0 4px", fontSize: 16, fontWeight: 700, color: "var(--foreground)" }
+const backLink: React.CSSProperties  = { color: "var(--primary)", textDecoration: "none", fontSize: 14 }
+const card: React.CSSProperties     = { background: "var(--card)", borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 3px rgba(0,0,0,.07)" }
+const pdfBtn: React.CSSProperties   = { padding: "8px 16px", background: "var(--primary)", color: "var(--background)", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 600 }
+const td: React.CSSProperties       = { padding: "8px", fontSize: 13, color: "var(--foreground)" }
+const metaLabel: React.CSSProperties = { fontSize: 11, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }

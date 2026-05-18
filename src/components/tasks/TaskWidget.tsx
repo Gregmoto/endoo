@@ -47,7 +47,7 @@ export function TaskWidget({ orgSlug, entityType, entityId, entityLabel }: Props
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
           Uppgifter {openTasks.length > 0 && `(${openTasks.length} öppna)`}
         </span>
         <button
@@ -70,9 +70,9 @@ export function TaskWidget({ orgSlug, entityType, entityId, entityLabel }: Props
       )}
 
       {loading ? (
-        <div className="text-xs text-gray-400 py-2">Laddar…</div>
+        <div className="text-xs text-muted-foreground py-2">Laddar…</div>
       ) : tasks.length === 0 && !showCreate ? (
-        <div className="text-xs text-gray-300 italic py-1">Inga uppgifter</div>
+        <div className="text-xs text-muted-foreground italic py-1">Inga uppgifter</div>
       ) : (
         <div className="space-y-1">
           {openTasks.map(task => (
@@ -86,7 +86,7 @@ export function TaskWidget({ orgSlug, entityType, entityId, entityLabel }: Props
           {doneTasks.length > 0 && (
             <button
               onClick={() => setShowDone(v => !v)}
-              className="text-xs text-gray-400 hover:text-gray-600 py-1 transition-colors"
+              className="text-xs text-muted-foreground hover:text-muted-foreground py-1 transition-colors"
             >
               {showDone ? "▲" : "▼"} {doneTasks.length} avslutad{doneTasks.length !== 1 ? "e" : ""}
             </button>
@@ -119,11 +119,11 @@ function TaskRow({ task, onClick }: { task: Task; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-left group border border-transparent hover:border-gray-100"
+      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-left group border border-transparent hover:border"
     >
       {/* Status dot */}
       <span className={`flex-shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-        task.status === "done" ? "bg-green-500 border-green-500" : "border-gray-300 group-hover:border-brand-400"
+        task.status === "done" ? "bg-green-500 border-green-500" : "border-input group-hover:border-brand-400"
       }`}>
         {task.status === "done" && <span className="text-white text-[8px]">✓</span>}
       </span>
@@ -133,7 +133,7 @@ function TaskRow({ task, onClick }: { task: Task; onClick: () => void }) {
 
       {/* Title */}
       <span className={`flex-1 text-xs font-medium truncate ${
-        task.status === "done" ? "line-through text-gray-400" : "text-gray-800"
+        task.status === "done" ? "line-through text-muted-foreground" : "text-foreground"
       }`}>
         {task.title}
       </span>
@@ -155,14 +155,14 @@ function TaskRow({ task, onClick }: { task: Task; onClick: () => void }) {
 
       {/* Due date */}
       {task.dueDate && task.status !== "done" && (
-        <span className={`flex-shrink-0 text-[10px] font-medium ${overdue ? "text-red-500" : "text-gray-400"}`}>
+        <span className={`flex-shrink-0 text-[10px] font-medium ${overdue ? "text-red-500" : "text-muted-foreground"}`}>
           {formatDue(task.dueDate)}
         </span>
       )}
 
       {/* Comment count */}
       {(task.commentCount ?? 0) > 0 && (
-        <span className="flex-shrink-0 text-[10px] text-gray-400">
+        <span className="flex-shrink-0 text-[10px] text-muted-foreground">
           💬 {task.commentCount}
         </span>
       )}

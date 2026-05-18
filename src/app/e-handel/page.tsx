@@ -26,18 +26,18 @@ const INVENTORY_STEPS = [
 
 export default function EHandelPage() {
   return (
-    <main className="min-h-screen bg-white text-gray-900">
+    <main className="min-h-screen bg-card text-foreground">
       {/* Nav */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-100">
+      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur border-b border">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-sm font-black">E</span>
             </div>
-            <span className="text-lg font-extrabold text-gray-900">endoo</span>
+            <span className="text-lg font-extrabold text-foreground">endoo</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link href="/login"    className="text-sm font-medium text-gray-600 hover:text-gray-900">Logga in</Link>
+            <Link href="/login"    className="text-sm font-medium text-muted-foreground hover:text-foreground">Logga in</Link>
             <Link href="/register" className="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700">Kom igång gratis</Link>
           </div>
         </div>
@@ -46,21 +46,21 @@ export default function EHandelPage() {
       {/* Hero */}
       <section className="pt-20 pb-24 px-6 bg-gradient-to-br from-indigo-50/30 via-white to-violet-50/20">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-indigo-100 text-indigo-700 text-xs font-semibold rounded-full mb-8 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-card border border-indigo-100 text-indigo-700 text-xs font-semibold rounded-full mb-8 shadow-sm">
             För e-handel & produktbolag
           </div>
-          <h1 className="text-5xl font-black text-gray-900 leading-tight mb-6">
+          <h1 className="text-5xl font-black text-foreground leading-tight mb-6">
             Lager, fakturering och<br />
             <span className="text-indigo-600">bokföring i ett system.</span>
           </h1>
-          <p className="text-xl text-gray-500 leading-relaxed mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl mx-auto">
             Endoo kopplar ihop ditt produktregister, lager och bokföring — så att inköp, försäljning och lagervärde alltid stämmer utan manuellt arbete.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link href="/register" className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 text-lg shadow-lg shadow-indigo-200">
               Kom igång gratis →
             </Link>
-            <Link href="/#api" className="px-8 py-4 border border-gray-200 text-gray-700 font-semibold rounded-2xl hover:bg-gray-50 text-lg">
+            <Link href="/#api" className="px-8 py-4 border border text-foreground font-semibold rounded-2xl hover:bg-muted text-lg">
               Se API-dokumentation
             </Link>
           </div>
@@ -71,13 +71,13 @@ export default function EHandelPage() {
       <section className="py-24 px-6 bg-slate-900">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-black text-white text-center mb-4">Hur lagerhanteringen fungerar</h2>
-          <p className="text-slate-400 text-center mb-16">Append-only ledger — varje rörelse spåras, inget raderas.</p>
+          <p className="text-muted-foreground text-center mb-16">Append-only ledger — varje rörelse spåras, inget raderas.</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {INVENTORY_STEPS.map(s => (
               <div key={s.n} className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
                 <p className="text-indigo-400 font-mono text-sm font-bold mb-3">{s.n}</p>
                 <h3 className="font-bold text-white mb-2">{s.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{s.desc}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -87,13 +87,13 @@ export default function EHandelPage() {
       {/* Features */}
       <section className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-black text-gray-900 text-center mb-16">Allt för ditt e-handelsbolag</h2>
+          <h2 className="text-4xl font-black text-foreground text-center mb-16">Allt för ditt e-handelsbolag</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {FEATURES.map(f => (
-              <div key={f.title} className="p-7 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-50 transition-all">
+              <div key={f.title} className="p-7 rounded-2xl border border hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-50 transition-all">
                 <div className="text-2xl text-indigo-600 mb-4">{f.icon}</div>
-                <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+                <h3 className="font-bold text-foreground mb-2">{f.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -105,15 +105,15 @@ export default function EHandelPage() {
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-black text-white mb-4">Klar att koppla ihop ditt lager med bokföringen?</h2>
           <p className="text-indigo-200 mb-8">Starta gratis, inget kreditkort.</p>
-          <Link href="/register" className="inline-block px-8 py-4 bg-white text-indigo-700 font-bold rounded-2xl hover:bg-indigo-50 text-lg">
+          <Link href="/register" className="inline-block px-8 py-4 bg-card text-indigo-700 font-bold rounded-2xl hover:bg-indigo-50 text-lg">
             Kom igång gratis →
           </Link>
         </div>
       </section>
 
-      <footer className="border-t border-gray-100 py-8 px-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between text-sm text-gray-400">
-          <Link href="/" className="font-bold text-gray-700 hover:text-indigo-600">← Tillbaka till endoo.se</Link>
+      <footer className="border-t border py-8 px-6">
+        <div className="max-w-7xl mx-auto flex items-center justify-between text-sm text-muted-foreground">
+          <Link href="/" className="font-bold text-foreground hover:text-indigo-600">← Tillbaka till endoo.se</Link>
           <span>© {new Date().getFullYear()} Endoo · Byggt i Sverige 🇸🇪</span>
         </div>
       </footer>

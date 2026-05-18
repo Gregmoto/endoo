@@ -49,9 +49,9 @@ export function TaskCreateForm({ entityType, entityId, entityLabel, onCreated, o
   }
 
   return (
-    <form onSubmit={submit} className="mb-3 bg-gray-50 border border-gray-200 rounded-xl p-3 space-y-2">
+    <form onSubmit={submit} className="mb-3 bg-muted border border rounded-xl p-3 space-y-2">
       {entityLabel && (
-        <p className="text-[10px] text-gray-400">Kopplad till: <span className="font-medium text-gray-600">{entityLabel}</span></p>
+        <p className="text-[10px] text-muted-foreground">Kopplad till: <span className="font-medium text-muted-foreground">{entityLabel}</span></p>
       )}
 
       <input
@@ -60,14 +60,14 @@ export function TaskCreateForm({ entityType, entityId, entityLabel, onCreated, o
         onChange={e => setTitle(e.target.value)}
         placeholder="Uppgiftens titel…"
         autoFocus
-        className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-400 bg-white"
+        className="w-full text-sm border border rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-400 bg-card"
       />
 
       <div className="flex gap-2">
         <select
           value={priority}
           onChange={e => setPriority(e.target.value as TaskPriority)}
-          className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-brand-400"
+          className="text-xs border border rounded-lg px-2 py-1.5 bg-card focus:outline-none focus:ring-1 focus:ring-brand-400"
         >
           {(["low","normal","high","urgent"] as TaskPriority[]).map(p => (
             <option key={p} value={p}>{PRIORITY_LABELS[p]}</option>
@@ -78,7 +78,7 @@ export function TaskCreateForm({ entityType, entityId, entityLabel, onCreated, o
           type="date"
           value={dueDate}
           onChange={e => setDueDate(e.target.value)}
-          className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-brand-400"
+          className="text-xs border border rounded-lg px-2 py-1.5 bg-card focus:outline-none focus:ring-1 focus:ring-brand-400"
         />
       </div>
 
@@ -88,7 +88,7 @@ export function TaskCreateForm({ entityType, entityId, entityLabel, onCreated, o
         <button
           type="button"
           onClick={onCancel}
-          className="text-xs px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+          className="text-xs px-3 py-1.5 border border rounded-lg text-muted-foreground hover:bg-muted transition-colors"
         >
           Avbryt
         </button>

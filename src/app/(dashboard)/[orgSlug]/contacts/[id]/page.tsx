@@ -73,21 +73,21 @@ type AuditEntry = {
 
 const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
   active:   { label: "Aktiv",    cls: "bg-green-100 text-green-700" },
-  inactive: { label: "Inaktiv",  cls: "bg-gray-100 text-gray-500" },
+  inactive: { label: "Inaktiv",  cls: "bg-muted text-muted-foreground" },
   blocked:  { label: "Blockerad",cls: "bg-red-100 text-red-700" },
   ended:    { label: "Avslutad", cls: "bg-orange-100 text-orange-700" },
   test:     { label: "Test",     cls: "bg-purple-100 text-purple-700" },
 }
 
 const INVOICE_STATUS_LABELS: Record<string, { label: string; cls: string }> = {
-  draft:    { label: "Utkast",   cls: "bg-gray-100 text-gray-500" },
+  draft:    { label: "Utkast",   cls: "bg-muted text-muted-foreground" },
   sent:     { label: "Skickad",  cls: "bg-blue-100 text-blue-700" },
   paid:     { label: "Betald",   cls: "bg-green-100 text-green-700" },
   overdue:  { label: "Förfallen",cls: "bg-red-100 text-red-700" },
   cancelled:{ label: "Makulerad",cls: "bg-orange-100 text-orange-700" },
 }
 
-const inputCls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+const inputCls = "w-full px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
@@ -105,7 +105,7 @@ export default function ContactDetailPage() {
       .then(data => { setContact(data); setLoading(false) })
   }, [id])
 
-  if (loading) return <div className="p-8 text-sm text-gray-400">Laddar…</div>
+  if (loading) return <div className="p-8 text-sm text-muted-foreground">Laddar…</div>
   if (!contact) return <div className="p-8 text-sm text-red-500">Kontakten hittades inte.</div>
 
   const s = STATUS_LABELS[contact.status] ?? STATUS_LABELS.active
@@ -113,22 +113,22 @@ export default function ContactDetailPage() {
   return (
     <div className="p-8 max-w-4xl">
       {/* Breadcrumb + header */}
-      <div className="mb-2 flex items-center gap-2 text-sm text-gray-500">
-        <Link href={`/${orgSlug}/contacts`} className="hover:text-gray-700">Kunder</Link>
-        <span className="text-gray-300">/</span>
-        <span className="text-gray-700 font-medium">{contact.name}</span>
+      <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
+        <Link href={`/${orgSlug}/contacts`} className="hover:text-foreground">Kunder</Link>
+        <span className="text-muted-foreground">/</span>
+        <span className="text-foreground font-medium">{contact.name}</span>
       </div>
 
       <div className="mb-6 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">{contact.name}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{contact.name}</h1>
             <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${s.cls}`}>{s.label}</span>
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             {contact.customerNumber && <span className="font-mono mr-3">{contact.customerNumber}</span>}
             {contact.type === "business" ? "Företag" : "Privatperson"}
-            {contact.orgNumber && <span className="ml-3 text-gray-400">Org.nr: {contact.orgNumber}</span>}
+            {contact.orgNumber && <span className="ml-3 text-muted-foreground">Org.nr: {contact.orgNumber}</span>}
           </p>
         </div>
         <Link href={`/${orgSlug}/invoices/new?contactId=${contact.id}`}>
@@ -137,7 +137,7 @@ export default function ContactDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      <div className="flex gap-1 mb-6 border-b border">
         {(["profile", "persons", "history"] as const).map(t => (
           <button
             key={t}
@@ -145,7 +145,7 @@ export default function ContactDetailPage() {
             className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
               tab === t
                 ? "border-indigo-600 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             {t === "profile" ? "Profil" : t === "persons" ? `Kontaktpersoner (${contact.contactPersons.length})` : "Historik"}
@@ -220,27 +220,27 @@ function ProfileTab({ contact, onSaved, orgSlug }: { contact: Contact; onSaved: 
         <div className="grid grid-cols-2 gap-6">
           <Card>
             <CardHeader><CardTitle>Fakturaadress</CardTitle></CardHeader>
-            <CardContent className="text-sm text-gray-600 space-y-0.5">
+            <CardContent className="text-sm text-muted-foreground space-y-0.5">
               {contact.addressLine1 && <p>{contact.addressLine1}</p>}
               {contact.addressLine2 && <p>{contact.addressLine2}</p>}
               {(contact.postalCode || contact.city) && (
                 <p>{[contact.postalCode, contact.city].filter(Boolean).join(" ")}</p>
               )}
-              {contact.country && <p className="text-gray-400">{contact.country}</p>}
-              {!contact.addressLine1 && <p className="text-gray-400">Ingen adress angiven</p>}
+              {contact.country && <p className="text-muted-foreground">{contact.country}</p>}
+              {!contact.addressLine1 && <p className="text-muted-foreground">Ingen adress angiven</p>}
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader><CardTitle>Leveransadress</CardTitle></CardHeader>
-            <CardContent className="text-sm text-gray-600 space-y-0.5">
+            <CardContent className="text-sm text-muted-foreground space-y-0.5">
               {contact.deliveryLine1 && <p>{contact.deliveryLine1}</p>}
               {contact.deliveryLine2 && <p>{contact.deliveryLine2}</p>}
               {(contact.deliveryPostalCode || contact.deliveryCity) && (
                 <p>{[contact.deliveryPostalCode, contact.deliveryCity].filter(Boolean).join(" ")}</p>
               )}
-              {contact.deliveryCountry && <p className="text-gray-400">{contact.deliveryCountry}</p>}
-              {!contact.deliveryLine1 && <p className="text-gray-400">Samma som fakturaadress</p>}
+              {contact.deliveryCountry && <p className="text-muted-foreground">{contact.deliveryCountry}</p>}
+              {!contact.deliveryLine1 && <p className="text-muted-foreground">Samma som fakturaadress</p>}
             </CardContent>
           </Card>
         </div>
@@ -264,7 +264,7 @@ function ProfileTab({ contact, onSaved, orgSlug }: { contact: Contact; onSaved: 
           <Card>
             <CardHeader><CardTitle>Anteckningar</CardTitle></CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600 whitespace-pre-wrap">{contact.notes}</p>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{contact.notes}</p>
             </CardContent>
           </Card>
         )}
@@ -472,7 +472,7 @@ function PersonsTab({ contactId, initialPersons }: { contactId: string; initialP
   return (
     <div className="space-y-4">
       {persons.length === 0 && !showForm && (
-        <div className="text-center py-12 text-sm text-gray-400">
+        <div className="text-center py-12 text-sm text-muted-foreground">
           <p>Inga kontaktpersoner registrerade.</p>
         </div>
       )}
@@ -482,7 +482,7 @@ function PersonsTab({ contactId, initialPersons }: { contactId: string; initialP
           <CardContent className="py-4 flex items-start justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <p className="font-medium text-gray-900">{p.name}</p>
+                <p className="font-medium text-foreground">{p.name}</p>
                 {p.isPrimary && (
                   <span className="px-2 py-0.5 text-xs bg-indigo-100 text-indigo-700 rounded-full">Primär</span>
                 )}
@@ -490,15 +490,15 @@ function PersonsTab({ contactId, initialPersons }: { contactId: string; initialP
                   <span className="px-2 py-0.5 text-xs bg-blue-100 text-blue-700 rounded-full">Fakturakontakt</span>
                 )}
               </div>
-              {p.role && <p className="text-xs text-gray-500 mt-0.5">{p.role}</p>}
-              <div className="flex gap-4 mt-2 text-xs text-gray-500">
+              {p.role && <p className="text-xs text-muted-foreground mt-0.5">{p.role}</p>}
+              <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
                 {p.email && <span>{p.email}</span>}
                 {p.phone && <span>{p.phone}</span>}
               </div>
             </div>
             <div className="flex gap-3">
               {!p.isPrimary && (
-                <button onClick={() => setPrimary(p.id)} className="text-xs text-gray-500 hover:text-indigo-600">
+                <button onClick={() => setPrimary(p.id)} className="text-xs text-muted-foreground hover:text-indigo-600">
                   Sätt primär
                 </button>
               )}
@@ -551,7 +551,7 @@ function PersonsTab({ contactId, initialPersons }: { contactId: string; initialP
                 </Field>
               </div>
               <div className="flex gap-6">
-                <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
                   <input
                     type="checkbox"
                     checked={form.isPrimary}
@@ -560,7 +560,7 @@ function PersonsTab({ contactId, initialPersons }: { contactId: string; initialP
                   />
                   Primär kontakt
                 </label>
-                <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
                   <input
                     type="checkbox"
                     checked={form.isInvoiceContact}
@@ -581,7 +581,7 @@ function PersonsTab({ contactId, initialPersons }: { contactId: string; initialP
       ) : (
         <button
           onClick={() => setShowForm(true)}
-          className="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-400 hover:text-gray-600 hover:border-gray-300 transition-colors"
+          className="w-full py-3 border-2 border-dashed border rounded-xl text-sm text-muted-foreground hover:text-muted-foreground hover:border transition-colors"
         >
           + Lägg till kontaktperson
         </button>
@@ -607,7 +607,7 @@ function HistoryTab({ contactId, orgSlug }: { contactId: string; orgSlug: string
       })
   }, [contactId])
 
-  if (loading) return <div className="py-12 text-center text-sm text-gray-400">Laddar…</div>
+  if (loading) return <div className="py-12 text-center text-sm text-muted-foreground">Laddar…</div>
 
   return (
     <div className="space-y-6">
@@ -615,23 +615,23 @@ function HistoryTab({ contactId, orgSlug }: { contactId: string; orgSlug: string
         <CardHeader><CardTitle>Fakturor ({invoices.length})</CardTitle></CardHeader>
         <CardContent className="p-0">
           {invoices.length === 0 ? (
-            <p className="px-6 py-6 text-sm text-gray-400">Inga fakturor ännu.</p>
+            <p className="px-6 py-6 text-sm text-muted-foreground">Inga fakturor ännu.</p>
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Nr</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Utfärdat</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Förfaller</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Belopp</th>
+                <tr className="border-b border">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Nr</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Utfärdat</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Förfaller</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wide">Belopp</th>
                 </tr>
               </thead>
               <tbody>
                 {invoices.map(inv => {
-                  const st = INVOICE_STATUS_LABELS[inv.status] ?? { label: inv.status, cls: "bg-gray-100 text-gray-500" }
+                  const st = INVOICE_STATUS_LABELS[inv.status] ?? { label: inv.status, cls: "bg-muted text-muted-foreground" }
                   return (
-                    <tr key={inv.id} className="border-t border-gray-50 hover:bg-gray-50">
+                    <tr key={inv.id} className="border-t border-border/50 hover:bg-muted">
                       <td className="px-6 py-3">
                         <Link
                           href={`/${orgSlug}/invoices/${inv.id}`}
@@ -643,9 +643,9 @@ function HistoryTab({ contactId, orgSlug }: { contactId: string; orgSlug: string
                       <td className="px-6 py-3">
                         <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${st.cls}`}>{st.label}</span>
                       </td>
-                      <td className="px-6 py-3 text-gray-600">{fmtDate(inv.issueDate)}</td>
-                      <td className="px-6 py-3 text-gray-600">{inv.dueDate ? fmtDate(inv.dueDate) : "—"}</td>
-                      <td className="px-6 py-3 text-right text-gray-800 font-medium">
+                      <td className="px-6 py-3 text-muted-foreground">{fmtDate(inv.issueDate)}</td>
+                      <td className="px-6 py-3 text-muted-foreground">{inv.dueDate ? fmtDate(inv.dueDate) : "—"}</td>
+                      <td className="px-6 py-3 text-right text-foreground font-medium">
                         {fmtAmount(inv.totalAmount)} {inv.currency}
                       </td>
                     </tr>
@@ -661,18 +661,18 @@ function HistoryTab({ contactId, orgSlug }: { contactId: string; orgSlug: string
         <CardHeader><CardTitle>Aktivitetslogg</CardTitle></CardHeader>
         <CardContent>
           {auditLogs.length === 0 ? (
-            <p className="text-sm text-gray-400">Inga loggade händelser.</p>
+            <p className="text-sm text-muted-foreground">Inga loggade händelser.</p>
           ) : (
             <ul className="space-y-3">
               {auditLogs.map(entry => (
                 <li key={entry.id} className="flex items-start gap-3 text-sm">
-                  <div className="w-2 h-2 rounded-full bg-gray-300 mt-1.5 shrink-0" />
+                  <div className="w-2 h-2 rounded-full bg-muted-foreground mt-1.5 shrink-0" />
                   <div>
-                    <span className="text-gray-700">{entry.action}</span>
+                    <span className="text-foreground">{entry.action}</span>
                     {entry.user && (
-                      <span className="text-gray-400 ml-2">av {entry.user.fullName}</span>
+                      <span className="text-muted-foreground ml-2">av {entry.user.fullName}</span>
                     )}
-                    <p className="text-xs text-gray-400 mt-0.5">{fmtDateTime(entry.createdAt)}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{fmtDateTime(entry.createdAt)}</p>
                   </div>
                 </li>
               ))}
@@ -689,13 +689,13 @@ function HistoryTab({ contactId, orgSlug }: { contactId: string; orgSlug: string
 function InfoRow({ label, value, link }: { label: string; value: string | null | undefined; link?: boolean }) {
   return (
     <div>
-      <dt className="text-xs text-gray-400">{label}</dt>
-      <dd className="text-gray-800 mt-0.5">
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dd className="text-foreground mt-0.5">
         {value
           ? link
             ? <a href={value} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">{value}</a>
             : value
-          : <span className="text-gray-400">—</span>}
+          : <span className="text-muted-foreground">—</span>}
       </dd>
     </div>
   )
@@ -704,7 +704,7 @@ function InfoRow({ label, value, link }: { label: string; value: string | null |
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">{label}</label>
+      <label className="block text-xs font-medium text-muted-foreground mb-1.5">{label}</label>
       {children}
     </div>
   )

@@ -22,7 +22,7 @@ type Product = {
   updatedAt: string
 }
 
-const cls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+const cls = "w-full px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
 
 function fmtPrice(unitPrice: number, currency: string) {
   return `${(unitPrice / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`
@@ -116,33 +116,33 @@ export default function ProductDetailPage() {
     }
   }
 
-  if (loading)  return <div className="p-8 text-sm text-gray-400">Laddar…</div>
+  if (loading)  return <div className="p-8 text-sm text-muted-foreground">Laddar…</div>
   if (!product) return <div className="p-8 text-sm text-red-500">Produkten hittades inte.</div>
 
   return (
     <div className="p-8 max-w-2xl">
       {/* Breadcrumb */}
-      <div className="mb-2 flex items-center gap-2 text-sm text-gray-500">
-        <Link href={`/${orgSlug}/products`} className="hover:text-gray-700">Produkter</Link>
-        <span className="text-gray-300">/</span>
-        <span className="text-gray-700 font-medium">{product.name}</span>
+      <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
+        <Link href={`/${orgSlug}/products`} className="hover:text-foreground">Produkter</Link>
+        <span className="text-muted-foreground">/</span>
+        <span className="text-foreground font-medium">{product.name}</span>
       </div>
 
       {/* Header */}
       <div className="mb-6 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">{product.name}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{product.name}</h1>
             <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${
-              product.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+              product.isActive ? "bg-green-100 text-green-700" : "bg-muted text-muted-foreground"
             }`}>
               {product.isActive ? "Aktiv" : "Inaktiv"}
             </span>
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             {product.sku && <span className="font-mono mr-3">{product.sku}</span>}
             {product.type === "product" ? "Produkt" : "Tjänst"}
-            {product.category && <span className="ml-3 text-gray-400">{product.category}</span>}
+            {product.category && <span className="ml-3 text-muted-foreground">{product.category}</span>}
           </p>
         </div>
         {!editing && (
@@ -169,14 +169,14 @@ export default function ProductDetailPage() {
             <CardContent>
               <dl className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
                 <div>
-                  <dt className="text-xs text-gray-400">Pris exkl. moms</dt>
-                  <dd className="text-gray-900 font-semibold text-lg mt-0.5">
+                  <dt className="text-xs text-muted-foreground">Pris exkl. moms</dt>
+                  <dd className="text-foreground font-semibold text-lg mt-0.5">
                     {fmtPrice(product.unitPrice, product.currency)}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-gray-400">Pris inkl. moms</dt>
-                  <dd className="text-gray-700 mt-0.5">
+                  <dt className="text-xs text-muted-foreground">Pris inkl. moms</dt>
+                  <dd className="text-foreground mt-0.5">
                     {fmtPrice(
                       Math.round(product.unitPrice * (1 + Number(product.taxRate))),
                       product.currency
@@ -184,12 +184,12 @@ export default function ProductDetailPage() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-gray-400">Momssats</dt>
-                  <dd className="text-gray-800 mt-0.5">{(Number(product.taxRate) * 100).toFixed(0)}%</dd>
+                  <dt className="text-xs text-muted-foreground">Momssats</dt>
+                  <dd className="text-foreground mt-0.5">{(Number(product.taxRate) * 100).toFixed(0)}%</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-gray-400">Enhet</dt>
-                  <dd className="text-gray-800 mt-0.5">{product.unit}</dd>
+                  <dt className="text-xs text-muted-foreground">Enhet</dt>
+                  <dd className="text-foreground mt-0.5">{product.unit}</dd>
                 </div>
               </dl>
             </CardContent>
@@ -199,12 +199,12 @@ export default function ProductDetailPage() {
             <Card>
               <CardHeader><CardTitle>Beskrivning</CardTitle></CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 whitespace-pre-wrap">{product.description}</p>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{product.description}</p>
               </CardContent>
             </Card>
           )}
 
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-muted-foreground">
             Skapad {new Date(product.createdAt).toLocaleDateString("sv-SE")} · Uppdaterad {new Date(product.updatedAt).toLocaleDateString("sv-SE")}
           </p>
         </div>
@@ -315,7 +315,7 @@ export default function ProductDetailPage() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">{label}</label>
+      <label className="block text-xs font-medium text-muted-foreground mb-1.5">{label}</label>
       {children}
     </div>
   )

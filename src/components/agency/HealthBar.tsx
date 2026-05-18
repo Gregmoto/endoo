@@ -14,7 +14,7 @@ export function HealthBar({ score, showLabel = true, size = "md" }: HealthBarPro
 
   return (
     <div className="flex items-center gap-2 min-w-0">
-      <div className={`flex-1 ${h} bg-gray-100 rounded-full overflow-hidden`} style={{ minWidth: 48 }}>
+      <div className={`flex-1 ${h} bg-muted rounded-full overflow-hidden`} style={{ minWidth: 48 }}>
         <div
           className={`${h} rounded-full transition-all ${color}`}
           style={{ width: `${score}%` }}

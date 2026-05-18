@@ -75,6 +75,16 @@ Blockerar commit om `package.json` och `src/lib/version.ts` är ur synk.
 
 ---
 
+## FÄRGREGLER (OBLIGATORISKT)
+
+- Använd **aldrig** `text-gray-*`, `bg-gray-*`, `bg-white`, `border-gray-*`, `text-black`, `text-white` eller hårdkodade hex/rgb i komponentkod.
+- Använd alltid **semantiska klasser**: `text-foreground`, `text-muted-foreground`, `bg-card`, `bg-muted`, `bg-accent`, `border`, `border-input` m.fl.
+- Se [src/lib/design-system/COLOR_RULES.md](src/lib/design-system/COLOR_RULES.md) för komplett lista.
+- Status-badges: använd alltid `<StatusBadge status="..." />` från `@/components/ui/StatusBadge`.
+- PDF-templates: hårdkodade färger OK — importera från `@/lib/pdf/colors`.
+- Kör `npm run audit:colors` och åtgärda **alla errors** innan commit.
+- Pre-commit hook blockerar commit vid color-errors.
+
 ## KOD-REGLER
 
 - Skriv inga kommentarer om inte WHY är icke-uppenbar

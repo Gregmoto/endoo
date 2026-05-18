@@ -8,10 +8,12 @@ import { generateSignerToken }  from "@/lib/signing/tokens"
 import { sendPortalMagicLink }  from "@/lib/portal/emails"
 import { resolveBranding }      from "@/lib/branding/resolver"
 import { apiOk }                from "@/lib/api/response"
+import { getClientIp }          from "@/lib/portal/auth"
 import { z }                    from "zod"
 
-const EXPIRES_MINUTES = 10
-const BASE_URL = process.env.NEXTAUTH_URL ?? "http://localhost:3000"
+const EXPIRES_MINUTES  = 10
+const RATE_LIMIT_SENDS = 5   // per email per hour
+const BASE_URL         = process.env.NEXTAUTH_URL ?? "http://localhost:3000"
 
 const Body = z.object({ email: z.string().email() })
 
@@ -26,7 +28,9 @@ export async function POST(
   if (!parsed.success) {
     return Response.json({ error: "Ogiltig e-postadress" }, { status: 400 })
   }
-  const email = parsed.data.email.toLowerCase().trim()
+  const email     = parsed.data.email.toLowerCase().trim()
+  const ip        = getClientIp(req)
+  const userAgent = req.headers.get("user-agent") ?? undefined
 
   // Look up org
   const org = await prisma.organization.findUnique({
@@ -42,8 +46,15 @@ export async function POST(
   })
 
   // Always return 200 to prevent email enumeration
-  if (!contact) {
-    return apiOk({ ok: true })
+  if (!contact) return apiOk({ ok: true })
+
+  // DB-based rate limit: max 5 sends per email per hour
+  const hourAgo   = new Date(Date.now() - 60 * 60_000)
+  const recentSends = await prisma.portalMagicToken.count({
+    where: { organizationId: org.id, email, createdAt: { gte: hourAgo } },
+  })
+  if (recentSends >= RATE_LIMIT_SENDS) {
+    return Response.json({ error: "För många försök. Vänta en stund." }, { status: 429 })
   }
 
   // Generate token
@@ -57,11 +68,13 @@ export async function POST(
       email,
       tokenHash,
       expiresAt,
+      requestIp:  ip,
+      userAgent,
     },
   })
 
-  const branding  = await resolveBranding(org.id)
-  const loginUrl  = `${BASE_URL}/api/portal/${orgSlug}/auth/verify?token=${rawToken}`
+  const branding = await resolveBranding(org.id)
+  const loginUrl = `${BASE_URL}/api/portal/${orgSlug}/auth/verify?token=${rawToken}`
 
   sendPortalMagicLink({
     to:          email,

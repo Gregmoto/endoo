@@ -112,7 +112,7 @@ export default function BillingPage() {
     }
   }
 
-  if (loading) return <div className="p-8 text-sm text-gray-400">Laddar…</div>
+  if (loading) return <div className="p-8 text-sm text-muted-foreground">Laddar…</div>
   if (!plan)   return null
 
   const currentPlanIdx = ALL_PLANS.indexOf(plan.plan)
@@ -233,7 +233,7 @@ export default function BillingPage() {
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {FEATURE_MATRIX.map(({ key, label }) => (
-                <tr key={key} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                <tr key={key} className="hover:bg-muted dark:hover:bg-gray-800/50 transition-colors">
                   <td className="py-2.5 pr-4 text-gray-700 dark:text-gray-300">{label}</td>
                   {ALL_PLANS.map(p => {
                     const has = PLAN_LIMITS[p].features.includes(key)
@@ -277,7 +277,7 @@ export default function BillingPage() {
                   Enterprise
                   <span className="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">{PLAN_PRICES.enterprise}</span>
                 </p>
-                <p className="text-xs text-gray-400 mt-0.5">Obegränsat · SLA · SSO · Anpassad integration</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Obegränsat · SLA · SSO · Anpassad integration</p>
               </div>
               <Button size="sm" variant="outline" onClick={() => window.open("mailto:hej@endoo.se")}>
                 Kontakta oss

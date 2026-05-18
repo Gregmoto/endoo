@@ -86,8 +86,8 @@ export default function JournalsPage() {
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Bokföring</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{total} verifikat totalt</p>
+          <h1 className="text-2xl font-bold text-foreground">Bokföring</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{total} verifikat totalt</p>
         </div>
         <Link
           href={`/${orgSlug}/journals/new`}
@@ -104,12 +104,12 @@ export default function JournalsPage() {
           placeholder="Sök referens eller text…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-60 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-60 px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
         />
         <select
           value={status}
           onChange={e => setStatus(e.target.value)}
-          className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+          className="px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-card"
         >
           <option value="">Alla statusar</option>
           <option value="draft">Utkast</option>
@@ -119,16 +119,16 @@ export default function JournalsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="py-16 text-center text-sm text-gray-400">Laddar…</div>
+          <div className="py-16 text-center text-sm text-muted-foreground">Laddar…</div>
         ) : journals.length === 0 ? (
           <div className="py-20 text-center">
-            <p className="text-gray-400 text-sm mb-2">
+            <p className="text-muted-foreground text-sm mb-2">
               {total === 0 ? "Inga verifikat ännu." : "Inga verifikat matchar sökningen."}
             </p>
             {total === 0 && (
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-muted-foreground">
                 Verifikat skapas automatiskt när du fakturerar eller godkänner en leverantörsfaktura. Du kan också skapa manuella verifikat.
               </p>
             )}
@@ -136,9 +136,9 @@ export default function JournalsPage() {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/50">
+              <tr className="border-b border bg-muted/50">
                 {["Referens", "Datum", "Beskrivning", "Typ", "Belopp", "Status", ""].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -147,17 +147,17 @@ export default function JournalsPage() {
                 <tr
                   key={j.id}
                   onClick={() => router.push(`/${orgSlug}/journals/${j.id}`)}
-                  className="border-t border-gray-50 hover:bg-gray-50 cursor-pointer"
+                  className="border-t border-border/50 hover:bg-muted cursor-pointer"
                 >
                   <td className="px-5 py-3 font-mono text-xs font-semibold text-indigo-700">{j.reference}</td>
-                  <td className="px-5 py-3 text-gray-600">
+                  <td className="px-5 py-3 text-muted-foreground">
                     {new Date(j.date).toLocaleDateString("sv-SE")}
                   </td>
-                  <td className="px-5 py-3 text-gray-900 max-w-xs truncate">{j.description}</td>
-                  <td className="px-5 py-3 text-gray-500 text-xs">
+                  <td className="px-5 py-3 text-foreground max-w-xs truncate">{j.description}</td>
+                  <td className="px-5 py-3 text-muted-foreground text-xs">
                     {SOURCE_LABEL[j.sourceType ?? ""] ?? "Manuell"}
                   </td>
-                  <td className="px-5 py-3 tabular-nums text-gray-900 font-medium">
+                  <td className="px-5 py-3 tabular-nums text-foreground font-medium">
                     {fmt(totalDebit(j.entries))}
                   </td>
                   <td className="px-5 py-3">
@@ -179,15 +179,15 @@ export default function JournalsPage() {
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40"
+            className="px-3 py-1.5 text-sm border border rounded-lg hover:bg-muted disabled:opacity-40"
           >
             ← Föregående
           </button>
-          <span className="text-sm text-gray-500">{page} / {pages}</span>
+          <span className="text-sm text-muted-foreground">{page} / {pages}</span>
           <button
             onClick={() => setPage(p => Math.min(pages, p + 1))}
             disabled={page === pages}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40"
+            className="px-3 py-1.5 text-sm border border rounded-lg hover:bg-muted disabled:opacity-40"
           >
             Nästa →
           </button>

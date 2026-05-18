@@ -38,6 +38,39 @@ function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")
 }
 
+// ─── Security code (IP-mismatch challenge) ────────────────────────────────────
+
+export async function sendPortalSecurityCode({
+  to, code, orgId,
+}: {
+  to:    string
+  code:  string
+  orgId: string
+}) {
+  // Resolve org name for the email subject
+  const { prisma } = await import("@/lib/prisma")
+  const org = await prisma.organization.findUnique({ // audit-ok — platform lookup for email display only
+    where:  { id: orgId },
+    select: { name: true },
+  })
+  const orgName = org?.name ?? "Kundportalen"
+
+  const color  = "#4f46e5"
+  const header = `
+    <p style="margin:0;font-size:11px;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.5px">Säkerhetskod</p>
+    <p style="margin:6px 0 0;font-size:20px;font-weight:700;color:#fff">${esc(orgName)}</p>`
+
+  const body = `
+    ${p("En inloggning från en ny plats kräver verifiering.")}
+    ${p("Ange koden nedan för att slutföra inloggningen:")}
+    <div style="margin:24px 0;padding:20px;background:#f9fafb;border-radius:8px;text-align:center">
+      <span style="font-size:32px;font-weight:700;letter-spacing:8px;color:#111827;font-family:monospace">${esc(code)}</span>
+    </div>
+    ${p('<span style="font-size:12px;color:#9ca3af">Koden är giltig i 10 minuter. Om du inte begärde detta kan du ignorera mailet.</span>')}`
+
+  await send(to, `Din säkerhetskod — ${orgName}`, layout(color, header, body))
+}
+
 // ─── Magic link ───────────────────────────────────────────────────────────────
 
 export async function sendPortalMagicLink({

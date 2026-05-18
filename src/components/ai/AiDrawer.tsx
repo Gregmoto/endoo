@@ -146,19 +146,19 @@ export function AiDrawer() {
 
       {/* Panel */}
       <div
-        className={`fixed inset-y-0 right-0 w-96 bg-white border-l border-gray-200 shadow-xl z-50 flex flex-col transition-transform duration-300 ${
+        className={`fixed inset-y-0 right-0 w-96 bg-card border-l border shadow-xl z-50 flex flex-col transition-transform duration-300 ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+        <div className="flex items-center justify-between px-4 py-3 border-b border">
           <div className="flex items-center gap-2">
             <span className="text-indigo-600 text-lg">✦</span>
-            <span className="font-semibold text-gray-900">Endoo AI</span>
+            <span className="font-semibold text-foreground">Endoo AI</span>
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="text-sm text-gray-500 hover:text-gray-700 transition-colors px-2 py-1 rounded hover:bg-gray-100"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded hover:bg-muted"
           >
             ✕ Stäng
           </button>
@@ -168,16 +168,16 @@ export function AiDrawer() {
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
           {showEmpty && (
             <div className="space-y-4">
-              <div className="bg-indigo-50 rounded-xl p-4 text-sm text-gray-700">
+              <div className="bg-indigo-50 rounded-xl p-4 text-sm text-foreground">
                 <p className="font-medium text-indigo-800 mb-1">Hej! Jag kan hjälpa dig med bokföring.</p>
-                <p className="text-gray-600">Ställ en fråga om dina konton, moms, fakturor eller konteringar.</p>
+                <p className="text-muted-foreground">Ställ en fråga om dina konton, moms, fakturor eller konteringar.</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {QUICK_CHIPS.map((chip) => (
                   <button
                     key={chip}
                     onClick={() => send(chip)}
-                    className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-indigo-50 hover:text-indigo-700 text-gray-600 rounded-full transition-colors border border-gray-200 hover:border-indigo-200"
+                    className="text-xs px-3 py-1.5 bg-muted hover:bg-indigo-50 hover:text-indigo-700 text-muted-foreground rounded-full transition-colors border border hover:border-indigo-200"
                   >
                     {chip}
                   </button>
@@ -195,7 +195,7 @@ export function AiDrawer() {
                 className={`max-w-[85%] rounded-xl px-3 py-2 text-sm leading-relaxed ${
                   msg.role === "user"
                     ? "bg-indigo-600 text-white"
-                    : "bg-gray-100 text-gray-800"
+                    : "bg-muted text-foreground"
                 }`}
               >
                 {msg.role === "assistant"
@@ -208,11 +208,11 @@ export function AiDrawer() {
           {/* Streaming response */}
           {loading && (
             <div className="flex justify-start">
-              <div className="max-w-[85%] rounded-xl px-3 py-2 text-sm bg-gray-100 text-gray-800 leading-relaxed">
+              <div className="max-w-[85%] rounded-xl px-3 py-2 text-sm bg-muted text-foreground leading-relaxed">
                 {streamingText ? (
                   renderContent(streamingText)
                 ) : (
-                  <span className="flex items-center gap-1 text-gray-400">
+                  <span className="flex items-center gap-1 text-muted-foreground">
                     Analyserar
                     <span className="inline-flex gap-0.5">
                       <span className="animate-bounce" style={{ animationDelay: "0ms" }}>.</span>
@@ -229,7 +229,7 @@ export function AiDrawer() {
         </div>
 
         {/* Input */}
-        <div className="border-t border-gray-100 px-4 py-3">
+        <div className="border-t border px-4 py-3">
           <div className="flex gap-2 items-end">
             <textarea
               value={input}
@@ -238,7 +238,7 @@ export function AiDrawer() {
               placeholder="Skriv en fråga…"
               rows={1}
               disabled={loading}
-              className="flex-1 resize-none rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50 max-h-32"
+              className="flex-1 resize-none rounded-lg border border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50 max-h-32"
               style={{ minHeight: "38px" }}
             />
             <button
@@ -249,7 +249,7 @@ export function AiDrawer() {
               Skicka
             </button>
           </div>
-          <p className="text-xs text-gray-400 mt-1.5">
+          <p className="text-xs text-muted-foreground mt-1.5">
             Enter för att skicka · Shift+Enter för ny rad
           </p>
         </div>

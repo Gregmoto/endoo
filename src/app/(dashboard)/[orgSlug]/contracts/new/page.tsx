@@ -112,9 +112,9 @@ export default function NewContractPage() {
   return (
     <div className="p-8 max-w-3xl">
       <div className="mb-6 flex items-center gap-3">
-        <Link href={`/${orgSlug}/contracts`} className="text-sm text-gray-500 hover:text-gray-700">← Avtal</Link>
+        <Link href={`/${orgSlug}/contracts`} className="text-sm text-muted-foreground hover:text-foreground">← Avtal</Link>
         <span className="text-gray-300">/</span>
-        <h1 className="text-2xl font-bold text-gray-900">Nytt avtal</h1>
+        <h1 className="text-2xl font-bold text-foreground">Nytt avtal</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -167,7 +167,7 @@ export default function NewContractPage() {
                 <input type="date" value={form.endDate} onChange={setF("endDate")} className={inputCls} />
               </Field>
             </div>
-            <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.autoSend}
@@ -175,7 +175,7 @@ export default function NewContractPage() {
                 className="rounded"
               />
               Skicka automatiskt vid generering
-              <span className="text-xs text-gray-400 ml-1">(kräver e-postkonfiguration)</span>
+              <span className="text-xs text-muted-foreground ml-1">(kräver e-postkonfiguration)</span>
             </label>
           </CardContent>
         </Card>
@@ -193,18 +193,18 @@ export default function NewContractPage() {
           <CardContent className="p-0">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  <th className="px-3 py-2.5 text-left text-xs font-medium text-gray-500 w-5/12">Beskrivning</th>
-                  <th className="px-2 py-2.5 text-right text-xs font-medium text-gray-500 w-16">Antal</th>
-                  <th className="px-2 py-2.5 text-left text-xs font-medium text-gray-500 w-14">Enhet</th>
-                  <th className="px-2 py-2.5 text-right text-xs font-medium text-gray-500 w-28">À-pris (kr)</th>
-                  <th className="px-2 py-2.5 text-right text-xs font-medium text-gray-500 w-16">Moms</th>
+                <tr className="border-b border bg-muted">
+                  <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground w-5/12">Beskrivning</th>
+                  <th className="px-2 py-2.5 text-right text-xs font-medium text-muted-foreground w-16">Antal</th>
+                  <th className="px-2 py-2.5 text-left text-xs font-medium text-muted-foreground w-14">Enhet</th>
+                  <th className="px-2 py-2.5 text-right text-xs font-medium text-muted-foreground w-28">À-pris (kr)</th>
+                  <th className="px-2 py-2.5 text-right text-xs font-medium text-muted-foreground w-16">Moms</th>
                   <th className="px-2 py-2.5 w-6"></th>
                 </tr>
               </thead>
               <tbody>
                 {lines.map((line) => (
-                  <tr key={line.id} className="border-t border-gray-50 align-top">
+                  <tr key={line.id} className="border-t border-border/50 align-top">
                     <td className="px-3 py-2">
                       <input
                         list={`products-${line.id}`}
@@ -261,8 +261,8 @@ export default function NewContractPage() {
                 ))}
               </tbody>
             </table>
-            <div className="px-4 py-3 border-t border-gray-100 text-right text-sm text-gray-500">
-              Summa per period: <span className="font-bold text-gray-900 ml-2">
+            <div className="px-4 py-3 border-t border text-right text-sm text-muted-foreground">
+              Summa per period: <span className="font-bold text-foreground ml-2">
                 {totalMonthly.toLocaleString("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {form.currency}
               </span>
             </div>
@@ -274,11 +274,11 @@ export default function NewContractPage() {
           <CardContent className="space-y-4">
             <Field label="Meddelande till kund (syns på faktura)">
               <textarea value={form.notes} onChange={setF("notes")} rows={2}
-                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none" />
+                className="w-full px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none" />
             </Field>
             <Field label="Internanteckning (syns ej på faktura)">
               <textarea value={form.internalNotes} onChange={setF("internalNotes")} rows={2}
-                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none" />
+                className="w-full px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none" />
             </Field>
           </CardContent>
         </Card>
@@ -298,7 +298,7 @@ export default function NewContractPage() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">{label}</label>
+      <label className="block text-xs font-medium text-muted-foreground mb-1.5">{label}</label>
       {children}
     </div>
   )

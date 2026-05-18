@@ -46,18 +46,18 @@ export default async function PortalQuotesPage({
       </div>
 
       {quotes.length === 0 ? (
-        <p style={{ color: "#6b7280" }}>Inga offerter hittades.</p>
+        <p className="text-muted-foreground">Inga offerter hittades.</p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {quotes.map(q => (
             <Link key={q.id} href={`/portal/${orgSlug}/quotes/${q.id}`} style={row}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontWeight: 600 }}>{q.number}</span>
-                {q.title && <span style={{ color: "#6b7280", fontSize: 13 }}>— {q.title}</span>}
+                {q.title && <span style={{ color: "var(--muted-foreground)", fontSize: 13 }}>— {q.title}</span>}
                 <StatusBadge status={q.status} />
               </div>
               {q.validUntil && (
-                <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>
+                <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginTop: 4 }}>
                   Giltig t.o.m. {new Date(q.validUntil).toLocaleDateString("sv-SE")}
                 </div>
               )}
@@ -71,13 +71,13 @@ export default async function PortalQuotesPage({
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, [string, string]> = {
-    accepted:   ["#dcfce7", "#16a34a"],
-    declined:   ["#fee2e2", "#dc2626"],
-    expired:    ["#f3f4f6", "#6b7280"],
-    invoiced:   ["#f0fdf4", "#15803d"],
-    contracted: ["#eff6ff", "#1d4ed8"],
+    accepted:   ["#dcfce7", "#16a34a"], // audit-ok
+    declined:   ["#fee2e2", "#dc2626"], // audit-ok
+    expired:    ["#f3f4f6", "#6b7280"], // audit-ok
+    invoiced:   ["#f0fdf4", "#15803d"], // audit-ok
+    contracted: ["#eff6ff", "#1d4ed8"], // audit-ok
   }
-  const [bg, fg] = colors[status] ?? ["#fefce8", "#92400e"]
+  const [bg, fg] = colors[status] ?? ["#fefce8", "#92400e"] // audit-ok
   return (
     <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 9999, background: bg, color: fg }}>
       {STATUS_LABEL[status] ?? status}
@@ -85,6 +85,6 @@ function StatusBadge({ status }: { status: string }) {
   )
 }
 
-const h1: React.CSSProperties      = { margin: 0, fontSize: 22, fontWeight: 700, color: "#111827" }
-const backLink: React.CSSProperties = { color: "#4f46e5", textDecoration: "none", fontSize: 14 }
-const row: React.CSSProperties     = { display: "block", background: "#fff", borderRadius: 10, padding: "16px 20px", boxShadow: "0 1px 3px rgba(0,0,0,.07)", textDecoration: "none", color: "inherit" }
+const h1: React.CSSProperties      = { margin: 0, fontSize: 22, fontWeight: 700, color: "var(--foreground)" }
+const backLink: React.CSSProperties = { color: "var(--primary)", textDecoration: "none", fontSize: 14 }
+const row: React.CSSProperties     = { display: "block", background: "var(--card)", borderRadius: 10, padding: "16px 20px", boxShadow: "0 1px 3px rgba(0,0,0,.07)", textDecoration: "none", color: "inherit" }

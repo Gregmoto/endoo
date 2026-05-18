@@ -7,6 +7,83 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-05-18
+
+### Changed
+- **[Migrering]** Kört säker klassmigrering i tre omgångar — totalt ~3700 className-block uppdaterade från `text-gray-*`/`bg-white`/`bg-gray-*`/`border-gray-*` till semantiska tokens i ~150 filer; TypeScript 0 fel
+- **[Audit-script]** `scripts/audit-colors.ts` — `text-white` och `opacity-50` flyttade till varningar, e-postmallar undantagna (`src/lib/email.ts`, `src/lib/signing/`, m.fl.), `bg-white/[opacity]`-varianter undantagna (avsiktliga överlager), `// audit-ok`-suppression för hex i API-defaults och diagram-paletter
+- **[Migrations-script]** `scripts/migrate-colors.ts` fullständigt omskriven med säker single-pass-regex (inga överlappande block, inga JSX-korruptioner), `text-slate-*` tillagd i regelverket
+- **[Portal-sidor]** Alla 10 portalsidor (invoices, quotes, contracts, login, sessions m.fl.) — hårdkodade hex-värden ersatta med CSS-variabler (`var(--foreground)`, `var(--muted-foreground)`, `var(--primary)`, `var(--destructive)` m.fl.)
+- **[Analytics]** `analytics/page.tsx` + `src/lib/analytics/chart-colors.ts` — SVG-strokes/fills och textklasser migrerade; diagrampalett extraherad till `CHART`-konstant med `// audit-ok`
+- **[Org-switcher]** `org-switcher.tsx` — omskriven från inline `style={}`-objekt till Tailwind semantiska klasser
+- **[Övrigt]** `BottomSheet`, `CookieBanner`, `HealthBar`, `MobileNavBar`, `ImpersonationBanner`, `CommandPalette`, `NotificationDrawer`, `TaskDrawer`, `AiDrawer` m.fl. — alla återstående grå-klasser åtgärdade
+
+### Added
+- **[Verktyg]** `src/lib/analytics/chart-colors.ts` — gemensam diagrampalett (`CHART.*`)
+
+### Fixed
+- **[Audit]** `npm run audit:colors` returnerar nu **0 errors** (ner från 2797 vid start) — pre-commit hook blockerar framtida regressioner
+
+## [0.8.0] - 2026-05-18
+
+### Changed
+- **[Färgsystem]** `src/app/globals.css` omskriven — komplett semantiskt system med oklch()-variabler (`--foreground`, `--card`, `--muted-foreground`, `--primary`, `--success`, `--warning`, `--info`, `--sidebar-*` m.fl.) i både light och dark mode med WCAG AA-kontrast
+- **[Komponenter]** `Card`, `Button`, `Input`, `Select` — alla ersätter `bg-white`/`text-gray-*` med `bg-card`/`text-foreground`/`text-muted-foreground` etc.; fungerar nu korrekt i dark mode
+- **[Sidebar]** `Sidebar`, `MobileNavBar` — alla grå-klasser ersatta med `bg-sidebar`, `text-sidebar-foreground`, `hover:bg-sidebar-accent` etc.
+- **[ThemeToggle]** Utökad till 3-state dropdown (Ljust / Mörkt / System) med tillgänglig `listbox`-roll
+- **[Migration]** 2703 automatiska class-ersättningar i 124 filer via `scripts/migrate-colors.ts`
+
+### Added
+- **[Komponenter]** `src/components/ui/StatusBadge.tsx` — single source of truth för alla status-färger (25+ statustillstånd); använder semantiska tokens, fungerar i båda lägen
+- **[Tema]** Flash-of-wrong-theme-fix: inline script i `<head>` läser `localStorage`-tema och sätter klass/colorScheme innan React hydrerar
+- **[PDF]** `src/lib/pdf/colors.ts` — hårdkodade light-mode-konstanter för react-pdf-templates
+- **[Design system]** `src/lib/design-system/contrast.ts` — `contrastRatio()`, `getBestTextColor()`, `adjustForDarkMode()`, `hexToOklch()` för branding-override med automatisk kontrast
+- **[Design system]** `src/lib/design-system/COLOR_RULES.md` — utvecklarkonventioner för semantiska färgklasser
+- **[Platform UI]** `/platform/design-system` — intern docs-sida (super_admin) med alla tokens, StatusBadge-varianter och typografi
+- **[API]** `GET /api/design/contrast-check` — utility-endpoint för att validera brand-färger mot WCAG AA
+- **[Verktyg]** `scripts/audit-colors.ts` — skannar `src/` och rapporterar icke-semantiska Tailwind-klasser; skriver `.audit/color-issues.json`
+- **[Verktyg]** `scripts/migrate-colors.ts` — auto-migration med `--dry-run`-stöd
+- **[npm-scripts]** `audit:colors`, `migrate:colors`, `migrate:colors:apply`
+- **[Pre-commit]** Hook blockerar commit om `audit:colors --max-errors 0` misslyckas
+- **[CLAUDE.md]** Obligatoriska färgregler tillagda
+
+### Fixed
+- **[Dark mode]** Text knappt synlig i dark mode: `Card`/`Button` använde `bg-white` utan dark-variant — nu `bg-card` med `text-card-foreground`
+- **[CookieBanner]** `bg-white dark:bg-gray-900` → `bg-card`; toggle-knapparna använder semantiska klasser
+
+## [0.7.1] - 2026-05-18
+
+### Fixed
+- **[PageSpeed]** `src/app/robots.ts` skapad — löser "robots.txt är inte giltig"; tillåter `/`, blockerar `/api/`, `/platform/`, `/portal/`
+- **[PageSpeed]** `CookieBanner` — länktext "Läs mer" ändrad till "Läs cookiepolicyn" för att uppfylla Lighthouse-krav på beskrivande länktext
+- **[PageSpeed]** `CookieBanner` laddas nu som dynamisk import med `ssr: false` i root layout — tar bort ~21 KiB från initial bundle
+- **[PageSpeed]** `browserslist` tillagd i `package.json` med `"defaults and supports es6-module"` — eliminerar onödiga ES5-polyfiller för moderna webbläsare (~12 KiB)
+
+## [0.7.0] - 2026-05-18
+
+### Added
+- **[Portal-säkerhet]** `PortalAuthAttempt`-modell — oföränderlig log för alla verify-försök (ip, userAgent, success, failureReason)
+- **[Portal-säkerhet]** `TrustedDevice`-modell — betrodda enheter per kontakt med deviceId (UUID), ipPrefix, revokedAt
+- **[Portal-säkerhet]** `PortalMagicToken` utökad med `requestIp`, `userAgent`, `pendingCode` (SHA-256-hash av 6-siffrig kod)
+- **[Portal-säkerhet]** IP-prefix-jämförelse vid verify (/24 för IPv4, 4 grupper för IPv6) — mismatch triggar 6-siffrig säkerhetskod-utmaning
+- **[Portal-säkerhet]** DB-baserad rate limiting: 5 send/email/timme via PortalMagicToken-räkning; 10 verify/IP/timme via PortalAuthAttempt-räkning
+- **[Portal-säkerhet]** `POST /api/portal/[orgSlug]/auth/verify-code` — validerar 6-siffrig kod, slutför inloggning
+- **[Portal-säkerhet]** `GET /api/portal/[orgSlug]/sessions` — lista betrodda enheter
+- **[Portal-säkerhet]** `POST /api/portal/[orgSlug]/sessions` — lita på aktuell enhet (sätter HttpOnly trusted-device-cookie, 30 dagar)
+- **[Portal-säkerhet]** `DELETE /api/portal/[orgSlug]/sessions/[id]` — återkalla betrodd enhet
+- **[Portal-säkerhet]** `ipPrefix()`, `getClientIp()`, `signTrustedDeviceJwt()`, `verifyTrustedDeviceJwt()` i `src/lib/portal/auth.ts`
+- **[Portal-säkerhet]** `sendPortalSecurityCode()` i `src/lib/portal/emails.ts` — skickar 6-siffrig kod via e-post
+- **[Portal-UI]** `/portal/[orgSlug]/auth/verify` — sida för IP-mismatch kod-inmatning med monospace-kodvisning
+- **[Portal-UI]** `/portal/[orgSlug]/profile/sessions` — hantera betrodda enheter (lista + återkalla)
+- **[Portal-UI]** Avsändarledtråd ("noreply@mail.endoo.se") på inloggningssidans bekräftelseskärm
+- **[Cron]** `GET /api/cron/cleanup-tokens` (04:00 UTC dagligen) — rensar utgångna PortalMagicToken (>7d), PortalAuthAttempt (>90d), återkallade TrustedDevice (>30d), transient EmailSuppression (>90d)
+- **[Tester]** `tests/security/portal-auth-hardening.test.ts` — 12 tester för cleanup-cron, rate limiting, IP-mismatch, trusted device och återkallning
+
+### Database
+- **[Portal-säkerhet]** Ny modell `PortalAuthAttempt`: immutable auth-log med index på `[ip, createdAt]`
+- **[Portal-säkerhet]** Ny modell `TrustedDevice`: `deviceId @unique @default(uuid)`, `ipPrefix`, `revokedAt?`
+- **[Portal-säkerhet]** `PortalMagicToken` fält tillagda: `requestIp String?`, `userAgent String?`, `pendingCode String?`
+
 ## [0.6.0] - 2026-05-18
 
 ### Added
@@ -153,7 +230,9 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 - Added `SchemaVersion` model för att tracka Prisma-migrations
 - Added `User.lastSeenVersion String?` för att spåra senast sedd version
 
-[Unreleased]: https://github.com/Gregmoto/endoo/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/Gregmoto/endoo/compare/v0.7.1...HEAD
+[0.7.1]: https://github.com/Gregmoto/endoo/compare/v0.7.0...v0.7.1
+[0.7.0]: https://github.com/Gregmoto/endoo/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/Gregmoto/endoo/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/Gregmoto/endoo/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/Gregmoto/endoo/compare/v0.3.1...v0.5.0

@@ -20,13 +20,13 @@ export function Button({
     <button
       disabled={disabled || loading}
       className={cn(
-        "inline-flex items-center justify-center font-medium rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed",
+        "inline-flex items-center justify-center font-medium rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-50 disabled:cursor-not-allowed",
         {
-          "bg-brand-600 text-white hover:bg-brand-700 focus-visible:outline-brand-600": variant === "primary",
-          "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50": variant === "secondary",
-          "text-gray-600 hover:bg-gray-100": variant === "ghost",
-          "bg-red-600 text-white hover:bg-red-700": variant === "danger",
-          "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50": variant === "outline",
+          "bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:outline-primary": variant === "primary",
+          "bg-card text-secondary-foreground border border-border hover:bg-accent hover:text-accent-foreground": variant === "secondary",
+          "text-muted-foreground hover:bg-accent hover:text-accent-foreground": variant === "ghost",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90": variant === "danger",
+          "border border-border bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground": variant === "outline",
           "px-3 py-1.5 text-sm": size === "sm",
           "px-4 py-2 text-sm": size === "md",
           "px-5 py-2.5 text-base": size === "lg",

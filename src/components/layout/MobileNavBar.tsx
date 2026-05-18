@@ -42,7 +42,7 @@ export function MobileNavBar({ orgSlug }: MobileNavBarProps) {
 
       {/* Bottom tab bar — only on mobile */}
       <nav
-        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-gray-100"
+        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-card border-t border"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="flex items-stretch h-14">
@@ -69,7 +69,7 @@ export function MobileNavBar({ orgSlug }: MobileNavBarProps) {
                 href={`${base}${tab.href}`}
                 className={cn(
                   "flex-1 flex flex-col items-center justify-center gap-0.5 text-xs font-medium transition-colors",
-                  active ? "text-brand-600" : "text-gray-400"
+                  active ? "text-brand-600" : "text-muted-foreground"
                 )}
               >
                 <span className={cn("text-xl leading-none", active && "text-brand-600")}>

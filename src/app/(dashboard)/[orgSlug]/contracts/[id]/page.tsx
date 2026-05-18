@@ -119,7 +119,7 @@ export default function ContractDetailPage() {
     if (res.ok) refresh()
   }
 
-  if (loading)   return <div className="p-8 text-sm text-gray-400">Laddar…</div>
+  if (loading)   return <div className="p-8 text-sm text-muted-foreground">Laddar…</div>
   if (!contract) return <div className="p-8 text-sm text-red-500">Avtalet hittades inte.</div>
 
   const st = STATUS_LABELS[contract.status] ?? STATUS_LABELS.draft
@@ -132,20 +132,20 @@ export default function ContractDetailPage() {
   return (
     <div className="p-8 max-w-4xl">
       {/* Breadcrumb */}
-      <div className="mb-2 flex items-center gap-2 text-sm text-gray-500">
-        <Link href={`/${orgSlug}/contracts`} className="hover:text-gray-700">Avtal</Link>
+      <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
+        <Link href={`/${orgSlug}/contracts`} className="hover:text-foreground">Avtal</Link>
         <span className="text-gray-300">/</span>
-        <span className="text-gray-700 font-medium">{contract.name}</span>
+        <span className="text-foreground font-medium">{contract.name}</span>
       </div>
 
       {/* Header */}
       <div className="mb-6 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">{contract.name}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{contract.name}</h1>
             <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${st.cls}`}>{st.label}</span>
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             {contract.contractNumber && <span className="font-mono mr-3">{contract.contractNumber}</span>}
             {FREQ_LABELS[contract.frequency]}
             {contract.contact && (
@@ -227,12 +227,12 @@ export default function ContractDetailPage() {
         <Card>
           <CardHeader><CardTitle>Summa per period</CardTitle></CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-gray-900 tabular-nums">
+            <p className="text-3xl font-bold text-foreground tabular-nums">
               {fmtMoney(periodTotal, contract.currency)}
             </p>
-            <p className="text-sm text-gray-400 mt-1">inkl. moms</p>
+            <p className="text-sm text-muted-foreground mt-1">inkl. moms</p>
             {contract.reference && (
-              <p className="text-sm text-gray-500 mt-3">Ref: {contract.reference}</p>
+              <p className="text-sm text-muted-foreground mt-3">Ref: {contract.reference}</p>
             )}
           </CardContent>
         </Card>
@@ -243,9 +243,9 @@ export default function ContractDetailPage() {
         <CardHeader><CardTitle>Avtalsrader</CardTitle></CardHeader>
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50">
+            <tr className="border-b border bg-muted">
               {["Beskrivning","Antal","Enhet","À-pris","Moms","Summa inkl.moms"].map(h => (
-                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">{h}</th>
               ))}
             </tr>
           </thead>
@@ -254,12 +254,12 @@ export default function ContractDetailPage() {
               const net   = Number(l.quantity) * Number(l.unitPrice)
               const total = Math.round(net * (1 + Number(l.taxRate)))
               return (
-                <tr key={l.id} className="border-t border-gray-50">
+                <tr key={l.id} className="border-t border-border/50">
                   <td className="px-4 py-3">{l.description}</td>
-                  <td className="px-4 py-3 text-gray-500 tabular-nums">{Number(l.quantity)}</td>
-                  <td className="px-4 py-3 text-gray-500">{l.unit}</td>
+                  <td className="px-4 py-3 text-muted-foreground tabular-nums">{Number(l.quantity)}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{l.unit}</td>
                   <td className="px-4 py-3 tabular-nums">{fmtMoney(l.unitPrice, contract.currency)}</td>
-                  <td className="px-4 py-3 text-gray-500">{Math.round(Number(l.taxRate) * 100)}%</td>
+                  <td className="px-4 py-3 text-muted-foreground">{Math.round(Number(l.taxRate) * 100)}%</td>
                   <td className="px-4 py-3 font-medium tabular-nums text-right">{fmtMoney(total, contract.currency)}</td>
                 </tr>
               )
@@ -280,29 +280,29 @@ export default function ContractDetailPage() {
         </CardHeader>
         <CardContent className="p-0">
           {contract.invoices.length === 0 ? (
-            <p className="px-6 py-6 text-sm text-gray-400">Inga fakturor genererade ännu.</p>
+            <p className="px-6 py-6 text-sm text-muted-foreground">Inga fakturor genererade ännu.</p>
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="px-5 py-2 text-left text-xs font-medium text-gray-500">Fakturanr</th>
-                  <th className="px-5 py-2 text-left text-xs font-medium text-gray-500">Datum</th>
-                  <th className="px-5 py-2 text-left text-xs font-medium text-gray-500">Status</th>
-                  <th className="px-5 py-2 text-right text-xs font-medium text-gray-500">Belopp</th>
+                <tr className="border-b border">
+                  <th className="px-5 py-2 text-left text-xs font-medium text-muted-foreground">Fakturanr</th>
+                  <th className="px-5 py-2 text-left text-xs font-medium text-muted-foreground">Datum</th>
+                  <th className="px-5 py-2 text-left text-xs font-medium text-muted-foreground">Status</th>
+                  <th className="px-5 py-2 text-right text-xs font-medium text-muted-foreground">Belopp</th>
                 </tr>
               </thead>
               <tbody>
                 {contract.invoices.map(inv => {
                   const s = INV_STATUS[inv.status] ?? INV_STATUS.draft
                   return (
-                    <tr key={inv.id} className="border-t border-gray-50 hover:bg-gray-50">
+                    <tr key={inv.id} className="border-t border-border/50 hover:bg-muted">
                       <td className="px-5 py-2.5">
                         <Link href={`/${orgSlug}/invoices/${inv.id}`}
                           className="font-medium font-mono text-indigo-600 hover:text-indigo-800">
                           {inv.invoiceNumber}
                         </Link>
                       </td>
-                      <td className="px-5 py-2.5 text-gray-500">{fmtDate(inv.issueDate)}</td>
+                      <td className="px-5 py-2.5 text-muted-foreground">{fmtDate(inv.issueDate)}</td>
                       <td className="px-5 py-2.5">
                         <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${s.cls}`}>{s.label}</span>
                       </td>
@@ -348,8 +348,8 @@ export default function ContractDetailPage() {
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between">
-      <span className="text-gray-500">{label}</span>
-      <span className="font-medium text-gray-900">{value}</span>
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium text-foreground">{value}</span>
     </div>
   )
 }

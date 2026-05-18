@@ -99,8 +99,8 @@ export default function ApiSettingsPage() {
     <div className="p-6 max-w-4xl mx-auto">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">API-nycklar</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-foreground">API-nycklar</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
             Skapa nycklar för att anropa Endoo API från externa system.
           </p>
         </div>
@@ -120,7 +120,7 @@ export default function ApiSettingsPage() {
             Denna nyckel visas bara en gång. Förvara den säkert — den ger åtkomst till ditt konto.
           </p>
           <div className="flex items-center gap-2">
-            <code className="flex-1 bg-white border border-green-300 text-green-900 text-xs font-mono px-3 py-2 rounded-lg break-all select-all">
+            <code className="flex-1 bg-card border border-green-300 text-green-900 text-xs font-mono px-3 py-2 rounded-lg break-all select-all">
               {newKey}
             </code>
             <button
@@ -138,21 +138,21 @@ export default function ApiSettingsPage() {
 
       {/* Create form */}
       {showForm && (
-        <div className="mb-6 bg-white rounded-xl border border-indigo-100 shadow-sm p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">Ny API-nyckel</h3>
+        <div className="mb-6 bg-card rounded-xl border border-indigo-100 shadow-sm p-5">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Ny API-nyckel</h3>
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-medium text-gray-600">Namn / etikett</label>
+              <label className="text-xs font-medium text-muted-foreground">Namn / etikett</label>
               <input
                 type="text"
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="t.ex. Zapier-integration"
-                className="mt-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="mt-1 w-full px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600 block mb-2">Miljö</label>
+              <label className="text-xs font-medium text-muted-foreground block mb-2">Miljö</label>
               <div className="flex gap-3">
                 {(["live", "test"] as const).map(env => (
                   <label key={env} className="flex items-center gap-2 cursor-pointer">
@@ -164,13 +164,13 @@ export default function ApiSettingsPage() {
                       onChange={() => setEnvironment(env)}
                       className="text-indigo-600"
                     />
-                    <span className="text-sm text-gray-700 capitalize">{env === "live" ? "Live (produktion)" : "Test"}</span>
+                    <span className="text-sm text-foreground capitalize">{env === "live" ? "Live (produktion)" : "Test"}</span>
                   </label>
                 ))}
               </div>
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600 block mb-2">Behörigheter (scopes)</label>
+              <label className="text-xs font-medium text-muted-foreground block mb-2">Behörigheter (scopes)</label>
               <div className="grid grid-cols-2 gap-2">
                 {ALL_SCOPES.map(s => (
                   <label key={s.value} className="flex items-center gap-2 cursor-pointer">
@@ -180,7 +180,7 @@ export default function ApiSettingsPage() {
                       onChange={() => toggleScope(s.value)}
                       className="rounded text-indigo-600"
                     />
-                    <span className="text-sm text-gray-700">{s.label}</span>
+                    <span className="text-sm text-foreground">{s.label}</span>
                   </label>
                 ))}
               </div>
@@ -188,7 +188,7 @@ export default function ApiSettingsPage() {
           </div>
           {error && <p className="mt-3 text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
           <div className="mt-4 flex gap-2 justify-end">
-            <button onClick={() => setShowForm(false)} className="px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg">
+            <button onClick={() => setShowForm(false)} className="px-3 py-2 text-sm text-muted-foreground hover:bg-muted rounded-lg">
               Avbryt
             </button>
             <button
@@ -203,28 +203,28 @@ export default function ApiSettingsPage() {
       )}
 
       {/* Keys table */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="py-12 text-center text-sm text-gray-400">Laddar…</div>
+          <div className="py-12 text-center text-sm text-muted-foreground">Laddar…</div>
         ) : keys.length === 0 ? (
           <div className="py-16 text-center">
-            <p className="text-gray-400 text-sm">Inga API-nycklar än. Skapa en för att komma igång.</p>
+            <p className="text-muted-foreground text-sm">Inga API-nycklar än. Skapa en för att komma igång.</p>
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border">
                 {["Namn", "Nyckel", "Scopes", "Miljö", "Senast använd", "Status", ""].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {keys.map(k => (
-                <tr key={k.id} className="border-t border-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">{k.name}</td>
+                <tr key={k.id} className="border-t border-border/50">
+                  <td className="px-4 py-3 font-medium text-foreground">{k.name}</td>
                   <td className="px-4 py-3">
-                    <code className="text-xs font-mono text-gray-600 bg-gray-50 px-2 py-0.5 rounded">
+                    <code className="text-xs font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded">
                       {k.keyPrefix}…
                     </code>
                   </td>
@@ -246,7 +246,7 @@ export default function ApiSettingsPage() {
                       {k.environment}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">{relativeDate(k.lastUsedAt)}</td>
+                  <td className="px-4 py-3 text-muted-foreground text-xs">{relativeDate(k.lastUsedAt)}</td>
                   <td className="px-4 py-3">
                     {k.revokedAt ? (
                       <span className="text-xs text-red-500 font-medium">Återkallad</span>
@@ -272,8 +272,8 @@ export default function ApiSettingsPage() {
       </div>
 
       {/* API reference summary */}
-      <div className="mt-8 bg-gray-50 rounded-xl border border-gray-100 p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-3">Snabbreferens</h3>
+      <div className="mt-8 bg-muted rounded-xl border border p-5">
+        <h3 className="text-sm font-semibold text-foreground mb-3">Snabbreferens</h3>
         <div className="space-y-2">
           {[
             { method: "GET", path: "/api/v1/invoices",  scope: "invoices:read",  desc: "Lista fakturor" },
@@ -284,15 +284,15 @@ export default function ApiSettingsPage() {
           ].map(e => (
             <div key={e.path} className="flex items-center gap-3 text-xs">
               <span className="font-mono font-bold text-indigo-700 w-10">{e.method}</span>
-              <code className="font-mono text-gray-700 w-44">{e.path}</code>
-              <span className="bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded font-mono">{e.scope}</span>
-              <span className="text-gray-500">{e.desc}</span>
+              <code className="font-mono text-foreground w-44">{e.path}</code>
+              <span className="bg-accent text-muted-foreground px-1.5 py-0.5 rounded font-mono">{e.scope}</span>
+              <span className="text-muted-foreground">{e.desc}</span>
             </div>
           ))}
         </div>
-        <div className="mt-4 bg-white rounded-lg border border-gray-200 p-3">
-          <p className="text-xs text-gray-500 mb-1 font-medium">Autentisering</p>
-          <code className="text-xs font-mono text-gray-700">
+        <div className="mt-4 bg-card rounded-lg border border p-3">
+          <p className="text-xs text-muted-foreground mb-1 font-medium">Autentisering</p>
+          <code className="text-xs font-mono text-foreground">
             Authorization: Bearer endo_live_…
           </code>
         </div>

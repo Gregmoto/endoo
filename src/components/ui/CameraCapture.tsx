@@ -94,8 +94,8 @@ export function CameraCapture({ open, onClose, orgSlug }: CameraCaptureProps) {
               📷
             </div>
             <div className="text-center">
-              <p className="font-semibold text-gray-900">Ta en bild av kvittot</p>
-              <p className="text-sm text-gray-400 mt-1">Vi fyller i datum, belopp och leverantör automatiskt</p>
+              <p className="font-semibold text-foreground">Ta en bild av kvittot</p>
+              <p className="text-sm text-muted-foreground mt-1">Vi fyller i datum, belopp och leverantör automatiskt</p>
             </div>
             <button
               onClick={() => inputRef.current?.click()}
@@ -111,7 +111,7 @@ export function CameraCapture({ open, onClose, orgSlug }: CameraCaptureProps) {
                   setTimeout(() => inputRef.current?.setAttribute("capture", "environment"), 500)
                 }
               }}
-              className="text-sm text-gray-400 underline underline-offset-2"
+              className="text-sm text-muted-foreground underline underline-offset-2"
             >
               Välj från bildbibliotek
             </button>
@@ -121,14 +121,14 @@ export function CameraCapture({ open, onClose, orgSlug }: CameraCaptureProps) {
         {/* PREVIEW */}
         {state === "preview" && preview && (
           <div className="space-y-4">
-            <div className="relative rounded-xl overflow-hidden bg-gray-100 aspect-[3/4]">
+            <div className="relative rounded-xl overflow-hidden bg-muted aspect-[3/4]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={preview} alt="Kvitto" className="w-full h-full object-contain" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={reset}
-                className="py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 active:bg-gray-50"
+                className="py-3 rounded-xl border border text-sm font-medium text-muted-foreground active:bg-muted"
               >
                 Ta om
               </button>
@@ -146,7 +146,7 @@ export function CameraCapture({ open, onClose, orgSlug }: CameraCaptureProps) {
         {state === "uploading" && (
           <div className="flex flex-col items-center gap-4 py-8">
             <div className="w-12 h-12 rounded-full border-4 border-brand-200 border-t-brand-600 animate-spin" />
-            <p className="text-sm text-gray-500">Analyserar kvitto…</p>
+            <p className="text-sm text-muted-foreground">Analyserar kvitto…</p>
           </div>
         )}
 
@@ -155,31 +155,31 @@ export function CameraCapture({ open, onClose, orgSlug }: CameraCaptureProps) {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <span className="text-green-500 text-xl">✓</span>
-              <p className="font-semibold text-gray-900">Kvitto skannat</p>
+              <p className="font-semibold text-foreground">Kvitto skannat</p>
               <span className={`ml-auto text-xs font-medium ${confidenceColor(result.confidence)}`}>
                 {result.confidence === "high" ? "Hög säkerhet" : result.confidence === "medium" ? "Medel säkerhet" : "Låg säkerhet"}
               </span>
             </div>
 
-            <div className="rounded-xl bg-gray-50 divide-y divide-gray-100">
+            <div className="rounded-xl bg-muted divide-y divide-gray-100">
               {result.vendor && (
                 <div className="px-4 py-3 flex justify-between text-sm">
-                  <span className="text-gray-500">Leverantör</span>
-                  <span className="font-medium text-gray-900">{result.vendor}</span>
+                  <span className="text-muted-foreground">Leverantör</span>
+                  <span className="font-medium text-foreground">{result.vendor}</span>
                 </div>
               )}
               {result.amount != null && (
                 <div className="px-4 py-3 flex justify-between text-sm">
-                  <span className="text-gray-500">Belopp</span>
-                  <span className="font-medium text-gray-900">
+                  <span className="text-muted-foreground">Belopp</span>
+                  <span className="font-medium text-foreground">
                     {(result.amount / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2 })} {result.currency ?? "SEK"}
                   </span>
                 </div>
               )}
               {result.date && (
                 <div className="px-4 py-3 flex justify-between text-sm">
-                  <span className="text-gray-500">Datum</span>
-                  <span className="font-medium text-gray-900">{result.date}</span>
+                  <span className="text-muted-foreground">Datum</span>
+                  <span className="font-medium text-foreground">{result.date}</span>
                 </div>
               )}
             </div>
@@ -187,7 +187,7 @@ export function CameraCapture({ open, onClose, orgSlug }: CameraCaptureProps) {
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={reset}
-                className="py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600"
+                className="py-3 rounded-xl border border text-sm font-medium text-muted-foreground"
               >
                 Skanna till
               </button>

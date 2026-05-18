@@ -61,13 +61,13 @@ export function QuickCreateSheet({ open, onClose, orgSlug }: QuickCreateSheetPro
         <div className="p-4 grid grid-cols-2 gap-3">
           {ACTIONS.map((action) => {
             const content = (
-              <div className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-gray-100 hover:border-gray-200 active:scale-95 transition-all">
+              <div className="flex flex-col items-center gap-2 p-4 rounded-2xl border border hover:border active:scale-95 transition-all">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${action.color}`}>
                   {action.icon}
                 </div>
                 <div className="text-center">
-                  <p className="text-sm font-semibold text-gray-900">{action.label}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{action.description}</p>
+                  <p className="text-sm font-semibold text-foreground">{action.label}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{action.description}</p>
                 </div>
               </div>
             )

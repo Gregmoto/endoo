@@ -155,7 +155,7 @@ function SidebarContent({
       <div className="px-3 py-2 border-b border-gray-50 dark:border-gray-800/50 relative flex-shrink-0" ref={dropdownRef}>
         <button
           onClick={() => setOrgOpen((v) => !v)}
-          className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors min-h-[44px]"
+          className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-muted dark:hover:bg-gray-800 cursor-pointer transition-colors min-h-[44px]"
         >
           <div
             className="w-6 h-6 rounded-md flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
@@ -359,7 +359,7 @@ export function Sidebar(props: SidebarProps) {
       <header className="md:hidden fixed top-0 inset-x-0 z-20 h-12 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-4">
         <button
           onClick={() => setDrawerOpen(true)}
-          className="p-2 -ml-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="p-2 -ml-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-muted dark:hover:bg-gray-800 transition-colors"
           aria-label="Öppna meny"
         >
           {/* Hamburger */}
@@ -398,7 +398,7 @@ export function Sidebar(props: SidebarProps) {
             {/* Close button */}
             <button
               onClick={() => setDrawerOpen(false)}
-              className="absolute top-3 right-3 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 dark:text-gray-500 z-10"
+              className="absolute top-3 right-3 p-2 rounded-full hover:bg-muted dark:hover:bg-gray-800 text-gray-400 dark:text-gray-500 z-10"
               aria-label="Stäng meny"
             >
               ✕

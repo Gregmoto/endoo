@@ -61,23 +61,23 @@ export default async function SecurityAuditReportPage() {
     platform: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
     portal:   "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300",
     v1:       "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
-    cron:     "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
+    cron:     "bg-muted text-muted-foreground",
     public:   "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
   }
 
   return (
     <div className="space-y-8 p-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-foreground">
           Security Audit Report
         </h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-1 text-sm text-muted-foreground">
           Tenant isolation coverage and Prisma query audit. Run{" "}
-          <code className="rounded bg-gray-100 px-1 py-0.5 text-xs dark:bg-gray-800">
+          <code className="rounded bg-muted px-1 py-0.5 text-xs">
             npm run scan-routes
           </code>{" "}
           and{" "}
-          <code className="rounded bg-gray-100 px-1 py-0.5 text-xs dark:bg-gray-800">
+          <code className="rounded bg-muted px-1 py-0.5 text-xs">
             npm run audit:prisma
           </code>{" "}
           to refresh.
@@ -88,7 +88,7 @@ export default async function SecurityAuditReportPage() {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Total Routes</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Routes</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold">{manifest.totalRoutes}</p>
@@ -97,7 +97,7 @@ export default async function SecurityAuditReportPage() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Tenant-Scoped</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Tenant-Scoped</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
@@ -108,7 +108,7 @@ export default async function SecurityAuditReportPage() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Suspect Queries</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Suspect Queries</CardTitle>
           </CardHeader>
           <CardContent>
             <p className={`text-3xl font-bold ${
@@ -125,14 +125,14 @@ export default async function SecurityAuditReportPage() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Audit Status</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Audit Status</CardTitle>
           </CardHeader>
           <CardContent>
             <span className={`inline-block rounded-full px-2 py-1 text-xs font-semibold ${
               audit.totalSuspects === 0
                 ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
                 : audit.totalSuspects < 0
-                  ? "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
+                  ? "bg-muted text-muted-foreground"
                   : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
             }`}>
               {audit.totalSuspects === 0 ? "✅ Clean" : audit.totalSuspects < 0 ? "Not run" : "⚠️ Review needed"}
@@ -148,7 +148,7 @@ export default async function SecurityAuditReportPage() {
             <CardTitle className="text-red-700 dark:text-red-400">
               ⚠️ Suspect Prisma Queries ({audit.suspects.length})
             </CardTitle>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               These calls on tenant-scoped models may be missing an{" "}
               <code className="text-xs">organizationId</code> filter.
             </p>
@@ -157,7 +157,7 @@ export default async function SecurityAuditReportPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b text-left text-xs font-semibold uppercase text-gray-500">
+                  <tr className="border-b text-left text-xs font-semibold uppercase text-muted-foreground">
                     <th className="pb-2 pr-4">File</th>
                     <th className="pb-2 pr-4">Line</th>
                     <th className="pb-2 pr-4">Model</th>
@@ -166,11 +166,11 @@ export default async function SecurityAuditReportPage() {
                 </thead>
                 <tbody>
                   {audit.suspects.map((s, i) => (
-                    <tr key={i} className="border-b border-gray-100 dark:border-gray-800">
-                      <td className="py-2 pr-4 font-mono text-xs text-gray-700 dark:text-gray-300">
+                    <tr key={i} className="border-b border">
+                      <td className="py-2 pr-4 font-mono text-xs text-foreground">
                         {s.file}
                       </td>
-                      <td className="py-2 pr-4 text-gray-500">{s.line}</td>
+                      <td className="py-2 pr-4 text-muted-foreground">{s.line}</td>
                       <td className="py-2 pr-4">
                         <code className="text-xs">{s.model}</code>
                       </td>
@@ -190,7 +190,7 @@ export default async function SecurityAuditReportPage() {
       <Card>
         <CardHeader>
           <CardTitle>Route Manifest</CardTitle>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Generated: {manifest.generated}
           </p>
         </CardHeader>
@@ -200,7 +200,7 @@ export default async function SecurityAuditReportPage() {
             {Object.entries(manifest.byCategory).map(([cat, count]) => (
               <span
                 key={cat}
-                className={`rounded-full px-3 py-1 text-xs font-semibold ${categoryColors[cat] ?? "bg-gray-100 text-gray-700"}`}
+                className={`rounded-full px-3 py-1 text-xs font-semibold ${categoryColors[cat] ?? "bg-muted text-muted-foreground"}`}
               >
                 {cat}: {count}
               </span>
@@ -210,7 +210,7 @@ export default async function SecurityAuditReportPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-xs font-semibold uppercase text-gray-500">
+                <tr className="border-b text-left text-xs font-semibold uppercase text-muted-foreground">
                   <th className="pb-2 pr-4">Path</th>
                   <th className="pb-2 pr-4">Methods</th>
                   <th className="pb-2 pr-4">Category</th>
@@ -219,28 +219,28 @@ export default async function SecurityAuditReportPage() {
               </thead>
               <tbody>
                 {manifest.routes.map((r, i) => (
-                  <tr key={i} className="border-b border-gray-50 dark:border-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800/30">
-                    <td className="py-1.5 pr-4 font-mono text-xs text-gray-700 dark:text-gray-300">
+                  <tr key={i} className="border-b border hover:bg-muted">
+                    <td className="py-1.5 pr-4 font-mono text-xs text-foreground">
                       {r.path}
                     </td>
                     <td className="py-1.5 pr-4">
                       <div className="flex gap-1">
                         {r.methods.map(m => (
-                          <span key={m} className="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium dark:bg-gray-700">
+                          <span key={m} className="rounded bg-muted px-1.5 py-0.5 text-xs font-medium">
                             {m}
                           </span>
                         ))}
                       </div>
                     </td>
                     <td className="py-1.5 pr-4">
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${categoryColors[r.category] ?? "bg-gray-100 text-gray-700"}`}>
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${categoryColors[r.category] ?? "bg-muted text-muted-foreground"}`}>
                         {r.category}
                       </span>
                     </td>
                     <td className="py-1.5">
                       {r.requiresAuth
                         ? <span className="text-xs text-green-600 dark:text-green-400">✓</span>
-                        : <span className="text-xs text-gray-400">—</span>
+                        : <span className="text-xs text-muted-foreground">—</span>
                       }
                     </td>
                   </tr>
@@ -251,7 +251,7 @@ export default async function SecurityAuditReportPage() {
         </CardContent>
       </Card>
 
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-muted-foreground">
         Manifest: {manifestPath} · Audit: {auditPath}
       </p>
     </div>

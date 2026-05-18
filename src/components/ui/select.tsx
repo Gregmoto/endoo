@@ -12,14 +12,14 @@ export function Select({ label, error, options, className, id, ...props }: Selec
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={selectId} className="text-sm font-medium text-gray-700">{label}</label>
+        <label htmlFor={selectId} className="text-sm font-medium text-foreground">{label}</label>
       )}
       <select
         id={selectId}
         className={cn(
-          "block w-full rounded-lg border px-3 py-2 text-sm text-gray-900 bg-white",
-          "focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent",
-          error ? "border-red-400" : "border-gray-200",
+          "block w-full rounded-lg border px-3 py-2 text-sm text-foreground bg-card",
+          "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
+          error ? "border-destructive" : "border-input",
           className
         )}
         {...props}
@@ -28,7 +28,7 @@ export function Select({ label, error, options, className, id, ...props }: Selec
           <option key={o.value} value={o.value}>{o.label}</option>
         ))}
       </select>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   )
 }

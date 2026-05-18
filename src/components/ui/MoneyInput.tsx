@@ -120,7 +120,7 @@ export function MoneyInput({
         onBlur={handleBlur}
         aria-label={`Belopp i ${currency}`}
       />
-      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">
+      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
         {currencySymbol}
       </span>
     </div>

@@ -52,14 +52,14 @@ export function SettingsNav({ orgSlug, isAgency }: SettingsNavProps) {
     : NAV_SECTIONS
 
   return (
-    <aside className="w-52 flex-shrink-0 border-r border-gray-100 bg-white">
-      <div className="px-4 py-5 border-b border-gray-100">
-        <h2 className="text-sm font-semibold text-gray-900">Inställningar</h2>
+    <aside className="w-52 flex-shrink-0 border-r border bg-card">
+      <div className="px-4 py-5 border-b border">
+        <h2 className="text-sm font-semibold text-foreground">Inställningar</h2>
       </div>
       <nav className="px-3 py-4 space-y-5">
         {sections.map((section) => (
           <div key={section.label}>
-            <p className="px-3 mb-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            <p className="px-3 mb-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               {section.label}
             </p>
             <div className="space-y-0.5">
@@ -74,7 +74,7 @@ export function SettingsNav({ orgSlug, isAgency }: SettingsNavProps) {
                       "block px-3 py-2 rounded-lg text-sm transition-colors",
                       active
                         ? "bg-brand-50 text-brand-700 font-medium"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        : "text-muted-foreground hover:bg-accent hover:text-foreground"
                     )}
                   >
                     {item.label}

@@ -54,8 +54,8 @@ export default function InventoryPage() {
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Lager</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-foreground">Lager</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
             {items.length} artiklar · Lagervärde{" "}
             {new Intl.NumberFormat("sv-SE", { minimumFractionDigits: 2 }).format(totalValue / 100)} kr
           </p>
@@ -74,16 +74,16 @@ export default function InventoryPage() {
           placeholder="Sök artikel eller SKU…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full max-w-sm px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full max-w-sm px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
         />
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="py-12 text-center text-sm text-gray-400">Laddar…</div>
+          <div className="py-12 text-center text-sm text-muted-foreground">Laddar…</div>
         ) : filtered.length === 0 ? (
           <div className="py-16 text-center">
-            <p className="text-gray-400 text-sm">
+            <p className="text-muted-foreground text-sm">
               {items.length === 0
                 ? "Inga lagerartiklar ännu. Skapa en artikel för att börja spåra lager."
                 : "Inga artiklar matchar sökningen."}
@@ -92,9 +92,9 @@ export default function InventoryPage() {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border">
                 {["Artikel", "SKU", "Saldo", "Lagervärde", "Snittk.", ""].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">
                     {h}
                   </th>
                 ))}
@@ -105,9 +105,9 @@ export default function InventoryPage() {
                 <tr
                   key={item.itemId}
                   onClick={() => router.push(`/${orgSlug}/inventory/${item.itemId}`)}
-                  className="border-t border-gray-50 hover:bg-gray-50 cursor-pointer"
+                  className="border-t border-border/50 hover:bg-muted cursor-pointer"
                 >
-                  <td className="px-5 py-3 font-medium text-gray-900">
+                  <td className="px-5 py-3 font-medium text-foreground">
                     <div className="flex items-center gap-2">
                       {item.productName}
                       {item.belowReorder && (
@@ -117,14 +117,14 @@ export default function InventoryPage() {
                       )}
                     </div>
                   </td>
-                  <td className="px-5 py-3 text-gray-500 font-mono text-xs">{item.sku ?? "—"}</td>
+                  <td className="px-5 py-3 text-muted-foreground font-mono text-xs">{item.sku ?? "—"}</td>
                   <td className="px-5 py-3 tabular-nums">
                     <span className={Number(item.quantity) < 0 ? "text-red-600 font-medium" : "text-gray-900"}>
                       {fmtQty(item.quantity, item.unitOfMeasure)}
                     </span>
                   </td>
-                  <td className="px-5 py-3 tabular-nums text-gray-900">{fmt(item.totalValue)}</td>
-                  <td className="px-5 py-3 tabular-nums text-gray-500">{fmt(item.avgCost)}/{item.unitOfMeasure}</td>
+                  <td className="px-5 py-3 tabular-nums text-foreground">{fmt(item.totalValue)}</td>
+                  <td className="px-5 py-3 tabular-nums text-muted-foreground">{fmt(item.avgCost)}/{item.unitOfMeasure}</td>
                   <td className="px-5 py-3 text-right text-xs text-indigo-600">Öppna →</td>
                 </tr>
               ))}

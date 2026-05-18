@@ -57,10 +57,10 @@ export default function RegisterPage() {
     <div className="w-full max-w-sm px-4">
       <div className="mb-8 text-center">
         <span className="text-2xl font-bold text-brand-600">Endoo</span>
-        <p className="mt-1 text-sm text-gray-500">Skapa ett nytt konto</p>
+        <p className="mt-1 text-sm text-muted-foreground">Skapa ett nytt konto</p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+      <div className="bg-card rounded-2xl border border shadow-sm p-8">
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input label="Ditt namn" value={form.fullName} onChange={set("fullName")}
             placeholder="Anna Svensson" required />
@@ -69,7 +69,7 @@ export default function RegisterPage() {
           <Input label="Lösenord" type="password" value={form.password} onChange={set("password")}
             placeholder="Minst 8 tecken" autoComplete="new-password" minLength={8} required />
 
-          <hr className="border-gray-100" />
+          <hr className="border" />
 
           <Input label="Företagsnamn" value={form.orgName} onChange={set("orgName")}
             placeholder="Acme AB" required />
@@ -92,7 +92,7 @@ export default function RegisterPage() {
           </Button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-500">
+        <p className="mt-6 text-center text-sm text-muted-foreground">
           Har du redan konto?{" "}
           <Link href="/login" className="text-brand-600 font-medium hover:underline">
             Logga in

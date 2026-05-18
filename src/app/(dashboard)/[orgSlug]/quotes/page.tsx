@@ -81,8 +81,8 @@ export default function QuotesPage() {
     <div className="p-4 sm:p-8">
       <div className="mb-5 flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Offerter</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{total} offerter totalt</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Offerter</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{total} offerter totalt</p>
         </div>
         <Link href={`/${orgSlug}/quotes/new`}>
           <Button className="min-h-[44px] px-4">+ Ny offert</Button>
@@ -96,12 +96,12 @@ export default function QuotesPage() {
           placeholder="Sök offert, kund…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full sm:max-w-xs px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full sm:max-w-xs px-3 py-2.5 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
         <select
           value={status}
           onChange={e => setStatus(e.target.value)}
-          className="w-full sm:w-auto px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+          className="w-full sm:w-auto px-3 py-2.5 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-card"
         >
           <option value="">Alla statusar</option>
           <option value="draft">Utkast</option>
@@ -118,12 +118,12 @@ export default function QuotesPage() {
       <Card>
         <CardContent className="p-0">
           {loading ? (
-            <div className="py-16 text-center text-sm text-gray-400">Laddar…</div>
+            <div className="py-16 text-center text-sm text-muted-foreground">Laddar…</div>
           ) : quotes.length === 0 ? (
             <div className="py-16 text-center px-4">
               <p className="text-4xl mb-3">◧</p>
-              <p className="font-medium text-gray-900">Inga offerter hittades</p>
-              <p className="text-sm text-gray-400 mt-1 mb-4">Skapa din första offert</p>
+              <p className="font-medium text-foreground">Inga offerter hittades</p>
+              <p className="text-sm text-muted-foreground mt-1 mb-4">Skapa din första offert</p>
               <Link href={`/${orgSlug}/quotes/new`}>
                 <Button className="min-h-[44px]">+ Ny offert</Button>
               </Link>
@@ -134,13 +134,13 @@ export default function QuotesPage() {
               <div className="hidden sm:block overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-100">
-                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Offert</th>
-                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Kund</th>
-                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Datum</th>
-                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Giltig t.o.m.</th>
-                      <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Belopp</th>
-                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                    <tr className="border-b border">
+                      <th className="px-5 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Offert</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Kund</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Datum</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Giltig t.o.m.</th>
+                      <th className="px-5 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Belopp</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Status</th>
                       <th className="px-5 py-3" />
                     </tr>
                   </thead>
@@ -150,19 +150,19 @@ export default function QuotesPage() {
                       return (
                         <tr
                           key={q.id}
-                          className="border-t border-gray-50 hover:bg-gray-50 cursor-pointer"
+                          className="border-t border-border/50 hover:bg-muted cursor-pointer"
                           onClick={() => router.push(`/${orgSlug}/quotes/${q.id}`)}
                         >
                           <td className="px-5 py-3 font-medium font-mono">{q.number}</td>
-                          <td className="px-5 py-3 text-gray-700">
+                          <td className="px-5 py-3 text-foreground">
                             <div>{q.contactName}</div>
-                            {q.title && <div className="text-xs text-gray-400 truncate max-w-[180px]">{q.title}</div>}
+                            {q.title && <div className="text-xs text-muted-foreground truncate max-w-[180px]">{q.title}</div>}
                           </td>
-                          <td className="px-5 py-3 text-gray-500">{fmtDate(q.createdAt)}</td>
-                          <td className="px-5 py-3 text-gray-500">
+                          <td className="px-5 py-3 text-muted-foreground">{fmtDate(q.createdAt)}</td>
+                          <td className="px-5 py-3 text-muted-foreground">
                             {q.validUntil ? fmtDate(q.validUntil) : <span className="text-gray-300">—</span>}
                           </td>
-                          <td className="px-5 py-3 text-right tabular-nums font-medium text-gray-900">
+                          <td className="px-5 py-3 text-right tabular-nums font-medium text-foreground">
                             {fmtAmount(calcTotal(q), q.currency)}
                           </td>
                           <td className="px-5 py-3">
@@ -191,20 +191,20 @@ export default function QuotesPage() {
                   return (
                     <button
                       key={q.id}
-                      className="w-full text-left px-4 py-3.5 hover:bg-gray-50 active:bg-gray-100"
+                      className="w-full text-left px-4 py-3.5 hover:bg-muted active:bg-muted"
                       onClick={() => router.push(`/${orgSlug}/quotes/${q.id}`)}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-0.5">
-                            <span className="font-mono text-xs text-gray-500">{q.number}</span>
+                            <span className="font-mono text-xs text-muted-foreground">{q.number}</span>
                             <span className={`px-1.5 py-0.5 text-xs rounded-full font-medium leading-none ${st.cls}`}>{st.label}</span>
                           </div>
-                          <p className="font-medium text-gray-900 text-sm truncate">{q.contactName}</p>
-                          {q.title && <p className="text-xs text-gray-400 truncate">{q.title}</p>}
-                          <p className="text-xs text-gray-400 mt-0.5">{fmtDate(q.createdAt)}</p>
+                          <p className="font-medium text-foreground text-sm truncate">{q.contactName}</p>
+                          {q.title && <p className="text-xs text-muted-foreground truncate">{q.title}</p>}
+                          <p className="text-xs text-muted-foreground mt-0.5">{fmtDate(q.createdAt)}</p>
                         </div>
-                        <p className="font-semibold text-gray-900 tabular-nums text-sm">
+                        <p className="font-semibold text-foreground tabular-nums text-sm">
                           {fmtAmount(calcTotal(q), q.currency)}
                         </p>
                       </div>
@@ -218,15 +218,15 @@ export default function QuotesPage() {
       </Card>
 
       {pages > 1 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-gray-500 gap-3">
+        <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground gap-3">
           <span className="text-xs">Sida {page} av {pages}</span>
           <div className="flex gap-2">
             <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-              className="px-4 py-2.5 border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50 min-h-[44px]">
+              className="px-4 py-2.5 border border rounded-lg disabled:opacity-40 hover:bg-muted min-h-[44px]">
               ← Föregående
             </button>
             <button onClick={() => setPage(p => Math.min(pages, p + 1))} disabled={page === pages}
-              className="px-4 py-2.5 border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50 min-h-[44px]">
+              className="px-4 py-2.5 border border rounded-lg disabled:opacity-40 hover:bg-muted min-h-[44px]">
               Nästa →
             </button>
           </div>

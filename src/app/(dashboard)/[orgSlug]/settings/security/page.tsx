@@ -44,8 +44,8 @@ export default function SecuritySettingsPage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Säkerhet</h1>
-        <p className="text-sm text-gray-500 mt-1">Lösenord och tvåfaktorsautentisering</p>
+        <h1 className="text-2xl font-bold text-foreground">Säkerhet</h1>
+        <p className="text-sm text-muted-foreground mt-1">Lösenord och tvåfaktorsautentisering</p>
       </div>
 
       <div className="space-y-6">
@@ -106,12 +106,12 @@ export default function SecuritySettingsPage() {
           <CardContent>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-700">Ej aktiverat</p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-sm font-medium text-foreground">Ej aktiverat</p>
+                <p className="text-xs text-muted-foreground mt-1">
                   2FA ökar kontosäkerheten — kräver en engångskod vid inloggning utöver lösenordet.
                 </p>
               </div>
-              <span className="px-3 py-1.5 bg-gray-100 text-gray-500 text-xs rounded-lg">Fas 4</span>
+              <span className="px-3 py-1.5 bg-muted text-muted-foreground text-xs rounded-lg">Fas 4</span>
             </div>
           </CardContent>
         </Card>
@@ -120,14 +120,14 @@ export default function SecuritySettingsPage() {
         <Card>
           <CardHeader><CardTitle>Sessioner</CardTitle></CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Endoo använder JWT-baserade sessioner. Varje enhet håller sin token lokalt i webbläsaren.
               Logga ut från enheter du inte längre använder för att avsluta sessionen.
             </p>
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg flex items-center justify-between">
+            <div className="mt-4 p-3 bg-muted rounded-lg flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-800">Denna session</p>
-                <p className="text-xs text-gray-500 mt-0.5">Aktiv</p>
+                <p className="text-sm font-medium text-foreground">Denna session</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Aktiv</p>
               </div>
               <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">Inloggad</span>
             </div>
@@ -143,7 +143,7 @@ const cls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ou
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">{label}</label>
+      <label className="block text-xs font-medium text-muted-foreground mb-1.5">{label}</label>
       {children}
     </div>
   )

@@ -41,10 +41,10 @@ function LoginForm() {
         <Link href="/" className="text-2xl font-bold text-indigo-600 hover:text-indigo-700">
           Endoo
         </Link>
-        <p className="mt-1 text-sm text-gray-500">Logga in på ditt konto</p>
+        <p className="mt-1 text-sm text-muted-foreground">Logga in på ditt konto</p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+      <div className="bg-card rounded-2xl border border shadow-sm p-8">
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="E-post"
@@ -74,7 +74,7 @@ function LoginForm() {
           </Button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-500">
+        <p className="mt-6 text-center text-sm text-muted-foreground">
           Inget konto?{" "}
           <Link href="/register" className="text-indigo-600 font-medium hover:underline">
             Skapa konto
@@ -82,8 +82,8 @@ function LoginForm() {
         </p>
       </div>
 
-      <p className="mt-6 text-center text-sm text-gray-400">
-        <Link href="/" className="hover:text-gray-600">← Tillbaka till startsidan</Link>
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        <Link href="/" className="hover:text-muted-foreground">← Tillbaka till startsidan</Link>
       </p>
     </div>
   )

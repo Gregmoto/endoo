@@ -6,3 +6,13 @@ npm run version:check || {
   echo ""
   exit 1
 }
+
+npm run audit:colors -- --max-errors 0 || {
+  echo ""
+  echo "❌ Color-audit misslyckades. Hårdkodade färgklasser hittades."
+  echo "   Kör: npm run migrate:colors:apply  (auto-fix)"
+  echo "   Eller fixa manuellt och kör: npm run audit:colors"
+  echo "   Se: src/lib/design-system/COLOR_RULES.md"
+  echo ""
+  exit 1
+}

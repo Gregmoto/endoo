@@ -38,7 +38,7 @@ type Invoice = {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
-  draft:         { label: "Utkast",    cls: "bg-gray-100 text-gray-600" },
+  draft:         { label: "Utkast",    cls: "bg-muted text-muted-foreground" },
   sent:          { label: "Skickad",   cls: "bg-blue-100 text-blue-700" },
   viewed:        { label: "Visad",     cls: "bg-indigo-100 text-indigo-700" },
   partial:       { label: "Delbetald",cls: "bg-yellow-100 text-yellow-700" },
@@ -95,7 +95,7 @@ export default function InvoiceDetailPage() {
       .then(data => setInvoice(data))
   }
 
-  if (loading)  return <div className="p-8 text-sm text-gray-400">Laddar…</div>
+  if (loading)  return <div className="p-8 text-sm text-muted-foreground">Laddar…</div>
   if (!invoice) return <div className="p-8 text-sm text-red-500">Fakturan hittades inte.</div>
 
   const balance = invoice.totalAmount - invoice.paidAmount
@@ -133,17 +133,17 @@ export default function InvoiceDetailPage() {
   return (
     <div className="p-8 max-w-3xl">
       {/* Breadcrumb */}
-      <div className="mb-2 flex items-center gap-2 text-sm text-gray-500">
-        <Link href={`/${orgSlug}/invoices`} className="hover:text-gray-700">Fakturor</Link>
-        <span className="text-gray-300">/</span>
-        <span className="text-gray-700 font-medium font-mono">{invoice.invoiceNumber}</span>
+      <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
+        <Link href={`/${orgSlug}/invoices`} className="hover:text-foreground">Fakturor</Link>
+        <span className="text-muted-foreground">/</span>
+        <span className="text-foreground font-medium font-mono">{invoice.invoiceNumber}</span>
       </div>
 
       {/* Header */}
       <div className="mb-6 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-2xl font-bold text-gray-900 font-mono">{invoice.invoiceNumber}</h1>
+            <h1 className="text-2xl font-bold text-foreground font-mono">{invoice.invoiceNumber}</h1>
             <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${displayStatus.cls}`}>{displayStatus.label}</span>
             {invoice.type === "credit_note" && (
               <span className="px-2.5 py-1 text-xs rounded-full font-medium bg-orange-100 text-orange-700">Kreditnota</span>
@@ -155,7 +155,7 @@ export default function InvoiceDetailPage() {
           <div className="mt-1.5">
             <EmailDeliveryStatusBadge invoiceId={invoice.id} />
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Utfärdat {fmtDate(invoice.issueDate)} · Förfaller {fmtDate(invoice.dueDate)}
             {invoice.recurringSchedule && (
               <span className="ml-3 text-indigo-600">
@@ -222,16 +222,16 @@ export default function InvoiceDetailPage() {
           <CardContent className="text-sm">
             {invoice.contact ? (
               <div className="space-y-0.5">
-                <Link href={`/${orgSlug}/contacts/${invoice.contact.id}`} className="font-medium text-gray-900 hover:text-indigo-600">
+                <Link href={`/${orgSlug}/contacts/${invoice.contact.id}`} className="font-medium text-foreground hover:text-indigo-600">
                   {invoice.contact.name}
                 </Link>
-                {invoice.contact.email    && <p className="text-gray-500">{invoice.contact.email}</p>}
-                {invoice.contact.orgNumber && <p className="text-gray-400 text-xs">Org.nr: {invoice.contact.orgNumber}</p>}
-                {invoice.contact.addressLine1 && <p className="text-gray-500 mt-1">{invoice.contact.addressLine1}</p>}
-                {invoice.contact.city && <p className="text-gray-500">{invoice.contact.city}</p>}
+                {invoice.contact.email    && <p className="text-muted-foreground">{invoice.contact.email}</p>}
+                {invoice.contact.orgNumber && <p className="text-muted-foreground text-xs">Org.nr: {invoice.contact.orgNumber}</p>}
+                {invoice.contact.addressLine1 && <p className="text-muted-foreground mt-1">{invoice.contact.addressLine1}</p>}
+                {invoice.contact.city && <p className="text-muted-foreground">{invoice.contact.city}</p>}
               </div>
             ) : (
-              <p className="text-gray-400">Ingen kund kopplad</p>
+              <p className="text-muted-foreground">Ingen kund kopplad</p>
             )}
           </CardContent>
         </Card>
@@ -254,45 +254,45 @@ export default function InvoiceDetailPage() {
       <Card className="mb-6">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50">
+            <tr className="border-b border bg-muted">
               {["Beskrivning", "Antal", "Enhet", "À-pris", "Rabatt", "Moms", "Summa"].map(h => (
-                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {invoice.lineItems.map(l => (
-              <tr key={l.id} className="border-t border-gray-50">
+              <tr key={l.id} className="border-t border-border/50">
                 <td className="px-4 py-3">{l.description}</td>
-                <td className="px-4 py-3 text-gray-500 tabular-nums">{Number(l.quantity)}</td>
-                <td className="px-4 py-3 text-gray-500">{l.unit}</td>
+                <td className="px-4 py-3 text-muted-foreground tabular-nums">{Number(l.quantity)}</td>
+                <td className="px-4 py-3 text-muted-foreground">{l.unit}</td>
                 <td className="px-4 py-3 tabular-nums">{fmtMoney(l.unitPrice, invoice.currency)}</td>
-                <td className="px-4 py-3 text-gray-500 tabular-nums">
+                <td className="px-4 py-3 text-muted-foreground tabular-nums">
                   {Number(l.discountRate) > 0 ? `${Math.round(Number(l.discountRate) * 100)}%` : "—"}
                 </td>
-                <td className="px-4 py-3 text-gray-500">{Math.round(Number(l.taxRate) * 100)}%</td>
+                <td className="px-4 py-3 text-muted-foreground">{Math.round(Number(l.taxRate) * 100)}%</td>
                 <td className="px-4 py-3 text-right font-medium tabular-nums">
                   {fmtMoney(l.lineTotal + l.taxAmount, invoice.currency)}
                 </td>
               </tr>
             ))}
           </tbody>
-          <tfoot className="bg-gray-50 border-t border-gray-200">
+          <tfoot className="bg-muted border-t border">
             <tr>
-              <td colSpan={6} className="px-4 py-2 text-right text-sm text-gray-500">Netto</td>
+              <td colSpan={6} className="px-4 py-2 text-right text-sm text-muted-foreground">Netto</td>
               <td className="px-4 py-2 text-right tabular-nums text-sm">{fmtMoney(invoice.subtotalAmount, invoice.currency)}</td>
             </tr>
             {Number(invoice.discountAmount) > 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-2 text-right text-sm text-gray-500">Rabatt</td>
+                <td colSpan={6} className="px-4 py-2 text-right text-sm text-muted-foreground">Rabatt</td>
                 <td className="px-4 py-2 text-right tabular-nums text-sm text-green-600">-{fmtMoney(invoice.discountAmount, invoice.currency)}</td>
               </tr>
             )}
             <tr>
-              <td colSpan={6} className="px-4 py-2 text-right text-sm text-gray-500">Moms</td>
+              <td colSpan={6} className="px-4 py-2 text-right text-sm text-muted-foreground">Moms</td>
               <td className="px-4 py-2 text-right tabular-nums text-sm">{fmtMoney(invoice.taxAmount, invoice.currency)}</td>
             </tr>
-            <tr className="border-t border-gray-200">
+            <tr className="border-t border">
               <td colSpan={6} className="px-4 py-3 text-right font-semibold">Totalt att betala</td>
               <td className="px-4 py-3 text-right font-bold tabular-nums text-base">{fmtMoney(invoice.totalAmount, invoice.currency)}</td>
             </tr>
@@ -316,8 +316,8 @@ export default function InvoiceDetailPage() {
       {(invoice.notes || invoice.footerText) && (
         <Card className="mb-6">
           <CardContent className="py-4 space-y-3">
-            {invoice.notes     && <p className="text-sm text-gray-600 whitespace-pre-wrap">{invoice.notes}</p>}
-            {invoice.footerText && <p className="text-xs text-gray-400 whitespace-pre-wrap border-t border-gray-100 pt-3">{invoice.footerText}</p>}
+            {invoice.notes     && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{invoice.notes}</p>}
+            {invoice.footerText && <p className="text-xs text-muted-foreground whitespace-pre-wrap border-t border pt-3">{invoice.footerText}</p>}
           </CardContent>
         </Card>
       )}
@@ -338,20 +338,20 @@ export default function InvoiceDetailPage() {
           <CardContent className="p-0">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="px-5 py-2 text-left text-xs font-medium text-gray-500">Datum</th>
-                  <th className="px-5 py-2 text-left text-xs font-medium text-gray-500">Metod</th>
-                  <th className="px-5 py-2 text-left text-xs font-medium text-gray-500">Referens</th>
-                  <th className="px-5 py-2 text-right text-xs font-medium text-gray-500">Belopp</th>
+                <tr className="border-b border">
+                  <th className="px-5 py-2 text-left text-xs font-medium text-muted-foreground">Datum</th>
+                  <th className="px-5 py-2 text-left text-xs font-medium text-muted-foreground">Metod</th>
+                  <th className="px-5 py-2 text-left text-xs font-medium text-muted-foreground">Referens</th>
+                  <th className="px-5 py-2 text-right text-xs font-medium text-muted-foreground">Belopp</th>
                   <th className="px-5 py-2"></th>
                 </tr>
               </thead>
               <tbody>
                 {invoice.payments.map(p => (
-                  <tr key={p.id} className="border-t border-gray-50">
+                  <tr key={p.id} className="border-t border-border/50">
                     <td className="px-5 py-2.5">{fmtDate(p.paymentDate)}</td>
-                    <td className="px-5 py-2.5 text-gray-500">{METHOD_LABELS[p.method] ?? p.method}</td>
-                    <td className="px-5 py-2.5 text-gray-500">{p.reference ?? "—"}</td>
+                    <td className="px-5 py-2.5 text-muted-foreground">{METHOD_LABELS[p.method] ?? p.method}</td>
+                    <td className="px-5 py-2.5 text-muted-foreground">{p.reference ?? "—"}</td>
                     <td className="px-5 py-2.5 text-right font-medium tabular-nums text-green-700">{fmtMoney(p.amount, p.currency)}</td>
                     <td className="px-5 py-2.5 text-right">
                       <DeletePaymentButton
@@ -453,13 +453,13 @@ function SendModal({ invoiceId, contactEmail, onClose, onSent }: {
   return (
     <Modal title="Skicka faktura" onClose={onClose} wide>
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-4 -mt-1">
+      <div className="flex border-b border mb-4 -mt-1">
         {(["send", "preview"] as const).map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              tab === t ? "border-brand-600 text-brand-700" : "border-transparent text-gray-500 hover:text-gray-700"
+              tab === t ? "border-brand-600 text-brand-700" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             {t === "send" ? "Skicka" : "Förhandsgranska PDF"}
@@ -480,13 +480,13 @@ function SendModal({ invoiceId, contactEmail, onClose, onSent }: {
           </label>
           {!markOnly && (
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1.5">E-postadress</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">E-postadress</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-3 py-2 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                 placeholder="mottagare@foretaget.se"
               />
             </div>
@@ -505,13 +505,13 @@ function SendModal({ invoiceId, contactEmail, onClose, onSent }: {
         <div className="space-y-3">
           <iframe
             src={`/api/invoices/${invoiceId}/pdf`}
-            className="w-full rounded border border-gray-200 bg-gray-50"
+            className="w-full rounded border border bg-muted"
             style={{ height: "520px" }}
             title="Faktura PDF-förhandsgranskning"
           />
-          <p className="text-xs text-gray-400 text-center">
+          <p className="text-xs text-muted-foreground text-center">
             <a href={`/api/invoices/${invoiceId}/pdf`} target="_blank" rel="noreferrer"
-              className="underline hover:text-gray-600">Öppna i nytt fönster ↗</a>
+              className="underline hover:text-muted-foreground">Öppna i nytt fönster ↗</a>
           </p>
         </div>
       )}
@@ -552,26 +552,26 @@ function PaymentModal({ invoiceId, balance, currency, onClose, onSaved }: {
     else { const d = await res.json(); setError(d.error ?? "Fel"); setSaving(false) }
   }
 
-  const cls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+  const cls = "w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
 
   return (
     <Modal title="Registrera betalning" onClose={onClose}>
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1.5">Belopp ({currency})</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1.5">Belopp ({currency})</label>
             <input
               type="number" min="0.01" step="0.01"
               value={form.amountKr}
               onChange={e => setForm(f => ({ ...f, amountKr: e.target.value }))}
               className={cls}
             />
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Saldo: {(balance / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2 })} {currency}
             </p>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1.5">Betaldatum</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1.5">Betaldatum</label>
             <input
               type="date"
               value={form.paymentDate}
@@ -581,7 +581,7 @@ function PaymentModal({ invoiceId, balance, currency, onClose, onSaved }: {
           </div>
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1.5">Betalningsmetod</label>
+          <label className="block text-xs font-medium text-muted-foreground mb-1.5">Betalningsmetod</label>
           <select value={form.method} onChange={e => setForm(f => ({ ...f, method: e.target.value }))} className={cls}>
             <option value="bank_transfer">Bankgiro/överföring</option>
             <option value="swish">Swish</option>
@@ -591,7 +591,7 @@ function PaymentModal({ invoiceId, balance, currency, onClose, onSaved }: {
           </select>
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1.5">Referens</label>
+          <label className="block text-xs font-medium text-muted-foreground mb-1.5">Referens</label>
           <input value={form.reference} onChange={e => setForm(f => ({ ...f, reference: e.target.value }))} className={cls} placeholder="OCR-nummer, referensnr…" />
         </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
@@ -631,10 +631,10 @@ function Modal({ title, children, onClose, wide }: {
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className={`bg-white rounded-2xl shadow-xl w-full mx-4 p-6 ${wide ? "max-w-2xl" : "max-w-md"}`}>
+      <div className={`bg-card rounded-2xl shadow-xl w-full mx-4 p-6 ${wide ? "max-w-2xl" : "max-w-md"}`}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+          <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground text-xl leading-none">×</button>
         </div>
         {children}
       </div>
@@ -647,8 +647,8 @@ function Modal({ title, children, onClose, wide }: {
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between">
-      <span className="text-gray-500">{label}</span>
-      <span className="font-medium text-gray-900">{value}</span>
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium text-foreground">{value}</span>
     </div>
   )
 }

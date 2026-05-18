@@ -274,25 +274,25 @@ const MODULES = [
 
 export default function FunktionerPage() {
   return (
-    <main className="min-h-screen bg-white text-gray-900">
+    <main className="min-h-screen bg-card text-foreground">
 
       {/* ── Nav ─────────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-100">
+      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur border-b border">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-sm font-black leading-none">E</span>
             </div>
-            <span className="text-lg font-extrabold text-gray-900 tracking-tight">endoo</span>
+            <span className="text-lg font-extrabold text-foreground tracking-tight">endoo</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-gray-600">
+          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-muted-foreground">
             <Link href="/funktioner" className="text-indigo-600 font-semibold">Funktioner</Link>
-            <Link href="/byra"       className="hover:text-gray-900 transition-colors">För byråer</Link>
-            <Link href="/artiklar"   className="hover:text-gray-900 transition-colors">Artiklar</Link>
-            <a    href="/#priser"    className="hover:text-gray-900 transition-colors">Priser</a>
+            <Link href="/byra"       className="hover:text-foreground transition-colors">För byråer</Link>
+            <Link href="/artiklar"   className="hover:text-foreground transition-colors">Artiklar</Link>
+            <a    href="/#priser"    className="hover:text-foreground transition-colors">Priser</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/login"    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Logga in</Link>
+            <Link href="/login"    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Logga in</Link>
             <Link href="/register" className="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
               Kom igång gratis
             </Link>
@@ -301,20 +301,20 @@ export default function FunktionerPage() {
       </header>
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-20 px-6 border-b border-gray-100">
+      <section className="bg-gradient-to-b from-gray-50 to-white py-20 px-6 border-b border">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-5">Plattformen</p>
-          <h1 className="text-5xl sm:text-6xl font-black text-gray-900 leading-tight mb-6">
+          <h1 className="text-5xl sm:text-6xl font-black text-foreground leading-tight mb-6">
             Alla funktioner.<br />En plattform.
           </h1>
-          <p className="text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto mb-10">
+          <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-10">
             Endoo samlar fakturering, bokföring, offerter, kundportal, AI och mer i ett integrerat system. Modulerna pratar med varandra — du behöver inte.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/register" className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200 text-lg">
               Kom igång gratis →
             </Link>
-            <a href="#fakturering" className="px-8 py-4 border border-gray-200 text-gray-700 font-semibold rounded-2xl hover:border-gray-300 transition-colors text-lg">
+            <a href="#fakturering" className="px-8 py-4 border border text-foreground font-semibold rounded-2xl hover:border transition-colors text-lg">
               Utforska modulerna
             </a>
           </div>
@@ -322,14 +322,14 @@ export default function FunktionerPage() {
       </section>
 
       {/* ── Quick nav ───────────────────────────────────────────────────────── */}
-      <nav className="border-b border-gray-100 bg-white sticky top-16 z-30 overflow-x-auto">
+      <nav className="border-b border bg-card sticky top-16 z-30 overflow-x-auto">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center gap-1 py-3 min-w-max">
             {MODULES.map(m => (
               <a
                 key={m.id}
                 href={`#${m.id}`}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors whitespace-nowrap"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors whitespace-nowrap"
               >
                 {m.title}
               </a>
@@ -349,9 +349,9 @@ export default function FunktionerPage() {
                     {m.category}
                   </span>
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-2 leading-tight">{m.title}</h2>
+                <h2 className="text-3xl sm:text-4xl font-black text-foreground mb-2 leading-tight">{m.title}</h2>
                 <p className="text-lg text-indigo-600 font-semibold mb-5">{m.tagline}</p>
-                <p className="text-gray-500 text-base leading-relaxed mb-8">{m.description}</p>
+                <p className="text-muted-foreground text-base leading-relaxed mb-8">{m.description}</p>
                 {m.articleLink && (
                   <Link href={m.articleLink.href} className="text-sm text-indigo-600 hover:underline font-medium">
                     {m.articleLink.label} →
@@ -359,14 +359,14 @@ export default function FunktionerPage() {
                 )}
               </div>
 
-              <div className={`bg-gray-50 rounded-2xl border border-gray-100 p-8 ${idx % 2 === 1 ? "lg:col-start-1 lg:row-start-1" : ""}`}>
+              <div className={`bg-muted rounded-2xl border p-8 ${idx % 2 === 1 ? "lg:col-start-1 lg:row-start-1" : ""}`}>
                 <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-2xl font-bold mb-6">
                   {m.icon}
                 </div>
-                <h3 className="font-bold text-gray-900 mb-5 text-base">Vad ingår</h3>
+                <h3 className="font-bold text-foreground mb-5 text-base">Vad ingår</h3>
                 <ul className="space-y-3">
                   {m.bullets.map(b => (
-                    <li key={b} className="flex items-start gap-3 text-sm text-gray-600">
+                    <li key={b} className="flex items-start gap-3 text-sm text-muted-foreground">
                       <span className="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs flex-shrink-0 mt-0.5">✓</span>
                       {b}
                     </li>
@@ -388,13 +388,13 @@ export default function FunktionerPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/register"
-              className="w-full sm:w-auto px-9 py-4 bg-white text-indigo-700 font-bold rounded-2xl hover:bg-indigo-50 transition-colors text-lg shadow-xl"
+              className="w-full sm:w-auto px-9 py-4 bg-card text-indigo-700 font-bold rounded-2xl hover:bg-indigo-50 transition-colors text-lg shadow-xl"
             >
               Skapa konto gratis →
             </Link>
             <a
               href="mailto:hej@endoo.se"
-              className="w-full sm:w-auto px-9 py-4 border border-white/30 text-white font-semibold rounded-2xl hover:bg-white/10 transition-colors text-lg"
+              className="w-full sm:w-auto px-9 py-4 border border-white/30 text-white font-semibold rounded-2xl hover:bg-card/10 transition-colors text-lg"
             >
               Boka en demo
             </a>
@@ -403,16 +403,16 @@ export default function FunktionerPage() {
       </section>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      <footer className="border-t border-gray-100 bg-gray-50 py-10 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+      <footer className="border-t border bg-muted py-10 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Link href="/" className="font-semibold text-gray-600 hover:text-gray-900">endoo.se</Link>
+            <Link href="/" className="font-semibold text-muted-foreground hover:text-foreground">endoo.se</Link>
             <span>·</span>
-            <Link href="/byra" className="hover:text-gray-600">För byråer</Link>
+            <Link href="/byra" className="hover:text-muted-foreground">För byråer</Link>
             <span>·</span>
-            <Link href="/artiklar" className="hover:text-gray-600">Artiklar</Link>
+            <Link href="/artiklar" className="hover:text-muted-foreground">Artiklar</Link>
             <span>·</span>
-            <a href="/#priser" className="hover:text-gray-600">Priser</a>
+            <a href="/#priser" className="hover:text-muted-foreground">Priser</a>
           </div>
           <span>© {new Date().getFullYear()} Endoo · Byggt i Sverige 🇸🇪</span>
         </div>

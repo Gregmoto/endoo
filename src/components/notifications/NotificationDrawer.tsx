@@ -106,7 +106,7 @@ export function NotificationDrawer({ isOpen, onClose, onRead }: Props) {
 
       {/* Drawer */}
       <div
-        className={`fixed top-0 right-0 h-screen w-full max-w-sm bg-white shadow-xl z-50 flex flex-col transition-transform duration-200 ease-in-out ${
+        className={`fixed top-0 right-0 h-screen w-full max-w-sm bg-card shadow-xl z-50 flex flex-col transition-transform duration-200 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"
@@ -114,8 +114,8 @@ export function NotificationDrawer({ isOpen, onClose, onRead }: Props) {
         aria-label="Notifikationer"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 flex-shrink-0">
-          <h2 className="text-base font-semibold text-gray-900">Notifikationer</h2>
+        <div className="flex items-center justify-between px-5 py-4 border-b border flex-shrink-0">
+          <h2 className="text-base font-semibold text-foreground">Notifikationer</h2>
           <div className="flex items-center gap-2">
             {hasUnread && (
               <button
@@ -128,7 +128,7 @@ export function NotificationDrawer({ isOpen, onClose, onRead }: Props) {
             )}
             <button
               onClick={onClose}
-              className="p-1 rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              className="p-1 rounded-md text-muted-foreground hover:bg-muted hover:text-muted-foreground transition-colors"
               aria-label="Stäng"
             >
               <svg
@@ -155,9 +155,9 @@ export function NotificationDrawer({ isOpen, onClose, onRead }: Props) {
             <div className="p-4 space-y-3">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="animate-pulse">
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
-                  <div className="h-3 bg-gray-100 rounded w-full mb-1" />
-                  <div className="h-3 bg-gray-100 rounded w-2/3" />
+                  <div className="h-4 bg-accent rounded w-3/4 mb-2" />
+                  <div className="h-3 bg-muted rounded w-full mb-1" />
+                  <div className="h-3 bg-muted rounded w-2/3" />
                 </div>
               ))}
             </div>
@@ -165,7 +165,7 @@ export function NotificationDrawer({ isOpen, onClose, onRead }: Props) {
 
           {status === "error" && (
             <div className="flex flex-col items-center justify-center h-full text-center px-8 py-16">
-              <p className="text-sm text-gray-500">Kunde inte ladda notifikationer.</p>
+              <p className="text-sm text-muted-foreground">Kunde inte ladda notifikationer.</p>
               <button
                 onClick={fetchNotifications}
                 className="mt-3 text-xs text-indigo-600 hover:underline"
@@ -187,18 +187,18 @@ export function NotificationDrawer({ isOpen, onClose, onRead }: Props) {
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-gray-300 mb-3"
+                className="text-muted-foreground mb-3"
               >
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
-              <p className="text-sm font-medium text-gray-500">Inga notifikationer</p>
-              <p className="text-xs text-gray-400 mt-1">Du är helt à jour!</p>
+              <p className="text-sm font-medium text-muted-foreground">Inga notifikationer</p>
+              <p className="text-xs text-muted-foreground mt-1">Du är helt à jour!</p>
             </div>
           )}
 
           {status === "idle" && notifications.length > 0 && (
-            <ul className="divide-y divide-gray-50">
+            <ul className="divide-y divide-border/50">
               {notifications.map((n) => {
                 const isUnread = n.readAt === null
                 const isClickable = !!n.href || isUnread
@@ -211,7 +211,7 @@ export function NotificationDrawer({ isOpen, onClose, onRead }: Props) {
                       className={`w-full text-left px-5 py-4 transition-colors ${
                         isUnread
                           ? "bg-indigo-50 hover:bg-indigo-100"
-                          : "bg-white hover:bg-gray-50"
+                          : "bg-card hover:bg-accent"
                       } ${!isClickable ? "cursor-default" : "cursor-pointer"}`}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -219,14 +219,14 @@ export function NotificationDrawer({ isOpen, onClose, onRead }: Props) {
                           <p
                             className={`text-sm truncate ${
                               isUnread
-                                ? "font-semibold text-gray-900"
-                                : "font-medium text-gray-700"
+                                ? "font-semibold text-foreground"
+                                : "font-medium text-foreground"
                             }`}
                           >
                             {n.title}
                           </p>
                           {n.body && (
-                            <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
+                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
                               {n.body}
                             </p>
                           )}
@@ -235,7 +235,7 @@ export function NotificationDrawer({ isOpen, onClose, onRead }: Props) {
                           <span className="mt-1 w-2 h-2 rounded-full bg-indigo-500 flex-shrink-0" />
                         )}
                       </div>
-                      <p className="text-[11px] text-gray-400 mt-1.5">
+                      <p className="text-[11px] text-muted-foreground mt-1.5">
                         {relativeTime(n.createdAt)}
                         {n.category && (
                           <span className="ml-2 capitalize">{n.category}</span>

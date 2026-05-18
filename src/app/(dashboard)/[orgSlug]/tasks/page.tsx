@@ -98,7 +98,7 @@ export default function TasksPage() {
     <div className="p-6 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Uppgifter</h1>
+          <h1 className="text-2xl font-bold text-foreground">Uppgifter</h1>
           {overdueCount > 0 && (
             <p className="text-sm text-red-600 font-medium mt-0.5">{overdueCount} försenad{overdueCount !== 1 ? "e" : ""}</p>
           )}
@@ -122,13 +122,13 @@ export default function TasksPage() {
       )}
 
       {/* Tab bar */}
-      <div className="flex gap-1 mb-5 bg-gray-100 p-1 rounded-xl">
+      <div className="flex gap-1 mb-5 bg-muted p-1 rounded-xl">
         {TABS.map(t => (
           <button
             key={t.value}
             onClick={() => setTab(t.value)}
             className={`flex-1 text-sm font-medium py-1.5 rounded-lg transition-colors ${
-              tab === t.value ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+              tab === t.value ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {t.label}
@@ -139,14 +139,14 @@ export default function TasksPage() {
       {loading ? (
         <div className="space-y-2">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-14 bg-gray-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-14 bg-muted rounded-xl animate-pulse" />
           ))}
         </div>
       ) : tasks.length === 0 ? (
         <div className="py-20 text-center">
           <p className="text-4xl mb-3">✓</p>
-          <p className="font-semibold text-gray-900">Inga uppgifter</p>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="font-semibold text-foreground">Inga uppgifter</p>
+          <p className="text-sm text-muted-foreground mt-1">
             {tab === "mine" ? "Du har inga aktiva uppgifter" : "Inga uppgifter matchar filtret"}
           </p>
         </div>
@@ -154,7 +154,7 @@ export default function TasksPage() {
         <div className="space-y-6 pb-24">
           {groups.map(group => (
             <div key={group.label}>
-              <p className={`text-xs font-semibold uppercase tracking-wide mb-2 ${group.cls ?? "text-gray-400"}`}>
+              <p className={`text-xs font-semibold uppercase tracking-wide mb-2 ${group.cls ?? "text-muted-foreground"}`}>
                 {group.label} ({group.tasks.length})
               </p>
               <div className="space-y-1">
@@ -200,8 +200,8 @@ function GlobalTaskRow({
   const overdue = isOverdue(task)
 
   return (
-    <div className={`flex items-center gap-3 px-4 py-3 bg-white border rounded-xl transition-all hover:border-gray-200 hover:shadow-sm ${
-      overdue && task.status !== "done" ? "border-red-100 bg-red-50/30" : "border-gray-100"
+    <div className={`flex items-center gap-3 px-4 py-3 bg-card border rounded-xl transition-all hover:border hover:shadow-sm ${
+      overdue && task.status !== "done" ? "border-red-100 bg-red-50/30" : "border"
     }`}>
       {/* Complete toggle */}
       <button
@@ -209,7 +209,7 @@ function GlobalTaskRow({
         className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
           task.status === "done"
             ? "bg-green-500 border-green-500 text-white"
-            : "border-gray-300 hover:border-green-400"
+            : "border hover:border-green-400"
         }`}
       >
         {task.status === "done" && <span className="text-[10px]">✓</span>}
@@ -223,7 +223,7 @@ function GlobalTaskRow({
       <button className="flex-1 min-w-0 text-left" onClick={onClick}>
         <div className="flex items-center gap-2">
           <span className={`text-sm font-medium truncate ${
-            task.status === "done" ? "line-through text-gray-400" : "text-gray-900"
+            task.status === "done" ? "line-through text-muted-foreground" : "text-foreground"
           }`}>
             {task.title}
           </span>
@@ -232,7 +232,7 @@ function GlobalTaskRow({
           </span>
         </div>
         {task.entityType && (
-          <p className="text-xs text-gray-400 mt-0.5 truncate">
+          <p className="text-xs text-muted-foreground mt-0.5 truncate">
             Kopplad till {task.entityType.replace("_", " ")}
           </p>
         )}
@@ -251,7 +251,7 @@ function GlobalTaskRow({
             </span>
           ))}
           {task.assignments.length > 3 && (
-            <span className="w-6 h-6 rounded-full bg-gray-200 text-gray-600 text-xs font-bold flex items-center justify-center border-2 border-white">
+            <span className="w-6 h-6 rounded-full bg-accent text-muted-foreground text-xs font-bold flex items-center justify-center border-2 border-white">
               +{task.assignments.length - 3}
             </span>
           )}
@@ -261,7 +261,7 @@ function GlobalTaskRow({
       {/* Due date */}
       {task.dueDate && (
         <span className={`flex-shrink-0 text-xs font-medium ${
-          overdue && task.status !== "done" ? "text-red-600" : "text-gray-400"
+          overdue && task.status !== "done" ? "text-red-600" : "text-muted-foreground"
         }`}>
           {formatDue(task.dueDate)}
         </span>
@@ -269,10 +269,10 @@ function GlobalTaskRow({
 
       {/* Comments */}
       {(task.commentCount ?? 0) > 0 && (
-        <span className="flex-shrink-0 text-xs text-gray-400">💬 {task.commentCount}</span>
+        <span className="flex-shrink-0 text-xs text-muted-foreground">💬 {task.commentCount}</span>
       )}
 
-      <button onClick={onClick} className="flex-shrink-0 text-gray-300 hover:text-brand-500 transition-colors text-xs">
+      <button onClick={onClick} className="flex-shrink-0 text-muted-foreground hover:text-brand-500 transition-colors text-xs">
         →
       </button>
     </div>

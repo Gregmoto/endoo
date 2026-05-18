@@ -14,11 +14,11 @@ export default async function PlatformLayout({ children }: { children: React.Rea
   if (!session?.user?.isPlatformAdmin) redirect("/")
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-muted flex">
       {/* Sidebar */}
       <aside className="w-56 bg-gray-900 text-white flex flex-col flex-shrink-0">
         <div className="px-4 py-5 border-b border-gray-700">
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Endoo Platform</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Endoo Platform</p>
           <p className="text-sm text-gray-200 mt-0.5">Super Admin</p>
         </div>
         <nav className="flex-1 p-3 space-y-1">
@@ -33,7 +33,7 @@ export default async function PlatformLayout({ children }: { children: React.Rea
           ))}
         </nav>
         <div className="p-4 border-t border-gray-700 flex flex-col gap-2">
-          <Link href="/" className="text-xs text-gray-500 hover:text-gray-300">
+          <Link href="/" className="text-xs text-muted-foreground hover:text-gray-300">
             ← Tillbaka till appen
           </Link>
           <SignOutButton />

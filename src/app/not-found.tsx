@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-muted flex items-center justify-center px-4">
       <div className="text-center max-w-md">
         {/* Large 404 */}
         <p className="text-8xl font-black text-gray-100 select-none leading-none">404</p>
@@ -14,8 +14,8 @@ export default function NotFound() {
           </div>
         </div>
 
-        <h1 className="text-xl font-bold text-gray-900">Sidan hittades inte</h1>
-        <p className="mt-2 text-sm text-gray-500">
+        <h1 className="text-xl font-bold text-foreground">Sidan hittades inte</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Den här sidan existerar inte eller har flyttats.
         </p>
 
@@ -28,7 +28,7 @@ export default function NotFound() {
           </Link>
           <Link
             href="javascript:history.back()"
-            className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             ← Gå tillbaka
           </Link>

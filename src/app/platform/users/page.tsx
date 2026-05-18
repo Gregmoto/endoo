@@ -16,40 +16,40 @@ export default async function PlatformUsersPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Användare</h1>
-        <p className="text-sm text-gray-500 mt-1">{users.length} registrerade användare</p>
+        <h1 className="text-2xl font-bold text-foreground">Användare</h1>
+        <p className="text-sm text-muted-foreground mt-1">{users.length} registrerade användare</p>
       </div>
 
       <Card>
         <CardContent className="p-0">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Användare</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Organisationer</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Roll</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Registrerad</th>
+              <tr className="border-b border">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Användare</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Organisationer</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Roll</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Registrerad</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr key={user.id} className="border-t border-gray-50 hover:bg-gray-50">
+                <tr key={user.id} className="border-t border-border/50 hover:bg-muted">
                   <td className="px-6 py-3">
-                    <p className="font-medium text-gray-900">{user.fullName ?? user.email}</p>
-                    {user.fullName && <p className="text-xs text-gray-400">{user.email}</p>}
+                    <p className="font-medium text-foreground">{user.fullName ?? user.email}</p>
+                    {user.fullName && <p className="text-xs text-muted-foreground">{user.email}</p>}
                   </td>
                   <td className="px-6 py-3">
                     <div className="flex flex-wrap gap-1">
                       {user.memberships.map((m) => (
                         <span
                           key={m.id}
-                          className="inline-block text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded"
+                          className="inline-block text-xs bg-muted text-foreground px-2 py-0.5 rounded"
                         >
                           {m.organization.name}
                         </span>
                       ))}
                       {user.memberships.length === 0 && (
-                        <span className="text-gray-400 text-xs">Ingen organisation</span>
+                        <span className="text-muted-foreground text-xs">Ingen organisation</span>
                       )}
                     </div>
                   </td>
@@ -60,7 +60,7 @@ export default async function PlatformUsersPage() {
                       <Badge variant="secondary">Användare</Badge>
                     )}
                   </td>
-                  <td className="px-6 py-3 text-gray-400">{formatDate(user.createdAt)}</td>
+                  <td className="px-6 py-3 text-muted-foreground">{formatDate(user.createdAt)}</td>
                 </tr>
               ))}
             </tbody>

@@ -167,18 +167,18 @@ export default function NewInvoicePage() {
       {/* Header */}
       <div className="mb-5 flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-3 min-w-0">
-          <Link href={`/${orgSlug}/invoices`} className="text-sm text-gray-500 hover:text-gray-700 flex-shrink-0">← Fakturor</Link>
+          <Link href={`/${orgSlug}/invoices`} className="text-sm text-muted-foreground hover:text-foreground flex-shrink-0">← Fakturor</Link>
           <span className="text-gray-300">/</span>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
             {form.type === "proforma" ? "Ny proformafaktura" : "Ny faktura"}
           </h1>
         </div>
         <div className="flex items-center gap-2 text-sm flex-shrink-0">
-          <span className="text-gray-500">Typ:</span>
+          <span className="text-muted-foreground">Typ:</span>
           <select
             value={form.type}
             onChange={setField("type")}
-            className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="px-2 py-1.5 border border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
           >
             <option value="invoice">Faktura</option>
             <option value="proforma">Proformafaktura</option>
@@ -239,14 +239,14 @@ export default function NewInvoicePage() {
             <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50">
-                    <th className="px-3 py-2.5 text-left text-xs font-medium text-gray-500 w-5/12">Beskrivning</th>
-                    <th className="px-2 py-2.5 text-right text-xs font-medium text-gray-500 w-16">Antal</th>
-                    <th className="px-2 py-2.5 text-left text-xs font-medium text-gray-500 w-14">Enhet</th>
-                    <th className="px-2 py-2.5 text-right text-xs font-medium text-gray-500 w-28">À-pris (kr)</th>
-                    <th className="px-2 py-2.5 text-right text-xs font-medium text-gray-500 w-16">Rabatt</th>
-                    <th className="px-2 py-2.5 text-right text-xs font-medium text-gray-500 w-16">Moms</th>
-                    <th className="px-2 py-2.5 text-right text-xs font-medium text-gray-500 w-28">Summa</th>
+                  <tr className="border-b border bg-muted">
+                    <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground w-5/12">Beskrivning</th>
+                    <th className="px-2 py-2.5 text-right text-xs font-medium text-muted-foreground w-16">Antal</th>
+                    <th className="px-2 py-2.5 text-left text-xs font-medium text-muted-foreground w-14">Enhet</th>
+                    <th className="px-2 py-2.5 text-right text-xs font-medium text-muted-foreground w-28">À-pris (kr)</th>
+                    <th className="px-2 py-2.5 text-right text-xs font-medium text-muted-foreground w-16">Rabatt</th>
+                    <th className="px-2 py-2.5 text-right text-xs font-medium text-muted-foreground w-16">Moms</th>
+                    <th className="px-2 py-2.5 text-right text-xs font-medium text-muted-foreground w-28">Summa</th>
                     <th className="px-2 py-2.5 w-6" />
                   </tr>
                 </thead>
@@ -256,7 +256,7 @@ export default function NewInvoicePage() {
                     const query = productSearch[i] ?? ""
                     const suggestions = filteredProducts(query)
                     return (
-                      <tr key={line.id} className="border-t border-gray-50 align-top">
+                      <tr key={line.id} className="border-t border-border/50 align-top">
                         <td className="px-3 py-2 relative">
                           <input
                             value={line.description}
@@ -269,17 +269,17 @@ export default function NewInvoicePage() {
                             className="w-full text-sm border-0 focus:ring-0 bg-transparent"
                           />
                           {suggestions.length > 0 && (
-                            <div className="absolute left-3 top-full z-20 w-72 bg-white border border-gray-200 rounded-lg shadow-lg">
+                            <div className="absolute left-3 top-full z-20 w-72 bg-card border border rounded-lg shadow-lg">
                               {suggestions.map(p => (
                                 <button
                                   key={p.id}
                                   type="button"
                                   onClick={() => fillFromProduct(line.id, p)}
-                                  className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 border-b border-gray-50 last:border-0"
+                                  className="w-full px-3 py-2 text-left text-sm hover:bg-muted border-b border-border/50 last:border-0"
                                 >
                                   <span className="font-medium">{p.name}</span>
-                                  {p.sku && <span className="text-gray-400 ml-2 text-xs">{p.sku}</span>}
-                                  <span className="float-right text-gray-500 text-xs">
+                                  {p.sku && <span className="text-muted-foreground ml-2 text-xs">{p.sku}</span>}
+                                  <span className="float-right text-muted-foreground text-xs">
                                     {(p.unitPrice / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2 })} kr
                                   </span>
                                 </button>
@@ -316,7 +316,7 @@ export default function NewInvoicePage() {
                             className="w-full text-sm border-0 focus:ring-0 bg-transparent text-right"
                             placeholder="0"
                           />
-                          {line.discountRate > 0 && <span className="text-gray-400 text-xs float-right">%</span>}
+                          {line.discountRate > 0 && <span className="text-muted-foreground text-xs float-right">%</span>}
                         </td>
                         <td className="px-2 py-2">
                           <select
@@ -361,7 +361,7 @@ export default function NewInvoicePage() {
                   <div key={line.id} className="p-4 space-y-3">
                     {/* Row header */}
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Rad {i + 1}</span>
+                      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Rad {i + 1}</span>
                       {lines.length > 1 && (
                         <button
                           type="button"
@@ -375,7 +375,7 @@ export default function NewInvoicePage() {
 
                     {/* Description with product search */}
                     <div className="relative">
-                      <label className="block text-xs font-medium text-gray-500 mb-1">Beskrivning</label>
+                      <label className="block text-xs font-medium text-muted-foreground mb-1">Beskrivning</label>
                       <input
                         value={line.description}
                         onChange={e => {
@@ -387,19 +387,19 @@ export default function NewInvoicePage() {
                         className={inputCls}
                       />
                       {suggestions.length > 0 && (
-                        <div className="absolute left-0 right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-lg shadow-lg">
+                        <div className="absolute left-0 right-0 top-full mt-1 z-20 bg-card border border rounded-lg shadow-lg">
                           {suggestions.map(p => (
                             <button
                               key={p.id}
                               type="button"
                               onClick={() => fillFromProduct(line.id, p)}
-                              className="w-full px-3 py-3 text-left text-sm hover:bg-gray-50 border-b border-gray-50 last:border-0 flex items-center justify-between"
+                              className="w-full px-3 py-3 text-left text-sm hover:bg-muted border-b border-border/50 last:border-0 flex items-center justify-between"
                             >
                               <div>
                                 <span className="font-medium">{p.name}</span>
-                                {p.sku && <span className="text-gray-400 ml-2 text-xs">{p.sku}</span>}
+                                {p.sku && <span className="text-muted-foreground ml-2 text-xs">{p.sku}</span>}
                               </div>
-                              <span className="text-gray-500 text-xs tabular-nums">
+                              <span className="text-muted-foreground text-xs tabular-nums">
                                 {(p.unitPrice / 100).toLocaleString("sv-SE", { minimumFractionDigits: 2 })} kr
                               </span>
                             </button>
@@ -411,7 +411,7 @@ export default function NewInvoicePage() {
                     {/* Quantity + unit + price */}
                     <div className="grid grid-cols-3 gap-2">
                       <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">Antal</label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">Antal</label>
                         <input
                           type="number" min="0.001" step="any" value={line.quantity}
                           onChange={e => setLine(line.id, "quantity", parseFloat(e.target.value) || 0)}
@@ -419,7 +419,7 @@ export default function NewInvoicePage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">Enhet</label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">Enhet</label>
                         <input
                           value={line.unit}
                           onChange={e => setLine(line.id, "unit", e.target.value)}
@@ -427,7 +427,7 @@ export default function NewInvoicePage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">À-pris (kr)</label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">À-pris (kr)</label>
                         <input
                           type="number" min="0" step="0.01" value={line.unitPriceKr}
                           onChange={e => setLine(line.id, "unitPriceKr", parseFloat(e.target.value) || 0)}
@@ -439,7 +439,7 @@ export default function NewInvoicePage() {
                     {/* Discount + tax */}
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">Rabatt (%)</label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">Rabatt (%)</label>
                         <input
                           type="number" min="0" max="100" step="1"
                           value={Math.round(line.discountRate * 100)}
@@ -449,7 +449,7 @@ export default function NewInvoicePage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">Moms</label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">Moms</label>
                         <select
                           value={line.taxRate}
                           onChange={e => setLine(line.id, "taxRate", parseFloat(e.target.value))}
@@ -464,9 +464,9 @@ export default function NewInvoicePage() {
                     </div>
 
                     {/* Line total */}
-                    <div className="flex items-center justify-between pt-1 border-t border-gray-100">
-                      <span className="text-xs text-gray-500">Radtotal (inkl. moms)</span>
-                      <span className="font-semibold tabular-nums text-gray-900">{fmt(t.total)} {form.currency}</span>
+                    <div className="flex items-center justify-between pt-1 border-t border">
+                      <span className="text-xs text-muted-foreground">Radtotal (inkl. moms)</span>
+                      <span className="font-semibold tabular-nums text-foreground">{fmt(t.total)} {form.currency}</span>
                     </div>
                   </div>
                 )
@@ -474,14 +474,14 @@ export default function NewInvoicePage() {
             </div>
 
             {/* Totals */}
-            <div className="px-4 py-4 border-t border-gray-100 text-sm space-y-1.5 flex flex-col items-end">
-              <div className="text-gray-500 tabular-nums">
+            <div className="px-4 py-4 border-t border text-sm space-y-1.5 flex flex-col items-end">
+              <div className="text-muted-foreground tabular-nums">
                 Netto: {fmt(totals.net)} {form.currency}
               </div>
-              <div className="text-gray-500 tabular-nums">
+              <div className="text-muted-foreground tabular-nums">
                 Moms: {fmt(totals.tax)} {form.currency}
               </div>
-              <div className="font-bold text-gray-900 text-base tabular-nums border-t border-gray-200 pt-1.5 mt-1">
+              <div className="font-bold text-foreground text-base tabular-nums border-t border pt-1.5 mt-1">
                 Totalt: {fmt(totals.total)} {form.currency}
               </div>
             </div>
@@ -497,7 +497,7 @@ export default function NewInvoicePage() {
                 value={form.notes}
                 onChange={setField("notes")}
                 rows={3}
-                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+                className="w-full px-3 py-2.5 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
                 placeholder="Tack för ert förtroende…"
               />
             </Field>
@@ -506,7 +506,7 @@ export default function NewInvoicePage() {
                 value={form.footerText}
                 onChange={setField("footerText")}
                 rows={2}
-                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+                className="w-full px-3 py-2.5 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
                 placeholder="Bankgiro: 123-4567 · Swish: 070-000 00 00"
               />
             </Field>
@@ -531,7 +531,7 @@ export default function NewInvoicePage() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">{label}</label>
+      <label className="block text-xs font-medium text-muted-foreground mb-1.5">{label}</label>
       {children}
     </div>
   )

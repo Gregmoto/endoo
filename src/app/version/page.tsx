@@ -102,7 +102,7 @@ export default async function VersionPage() {
                   <div className="space-y-3">
                     {Object.entries(v.categories).map(([cat, items]) => (
                       <div key={cat}>
-                        <span className={`inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded mb-2 ${CATEGORY_COLORS[cat] ?? "bg-gray-100 text-gray-600"}`}>
+                        <span className={`inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded mb-2 ${CATEGORY_COLORS[cat] ?? "bg-muted text-muted-foreground"}`}>
                           {cat}
                         </span>
                         <ul className="space-y-1">

@@ -56,7 +56,7 @@ export function initials(name: string, max = 2): string {
 
 /** Deterministic color from a string (for avatars) */
 export function stringToColor(str: string): string {
-  const colors = ["#6366f1","#8b5cf6","#ec4899","#f59e0b","#10b981","#3b82f6","#ef4444","#14b8a6"]
+  const colors = ["#6366f1","#8b5cf6","#ec4899","#f59e0b","#10b981","#3b82f6","#ef4444","#14b8a6"] // audit-ok: avatar palette
   let hash = 0
   for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash)
   return colors[Math.abs(hash) % colors.length]

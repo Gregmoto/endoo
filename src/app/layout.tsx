@@ -1,13 +1,18 @@
 import type { Metadata, Viewport } from "next"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme/ThemeProvider"
-import { CookieBanner } from "@/components/ui/CookieBanner"
+import dynamic from "next/dynamic"
+
+const CookieBanner = dynamic(
+  () => import("@/components/ui/CookieBanner").then(m => m.CookieBanner),
+  { ssr: false }
+)
 
 export const viewport: Viewport = {
   width:        "device-width",
   initialScale: 1,
   viewportFit:  "cover",          // safe-area insets on notched iPhones
-  themeColor:   "#2563eb",
+  themeColor:   "#2563eb", // audit-ok: browser chrome color, CSS variables not supported here
 }
 
 export const metadata: Metadata = {
@@ -58,6 +63,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="sv" suppressHydrationWarning>
+      <head>
+        {/* Prevent flash of wrong theme before React hydrates */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme: dark)').matches;var t=s==='dark'||(s==='system'&&d)||(!s&&d)?'dark':'light';document.documentElement.classList.add(t);document.documentElement.style.colorScheme=t;}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body>
         <ThemeProvider>
           {children}

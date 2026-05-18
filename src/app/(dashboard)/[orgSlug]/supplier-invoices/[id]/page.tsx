@@ -60,7 +60,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-500 mb-1">
+      <label className="block text-xs font-medium text-muted-foreground mb-1">
         <ConfidenceDot score={confidence} />
         {label}
       </label>
@@ -69,10 +69,10 @@ function Field({
           type="text"
           value={value}
           onChange={e => onChange(fieldKey, e.target.value)}
-          className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full px-3 py-1.5 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       ) : (
-        <p className="text-sm text-gray-900">{value || <span className="text-gray-400 italic">Ej extraherat</span>}</p>
+        <p className="text-sm text-foreground">{value || <span className="text-muted-foreground italic">Ej extraherat</span>}</p>
       )}
     </div>
   )
@@ -215,8 +215,8 @@ export default function SupplierInvoiceDetailPage() {
     setPaying(false)
   }
 
-  if (loading) return <div className="p-8 text-center text-gray-400">Laddar…</div>
-  if (!invoice) return <div className="p-8 text-center text-gray-400">Fakturan hittades inte</div>
+  if (loading) return <div className="p-8 text-center text-muted-foreground">Laddar…</div>
+  if (!invoice) return <div className="p-8 text-center text-muted-foreground">Fakturan hittades inte</div>
 
   const conf = invoice.aiConfidence ?? {}
   const isExtracting = invoice.extractionStatus === "processing" || invoice.status === "extracting"
@@ -226,14 +226,14 @@ export default function SupplierInvoiceDetailPage() {
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <Link href={`/${orgSlug}/supplier-invoices`} className="text-sm text-gray-500 hover:text-gray-700">
+          <Link href={`/${orgSlug}/supplier-invoices`} className="text-sm text-muted-foreground hover:text-foreground">
             ← Leverantörsfakturor
           </Link>
-          <h1 className="text-xl font-bold text-gray-900 mt-1">
+          <h1 className="text-xl font-bold text-foreground mt-1">
             {invoice.supplierName ?? invoice.fileName}
           </h1>
           {invoice.invoiceNumber && (
-            <p className="text-sm text-gray-500 font-mono">{invoice.invoiceNumber}</p>
+            <p className="text-sm text-muted-foreground font-mono">{invoice.invoiceNumber}</p>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -268,12 +268,12 @@ export default function SupplierInvoiceDetailPage() {
         {/* Left: file preview + actions */}
         <div className="lg:col-span-2 space-y-4">
           {/* File preview */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
-            <p className="text-xs font-medium text-gray-500 mb-2">ORIGINALFIL</p>
+          <div className="bg-card rounded-xl border border shadow-sm p-4">
+            <p className="text-xs font-medium text-muted-foreground mb-2">ORIGINALFIL</p>
             {invoice.fileMimeType === "application/pdf" ? (
-              <iframe src={invoice.fileKey} className="w-full h-80 rounded border border-gray-100" />
+              <iframe src={invoice.fileKey} className="w-full h-80 rounded border border" />
             ) : (
-              <img src={invoice.fileKey} alt="Faktura" className="w-full rounded border border-gray-100 object-contain max-h-80" />
+              <img src={invoice.fileKey} alt="Faktura" className="w-full rounded border border object-contain max-h-80" />
             )}
             <a
               href={invoice.fileKey}
@@ -286,8 +286,8 @@ export default function SupplierInvoiceDetailPage() {
           </div>
 
           {/* Actions */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 space-y-3">
-            <p className="text-xs font-medium text-gray-500">ÅTGÄRDER</p>
+          <div className="bg-card rounded-xl border border shadow-sm p-4 space-y-3">
+            <p className="text-xs font-medium text-muted-foreground">ÅTGÄRDER</p>
 
             {/* Approve */}
             {invoice.status === "needs_review" && (
@@ -304,13 +304,13 @@ export default function SupplierInvoiceDetailPage() {
             {(invoice.status === "approved" || invoice.status === "needs_review") && (
               <div className="space-y-2">
                 <div>
-                  <label className="text-xs text-gray-500">Kostnadskonto</label>
+                  <label className="text-xs text-muted-foreground">Kostnadskonto</label>
                   <input
                     type="text"
                     value={expenseAccount}
                     onChange={e => setExpenseAccount(e.target.value)}
                     placeholder="t.ex. 6420"
-                    className="w-full mt-1 px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full mt-1 px-3 py-1.5 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
                 <button
@@ -339,12 +339,12 @@ export default function SupplierInvoiceDetailPage() {
                       type="date"
                       value={paymentDate}
                       onChange={e => setPaymentDate(e.target.value)}
-                      className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg"
+                      className="w-full px-3 py-1.5 text-sm border border rounded-lg"
                     />
                     <select
                       value={paymentMethod}
                       onChange={e => setPaymentMethod(e.target.value)}
-                      className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg"
+                      className="w-full px-3 py-1.5 text-sm border border rounded-lg"
                     >
                       <option value="bank_transfer">Bankgiro / Bank</option>
                       <option value="swish">Swish</option>
@@ -355,7 +355,7 @@ export default function SupplierInvoiceDetailPage() {
                       <button onClick={handlePay} disabled={paying} className="flex-1 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 disabled:opacity-50">
                         {paying ? "…" : "Bekräfta"}
                       </button>
-                      <button onClick={() => setShowPayForm(false)} className="px-3 py-2 border border-gray-200 text-sm rounded-lg hover:bg-gray-50">
+                      <button onClick={() => setShowPayForm(false)} className="px-3 py-2 border border text-sm rounded-lg hover:bg-muted">
                         Avbryt
                       </button>
                     </div>
@@ -371,7 +371,7 @@ export default function SupplierInvoiceDetailPage() {
             )}
 
             {invoice.journalId && (
-              <p className="text-xs text-gray-400 text-center">
+              <p className="text-xs text-muted-foreground text-center">
                 Journal: <span className="font-mono">{invoice.journalId.slice(0, 8)}…</span>
               </p>
             )}
@@ -379,21 +379,21 @@ export default function SupplierInvoiceDetailPage() {
         </div>
 
         {/* Right: extracted fields */}
-        <div className="lg:col-span-3 bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+        <div className="lg:col-span-3 bg-card rounded-xl border border shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-xs font-medium text-gray-500">FAKTURAINFORMATION</p>
+            <p className="text-xs font-medium text-muted-foreground">FAKTURAINFORMATION</p>
             <div className="flex gap-2">
               {editing ? (
                 <>
                   <button onClick={handleSave} disabled={saving} className="px-3 py-1 text-xs bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50">
                     {saving ? "Sparar…" : "Spara"}
                   </button>
-                  <button onClick={() => setEditing(false)} className="px-3 py-1 text-xs border border-gray-200 rounded-lg hover:bg-gray-50">
+                  <button onClick={() => setEditing(false)} className="px-3 py-1 text-xs border border rounded-lg hover:bg-muted">
                     Avbryt
                   </button>
                 </>
               ) : (
-                <button onClick={() => setEditing(true)} className="px-3 py-1 text-xs border border-gray-200 rounded-lg hover:bg-gray-50">
+                <button onClick={() => setEditing(true)} className="px-3 py-1 text-xs border border rounded-lg hover:bg-muted">
                   Redigera
                 </button>
               )}
@@ -411,7 +411,7 @@ export default function SupplierInvoiceDetailPage() {
             <Field label="IBAN"                 value={fields.iban              ?? ""} fieldKey="iban"                                               editing={editing} onChange={(k,v) => setFields(f => ({...f,[k]:v}))} />
           </div>
 
-          <hr className="my-4 border-gray-100" />
+          <hr className="my-4 border" />
 
           <div className="grid grid-cols-3 gap-4">
             <Field label="Belopp ex moms" value={fields.amountExclVat ?? ""} fieldKey="amountExclVat" editing={editing} onChange={(k,v) => setFields(f => ({...f,[k]:v}))} />
@@ -421,7 +421,7 @@ export default function SupplierInvoiceDetailPage() {
 
           {/* Confidence legend */}
           {invoice.aiConfidence && (
-            <div className="mt-4 pt-4 border-t border-gray-100 flex items-center gap-4 text-xs text-gray-400">
+            <div className="mt-4 pt-4 border-t border flex items-center gap-4 text-xs text-muted-foreground">
               <span>AI-konfidens:</span>
               <span><span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-1" />Hög (&ge;95%)</span>
               <span><span className="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1" />Osäker (70–94%)</span>
@@ -430,7 +430,7 @@ export default function SupplierInvoiceDetailPage() {
           )}
 
           {/* Tasks */}
-          <div className="mt-4 pt-4 border-t border-gray-100">
+          <div className="mt-4 pt-4 border-t border">
             <TaskWidget
               orgSlug={orgSlug}
               entityType="supplier_invoice"
@@ -449,7 +449,7 @@ export default function SupplierInvoiceDetailPage() {
 
 function StatusBadge({ status }: { status: string }) {
   const COLOR: Record<string, string> = {
-    draft:        "bg-gray-100 text-gray-600",
+    draft:        "bg-muted text-muted-foreground",
     extracting:   "bg-blue-100 text-blue-700",
     needs_review: "bg-yellow-100 text-yellow-800",
     approved:     "bg-indigo-100 text-indigo-700",
@@ -462,7 +462,7 @@ function StatusBadge({ status }: { status: string }) {
     approved: "Godkänd", booked: "Bokförd", paid: "Betald", rejected: "Avvisad",
   }
   return (
-    <span className={`px-3 py-1 text-sm font-medium rounded-full ${COLOR[status] ?? "bg-gray-100 text-gray-600"}`}>
+    <span className={`px-3 py-1 text-sm font-medium rounded-full ${COLOR[status] ?? "bg-muted text-muted-foreground"}`}>
       {LABEL[status] ?? status}
     </span>
   )

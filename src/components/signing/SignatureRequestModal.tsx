@@ -77,23 +77,23 @@ export function SignatureRequestModal({ entityType, entityId, defaultTitle, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] px-4">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden">
+      <div className="w-full max-w-lg bg-card rounded-2xl shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="text-base font-semibold text-gray-900">Skicka för signering</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none">✕</button>
+        <div className="px-6 py-4 border-b border flex items-center justify-between">
+          <h2 className="text-base font-semibold text-foreground">Skicka för signering</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground text-lg leading-none">✕</button>
         </div>
 
         <form onSubmit={submit} className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
           {/* Title */}
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-gray-600">Dokumenttitel</label>
+            <label className="block text-xs font-medium text-muted-foreground">Dokumenttitel</label>
             <input className={CLS} value={title} onChange={e => setTitle(e.target.value)} required maxLength={300} />
           </div>
 
           {/* Message */}
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-gray-600">Meddelande till signerare (valfri)</label>
+            <label className="block text-xs font-medium text-muted-foreground">Meddelande till signerare (valfri)</label>
             <textarea
               className={`${CLS} min-h-[72px] resize-none`}
               value={message}
@@ -105,14 +105,14 @@ export function SignatureRequestModal({ entityType, entityId, defaultTitle, onCl
 
           {/* Expires */}
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-gray-600">Giltig till</label>
+            <label className="block text-xs font-medium text-muted-foreground">Giltig till</label>
             <input type="date" className={CLS} value={expiresAt} onChange={e => setExpiresAt(e.target.value)} required />
           </div>
 
           {/* Signers */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-medium text-gray-600">Signerare</label>
+              <label className="block text-xs font-medium text-muted-foreground">Signerare</label>
               <button
                 type="button"
                 onClick={addSigner}
@@ -139,7 +139,7 @@ export function SignatureRequestModal({ entityType, entityId, defaultTitle, onCl
                   onChange={e => updateSigner(i, "email", e.target.value)}
                 />
                 <select
-                  className="px-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="px-2 py-2 text-xs border border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   value={s.role}
                   onChange={e => updateSigner(i, "role", e.target.value as "signer" | "cc")}
                 >
@@ -173,7 +173,7 @@ export function SignatureRequestModal({ entityType, entityId, defaultTitle, onCl
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 text-sm text-gray-500 hover:text-gray-700"
+              className="px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground"
             >
               Avbryt
             </button>
