@@ -7,6 +7,11 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.22.1] - 2026-05-19
+
+### Changed
+- **[F1]** Default-tema ändrat från "system" till "light" — användare utan sparat val ser ljust läge oavsett OS-inställning
+
 ## [0.22.0] - 2026-05-19
 
 ### Added
