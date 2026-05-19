@@ -7,6 +7,18 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-05-19
+
+### Added
+- **[F3b]** Live PDF-förhandsvisning på `/settings/invoicing/template` — tvåkolumnslayout med formulär till vänster och klistrad PDF-förhandsgranskning till höger
+- **[F3b]** `<TemplateEditor />` — lastar och sparar InvoiceTemplate2 via REST, visar toast-notifikation vid sparning
+- **[F3b]** `<TemplateForm />` — 7 hopfällbara sektioner: Logotyp, Adress & Kontakt, Bankuppgifter, Swish, Företagsuppgifter, Text & Meddelanden, Mallinställningar
+- **[F3b]** `<TemplatePreview />` — realtidsförhandsgranskning med `PDFViewer` (@react-pdf/renderer), Swish QR genereras klientsidan via `qrcode`
+- **[F3b]** Zoomkontroller (50–150%) med persistent localStorage-inställning
+- **[F3b]** Exempeltyp-väljare: Faktura, Kreditnota, Proformafaktura, Räntefaktura, Påminnelse
+- **[F3b]** Nedladdningsknapp genererar PDF direkt i webbläsaren utan API-anrop
+- **[F3b]** `buildSampleInvoice()` i `src/lib/pdf/sample-data.ts` — realistisk exempelfaktura för förhandsgranskning
+
 ## [0.24.0] - 2026-05-19
 
 ### Changed
