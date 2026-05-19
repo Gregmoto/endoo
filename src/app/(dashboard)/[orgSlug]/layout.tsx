@@ -1,9 +1,8 @@
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
-import { Sidebar } from "@/components/layout/sidebar"
-import { MobileNavBar } from "@/components/layout/MobileNavBar"
 import { ImpersonationBanner } from "@/components/layout/ImpersonationBanner"
+import { TopBar } from "@/components/navigation/TopBar"
 import { AiShell } from "@/components/ai/AiShell"
 import { SearchProvider } from "@/components/search/SearchProvider"
 import { resolveBranding } from "@/lib/branding/resolver"
@@ -39,14 +38,16 @@ export default async function DashboardLayout({
 
   if (!canAccess) redirect("/")
 
-  // Resolve agency name when impersonating
   let agencyName: string | null = null
   let agencySlug: string | null = null
   const isImpersonating = session.impersonatingOrganizationId === org.id
 
   const [agencyOrg, branding] = await Promise.all([
     isImpersonating && session.activeOrgSlug
-      ? prisma.organization.findUnique({ where: { slug: session.activeOrgSlug }, select: { name: true, slug: true } })
+      ? prisma.organization.findUnique({
+          where: { slug: session.activeOrgSlug },
+          select: { name: true, slug: true },
+        })
       : Promise.resolve(null),
     resolveBranding(org.id),
   ])
@@ -63,42 +64,44 @@ export default async function DashboardLayout({
 
   return (
     <SearchProvider orgSlug={org.slug} orgId={org.id}>
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950" style={cssVars}>
-      {isImpersonating && agencyName && agencySlug && (
-        <ImpersonationBanner agencyName={agencyName} agencySlug={agencySlug} clientSlug={orgSlug} />
-      )}
+      <div className="min-h-screen bg-background" style={cssVars}>
 
-      <Sidebar
-        orgSlug={org.slug}
-        orgName={org.name}
-        orgType={org.type as "agency" | "customer"}
-        userEmail={session.user.email}
-        orgPlan={org.plan}
-        isImpersonating={isImpersonating}
-        logoUrl={branding.logoUrl}
-        brandingDisplayName={branding.displayName}
-      />
+        {/* Sticky header: impersonation banner (if active) + top bar */}
+        <header className="sticky top-0 z-40 flex flex-col bg-background">
+          {isImpersonating && agencyName && agencySlug && (
+            <ImpersonationBanner
+              agencyName={agencyName}
+              agencySlug={agencySlug}
+              clientSlug={orgSlug}
+            />
+          )}
+          <TopBar
+            orgSlug={org.slug}
+            orgName={org.name}
+            orgType={org.type as "agency" | "customer"}
+            orgId={org.id}
+            userEmail={session.user.email ?? ""}
+            userName={session.user.name}
+            orgPlan={org.plan}
+            logoUrl={branding.logoUrl}
+            brandingDisplayName={branding.displayName}
+          />
+        </header>
 
-      <AiShell>
-        {/*
-          ml-0 on mobile (sidebar is hidden),
-          md:ml-56 on desktop (sidebar is fixed 224px).
-          pt-12 = clearance for the mobile top bar (h-12).
-          pb-16 md:pb-0 = clearance for the mobile bottom nav.
-        */}
-        <main className={[
-          "ml-0 md:ml-56",
-          "pt-12",
-          "pb-20 md:pb-0",
-          isImpersonating ? "mt-10" : "",
-        ].join(" ")}>
-          {children}
-        </main>
-      </AiShell>
+        {/* Skip link for accessibility */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-16 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-background focus:border focus:border-border focus:rounded-lg focus:text-sm focus:font-medium"
+        >
+          Hoppa till innehåll
+        </a>
 
-      {/* Mobile bottom tab bar */}
-      <MobileNavBar orgSlug={org.slug} />
-    </div>
+        <AiShell>
+          <main id="main-content">
+            {children}
+          </main>
+        </AiShell>
+      </div>
     </SearchProvider>
   )
 }

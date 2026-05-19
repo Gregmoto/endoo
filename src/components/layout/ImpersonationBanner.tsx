@@ -53,7 +53,7 @@ export function ImpersonationBanner({ agencyName, agencySlug, clientSlug }: Impe
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50 bg-amber-500 text-white px-4 py-1.5 flex items-center gap-4 text-sm shadow-md">
+      <div className="w-full bg-amber-500 text-white px-4 py-1.5 flex items-center gap-4 text-sm">
         {/* Agency context */}
         <div className="flex items-center gap-2 flex-shrink-0">
           <span className="font-bold text-amber-900">◈</span>

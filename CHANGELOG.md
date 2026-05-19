@@ -7,6 +7,31 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.26.0] - 2026-05-19
+
+### Changed
+- **[M1]** Komplett ombyggd navigation — bort med vänster-sidebar, in med modern topp-bar med kategorier och horisontell sub-meny
+- **[M1]** Huvudkategorier synliga direkt i top-bar (inte gömda bakom Meny-knapp); overflow-kategorier döljs i "Mer ▾" dropdown med ResizeObserver
+- **[M1]** Sub-meny visas automatiskt för kategorier som behöver det (Bokföring, Fakturering, Register, Byrå), gömd för kategorier med bara en sida
+- **[M1]** Org-väljare och räkenskapsår flyttade till top-bar (höger sida, desktop)
+- **[M1]** Tema-toggle flyttad till avatar-dropdown
+- **[M1]** ImpersonationBanner integrerad i sticky header-stack (ej längre fixed-positionerad separat)
+- **[M1]** Layout-bakgrund ändrad från hårdkodad `bg-gray-50` till semantisk `bg-background`
+
+### Added
+- **[M1]** Avatar-dropdown med användarinfo, Inställningar, Team, Audit log, Tema-väljare (inline sub-meny) och Logga ut
+- **[M1]** Räkenskapsår-väljare med localStorage-persistens per org (`endoo:fiscal-year:{orgId}`)
+- **[M1]** Mobil-anpassad hamburger-meny med slide-over (250ms animate-drawer-in); kategorier med expanderbara sub-menyer, org/år-väljare, tema-toggle och Logga ut
+- **[M1]** Single source of truth för navigation i `src/lib/navigation/config.ts` (NavCategory + NavSubItem typer)
+- **[M1]** `useActiveCategory(orgSlug)` hook — matchar pathname mot matchPaths, returnerar aktiv kategori och sub-item
+- **[M1]** `useFiscalYear(orgId)` hook med localStorage-persistens
+- **[M1]** Skip-link "Hoppa till innehåll" för tillgänglighet (`sr-only focus:not-sr-only`)
+- **[M1]** Cmd+K-hint i top-bar (desktop) som öppnar befintlig CommandPalette
+
+### Removed
+- **[M1]** Vänster-sidebar (`Sidebar`-komponent ersatt av TopBar)
+- **[M1]** Mobil bottom-navigation bar (`MobileNavBar` ersatt av hamburger i top-bar)
+
 ## [0.25.0] - 2026-05-19
 
 ### Added
