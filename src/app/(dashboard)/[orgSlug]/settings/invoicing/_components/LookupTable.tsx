@@ -20,18 +20,20 @@ type Column = {
 }
 
 type LookupTableProps = {
-  title:      string
-  apiPath:    string
-  columns:    Column[]
-  emptyForm:  Record<string, unknown>
+  title:        string
+  apiPath:      string
+  columns:      Column[]
+  emptyForm:    Record<string, unknown>
+  showSeedBtn?: boolean
 }
 
-export function LookupTable({ title, apiPath, columns, emptyForm }: LookupTableProps) {
+export function LookupTable({ title, apiPath, columns, emptyForm, showSeedBtn }: LookupTableProps) {
   const [items, setItems]     = useState<LookupItem[]>([])
   const [loading, setLoading] = useState(true)
   const [editId, setEditId]   = useState<string | null>(null)
   const [form, setForm]       = useState<Record<string, unknown>>(emptyForm)
   const [saving, setSaving]   = useState(false)
+  const [seeding, setSeeding] = useState(false)
   const [error, setError]     = useState("")
 
   async function load() {
@@ -79,6 +81,13 @@ export function LookupTable({ title, apiPath, columns, emptyForm }: LookupTableP
     if (res.ok) await load()
   }
 
+  async function seedDefaults() {
+    setSeeding(true)
+    await fetch("/api/settings/invoicing/seed-defaults", { method: "POST" })
+    await load()
+    setSeeding(false)
+  }
+
   async function toggleDefault(item: LookupItem) {
     await fetch(`${apiPath}/${item.id}`, {
       method: "PUT",
@@ -100,7 +109,14 @@ export function LookupTable({ title, apiPath, columns, emptyForm }: LookupTableP
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>{title}</CardTitle>
-        <Button size="sm" onClick={startAdd}>+ Lägg till</Button>
+        <div className="flex items-center gap-2">
+          {showSeedBtn && items.length === 0 && (
+            <Button size="sm" variant="outline" onClick={seedDefaults} disabled={seeding}>
+              {seeding ? "Fyller…" : "Fyll med standardvärden"}
+            </Button>
+          )}
+          <Button size="sm" onClick={startAdd}>+ Lägg till</Button>
+        </div>
       </CardHeader>
       <CardContent className="p-0">
         <table className="w-full text-sm">

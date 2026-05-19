@@ -7,6 +7,23 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.27.0] - 2026-05-19
+
+### Fixed
+- **[F4.1]** `internal_error` vid skapande av faktura — borttaget `isInfoRow` från `lineData` i `POST /api/invoices` (fältet finns inte i `InvoiceLineItem`-modellen)
+- **[F4.2]** Fakturanumrering sparades endast i `invoicingSettings` JSON-blob men lästes från direkta fält på `Organization` — PATCH-handleren skriver nu även `invoicePrefix` och `invoiceSequenceStart` direkt på org-raden
+
+### Changed
+- **[F4.3]** Kundfält i ny faktura är nu sökbar typeahead (söker via `/api/contacts?search=`) istället för statisk dropdown
+- **[F4.4]** Lagerstplats-kolumnen i fakturarader är nu read-only och fylls automatiskt från vald artikel
+- **[F4.5]** Fotnot-fältet borttaget från ny faktura — bankuppgifter hämtas automatiskt från Betalningsinställningar vid PDF-generering
+- **[F4.6]** Fälten `reference`/`poNumber` rättade till `ourReference`/`yourOrderNumber` i payload (matchar schema)
+- **[F4.7]** Fakturanumrering: ny radio-toggle för att välja format med eller utan prefix
+
+### Added
+- **[F4.8]** `POST /api/settings/invoicing/seed-defaults` — seeder standardvärden för valutor, betalningsvillkor, enheter, leveranssätt, leveransvillkor och prislista
+- **[F4.9]** "Fyll med standardvärden"-knapp på tomma Valutor-, Betalningsvillkor- och Enheter-sidor
+
 ## [0.26.0] - 2026-05-19
 
 ### Changed

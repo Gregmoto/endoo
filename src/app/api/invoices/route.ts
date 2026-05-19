@@ -279,7 +279,6 @@ export async function POST(req: Request) {
         warehouseLocation: l.warehouseLocation ?? null,
         purchasePrice:     l.purchasePrice != null ? BigInt(l.purchasePrice) : null,
         sortOrder:         l.sortOrder ?? i,
-        isInfoRow:         l.isInfoRow,
         organizationId:    ctx.organizationId,
       }
     })

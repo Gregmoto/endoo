@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button"
 type Form = {
   invoicePrefix:        string
   invoiceSequenceStart: number
+  usePrefix:            boolean
 }
 
 export default function NumberingPage() {
-  const [form, setForm]       = useState<Form>({ invoicePrefix: "F", invoiceSequenceStart: 1 })
+  const [form, setForm]       = useState<Form>({ invoicePrefix: "F", invoiceSequenceStart: 1, usePrefix: true })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving]   = useState(false)
   const [saved, setSaved]     = useState(false)
@@ -20,9 +21,11 @@ export default function NumberingPage() {
     fetch("/api/settings/invoicing")
       .then(r => r.json())
       .then(data => {
+        const prefix = data.invoicePrefix ?? "F"
         setForm({
-          invoicePrefix:        data.invoicePrefix        ?? "F",
+          invoicePrefix:        prefix,
           invoiceSequenceStart: data.invoiceSequenceStart ?? 1,
+          usePrefix:            prefix !== "",
         })
         setLoading(false)
       })
@@ -36,7 +39,7 @@ export default function NumberingPage() {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        invoicePrefix:        form.invoicePrefix,
+        invoicePrefix:        form.usePrefix ? form.invoicePrefix : "",
         invoiceSequenceStart: Number(form.invoiceSequenceStart),
       }),
     })
@@ -47,19 +50,35 @@ export default function NumberingPage() {
 
   if (loading) return <Spinner />
 
-  const preview = `${form.invoicePrefix}-${String(form.invoiceSequenceStart).padStart(4, "0")}`
+  const preview = form.usePrefix && form.invoicePrefix
+    ? `${form.invoicePrefix}-${String(form.invoiceSequenceStart).padStart(4, "0")}`
+    : String(form.invoiceSequenceStart).padStart(4, "0")
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <Card>
         <CardHeader><CardTitle>Fakturanumrering</CardTitle></CardHeader>
         <CardContent className="space-y-4">
+          <Field label="Format">
+            <div className="flex items-center gap-6">
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="radio" checked={form.usePrefix} onChange={() => setForm(f => ({ ...f, usePrefix: true }))} />
+                Med prefix (t.ex. F-0001)
+              </label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="radio" checked={!form.usePrefix} onChange={() => setForm(f => ({ ...f, usePrefix: false }))} />
+                Utan prefix (t.ex. 0001)
+              </label>
+            </div>
+          </Field>
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Prefix">
-              <input value={form.invoicePrefix}
-                onChange={e => setForm(f => ({ ...f, invoicePrefix: e.target.value }))}
-                className={cls} placeholder="F" maxLength={10} />
-            </Field>
+            {form.usePrefix && (
+              <Field label="Prefix">
+                <input value={form.invoicePrefix}
+                  onChange={e => setForm(f => ({ ...f, invoicePrefix: e.target.value }))}
+                  className={cls} placeholder="F" maxLength={10} />
+              </Field>
+            )}
             <Field label="Nästa fakturanummer">
               <input type="number" min={1}
                 value={form.invoiceSequenceStart}

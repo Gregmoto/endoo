@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,50 +22,80 @@ export default function NewInvoicePage() {
   const router       = useRouter()
   const orgSlug      = params.orgSlug
 
-  const [contacts, setContacts] = useState<Contact[]>([])
   const [saving, setSaving]     = useState(false)
   const [error, setError]       = useState("")
 
+  // Contact typeahead
+  const [contactSearch,  setContactSearch]  = useState("")
+  const [contactHits,    setContactHits]    = useState<Contact[]>([])
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
+  const [showContactDrop, setShowContactDrop] = useState(false)
+  const contactTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const contactRef   = useRef<HTMLDivElement>(null)
+
   const [form, setForm] = useState({
-    contactId:   searchParams.get("contactId") ?? "",
-    issueDate:   new Date().toISOString().slice(0, 10),
-    dueDate:     "",
-    currency:    "SEK",
-    reference:   "",
-    poNumber:    "",
-    notes:       "",
-    footerText:  "",
-    type:        (searchParams.get("type") ?? "invoice") as "invoice" | "proforma",
+    contactId:      searchParams.get("contactId") ?? "",
+    issueDate:      new Date().toISOString().slice(0, 10),
+    dueDate:        "",
+    currency:       "SEK",
+    ourReference:   "",
+    yourOrderNumber: "",
+    notes:          "",
+    type:           (searchParams.get("type") ?? "invoice") as "invoice" | "proforma",
   })
 
   const [lines, setLines] = useState<FLineItem[]>([newFLine()])
 
-  // Load contacts
   useEffect(() => {
-    fetch("/api/contacts?limit=200").then(r => r.ok ? r.json() : { contacts: [] })
-      .then(d => setContacts(d.contacts ?? []))
-
-    // Default due date = 30 days
     const due = new Date()
     due.setDate(due.getDate() + 30)
     setForm(f => ({ ...f, dueDate: due.toISOString().slice(0, 10) }))
+
+    // Pre-fill if contactId supplied via URL
+    const cid = searchParams.get("contactId")
+    if (cid) {
+      fetch(`/api/contacts/${cid}`).then(r => r.ok ? r.json() : null).then(c => {
+        if (c) { setSelectedContact(c); setContactSearch(c.name) }
+      })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const searchContacts = useCallback((q: string) => {
+    if (contactTimer.current) clearTimeout(contactTimer.current)
+    contactTimer.current = setTimeout(() => {
+      fetch(`/api/contacts?search=${encodeURIComponent(q)}&limit=10`)
+        .then(r => r.ok ? r.json() : { contacts: [] })
+        .then(d => setContactHits(d.contacts ?? []))
+    }, 200)
   }, [])
 
-  // When contact changes, update currency + payment terms
+  function pickContact(c: Contact) {
+    setSelectedContact(c)
+    setContactSearch(c.name)
+    setContactHits([])
+    setShowContactDrop(false)
+    setForm(f => {
+      const next = { ...f, contactId: c.id, currency: c.defaultCurrency ?? f.currency }
+      if (c.defaultPaymentTermsDays != null) {
+        const due = new Date(f.issueDate)
+        due.setDate(due.getDate() + c.defaultPaymentTermsDays)
+        next.dueDate = due.toISOString().slice(0, 10)
+      }
+      return next
+    })
+  }
+
+  // Close contact dropdown on outside click
   useEffect(() => {
-    if (!form.contactId) return
-    const c = contacts.find(c => c.id === form.contactId)
-    if (!c) return
-    setForm(f => ({
-      ...f,
-      currency: c.defaultCurrency ?? f.currency,
-    }))
-    if (c.defaultPaymentTermsDays != null) {
-      const due = new Date(form.issueDate)
-      due.setDate(due.getDate() + c.defaultPaymentTermsDays)
-      setForm(f => ({ ...f, dueDate: due.toISOString().slice(0, 10) }))
+    if (!showContactDrop) return
+    function handler(e: MouseEvent) {
+      if (contactRef.current && !contactRef.current.contains(e.target as Node)) {
+        setShowContactDrop(false)
+      }
     }
-  }, [form.contactId]) // eslint-disable-line react-hooks/exhaustive-deps
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
+  }, [showContactDrop])
 
   const setField = (k: keyof typeof form) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
@@ -78,11 +108,10 @@ export default function NewInvoicePage() {
 
     const payload = {
       ...form,
-      contactId:  form.contactId  || null,
-      reference:  form.reference  || null,
-      poNumber:   form.poNumber   || null,
-      notes:      form.notes      || null,
-      footerText: form.footerText || null,
+      contactId:       form.contactId       || null,
+      ourReference:    form.ourReference    || null,
+      yourOrderNumber: form.yourOrderNumber || null,
+      notes:           form.notes           || null,
       lineItems: lines.map((l, i) => {
         const priceOre        = Math.round((parseFloat(l.unitPriceStr) || 0) * 100)
         const orderedQty      = parseFloat(l.orderedQty) || 0
@@ -151,12 +180,39 @@ export default function NewInvoicePage() {
           <CardHeader><CardTitle>Mottagare & datum</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Kund">
-              <select value={form.contactId} onChange={setField("contactId")} className={fieldCls}>
-                <option value="">Välj kund…</option>
-                {contacts.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}{c.customerNumber ? ` (${c.customerNumber})` : ""}</option>
-                ))}
-              </select>
+              <div ref={contactRef} className="relative">
+                <input
+                  value={contactSearch}
+                  onChange={e => {
+                    setContactSearch(e.target.value)
+                    setShowContactDrop(true)
+                    if (!e.target.value) { setSelectedContact(null); setForm(f => ({ ...f, contactId: "" })) }
+                    searchContacts(e.target.value)
+                  }}
+                  onFocus={() => { setShowContactDrop(true); if (contactSearch) searchContacts(contactSearch) }}
+                  className={fieldCls}
+                  placeholder="Sök kund…"
+                  autoComplete="off"
+                />
+                {showContactDrop && contactHits.length > 0 && (
+                  <div className="absolute left-0 top-full z-30 w-full bg-card border border-border rounded-lg shadow-lg overflow-hidden mt-0.5">
+                    {contactHits.map(c => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onMouseDown={() => pickContact(c)}
+                        className="w-full px-3 py-2 text-left text-sm hover:bg-muted flex items-center justify-between border-b border-border/50 last:border-0"
+                      >
+                        <span className="text-foreground">{c.name}</span>
+                        {c.customerNumber && <span className="text-muted-foreground text-xs ml-2">{c.customerNumber}</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {selectedContact && (
+                  <p className="mt-1 text-xs text-muted-foreground">{selectedContact.name}</p>
+                )}
+              </div>
             </Field>
             <Field label="Valuta">
               <CurrencySelect value={form.currency} onChange={setField("currency")} className={fieldCls} />
@@ -168,10 +224,10 @@ export default function NewInvoicePage() {
               <input type="date" required value={form.dueDate} onChange={setField("dueDate")} className={fieldCls} />
             </Field>
             <Field label="Er referens / PO-nummer">
-              <input value={form.poNumber} onChange={setField("poNumber")} className={fieldCls} placeholder="Inköpsorder, projektnamn…" />
+              <input value={form.yourOrderNumber} onChange={setField("yourOrderNumber")} className={fieldCls} placeholder="Inköpsorder, projektnamn…" />
             </Field>
             <Field label="Vår referens">
-              <input value={form.reference} onChange={setField("reference")} className={fieldCls} placeholder="Säljare, projekt-ID…" />
+              <input value={form.ourReference} onChange={setField("ourReference")} className={fieldCls} placeholder="Säljare, projekt-ID…" />
             </Field>
           </CardContent>
         </Card>
@@ -186,26 +242,15 @@ export default function NewInvoicePage() {
 
         {/* Notes */}
         <Card>
-          <CardHeader><CardTitle>Meddelande & fotnoter</CardTitle></CardHeader>
-          <CardContent className="space-y-4">
-            <Field label="Meddelande till mottagaren">
-              <textarea
-                value={form.notes}
-                onChange={setField("notes")}
-                rows={3}
-                className="w-full px-3 py-2.5 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
-                placeholder="Tack för ert förtroende…"
-              />
-            </Field>
-            <Field label="Fotnot (betalningsinformation, bankuppgifter etc.)">
-              <textarea
-                value={form.footerText}
-                onChange={setField("footerText")}
-                rows={2}
-                className="w-full px-3 py-2.5 text-sm border border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
-                placeholder="Bankgiro: 123-4567 · Swish: 070-000 00 00"
-              />
-            </Field>
+          <CardHeader><CardTitle>Meddelande till mottagaren</CardTitle></CardHeader>
+          <CardContent>
+            <textarea
+              value={form.notes}
+              onChange={setField("notes")}
+              rows={3}
+              className={fieldCls + " resize-none"}
+              placeholder="Tack för ert förtroende…"
+            />
           </CardContent>
         </Card>
 

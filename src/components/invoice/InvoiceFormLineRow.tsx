@@ -181,14 +181,11 @@ export function InvoiceFormLineRow({ line, index, onChange, onRemove, onDuplicat
         />
       </td>
 
-      {/* 3. Lagerställe */}
+      {/* 3. Lagerställe (read-only, fylls från artikel) */}
       <td className={tdCls}>
-        <input
-          className={cellInput}
-          value={line.warehouseLocation}
-          placeholder="–"
-          onChange={e => onChange(line.id, { warehouseLocation: e.target.value })}
-        />
+        <span className="block px-1 py-0.5 text-sm text-muted-foreground tabular-nums">
+          {line.warehouseLocation || "–"}
+        </span>
       </td>
 
       {/* 4. Best.antal */}

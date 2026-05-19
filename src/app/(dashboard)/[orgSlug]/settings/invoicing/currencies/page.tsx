@@ -10,6 +10,7 @@ export default function CurrenciesPage() {
         { key: "symbol", label: "Symbol" },
       ]}
       emptyForm={{ code: "", symbol: "", isActive: true, isDefault: false }}
+      showSeedBtn
     />
   )
 }

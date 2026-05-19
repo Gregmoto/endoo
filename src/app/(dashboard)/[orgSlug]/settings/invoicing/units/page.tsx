@@ -10,6 +10,7 @@ export default function UnitsPage() {
         { key: "name", label: "Namn" },
       ]}
       emptyForm={{ code: "", name: "", isActive: true, isDefault: false, sortOrder: 0 }}
+      showSeedBtn
     />
   )
 }

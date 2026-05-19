@@ -11,6 +11,7 @@ export default function PaymentTermsPage() {
         { key: "days", label: "Dagar", type: "number" },
       ]}
       emptyForm={{ code: "", name: "", days: 30, isActive: true, isDefault: false, sortOrder: 0 }}
+      showSeedBtn
     />
   )
 }

@@ -46,9 +46,13 @@ export async function PATCH(req: NextRequest) {
     const current = (existing?.invoicingSettings as Record<string, unknown>) ?? {}
     const merged  = { ...current, ...body }
 
+    const directFields: Record<string, unknown> = {}
+    if (body.invoicePrefix        !== undefined) directFields.invoicePrefix        = body.invoicePrefix
+    if (body.invoiceSequenceStart !== undefined) directFields.invoiceSequenceStart = Number(body.invoiceSequenceStart)
+
     await prisma.organization.update({
       where: { id: ctx.organizationId },
-      data:  { invoicingSettings: merged },
+      data:  { invoicingSettings: merged, ...directFields },
     })
 
     await prisma.auditLog.create({
