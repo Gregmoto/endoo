@@ -31,8 +31,8 @@ function lineTotal(l: LineItem) {
   return { net, tax: net * l.taxRate, total: net * (1 + l.taxRate) }
 }
 
-const inputCls = "w-full px-2 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500"
-const fieldCls = "w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500"
+const inputCls = "w-full px-2 py-1.5 text-sm border border-input rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+const fieldCls = "w-full px-3 py-2.5 text-sm border border-input rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
@@ -168,7 +168,7 @@ export default function NewInvoicePage() {
       <div className="mb-5 flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-3 min-w-0">
           <Link href={`/${orgSlug}/invoices`} className="text-sm text-muted-foreground hover:text-foreground flex-shrink-0">← Fakturor</Link>
-          <span className="text-gray-300">/</span>
+          <span className="text-muted-foreground">/</span>
           <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
             {form.type === "proforma" ? "Ny proformafaktura" : "Ny faktura"}
           </h1>
@@ -338,7 +338,7 @@ export default function NewInvoicePage() {
                             <button
                               type="button"
                               onClick={() => setLines(ls => ls.filter(l => l.id !== line.id))}
-                              className="text-gray-300 hover:text-red-400 text-lg leading-none"
+                              className="text-muted-foreground hover:text-destructive text-lg leading-none"
                             >
                               ×
                             </button>
@@ -352,7 +352,7 @@ export default function NewInvoicePage() {
             </div>
 
             {/* ── Mobile line item cards (hidden on desktop) ────────────────── */}
-            <div className="sm:hidden divide-y divide-gray-100">
+            <div className="sm:hidden divide-y divide-border">
               {lines.map((line, i) => {
                 const t = lineTotal(line)
                 const query = productSearch[i] ?? ""

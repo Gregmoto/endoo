@@ -36,6 +36,9 @@ const FEATURE_LABELS: Record<PlanFeature, string> = {
   sru_export:                    "SRU-export",
   multiple_price_lists:          "Flera prislistor",
   multiple_invoice_templates:    "Flera fakturamallar",
+  invoice_export:                "Fakturaexport",
+  interest_invoices:             "Räntefakturor",
+  bulk_actions:                  "Massåtgärder",
 }
 
 interface Props {
@@ -63,25 +66,25 @@ export function UpgradePrompt({ feature, currentPlan, inline }: Props) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-8 text-center">
+    <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border bg-muted/50 p-8 text-center">
       <div className="flex size-12 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
         <LockIcon className="size-6" />
       </div>
       <div>
-        <p className="font-semibold text-gray-900 dark:text-gray-100">
+        <p className="font-semibold text-foreground">
           {featureLabel} ingår inte i din plan
         </p>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-1 text-sm text-muted-foreground">
           Uppgradera till <strong>{planLabel}</strong> för att använda den här funktionen.
         </p>
       </div>
       <Link
         href="./settings/billing"
-        className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors"
+        className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
       >
         Uppgradera plan
       </Link>
-      <p className="text-xs text-gray-400 dark:text-gray-500">
+      <p className="text-xs text-muted-foreground">
         Nuvarande plan: {PLAN_LABELS[currentPlan]}
       </p>
     </div>

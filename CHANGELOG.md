@@ -7,6 +7,24 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-05-19
+
+### Added
+- **[Uppgift 1.7b]** Fakturalista (DEL B): tabs Alla/Ej bokförda/Obetalda/Betalda/Makulerade med antal-badges, debounced sökning, datumfilter, bulk-åtgärder (skicka/räntefaktura/ta bort), sorterbara kolumner, paginering 10/25/100/250 med localStorage-persistence
+- **[Uppgift 1.7b]** `GET /api/invoices` utökat med tab-filter, fri textsökning på 6 fält, parallell räkning av 5 tab-badges, stöd för comma-separerade type/status-filter
+- **[Uppgift 1.7b]** `POST /api/invoices/bulk` — massåtgärder: skicka, ta bort utkast, skapa räntefakturor
+- **[Uppgift 1.7b]** `POST /api/invoices/export` — export till CSV (UTF-8 BOM, semikolon) med filter/sortering, max 5 000 rader
+- **[Uppgift 1.7b]** `GET /api/invoices/overdue` — sida med förfallna fakturor inkl. beräknad dröjsmålsränta
+- **[Uppgift 1.7b]** `POST /api/invoices/[id]/create-interest-invoice` — skapar räntefaktura som utkast för en förfallen faktura
+
+### Changed
+- **[Uppgift 1.7b]** `InvoiceType`-enum utökad med `cash`, `recurring`, `interest` i Prisma-schema
+- **[Uppgift 1.7b]** `Invoice`-modell utökad med `priceIncludesVat Boolean` fält
+- **[Uppgift 1.7b]** `UpgradePrompt`-komponent: lagt till etiketter för `invoice_export`, `interest_invoices`, `bulk_actions`; rättat förbjudna färgklasser
+
+### Database
+- **[Uppgift 1.7b]** `prisma db push`: lade till `cash`, `recurring`, `interest` till `InvoiceType`-enum; lade till `priceIncludesVat` på `Invoice`
+
 ## [0.15.0] - 2026-05-19
 
 ### Added

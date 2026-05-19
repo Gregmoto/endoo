@@ -27,13 +27,15 @@ export const PLATFORM_PERMISSIONS = {
 // INVOICE PERMISSIONS
 // ─────────────────────────────────────────────
 export const INVOICE_PERMISSIONS = {
-  READ:   "invoices:read",
-  CREATE: "invoices:create",
-  UPDATE: "invoices:update",
-  DELETE: "invoices:delete",    // only drafts
-  SEND:   "invoices:send",
-  VOID:   "invoices:void",
-  EXPORT: "invoices:export",    // PDF download / bulk export
+  READ:            "invoices:read",
+  CREATE:          "invoices:create",
+  UPDATE:          "invoices:update",
+  DELETE:          "invoices:delete",           // only drafts
+  SEND:            "invoices:send",
+  VOID:            "invoices:void",
+  EXPORT:          "invoices:export",           // PDF download / bulk export
+  CREATE_INTEREST: "invoices:create_interest",  // create interest invoices
+  BULK:            "invoices:bulk",             // bulk send/print/book
 } as const
 
 // ─────────────────────────────────────────────

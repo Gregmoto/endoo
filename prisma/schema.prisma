@@ -53,6 +53,9 @@ enum InvoiceType {
   credit_note
   quote
   proforma
+  cash
+  recurring
+  interest
 }
 
 enum PaymentMethod {
@@ -1101,6 +1104,7 @@ model Invoice {
   priceListId           String?  @db.Uuid
   invoiceLang           String   @default("sv")        // sv | en
   vatType               String?
+  priceIncludesVat      Boolean  @default(false)
 
   // Delivery details
   deliveryName          String?

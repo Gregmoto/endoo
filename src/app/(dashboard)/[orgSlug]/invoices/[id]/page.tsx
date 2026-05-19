@@ -39,13 +39,13 @@ type Invoice = {
 
 const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
   draft:         { label: "Utkast",    cls: "bg-muted text-muted-foreground" },
-  sent:          { label: "Skickad",   cls: "bg-blue-100 text-blue-700" },
-  viewed:        { label: "Visad",     cls: "bg-indigo-100 text-indigo-700" },
-  partial:       { label: "Delbetald",cls: "bg-yellow-100 text-yellow-700" },
-  paid:          { label: "Betald",    cls: "bg-green-100 text-green-700" },
-  overdue:       { label: "Förfallen", cls: "bg-red-100 text-red-700" },
-  void:          { label: "Makulerad",cls: "bg-orange-100 text-orange-700" },
-  uncollectable: { label: "Osäker",    cls: "bg-red-200 text-red-800" },
+  sent:          { label: "Skickad",   cls: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
+  viewed:        { label: "Visad",     cls: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400" },
+  partial:       { label: "Delbetald",cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
+  paid:          { label: "Betald",    cls: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" },
+  overdue:       { label: "Förfallen", cls: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" },
+  void:          { label: "Makulerad",cls: "bg-muted text-muted-foreground" },
+  uncollectable: { label: "Osäker",    cls: "bg-red-200 text-red-800 dark:bg-red-900/40 dark:text-red-300" },
 }
 
 const METHOD_LABELS: Record<string, string> = {
@@ -146,10 +146,10 @@ export default function InvoiceDetailPage() {
             <h1 className="text-2xl font-bold text-foreground font-mono">{invoice.invoiceNumber}</h1>
             <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${displayStatus.cls}`}>{displayStatus.label}</span>
             {invoice.type === "credit_note" && (
-              <span className="px-2.5 py-1 text-xs rounded-full font-medium bg-orange-100 text-orange-700">Kreditnota</span>
+              <span className="px-2.5 py-1 text-xs rounded-full font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">Kreditnota</span>
             )}
             {invoice.type === "proforma" && (
-              <span className="px-2.5 py-1 text-xs rounded-full font-medium bg-purple-100 text-purple-700">Proforma</span>
+              <span className="px-2.5 py-1 text-xs rounded-full font-medium bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400">Proforma</span>
             )}
           </div>
           <div className="mt-1.5">
@@ -319,9 +319,9 @@ export default function InvoiceDetailPage() {
               </tr>
             )}
             {balance > 0 && (
-              <tr className="bg-red-50">
-                <td colSpan={6} className="px-4 py-2 text-right font-semibold text-red-700">Återstår</td>
-                <td className="px-4 py-2 text-right font-bold tabular-nums text-red-700">{fmtMoney(balance, invoice.currency)}</td>
+              <tr className="bg-destructive/5">
+                <td colSpan={6} className="px-4 py-2 text-right font-semibold text-destructive">Återstår</td>
+                <td className="px-4 py-2 text-right font-bold tabular-nums text-destructive">{fmtMoney(balance, invoice.currency)}</td>
               </tr>
             )}
           </tfoot>

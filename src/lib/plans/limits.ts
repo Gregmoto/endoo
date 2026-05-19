@@ -32,6 +32,9 @@ export type PlanFeature =
   | "sru_export"
   | "multiple_price_lists"
   | "multiple_invoice_templates"
+  | "invoice_export"
+  | "interest_invoices"
+  | "bulk_actions"
 
 export type PlanLimitKey =
   | "maxUsers"
@@ -66,6 +69,7 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "basic_reports",
       "quotes",
       "data_import",
+      "invoice_export",
     ],
   },
 
@@ -88,6 +92,9 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "inventory",
       "api_access",
       "data_import",
+      "invoice_export",
+      "interest_invoices",
+      "bulk_actions",
     ],
   },
 
@@ -123,6 +130,9 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "sru_export",
       "multiple_price_lists",
       "multiple_invoice_templates",
+      "invoice_export",
+      "interest_invoices",
+      "bulk_actions",
     ],
   },
 
@@ -161,6 +171,9 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "sru_export",
       "multiple_price_lists",
       "multiple_invoice_templates",
+      "invoice_export",
+      "interest_invoices",
+      "bulk_actions",
     ],
   },
 }
