@@ -7,6 +7,16 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-05-19
+
+### Added
+- **[F4]** Ny `<InvoiceFormLineItems />` komponent med 13-kolumners Fortnox-liknande fakturatabelll: artikelnr, benämning, lagerställe, best.antal, lev.antal, enhet, à-pris, rabatt (% eller kr), summa, moms, konto, TG%, åtgärder
+- **[F4]** Ny `<InvoiceFormLineRow />` komponent med typeahead-sökning för artiklar (`/api/articles`) och bokföringskonton (`/api/accounting/accounts`), automatisk TG%-beräkning med färgkodning
+- **[F4]** Faktura ny-sida (`invoices/new`) använder nu nya radkomponenterna och skickar korrekt `unitPriceOre` (öre), `orderedQuantity`, `deliveredQuantity`, `accountNumber`, `vatType`, `warehouseLocation`, `purchasePrice` till API
+
+### Fixed
+- **[F4]** Befintlig bugg: faktura ny-sida skickade `unitPriceKr` men API förväntar `unitPriceOre` — rader hamnade alltid på 0 kr
+
 ## [0.22.2] - 2026-05-19
 
 ### Fixed
