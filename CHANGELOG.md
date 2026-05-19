@@ -7,6 +7,56 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.22.0] - 2026-05-19
+
+### Added
+- **[Uppgift 1.8b]** Ny artikel-sida (`/[orgSlug]/articles/new/page.tsx`): wraps ArticleForm i "new"-läge
+- **[Uppgift 1.8b]** Redigera artikel-sida (`/[orgSlug]/articles/[id]/edit/page.tsx`): hämtar artikel och mappar fält till ArticleFormData
+- **[Uppgift 1.8b]** Artikeldetaljsida (`/[orgSlug]/articles/[id]/page.tsx`): 6 flikar (Allmän/Pris/Bokföring/Lagerdetaljer/Inköp/Historik) med lazy-laddad historik, aktivera/inaktivera-knapp och mjuk-borttagning
+- **[Uppgift 1.8b]** Etikettutskrift (`/[orgSlug]/articles/labels/print/page.tsx`): Avery-formatval (3474/3481/custom), streckkodtyp (Code128/EAN-13), kopior per artikel, print-CSS-layout
+- **[Uppgift 1.8b]** `POST /api/articles/[id]/activate`: aktiverar artikel och rensar isPhasingOut
+- **[Uppgift 1.8b]** `POST /api/articles/[id]/archive`: sätter isActive=false
+- **[Uppgift 1.8b]** `GET /api/articles/[id]/history`: hämtar lagertransaktioner (max 100) och auditlogg (max 50)
+- **[Uppgift 1.8b]** `POST /api/articles/[id]/inventory-count`: skapar count_set-transaktion och uppdaterar stockQuantity/availableQuantity
+- **[Uppgift 1.8b]** `GET/POST /api/articles/[id]/reservations`: listar och skapar manuella reserveringar
+- **[Uppgift 1.8b]** `DELETE /api/articles/[id]/reserve`: avbokar manuell reservering via reservationId i body
+- **[Uppgift 1.8b]** `GET/POST /api/articles/[id]/price-lists`: listar och upsert:ar prislisteposter för artikel
+- **[Uppgift 1.8b]** `PUT/DELETE /api/articles/[id]/price-lists/[plId]`: uppdaterar och tar bort specifik prislistepost
+- **[Uppgift 1.8b]** `GET /api/articles/[id]/label`: genererar streckkodsbild (Code 128 / EAN-13) via bwip-js som PNG
+
+## [0.21.0] - 2026-05-19
+
+### Added
+- **[Uppgift 1.8b]** `GET /api/articles`: artikellista med sökning, flikfilter (all/stock/service/phasing/inactive), paginering, sortering och distinct-tillverkarfilter
+- **[Uppgift 1.8b]** `POST /api/articles`: skapa artikel med auto-genererat artikelnummer, InventoryItem-skapande för lagervaror och auditlogg
+- **[Uppgift 1.8b]** `GET /api/articles/[id]`: hämtar enskild artikel med inventoryItem, priceListItems och manualReservations
+- **[Uppgift 1.8b]** `PUT /api/articles/[id]`: uppdatera artikel med duplikatskydd på SKU
+- **[Uppgift 1.8b]** `DELETE /api/articles/[id]`: mjuk-borttagning av artikel
+- **[Uppgift 1.8b]** `POST /api/articles/bulk-update`: massuppdatering med 10 operationer (prisjustering, momsmappning, aktivera/inaktivera m.fl.) i Prisma-transaktion
+- **[Uppgift 1.8b]** `POST /api/articles/export`: CSV-export (UTF-8 BOM, semikolon) med alla artikelfält; returnerar 501 för xlsx/pdf
+- **[Uppgift 1.8b]** `POST /api/articles/search-ean`: slå upp artikel via EAN-streckkod
+- **[Uppgift 1.8b]** Artikellistesida (`/[orgSlug]/articles/page.tsx`): tabbar med räknare, sorterbar tabell, debouncat sök, EAN-auto-redirect, bulk-åtgärder, per-rad meny, TG%-färgkodning, mobil kortlayout och localStorage-sidstorlek
+- **[Uppgift 1.8b]** Artikelimport-wizard (`/[orgSlug]/articles/import/page.tsx`): 5-stegswizard med CSV-parser (; , tab), kolumnmappning, förhandsvisning, import med duplikatstrategi (hoppa/uppdatera) och resultatsammanfattning
+- **[Uppgift 1.8b]** Kontomappningar-sida (`/[orgSlug]/settings/invoicing/account-mappings/page.tsx`): redigera BAS-kontering per slot, återställ-knapp och sparning via PUT /api/settings/account-mappings
+
+### Changed
+- **[Uppgift 1.8b]** `/[orgSlug]/products/page.tsx` omdirigeras nu med `router.replace()` till `/articles` (bakåtkompatibel redirect)
+
+## [0.20.0] - 2026-05-19
+
+### Added
+- **[Uppgift 1.8b]** `src/lib/articles/article-number.ts`: `generateArticleNumber()` med stöd för numeric/alphanumeric/random-format och serializable transaktion, samt `isArticleNumberTaken()`
+- **[Uppgift 1.8b]** `src/lib/articles/ean-validator.ts`: `validateEan13()`, `generateEan13Check()` och `formatEan()` för EAN-13-validering med checksumkontroll
+- **[Uppgift 1.8b]** `src/lib/inventory/reservations.ts`: `calculateReservedQuantity()`, `refreshProductReservations()` och `refreshAllReservations()` för lagerreserveringslogik
+- **[Uppgift 1.8b]** `src/lib/inventory/cost-calculation.ts`: `calculateNewAverageCost()`, `updateProductAverageCost()`, `calculateMargin()` och `calculateMarginAmount()` för rörligt genomsnittspris och marginalberäkningar
+- **[Uppgift 1.8b]** `src/lib/inventory/availability.ts`: `getAvailableQuantity()`, `canFulfillOrder()` och `getStockHistory()` för lagertillgänglighet
+- **[Uppgift 1.8b]** `src/lib/inventory/stock-cache.ts`: `refreshProductStockCache()` och `refreshAllStockCache()` för att synkronisera lagercachen från transaktionsregistret
+- **[Uppgift 1.8b]** `src/lib/accounts/account-mapping.ts`: BAS-standardkonton, `getSalesAccount()`, `getAccountMapping()` och `getOrCreateDefaultMappings()` med företrädesordning kontakt > produkt > DB > BAS > 3001
+- **[Uppgift 1.8b]** `GET /api/cron/refresh-inventory-cache`: kronrutin som uppdaterar lager- och reserveringscache för alla organisationer, skyddad med `CRON_SECRET`
+- **[Uppgift 1.8b]** `GET /api/settings/account-mappings/bas`: listar alla momstypsmappningar (DB-värden sammanslagna med BAS-standardvärden)
+- **[Uppgift 1.8b]** `POST /api/settings/account-mappings/bas/reset`: återställer alla momstypsmappningar till BAS-standardkonton
+- **[Uppgift 1.8b]** `PUT /api/settings/account-mappings/bas/[vatType]`: upsert av enskild momstypsmappning
+
 ## [0.19.0] - 2026-05-19
 
 ### Added
