@@ -23,40 +23,31 @@ export const NAV_CATEGORIES: NavCategory[] = [
   {
     id: "accounting",
     label: "Bokföring",
-    href: (slug) => `/${slug}/journals`,
+    href: (slug) => `/${slug}/analytics`,
     matchPaths: [
       "/journals", "/accounts", "/reports", "/tax",
       "/analytics", "/year-end", "/accounting",
       "/fixed-assets", "/depreciation",
     ],
     subItems: [
+      { id: "analytics", label: "Analys",     href: (s) => `/${s}/analytics` },
       { id: "journals",  label: "Verifikat",  href: (s) => `/${s}/journals`  },
       { id: "accounts",  label: "Kontoplan",  href: (s) => `/${s}/accounts`  },
       { id: "reports",   label: "Rapporter",  href: (s) => `/${s}/reports`   },
       { id: "vat",       label: "Moms",       href: (s) => `/${s}/tax/vat`   },
-      { id: "analytics", label: "Analys",     href: (s) => `/${s}/analytics` },
     ],
   },
   {
     id: "invoicing",
     label: "Fakturering",
-    href: (slug) => `/${slug}/invoices`,
+    href: (slug) => `/${slug}/invoices/analytics`,
     matchPaths: ["/invoices", "/payments", "/reminders", "/recurring", "/contracts"],
     subItems: [
-      { id: "invoices",  label: "Kundfakturor",  href: (s) => `/${s}/invoices`  },
-      { id: "payments",  label: "Inbetalningar", href: (s) => `/${s}/payments`  },
-      { id: "reminders", label: "Påminnelser",   href: (s) => `/${s}/reminders` },
-      { id: "recurring", label: "Avtal",         href: (s) => `/${s}/recurring` },
-    ],
-  },
-  {
-    id: "register",
-    label: "Register",
-    href: (slug) => `/${slug}/customers`,
-    matchPaths: ["/customers", "/contacts", "/articles", "/products", "/clients"],
-    subItems: [
-      { id: "customers", label: "Kunder",   href: (s) => `/${s}/customers` },
-      { id: "articles",  label: "Artiklar", href: (s) => `/${s}/articles`  },
+      { id: "invoicing-analytics", label: "Analys",        href: (s) => `/${s}/invoices/analytics` },
+      { id: "invoices",            label: "Kundfakturor",  href: (s) => `/${s}/invoices`           },
+      { id: "payments",            label: "Inbetalningar", href: (s) => `/${s}/payments`           },
+      { id: "reminders",           label: "Påminnelser",   href: (s) => `/${s}/reminders`          },
+      { id: "recurring",           label: "Avtal",         href: (s) => `/${s}/recurring`          },
     ],
   },
   {
@@ -100,6 +91,16 @@ export const NAV_CATEGORIES: NavCategory[] = [
       { id: "inbox",     label: "Inkorg",       href: (s) => `/${s}/clients/inbox`     },
       { id: "deadlines", label: "Deadlines",    href: (s) => `/${s}/clients/deadlines` },
       { id: "alerts",    label: "Varningar",    href: (s) => `/${s}/alerts`            },
+    ],
+  },
+  {
+    id: "register",
+    label: "Register",
+    href: (slug) => `/${slug}/customers`,
+    matchPaths: ["/customers", "/contacts", "/articles", "/products"],
+    subItems: [
+      { id: "customers", label: "Kunder",   href: (s) => `/${s}/customers` },
+      { id: "articles",  label: "Artiklar", href: (s) => `/${s}/articles`  },
     ],
   },
 ]

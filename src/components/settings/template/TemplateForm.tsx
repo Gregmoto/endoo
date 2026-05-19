@@ -1,5 +1,6 @@
 "use client"
 
+import { useRef, useState } from "react"
 import Link from "next/link"
 import { Section, Field, TextInput, TextArea, Toggle } from "./TemplateFormSections"
 import type { TemplateFormValues } from "./types"
@@ -16,56 +17,120 @@ export function TemplateForm({ form, onChange }: Props) {
   const f = <K extends keyof TemplateFormValues>(k: K) =>
     (v: TemplateFormValues[K]) => onChange({ [k]: v } as Partial<TemplateFormValues>)
 
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState("")
+
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    setUploadError("")
+    const fd = new FormData()
+    fd.append("file", file)
+    fd.append("field", "pdfLogoUrl")
+    const res = await fetch("/api/settings/branding/upload", { method: "POST", body: fd })
+    const data = await res.json()
+    if (res.ok && data.url) {
+      onChange({ logoUrl: data.url })
+    } else {
+      setUploadError(data.error ?? "Uppladdning misslyckades")
+    }
+    setUploading(false)
+    if (fileInputRef.current) fileInputRef.current.value = ""
+  }
+
   return (
     <div className="space-y-3">
 
       {/* Logotyp */}
       <Section title="Logotyp" defaultOpen>
-        <Field label="Logotyp-URL" hint="PNG, JPG eller SVG — max 500 KB">
+        {form.logoUrl ? (
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={form.logoUrl}
+              alt="Logotyp"
+              className="h-14 w-auto max-w-[180px] object-contain rounded border border-border p-1.5 bg-muted/20"
+            />
+            <button
+              type="button"
+              onClick={() => onChange({ logoUrl: "" })}
+              className="text-xs text-destructive hover:underline"
+            >
+              Ta bort
+            </button>
+          </div>
+        ) : (
+          <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+            <p className="text-sm text-muted-foreground mb-3">Ingen logotyp uppladdad</p>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="text-xs px-3 py-1.5 bg-primary text-primary-foreground rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
+            >
+              {uploading ? "Laddar upp…" : "Välj bild"}
+            </button>
+          </div>
+        )}
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/png,image/jpeg,image/svg+xml,image/webp"
+          className="hidden"
+          onChange={handleLogoUpload}
+        />
+
+        {form.logoUrl && (
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="text-xs text-primary hover:underline disabled:opacity-50"
+          >
+            {uploading ? "Laddar upp…" : "Byt logotyp"}
+          </button>
+        )}
+
+        {uploadError && (
+          <p className="text-xs text-destructive">{uploadError}</p>
+        )}
+
+        <Field label="Eller ange URL direkt" hint="PNG, JPG, SVG eller WEBP">
           <TextInput
             value={form.logoUrl}
             onChange={f("logoUrl")}
-            placeholder="https://example.com/logo.png"
+            placeholder=""
           />
         </Field>
-        {form.logoUrl && (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={form.logoUrl}
-            alt="Logotyp"
-            className="h-12 w-auto object-contain rounded border border-border p-1 bg-muted/20"
-          />
-        )}
+
         <Toggle checked={form.showLogo} onChange={f("showLogo")} label="Visa logotyp på fakturan" />
       </Section>
 
       {/* Adress & Kontakt */}
       <Section title="Adress & Kontakt" defaultOpen>
         <Field label="Postadress" hint="Separera rader med Enter">
-          <TextArea
-            value={form.postalAddress}
-            onChange={f("postalAddress")}
-            placeholder={"Endoo AB\n245 34 Staffanstorp"}
-            rows={3}
-          />
+          <TextArea value={form.postalAddress} onChange={f("postalAddress")} rows={3} />
         </Field>
         <Field label="Gatuadress">
-          <TextInput value={form.streetAddress} onChange={f("streetAddress")} placeholder="Maskinvägen 1" />
+          <TextInput value={form.streetAddress} onChange={f("streetAddress")} />
         </Field>
         <div className="grid grid-cols-2 gap-2">
           <Field label="Telefon">
-            <TextInput value={form.phone} onChange={f("phone")} placeholder="08-123 45 67" />
+            <TextInput value={form.phone} onChange={f("phone")} />
           </Field>
           <Field label="Fax (valfri)">
-            <TextInput value={form.fax} onChange={f("fax")} placeholder="08-123 45 68" />
+            <TextInput value={form.fax} onChange={f("fax")} />
           </Field>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Field label="E-post">
-            <TextInput value={form.email} onChange={f("email")} placeholder="info@foretaget.se" />
+            <TextInput value={form.email} onChange={f("email")} />
           </Field>
           <Field label="Webbadress">
-            <TextInput value={form.website} onChange={f("website")} placeholder="www.foretaget.se" />
+            <TextInput value={form.website} onChange={f("website")} />
           </Field>
         </div>
       </Section>
@@ -74,21 +139,21 @@ export function TemplateForm({ form, onChange }: Props) {
       <Section title="Bankuppgifter">
         <div className="grid grid-cols-2 gap-2">
           <Field label="Bankgiro">
-            <TextInput value={form.bankgiro} onChange={f("bankgiro")} placeholder="173-4987" />
+            <TextInput value={form.bankgiro} onChange={f("bankgiro")} />
           </Field>
           <Field label="Plusgiro">
-            <TextInput value={form.plusgiro} onChange={f("plusgiro")} placeholder="12 34 56-7" />
+            <TextInput value={form.plusgiro} onChange={f("plusgiro")} />
           </Field>
         </div>
         <Field label="IBAN">
-          <TextInput value={form.iban} onChange={f("iban")} placeholder="SE79 6000 0000 0004 8590 3741" />
+          <TextInput value={form.iban} onChange={f("iban")} />
         </Field>
         <div className="grid grid-cols-2 gap-2">
           <Field label="BIC/SWIFT">
-            <TextInput value={form.bic} onChange={f("bic")} placeholder="HANDSESS" />
+            <TextInput value={form.bic} onChange={f("bic")} />
           </Field>
           <Field label="Organisationens VAT-nr">
-            <TextInput value={form.vatNumber} onChange={f("vatNumber")} placeholder="SE556000000001" />
+            <TextInput value={form.vatNumber} onChange={f("vatNumber")} />
           </Field>
         </div>
         <Toggle checked={form.fScattCertified} onChange={f("fScattCertified")} label="Godkänd för F-skatt" />
@@ -99,7 +164,7 @@ export function TemplateForm({ form, onChange }: Props) {
         <Toggle checked={form.showSwishQr} onChange={f("showSwishQr")} label="Visa Swish QR-kod på fakturan" />
         {form.showSwishQr && (
           <Field label="Swish-nummer">
-            <TextInput value={form.swishNumber} onChange={f("swishNumber")} placeholder="123 123 12 34" />
+            <TextInput value={form.swishNumber} onChange={f("swishNumber")} />
           </Field>
         )}
       </Section>
@@ -107,7 +172,7 @@ export function TemplateForm({ form, onChange }: Props) {
       {/* Företagsuppgifter */}
       <Section title="Företagsuppgifter">
         <Field label="Styrelsens säte">
-          <TextInput value={form.boardSeat} onChange={f("boardSeat")} placeholder="Staffanstorp" />
+          <TextInput value={form.boardSeat} onChange={f("boardSeat")} />
         </Field>
       </Section>
 
@@ -117,12 +182,7 @@ export function TemplateForm({ form, onChange }: Props) {
           label="Info-box-text"
           hint="Visas i centrerad ruta på fakturan, t.ex. 'Vår fordran har överlåtits till Handelsbanken...'"
         >
-          <TextArea
-            value={form.footerText}
-            onChange={f("footerText")}
-            placeholder="Vår fordran enligt denna faktura har överlåtits till…"
-            rows={4}
-          />
+          <TextArea value={form.footerText} onChange={f("footerText")} rows={4} />
         </Field>
         <p className="text-xs text-muted-foreground">
           Dröjsmålsränta konfigureras under{" "}

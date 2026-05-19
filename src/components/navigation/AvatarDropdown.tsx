@@ -5,6 +5,7 @@ import Link from "next/link"
 import { cn, initials } from "@/lib/utils"
 import { useTheme } from "next-themes"
 import { signOut } from "next-auth/react"
+import { APP_VERSION } from "@/lib/version"
 
 interface Props {
   orgSlug: string
@@ -142,6 +143,9 @@ export function AvatarDropdown({ orgSlug, userEmail, userName }: Props) {
               <span className="w-4 text-center">🚪</span>
               {signingOut ? "Loggar ut…" : "Logga ut"}
             </button>
+            <p className="px-4 py-1.5 text-[10px] text-muted-foreground/50 select-none">
+              Endoo v{APP_VERSION}
+            </p>
           </div>
         </div>
       )}

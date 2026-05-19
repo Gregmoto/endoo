@@ -7,6 +7,19 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.29.0] - 2026-05-19
+
+### Added
+- **[N1]** Faktureringsanalys-sida `/[orgSlug]/invoices/analytics` med KPI-rad, 12-månaders stapeldiagram, åldersanalys, betalningsbeteende och topp 5 kunder
+- **[N1]** Versionsnummer visas i avatar-dropdown (dynamiskt från `APP_VERSION`)
+
+### Changed
+- **[N1]** Bokföring-kategorin i menyn navigerar nu till Analys som förvald sida (sub-menyn börjar med Analys)
+- **[N1]** Fakturering-kategorin navigerar nu till Faktureringsanalys som förvald sida
+- **[N1]** Register alltid sist i navigationsmenyn
+- **[N1]** Fakturamallen: logotyp-fältet ersatt med drag/klick-uppladdning (via `/api/settings/branding/upload`) — befintlig bild visas direkt
+- **[N1]** Fakturamallens fält visar sparade värden utan exempeltext i placeholder
+
 ## [0.28.0] - 2026-05-19
 
 ### Added
