@@ -1,19 +1,57 @@
 /**
  * GET /api/invoices/[id]/pdf
- *
- * Streams a PDF of the invoice. Returns Content-Disposition: attachment.
+ * Streams a PDF using the Swedish-standard invoice template.
  * Requires invoices:read permission.
  */
 
 export const runtime = "nodejs"
 
-import { prisma } from "@/lib/prisma"
-import { requireAuth } from "@/lib/rbac/guards"
-import { canOrThrow } from "@/lib/rbac/policy"
+import { prisma }       from "@/lib/prisma"
+import { requireAuth }  from "@/lib/rbac/guards"
+import { canOrThrow }   from "@/lib/rbac/policy"
 import { renderToStream, type DocumentProps } from "@react-pdf/renderer"
-import { InvoicePdf, type InvoicePdfData } from "@/lib/pdf/invoice-pdf"
+import { InvoicePdf }   from "@/lib/pdf/templates/invoice/InvoicePdf"
+import type { InvoicePdfData, InvoicePdfLine, InvoiceTemplateData } from "@/lib/pdf/templates/invoice/InvoicePdfTypes"
 import { resolveBranding } from "@/lib/branding/resolver"
 import React, { type ReactElement } from "react"
+import QRCode from "qrcode"
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function extractBillingLines(
+  billingAddress: unknown,
+  contact: { addressLine1?: string | null; addressLine2?: string | null; postalCode?: string | null; city?: string | null } | null
+): string[] {
+  if (billingAddress && typeof billingAddress === "object") {
+    const a = billingAddress as Record<string, unknown>
+    const lines: string[] = []
+    const line1 = String(a.addressLine1 ?? a.line1 ?? "").trim()
+    const line2 = String(a.addressLine2 ?? a.line2 ?? "").trim()
+    const postal = String(a.postalCode ?? a.postal_code ?? "").trim()
+    const city   = String(a.city ?? "").trim()
+    if (line1)  lines.push(line1)
+    if (line2)  lines.push(line2)
+    const cityLine = [postal, city].filter(Boolean).join(" ")
+    if (cityLine) lines.push(cityLine)
+    if (lines.length > 0) return lines
+  }
+  if (!contact) return []
+  const lines: string[] = []
+  if (contact.addressLine1) lines.push(contact.addressLine1)
+  if (contact.addressLine2) lines.push(contact.addressLine2)
+  const cityLine = [contact.postalCode, contact.city].filter(Boolean).join(" ")
+  if (cityLine) lines.push(cityLine)
+  return lines
+}
+
+function getInterestRate(invoicingSettings: unknown): number | null {
+  if (!invoicingSettings || typeof invoicingSettings !== "object") return null
+  const s = invoicingSettings as Record<string, unknown>
+  const v = s.interestRatePercent
+  return typeof v === "number" && v > 0 ? v : null
+}
+
+// ─── Route ───────────────────────────────────────────────────────────────────
 
 export async function GET(
   _req: Request,
@@ -24,78 +62,134 @@ export async function GET(
     canOrThrow(ctx, "invoices:read")
     const { id } = await params
 
-    const invoice = await prisma.invoice.findFirst({
-      where: { id, organizationId: ctx.organizationId, deletedAt: null },
-      include: {
-        contact: {
-          select: {
-            name: true, email: true,
-            addressLine1: true, city: true, postalCode: true,
+    const [invoice, template, org, branding] = await Promise.all([
+      prisma.invoice.findFirst({
+        where: { id, organizationId: ctx.organizationId, deletedAt: null },
+        include: {
+          contact: {
+            select: {
+              name: true, vatNumber: true, customerNumber: true,
+              addressLine1: true, addressLine2: true, city: true, postalCode: true,
+            },
+          },
+          lineItems: {
+            orderBy: { sortOrder: "asc" },
+            select: {
+              description: true, quantity: true, unit: true,
+              unitPrice: true, taxRate: true, discountRate: true, lineTotal: true,
+              articleNumber: true, orderedQuantity: true, deliveredQuantity: true,
+            },
           },
         },
-        lineItems: {
-          orderBy: { sortOrder: "asc" },
-          select: {
-            description: true, quantity: true, unit: true,
-            unitPrice: true, taxRate: true, discountRate: true, lineTotal: true,
-          },
-        },
-        organization: {
-          select: {
-            name: true,
-            addressLine1: true, city: true, postalCode: true,
-            contactEmail: true, vatNumber: true,
-          },
-        },
-      },
-    })
+      }),
+      prisma.invoiceTemplate2.findFirst({
+        where: { organizationId: ctx.organizationId, isDefault: true, isActive: true },
+      }),
+      prisma.organization.findUnique({
+        where: { id: ctx.organizationId },
+        select: { name: true, invoicingSettings: true },
+      }),
+      resolveBranding(ctx.organizationId),
+    ])
 
     if (!invoice) return Response.json({ error: "Faktura hittades ej" }, { status: 404 })
 
-    const branding = await resolveBranding(ctx.organizationId)
-    const org = invoice.organization
-    const orgAddressParts = [org.addressLine1, [org.postalCode, org.city].filter(Boolean).join(" ")].filter(Boolean)
-    const orgAddress = orgAddressParts.length ? orgAddressParts.join(", ") : null
+    const lang = (invoice.invoiceLang ?? "sv") as "sv" | "en"
+    const c    = invoice.contact
 
-    const c = invoice.contact
-    const contactAddressParts = c ? [c.addressLine1, [c.postalCode, c.city].filter(Boolean).join(" ")].filter(Boolean) : []
-    const contactAddress = contactAddressParts.length ? contactAddressParts.join(", ") : null
+    // ── Template data ──────────────────────────────────────────────────────────
+    const tmpl: InvoiceTemplateData = {
+      logoUrl:         template?.logoUrl        ?? null,
+      showLogo:        template?.showLogo        ?? true,
+      footerText:      template?.footerText      ?? null,
+      postalAddress:   template?.postalAddress   ?? null,
+      streetAddress:   template?.streetAddress   ?? null,
+      phone:           template?.phone           ?? null,
+      fax:             template?.fax             ?? null,
+      bankgiro:        template?.bankgiro        ?? null,
+      plusgiro:        template?.plusgiro        ?? null,
+      iban:            template?.iban            ?? null,
+      bic:             template?.bic             ?? null,
+      email:           template?.email           ?? null,
+      website:         template?.website         ?? null,
+      vatNumber:       template?.vatNumber       ?? null,
+      fScattCertified: template?.fScattCertified ?? false,
+      showSwishQr:     template?.showSwishQr     ?? false,
+      swishNumber:     template?.swishNumber     ?? null,
+      boardSeat:       template?.boardSeat       ?? null,
+    }
 
+    // ── Billing address ────────────────────────────────────────────────────────
+    const billingLines = extractBillingLines(invoice.billingAddress, c ?? null)
+
+    // ── Delivery address ───────────────────────────────────────────────────────
+    const deliveryLines: string[] = []
+    if (invoice.deliveryLine1) deliveryLines.push(invoice.deliveryLine1)
+    if (invoice.deliveryLine2) deliveryLines.push(invoice.deliveryLine2)
+    const deliveryCityLine = [invoice.deliveryPostalCode, invoice.deliveryCity].filter(Boolean).join(" ")
+    if (deliveryCityLine) deliveryLines.push(deliveryCityLine)
+    const hasDelivery = !!(invoice.deliveryName || deliveryLines.length > 0)
+
+    // ── Line items ─────────────────────────────────────────────────────────────
+    const lines: InvoicePdfLine[] = invoice.lineItems.map(l => {
+      const qty      = Number(l.quantity)
+      const price    = Number(l.unitPrice)
+      const total    = Number(l.lineTotal)
+      const isInfo   = qty === 0 && price === 0
+      return {
+        articleNumber: l.articleNumber ?? null,
+        description:   l.description,
+        quantity:      qty,
+        deliveredQty:  l.deliveredQuantity != null ? Number(l.deliveredQuantity) : null,
+        unit:          l.unit,
+        unitPrice:     price,
+        discountRate:  Number(l.discountRate),
+        lineTotal:     total,
+        isInfoRow:     isInfo,
+      }
+    })
+
+    // ── Swish QR ───────────────────────────────────────────────────────────────
+    let swishQrDataUrl: string | null = null
+    if (tmpl.showSwishQr && tmpl.swishNumber) {
+      const totalKr = (Number(invoice.totalAmount) / 100).toFixed(2)
+      const payload = `C${tmpl.swishNumber};${totalKr};${invoice.invoiceNumber};0`
+      swishQrDataUrl = await QRCode.toDataURL(payload, { width: 120, margin: 1 })
+    }
+
+    // ── Assemble data ──────────────────────────────────────────────────────────
     const data: InvoicePdfData = {
-      branding: {
-        primaryColor:     branding.primaryColor,
-        pdfLogoUrl:       branding.pdfLogoUrl,
-        pdfFooterText:    branding.pdfFooterText,
-        pdfShowPoweredBy: branding.pdfShowPoweredBy,
-        displayName:      branding.displayName,
-      },
-      invoiceNumber:  invoice.invoiceNumber ?? "Utkast",
+      lang,
       invoiceType:    invoice.type,
+      invoiceNumber:  invoice.invoiceNumber ?? "Utkast",
       issueDate:      invoice.issueDate.toLocaleDateString("sv-SE"),
       dueDate:        invoice.dueDate.toLocaleDateString("sv-SE"),
       currency:       invoice.currency,
-      orgName:        org.name,
-      orgAddress,
-      orgEmail:       org.contactEmail ?? null,
-      orgVatNumber:   org.vatNumber ?? null,
-      contactName:    c?.name ?? "—",
-      contactAddress,
+      orgName:        org?.name ?? "",
+      pdfLogoUrl:     branding.pdfLogoUrl ?? null,
+      template:       tmpl,
+      customerNumber: c?.customerNumber ?? null,
+      contactVatNumber: c?.vatNumber ?? null,
+      billingName:    invoice.billingName ?? c?.name ?? null,
+      billingLines,
+      hasDeliveryAddress: hasDelivery,
+      deliveryName:   invoice.deliveryName ?? null,
+      deliveryLines,
+      yourReference:  invoice.yourReference  ?? null,
+      ourReference:   invoice.ourReference   ?? null,
+      shipmentMark:   invoice.shipmentMark   ?? null,
+      yourOrderNumber: invoice.yourOrderNumber ?? null,
+      paymentTermsDays: invoice.paymentTermsDays ?? null,
+      lines,
       notes:          invoice.notes ?? null,
-      footerText:     invoice.footerText ?? null,
-      reference:      invoice.reference ?? null,
-      lines: invoice.lineItems.map(l => ({
-        description:  l.description,
-        quantity:     Number(l.quantity),
-        unit:         l.unit,
-        unitPrice:    Number(l.unitPrice),
-        taxRate:      Number(l.taxRate),
-        discountRate: Number(l.discountRate),
-        total:        Number(l.lineTotal),
-      })),
-      subtotalAmount:  Number(invoice.subtotalAmount),
-      taxAmount:       Number(invoice.taxAmount),
-      discountAmount:  Number(invoice.discountAmount),
-      totalAmount:     Number(invoice.totalAmount),
+      subtotalAmount: Number(invoice.subtotalAmount),
+      freightAmount:  Number(invoice.freightAmount),
+      invoiceFeeAmount: Number(invoice.invoiceFeeAmount),
+      taxAmount:      Number(invoice.taxAmount),
+      roundingAmount: Number(invoice.roundingAmount),
+      totalAmount:    Number(invoice.totalAmount),
+      interestRatePercent: getInterestRate(org?.invoicingSettings),
+      swishQrDataUrl,
     }
 
     const stream = await renderToStream(
@@ -115,13 +209,11 @@ export async function GET(
         "Content-Length":      String(pdf.length),
       },
     })
+
   } catch (err) {
-    if ((err as { name?: string }).name === "UnauthenticatedError") {
-      return Response.json({ error: "Ej inloggad" }, { status: 401 })
-    }
-    if ((err as { name?: string }).name === "UnauthorizedError") {
-      return Response.json({ error: "Otillräckliga rättigheter" }, { status: 403 })
-    }
+    const e = err as { name?: string }
+    if (e.name === "UnauthenticatedError") return Response.json({ error: "Ej inloggad" }, { status: 401 })
+    if (e.name === "UnauthorizedError")    return Response.json({ error: "Otillräckliga rättigheter" }, { status: 403 })
     console.error("[invoices/pdf]", err)
     return Response.json({ error: "Internt fel" }, { status: 500 })
   }

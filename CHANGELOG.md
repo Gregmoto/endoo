@@ -7,6 +7,24 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-05-19
+
+### Changed
+- **[F3a]** PDF-fakturamallen byggd om från grunden — följer svensk fakturastandard med modern typografi (Boove/Fortnox-inspirerad layout)
+- **[F3a]** Tomma fält visas inte längre i PDF — godsmärke, frakt, öresutjämning m.fl. utelämnas automatiskt om de är noll/null
+- **[F3a]** All sidfots-data (bankgiro, IBAN, BIC, adress, telefon, e-post, web) hämtas nu från InvoiceTemplate
+
+### Added
+- **[F3a]** Nio separata PDF-subkomponenter under `src/lib/pdf/templates/invoice/`: Header, Addresses, Metadata, LineItemsTable, InfoBox, InterestNotice, Summary, SwishQr, PageFooter
+- **[F3a]** Multi-page support med upprepad sidfot (4 kolumner) på varje sida
+- **[F3a]** Info-box centrerad i PDF renderas om `template.footerText` är satt
+- **[F3a]** Swish QR-kod genereras automatiskt med `qrcode`-biblioteket (om showSwishQr + swishNumber satt)
+- **[F3a]** Dröjsmålsränta-notis renderas om `interestRatePercent > 0` i org-inställningar
+- **[F3a]** InvoiceTemplate2 utökad med fält: `swishNumber`, `logoUrl`, `email`, `website`, `boardSeat`, `fax`
+
+### Database
+- **[F3a]** Migration `20260519_001_invoice_template_fields`: lägger till 6 kolumner på `invoice_templates`
+
 ## [0.23.0] - 2026-05-19
 
 ### Added

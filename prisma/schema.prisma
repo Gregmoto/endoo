@@ -4163,6 +4163,12 @@ model InvoiceTemplate2 {
   bic            String?
   vatNumber      String?
   fScattCertified Boolean @default(true)
+  swishNumber    String?
+  logoUrl        String?
+  email          String?
+  website        String?
+  boardSeat      String?
+  fax            String?
   isDefault      Boolean  @default(false)
   isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
