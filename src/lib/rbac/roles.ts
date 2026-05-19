@@ -56,6 +56,8 @@ import {
   DEPRECIATION_PERMISSIONS,
   REMINDER_PERMISSIONS,
   RECURRING_PERMISSIONS,
+  CALENDAR_PERMISSIONS,
+  DASHBOARD_PERMISSIONS,
   type Permission,
 } from "./permissions"
 
@@ -109,6 +111,8 @@ const SUPER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(INVOICE_TEMPLATES_PERMISSIONS),
   ...Object.values(EXCHANGE_RATES_PERMISSIONS),
   ...Object.values(ACCOUNT_MAPPING_PERMISSIONS),
+  ...Object.values(CALENDAR_PERMISSIONS),
+  ...Object.values(DASHBOARD_PERMISSIONS),
 ]
 
 // ─────────────────────────────────────────────
@@ -214,6 +218,8 @@ const AGENCY_OWNER_PERMISSIONS: Permission[] = [
   ...Object.values(PRICE_LISTS_PERMISSIONS),
   ...Object.values(INVOICE_TEMPLATES_PERMISSIONS),
   ...Object.values(EXCHANGE_RATES_PERMISSIONS),
+  ...Object.values(CALENDAR_PERMISSIONS),
+  DASHBOARD_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -323,6 +329,8 @@ const AGENCY_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(PRICE_LISTS_PERMISSIONS),
   ...Object.values(INVOICE_TEMPLATES_PERMISSIONS),
   ...Object.values(EXCHANGE_RATES_PERMISSIONS),
+  ...Object.values(CALENDAR_PERMISSIONS),
+  DASHBOARD_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -409,6 +417,8 @@ const AGENCY_STAFF_PERMISSIONS: Permission[] = [
   PRICE_LISTS_PERMISSIONS.READ,
   INVOICE_TEMPLATES_PERMISSIONS.READ,
   EXCHANGE_RATES_PERMISSIONS.READ,
+  ...Object.values(CALENDAR_PERMISSIONS),
+  DASHBOARD_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -444,6 +454,8 @@ const AGENCY_VIEWER_PERMISSIONS: Permission[] = [
   PRICE_LISTS_PERMISSIONS.READ,
   INVOICE_TEMPLATES_PERMISSIONS.READ,
   EXCHANGE_RATES_PERMISSIONS.READ,
+  CALENDAR_PERMISSIONS.READ,
+  DASHBOARD_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -545,6 +557,8 @@ const CUSTOMER_OWNER_PERMISSIONS: Permission[] = [
   ...Object.values(PRICE_LISTS_PERMISSIONS),
   ...Object.values(INVOICE_TEMPLATES_PERMISSIONS),
   ...Object.values(EXCHANGE_RATES_PERMISSIONS),
+  ...Object.values(CALENDAR_PERMISSIONS),
+  DASHBOARD_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -638,6 +652,8 @@ const CUSTOMER_ADMIN_PERMISSIONS: Permission[] = [
   ...Object.values(PRICE_LISTS_PERMISSIONS),
   ...Object.values(INVOICE_TEMPLATES_PERMISSIONS),
   ...Object.values(EXCHANGE_RATES_PERMISSIONS),
+  ...Object.values(CALENDAR_PERMISSIONS),
+  DASHBOARD_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -721,6 +737,8 @@ const CUSTOMER_USER_PERMISSIONS: Permission[] = [
   PRICE_LISTS_PERMISSIONS.READ,
   INVOICE_TEMPLATES_PERMISSIONS.READ,
   EXCHANGE_RATES_PERMISSIONS.READ,
+  ...Object.values(CALENDAR_PERMISSIONS),
+  DASHBOARD_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────
@@ -757,6 +775,8 @@ const CUSTOMER_VIEWER_PERMISSIONS: Permission[] = [
   PRICE_LISTS_PERMISSIONS.READ,
   INVOICE_TEMPLATES_PERMISSIONS.READ,
   EXCHANGE_RATES_PERMISSIONS.READ,
+  CALENDAR_PERMISSIONS.READ,
+  DASHBOARD_PERMISSIONS.READ,
 ]
 
 // ─────────────────────────────────────────────

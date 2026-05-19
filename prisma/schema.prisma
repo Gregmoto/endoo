@@ -604,6 +604,9 @@ model Organization {
   taskAssignments  TaskAssignment[]  @relation("OrgTaskAssignments")
   taskComments     TaskComment[]     @relation("OrgTaskComments")
 
+  // Calendar
+  calendarEvents CalendarEvent[]
+
   // AI
   aiSuggestions AiSuggestion[]
   aiAnomalies   AiAnomaly[]
@@ -741,6 +744,10 @@ model User {
   taskAssignments  TaskAssignment[] @relation("AssignedTasks")
   taskAssignedByMe TaskAssignment[] @relation("TasksAssignedByMe")
   taskComments     TaskComment[]    @relation("TaskCommentAuthor")
+
+  // Calendar
+  calendarEventsCreated  CalendarEvent[]        @relation("CalendarEventCreator")
+  calendarEventAttendees CalendarEventAttendee[] @relation("CalendarEventAttendees")
 
   @@index([email])
   @@index([isPlatformAdmin])
@@ -4178,6 +4185,53 @@ model InvoiceTemplate2 {
 
   @@index([organizationId])
   @@map("invoice_templates")
+}
+
+model CalendarEvent {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  creatorId      String   @db.Uuid
+  title          String
+  description    String?  @db.Text
+  startAt        DateTime
+  endAt          DateTime?
+  allDay         Boolean  @default(false)
+  location       String?
+  color          String?
+  shareWithAll   Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  attendees    CalendarEventAttendee[]
+  creator      User         @relation("CalendarEventCreator", fields: [creatorId],      references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, startAt])
+  @@map("calendar_events")
+}
+
+model CalendarEventAttendee {
+  id      String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId String @db.Uuid
+  userId  String @db.Uuid
+  status  String @default("invited")
+
+  event CalendarEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User          @relation("CalendarEventAttendees", fields: [userId], references: [id])
+
+  @@unique([eventId, userId])
+  @@map("calendar_event_attendees")
+}
+
+model UserDashboardPreferences {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String   @db.Uuid
+  organizationId String   @db.Uuid
+  hiddenWidgets  String[]
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, organizationId])
+  @@map("user_dashboard_preferences")
 }
 
 model ExchangeRate {

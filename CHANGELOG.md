@@ -7,6 +7,28 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.28.0] - 2026-05-19
+
+### Added
+- **[D1]** Komplett ny företagsdashboard med 8 widgets (ersätter gammal enkel vy)
+- **[D1]** Dagens översikt-widget med smart prioritering av uppgifter
+- **[D1]** Attesteringar-widget för väntande leverantörsfakturor
+- **[D1]** KPI-rad: Kassa, Att få in, Att betala, Månadens resultat
+- **[D1]** Kalender-widget (minimånad) med events och delning
+- **[D1]** Snabbåtgärder-widget med vanligaste actions
+- **[D1]** Intäkter 12-månaders stapeldiagram med MTD/YTD
+- **[D1]** Topp 5 kunder YTD med stapelvisualisering
+- **[D1]** Senaste aktivitet-widget med 30s polling
+- **[D1]** Anpassa-modal för att visa/dölja widgets
+- **[D1]** Kalender-sida /[orgSlug]/calendar med månadsvy
+- **[D1]** CalendarEvent + CalendarEventAttendee + UserDashboardPreferences modeller
+- **[D1]** API: /api/dashboard/{kpis,today-overview,approvals,revenue-chart,top-customers,recent-activity,preferences}
+- **[D1]** API: /api/calendar/events (CRUD)
+- **[D1]** AgencyDashboardPlaceholder (Byrå-dashboard kommer i D2)
+
+### Database
+- **[D1]** Migration `20260519_002_calendar_and_dashboard`: CalendarEvent, CalendarEventAttendee, UserDashboardPreferences
+
 ## [0.27.0] - 2026-05-19
 
 ### Fixed

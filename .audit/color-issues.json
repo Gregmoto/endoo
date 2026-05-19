@@ -14,6 +14,12 @@
       "suggestion": "use text-muted-foreground instead of opacity on text"
     },
     {
+      "file": "src/app/(dashboard)/[orgSlug]/articles/[id]/page.tsx",
+      "line": 535,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
       "file": "src/app/(dashboard)/[orgSlug]/inventory/[id]/page.tsx",
       "line": 154,
       "match": "text-white",
@@ -96,12 +102,6 @@
       "line": 94,
       "match": "text-white",
       "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
-    },
-    {
-      "file": "src/app/(dashboard)/[orgSlug]/page.tsx",
-      "line": 90,
-      "match": "hover:bg-gray-800",
-      "suggestion": "hover:bg-accent"
     },
     {
       "file": "src/app/(dashboard)/[orgSlug]/reports/balance-sheet/page.tsx",
@@ -1394,6 +1394,12 @@
       "suggestion": "use text-muted-foreground instead of opacity on text"
     },
     {
+      "file": "src/components/articles/ArticleForm.tsx",
+      "line": 545,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
       "file": "src/components/layout/ImpersonationBanner.tsx",
       "line": 56,
       "match": "text-white",
@@ -1460,6 +1466,30 @@
       "suggestion": "use text-muted-foreground instead of opacity on text"
     },
     {
+      "file": "src/components/navigation/AvatarDropdown.tsx",
+      "line": 140,
+      "match": "opacity-60",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/navigation/MobileSlideOver.tsx",
+      "line": 201,
+      "match": "opacity-60",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/navigation/OrgSwitcher.tsx",
+      "line": 61,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/components/navigation/OrgSwitcher.tsx",
+      "line": 86,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
       "file": "src/components/notifications/NotificationBell.tsx",
       "line": 56,
       "match": "text-white",
@@ -1486,6 +1516,12 @@
     {
       "file": "src/components/org-switcher.tsx",
       "line": 185,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/settings/template/TemplatePreviewControls.tsx",
+      "line": 85,
       "match": "opacity-50",
       "suggestion": "use text-muted-foreground instead of opacity on text"
     },
@@ -1562,12 +1598,6 @@
       "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
     },
     {
-      "file": "src/components/theme/ThemeToggle.tsx",
-      "line": 20,
-      "match": "hover:bg-gray-800",
-      "suggestion": "hover:bg-accent"
-    },
-    {
       "file": "src/components/ui/CameraCapture.tsx",
       "line": 102,
       "match": "text-white",
@@ -1642,7 +1672,7 @@
   ],
   "summary": {
     "totalErrors": 0,
-    "totalWarnings": 273,
-    "filesAffected": 86
+    "totalWarnings": 278,
+    "filesAffected": 90
   }
 }

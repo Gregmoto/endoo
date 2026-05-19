@@ -70,6 +70,17 @@ export const PRODUCT_PERMISSIONS = {
 // ─────────────────────────────────────────────
 // ACCOUNT MAPPING SETTINGS PERMISSIONS
 // ─────────────────────────────────────────────
+export const CALENDAR_PERMISSIONS = {
+  READ:   "calendar:read",
+  CREATE: "calendar:create",
+  UPDATE: "calendar:update",
+  DELETE: "calendar:delete",
+} as const
+
+export const DASHBOARD_PERMISSIONS = {
+  READ: "dashboard:read",
+} as const
+
 export const ACCOUNT_MAPPING_PERMISSIONS = {
   READ:   "settings:account_mappings:read",
   UPDATE: "settings:account_mappings:update",
@@ -401,6 +412,8 @@ export type Permission =
   | (typeof FIXED_ASSET_PERMISSIONS)[keyof typeof FIXED_ASSET_PERMISSIONS]
   | (typeof DEPRECIATION_PERMISSIONS)[keyof typeof DEPRECIATION_PERMISSIONS]
   | (typeof ACCOUNT_MAPPING_PERMISSIONS)[keyof typeof ACCOUNT_MAPPING_PERMISSIONS]
+  | (typeof CALENDAR_PERMISSIONS)[keyof typeof CALENDAR_PERMISSIONS]
+  | (typeof DASHBOARD_PERMISSIONS)[keyof typeof DASHBOARD_PERMISSIONS]
 
 export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(REMINDER_PERMISSIONS),
@@ -438,4 +451,6 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
   ...Object.values(ACCOUNT_MAPPING_PERMISSIONS),
+  ...Object.values(CALENDAR_PERMISSIONS),
+  ...Object.values(DASHBOARD_PERMISSIONS),
 ]

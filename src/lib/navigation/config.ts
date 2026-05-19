@@ -84,6 +84,12 @@ export const NAV_CATEGORIES: NavCategory[] = [
     matchPaths: ["/signatures"],
   },
   {
+    id: "calendar",
+    label: "Kalender",
+    href: (slug) => `/${slug}/calendar`,
+    matchPaths: ["/calendar"],
+  },
+  {
     id: "agency",
     label: "Byrå",
     href: (slug) => `/${slug}/clients`,
