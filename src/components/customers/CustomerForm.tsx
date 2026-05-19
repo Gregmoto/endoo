@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select } from "@/components/ui/select"
+import { CurrencySelect } from "@/components/ui/CurrencySelect"
 import { COUNTRIES } from "@/lib/data/countries"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -121,14 +122,6 @@ const VAT_TYPES = [
   { value: "NONE",         label: "Ingen moms" },
 ]
 
-const CURRENCIES = [
-  { value: "SEK", label: "SEK" },
-  { value: "EUR", label: "EUR" },
-  { value: "USD", label: "USD" },
-  { value: "GBP", label: "GBP" },
-  { value: "NOK", label: "NOK" },
-  { value: "DKK", label: "DKK" },
-]
 
 const DEFAULT_PAYMENT_DAYS = [
   { value: "",   label: "— Välj —" },
@@ -686,12 +679,14 @@ export function CustomerForm({ mode, orgSlug, initialData, customerId, onSaved }
                     onChange={set("priceListId")}
                     options={priceListOptions}
                   />
-                  <Select
-                    label="Standardvaluta"
-                    value={form.defaultCurrency}
-                    onChange={set("defaultCurrency")}
-                    options={CURRENCIES}
-                  />
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-medium text-foreground">Standardvaluta</label>
+                    <CurrencySelect
+                      value={form.defaultCurrency}
+                      onChange={set("defaultCurrency")}
+                      className="block w-full rounded-lg border px-3 py-2 text-sm text-foreground bg-card border-input focus:outline-none focus:ring-2 focus:ring-ring"
+                    />
+                  </div>
                   <Field label="Fakturarabatt (%)">
                     <input
                       type="number"

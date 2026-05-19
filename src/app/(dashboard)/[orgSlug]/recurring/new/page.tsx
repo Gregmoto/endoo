@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { CurrencySelect } from "@/components/ui/CurrencySelect"
 import { generatePreviewSchedule } from "@/lib/invoicing/recurring/schedule"
 import type { RecurringFrequency } from "@/lib/invoicing/recurring/schedule"
 
@@ -37,6 +38,7 @@ type WizardState = {
   endDate:      string
   maxInvoices:  number
   // Step 4
+  currency:         string
   paymentTermsDays: number
   ourReference:     string
   yourReference:    string
@@ -98,6 +100,7 @@ export default function NewRecurringPage() {
     lines: [{ ...defaultLine }],
     startDate: todayStr(), frequency: "monthly", customDays: 30,
     endType: "forever", endDate: "", maxInvoices: 12,
+    currency: "SEK",
     paymentTermsDays: 30, ourReference: "", yourReference: "",
     autoSendMethod: "manual",
   })
@@ -159,7 +162,7 @@ export default function NewRecurringPage() {
         endDate:             form.endType === "date" && form.endDate ? form.endDate : null,
         maxInvoices:         form.endType === "count" ? form.maxInvoices : null,
         invoicesPerOccasion: 1,
-        currency:            "SEK",
+        currency:            form.currency,
         paymentTermsDays:    form.paymentTermsDays,
         ourReference:        form.ourReference || null,
         yourReference:       form.yourReference || null,
@@ -488,6 +491,14 @@ export default function NewRecurringPage() {
             <>
               <h2 className="text-base font-semibold text-foreground">Detaljer</h2>
               <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Valuta</label>
+                  <CurrencySelect
+                    value={form.currency}
+                    onChange={e => setField("currency", e.target.value)}
+                    className="w-48 px-3 py-2 text-sm border border-input rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">Betalningsvillkor (dagar)</label>
                   <input

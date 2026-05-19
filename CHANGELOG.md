@@ -7,6 +7,16 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.22.2] - 2026-05-19
+
+### Fixed
+- **[F2]** Valuta visas nu som dropdown överallt (inte fritext) — hämtas konsekvent från Currency-modellen via `/api/settings/currencies?active=true`
+- **[F2]** Standardvaluta läses automatiskt från Organization currencies (isDefault) via `useCurrencies()`-hook
+- **[F2]** Ny återanvändbar `<CurrencySelect />` komponent i `src/components/ui/CurrencySelect.tsx`
+- **[F2]** Ny `useCurrencies()` hook i `src/lib/hooks/use-currencies.ts`
+- **[F2]** Uppdaterat `GET /api/settings/currencies?active=true` — returnerar bara aktiva valutor
+- **[F2]** Valuta-dropdown uppdaterad i: faktura ny, offert ny, återkommande avtal (steg 4 Detaljer), kundformulär, fakturainställningar, prislisteinställningar, allmänna faktureringsinställningar
+
 ## [0.22.1] - 2026-05-19
 
 ### Changed

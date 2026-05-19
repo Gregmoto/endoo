@@ -5,6 +5,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { CurrencySelect } from "@/components/ui/CurrencySelect"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -200,9 +201,7 @@ export default function NewInvoicePage() {
               </select>
             </Field>
             <Field label="Valuta">
-              <select value={form.currency} onChange={setField("currency")} className={fieldCls}>
-                {["SEK","EUR","USD","GBP","NOK","DKK"].map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <CurrencySelect value={form.currency} onChange={setField("currency")} className={fieldCls} />
             </Field>
             <Field label="Fakturadatum">
               <input type="date" required value={form.issueDate} onChange={setField("issueDate")} className={fieldCls} />

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { CurrencySelect } from "@/components/ui/CurrencySelect"
 
 type PriceList = {
   id:        string
@@ -119,9 +120,7 @@ export default function PriceListsPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-muted-foreground mb-1">Valuta</label>
-                  <select value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))} className={cls}>
-                    {["SEK","EUR","USD","GBP","NOK","DKK"].map(c => <option key={c}>{c}</option>)}
-                  </select>
+                  <CurrencySelect value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))} className={cls} />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-muted-foreground mb-1">Prisläge</label>

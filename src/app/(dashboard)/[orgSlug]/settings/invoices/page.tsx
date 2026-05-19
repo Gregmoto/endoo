@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { CurrencySelect } from "@/components/ui/CurrencySelect"
 
 type InvoiceForm = {
   invoicePrefix: string
@@ -144,14 +145,7 @@ export default function InvoiceSettingsPage() {
                 </select>
               </Field>
               <Field label="Valuta">
-                <select value={form.defaultCurrency} onChange={onInput("defaultCurrency")} className={cls}>
-                  <option value="SEK">SEK</option>
-                  <option value="EUR">EUR</option>
-                  <option value="USD">USD</option>
-                  <option value="NOK">NOK</option>
-                  <option value="DKK">DKK</option>
-                  <option value="GBP">GBP</option>
-                </select>
+                <CurrencySelect value={form.defaultCurrency} onChange={onInput("defaultCurrency")} className={cls} />
               </Field>
             </div>
           </CardContent>

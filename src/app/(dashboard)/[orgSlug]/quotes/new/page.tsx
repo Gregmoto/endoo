@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation"
 import Link                     from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button }               from "@/components/ui/button"
+import { CurrencySelect }       from "@/components/ui/CurrencySelect"
 
 type Contact = { id: string; name: string; email: string | null; defaultCurrency: string | null }
 type Product = { id: string; name: string; sku: string | null; unitPrice: number; taxRate: number; unit: string; description: string | null }
@@ -201,9 +202,7 @@ export default function NewQuotePage() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">Valuta</label>
-                <select className={fieldCls} value={form.currency} onChange={e => setField("currency", e.target.value)}>
-                  <option>SEK</option><option>EUR</option><option>USD</option><option>NOK</option><option>DKK</option>
-                </select>
+                <CurrencySelect value={form.currency} onChange={e => setField("currency", e.target.value)} className={fieldCls} />
               </div>
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">Giltig till</label>

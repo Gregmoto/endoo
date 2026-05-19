@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { CurrencySelect } from "@/components/ui/CurrencySelect"
 
 type Form = {
   defaultCurrency:         string
@@ -76,9 +77,7 @@ export default function GeneralInvoicingPage() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-3 gap-4">
             <Field label="Standardvaluta">
-              <select value={form.defaultCurrency} onChange={e => setForm(f => ({ ...f, defaultCurrency: e.target.value }))} className={cls}>
-                {["SEK","EUR","USD","GBP","NOK","DKK"].map(c => <option key={c}>{c}</option>)}
-              </select>
+              <CurrencySelect value={form.defaultCurrency} onChange={e => setForm(f => ({ ...f, defaultCurrency: e.target.value }))} className={cls} />
             </Field>
             <Field label="Standard momssats">
               <select value={form.defaultTaxRate} onChange={e => setForm(f => ({ ...f, defaultTaxRate: Number(e.target.value) }))} className={cls}>
