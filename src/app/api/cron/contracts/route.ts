@@ -10,7 +10,9 @@
  */
 
 import { prisma } from "@/lib/prisma"
-import { nextDate, calcLineTotal, calcTaxAmount } from "@/lib/contracts/utils"
+import { calcLineTotal, calcTaxAmount } from "@/lib/contracts/utils"
+import { calculateNextIssueDate } from "@/lib/invoicing/recurring/schedule"
+import type { RecurringFrequency } from "@/lib/invoicing/recurring/schedule"
 
 export async function GET(req: Request) { return handle(req) }
 export async function POST(req: Request) { return handle(req) }
@@ -43,7 +45,7 @@ async function handle(req: Request) {
     try {
       const issueDate = schedule.nextIssueDate
 
-      // Idempotency guard
+      // Idempotency: skip if invoice already exists for this date
       const dup = await prisma.invoice.findFirst({
         where: {
           recurringScheduleId: schedule.id,
@@ -62,17 +64,16 @@ async function handle(req: Request) {
         continue
       }
 
-      // Invoice number: YYYY-NNNN scoped to org
-      const year  = issueDate.getFullYear()
-      const count = await prisma.invoice.count({ where: { organizationId: schedule.organizationId } })
+      const year          = issueDate.getFullYear()
+      const count         = await prisma.invoice.count({ where: { organizationId: schedule.organizationId } })
       const invoiceNumber = `${year}-${String(count + 1).padStart(4, "0")}`
 
       const dueDate = new Date(issueDate)
       dueDate.setDate(dueDate.getDate() + (schedule.paymentTermsDays ?? 30))
 
       const lines = schedule.lines.map(l => {
-        const lineTotal = calcLineTotal(Number(l.quantity), Number(l.unitPrice), Number(l.discountRate))
-        const taxAmount = calcTaxAmount(lineTotal, Number(l.taxRate))
+        const lt  = calcLineTotal(Number(l.quantity), Number(l.unitPrice), Number(l.discountRate))
+        const tax = calcTaxAmount(lt, Number(l.taxRate))
         return {
           description:    l.description,
           quantity:       l.quantity,
@@ -80,8 +81,8 @@ async function handle(req: Request) {
           unitPrice:      l.unitPrice,
           taxRate:        l.taxRate,
           discountRate:   l.discountRate,
-          lineTotal:      BigInt(lineTotal),
-          taxAmount:      BigInt(taxAmount),
+          lineTotal:      BigInt(lt),
+          taxAmount:      BigInt(tax),
           productId:      l.productId,
           sortOrder:      l.sortOrder,
           organizationId: schedule.organizationId,
@@ -92,8 +93,19 @@ async function handle(req: Request) {
       const taxTotal       = lines.reduce((s, l) => s + Number(l.taxAmount), 0)
       const totalAmount    = subtotalAmount + taxTotal
 
-      const nextIssueDateAdv = nextDate(issueDate, schedule.frequency)
-      const shouldEnd = schedule.endDate != null && nextIssueDateAdv > schedule.endDate
+      const nextIssueDateAdv = calculateNextIssueDate(
+        issueDate,
+        schedule.frequency as RecurringFrequency,
+        schedule.customDays ?? undefined,
+      )
+
+      const newIssuedCount = schedule.issuedCount + 1
+      const shouldEnd =
+        (schedule.maxInvoices != null && newIssuedCount >= schedule.maxInvoices) ||
+        (schedule.endDate != null && nextIssueDateAdv > schedule.endDate)
+
+      const invoiceStatus = schedule.autoSendMethod === "email" ? "sent" : "draft"
+      const sentAt        = schedule.autoSendMethod === "email" ? new Date() : null
 
       const [invoice] = await prisma.$transaction([
         prisma.invoice.create({
@@ -107,20 +119,22 @@ async function handle(req: Request) {
             currency:            schedule.currency,
             reference:           schedule.reference,
             notes:               schedule.notes,
-            status:              "draft",
-            subtotalAmount:      BigInt(subtotalAmount),
-            taxAmount:           BigInt(taxTotal),
-            discountAmount:      BigInt(0),
-            totalAmount:         BigInt(totalAmount),
-            paidAmount:          BigInt(0),
-            lineItems:           { create: lines },
+            status:              invoiceStatus,
+            ...(sentAt ? { sentAt } : {}),
+            subtotalAmount: BigInt(subtotalAmount),
+            taxAmount:      BigInt(taxTotal),
+            discountAmount: BigInt(0),
+            totalAmount:    BigInt(totalAmount),
+            paidAmount:     BigInt(0),
+            lineItems:      { create: lines },
           },
         }),
         prisma.recurringSchedule.update({
           where: { id: schedule.id, organizationId: schedule.organizationId },
-          data: {
+          data:  {
             lastIssuedAt:  new Date(),
             nextIssueDate: nextIssueDateAdv,
+            issuedCount:   newIssuedCount,
             ...(shouldEnd ? { status: "ended" } : {}),
           },
         }),

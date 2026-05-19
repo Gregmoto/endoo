@@ -72,7 +72,9 @@ enum RecurringFrequency {
   biweekly
   monthly
   quarterly
+  halfyearly
   yearly
+  custom
 }
 
 enum RecurringStatus {
@@ -500,6 +502,7 @@ model Organization {
   invoices              Invoice[]
   invoiceLineItems      InvoiceLineItem[]
   payments              Payment[]
+  unmatchedPayments     UnmatchedPayment[]
   recurringSchedules    RecurringSchedule[]
   recurringScheduleLines RecurringScheduleLine[]
   settings              OrganizationSetting[]
@@ -1249,6 +1252,36 @@ model Payment {
 }
 
 // ─────────────────────────────────────────────
+// UNMATCHED PAYMENTS
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model UnmatchedPayment {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  importBatchId  String?  // FK to SyncJob/ImportBatch id (free-form reference)
+
+  paymentDate    DateTime @db.Date
+  amount         BigInt
+  currency       String   @default("SEK")
+  reference      String?
+  senderName     String?
+  senderAccount  String?
+  rawData        Json     @default("{}")
+
+  status                String   @default("unmatched")  // 'unmatched' | 'manually_assigned' | 'written_off'
+  assignedToInvoiceId   String?  @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([organizationId, status])
+  @@map("unmatched_payments")
+}
+
+// ─────────────────────────────────────────────
 // RECURRING SCHEDULES
 // TENANT-SCOPED: organization_id required
 // ─────────────────────────────────────────────
@@ -1265,6 +1298,22 @@ model RecurringSchedule {
   endDate        DateTime?         @db.Date
   nextIssueDate  DateTime          @db.Date
   lastIssuedAt   DateTime?
+
+  // Extended fields (v2)
+  title              String?
+  description        String?
+  customDays         Int?              // for frequency=custom: every N days
+  invoicesPerOccasion Int      @default(1)
+  maxInvoices        Int?              // stop after N invoices total
+  issuedCount        Int      @default(0)
+  ourReference       String?
+  yourReference      String?
+  priceListId        String?  @db.Uuid
+  deliveryMethodId   String?  @db.Uuid
+  deliveryTermsId    String?  @db.Uuid
+  autoSendMethod     String   @default("manual")  // 'email' | 'print' | 'manual'
+  previewSchedule    Json?
+  idempotencyPrefix  String?           // "recurring:{id}" — cron uses this
 
   currency         String   @default("SEK")
   paymentTermsDays Int      @default(30)

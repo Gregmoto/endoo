@@ -50,6 +50,30 @@
       "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
     },
     {
+      "file": "src/app/(dashboard)/[orgSlug]/invoices/page.tsx",
+      "line": 299,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/invoices/page.tsx",
+      "line": 314,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/invoices/page.tsx",
+      "line": 321,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/invoices/page.tsx",
+      "line": 330,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
       "file": "src/app/(dashboard)/[orgSlug]/journals/[id]/page.tsx",
       "line": 99,
       "match": "text-white",
@@ -231,13 +255,13 @@
     },
     {
       "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/[id]/page.tsx",
-      "line": 388,
+      "line": 406,
       "match": "text-white",
       "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
     },
     {
       "file": "src/app/(dashboard)/[orgSlug]/supplier-invoices/[id]/page.tsx",
-      "line": 388,
+      "line": 406,
       "match": "opacity-50",
       "suggestion": "use text-muted-foreground instead of opacity on text"
     },
@@ -334,6 +358,72 @@
     {
       "file": "src/app/(dashboard)/[orgSlug]/team/page.tsx",
       "line": 130,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/year-end/[id]/download/page.tsx",
+      "line": 216,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/year-end/[id]/download/page.tsx",
+      "line": 216,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/year-end/[id]/wizard/page.tsx",
+      "line": 158,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/year-end/[id]/wizard/page.tsx",
+      "line": 181,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/year-end/[id]/wizard/page.tsx",
+      "line": 200,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/year-end/[id]/wizard/page.tsx",
+      "line": 236,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/year-end/[id]/wizard/page.tsx",
+      "line": 236,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/year-end/[id]/wizard/page.tsx",
+      "line": 265,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/year-end/[id]/wizard/page.tsx",
+      "line": 107,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/year-end/[id]/wizard/page.tsx",
+      "line": 107,
+      "match": "text-white",
+      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
+    },
+    {
+      "file": "src/app/(dashboard)/[orgSlug]/year-end/page.tsx",
+      "line": 95,
       "match": "text-white",
       "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
     },
@@ -1335,37 +1425,37 @@
     },
     {
       "file": "src/components/layout/sidebar.tsx",
-      "line": 158,
+      "line": 165,
       "match": "hover:bg-gray-800",
       "suggestion": "hover:bg-accent"
     },
     {
       "file": "src/components/layout/sidebar.tsx",
-      "line": 161,
+      "line": 168,
       "match": "text-white",
       "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
     },
     {
       "file": "src/components/layout/sidebar.tsx",
-      "line": 184,
+      "line": 191,
       "match": "text-white",
       "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
     },
     {
       "file": "src/components/layout/sidebar.tsx",
-      "line": 362,
+      "line": 369,
       "match": "hover:bg-gray-800",
       "suggestion": "hover:bg-accent"
     },
     {
       "file": "src/components/layout/sidebar.tsx",
-      "line": 401,
+      "line": 408,
       "match": "hover:bg-gray-800",
       "suggestion": "hover:bg-accent"
     },
     {
       "file": "src/components/layout/sidebar.tsx",
-      "line": 263,
+      "line": 270,
       "match": "opacity-60",
       "suggestion": "use text-muted-foreground instead of opacity on text"
     },
@@ -1526,12 +1616,6 @@
       "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
     },
     {
-      "file": "src/components/ui/UpgradePrompt.tsx",
-      "line": 74,
-      "match": "text-white",
-      "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
-    },
-    {
       "file": "src/components/ui/WhatsNewModal.tsx",
       "line": 66,
       "match": "text-white",
@@ -1558,7 +1642,7 @@
   ],
   "summary": {
     "totalErrors": 0,
-    "totalWarnings": 259,
-    "filesAffected": 83
+    "totalWarnings": 273,
+    "filesAffected": 86
   }
 }

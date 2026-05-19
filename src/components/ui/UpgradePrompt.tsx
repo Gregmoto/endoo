@@ -39,6 +39,9 @@ const FEATURE_LABELS: Record<PlanFeature, string> = {
   invoice_export:                "Fakturaexport",
   interest_invoices:             "Räntefakturor",
   bulk_actions:                  "Massåtgärder",
+  payment_file_import:           "BGMax/fil-import",
+  auto_reminders:                "Automatiska påminnelser",
+  recurring_invoicing:           "Avtalsfakturering",
 }
 
 interface Props {

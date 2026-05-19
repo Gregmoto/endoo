@@ -62,9 +62,32 @@ export const PRODUCT_PERMISSIONS = {
 // PAYMENT PERMISSIONS
 // ─────────────────────────────────────────────
 export const PAYMENT_PERMISSIONS = {
-  READ:   "payments:read",
-  CREATE: "payments:create",   // record a payment
-  DELETE: "payments:delete",   // reverse a payment
+  READ:              "payments:read",
+  CREATE:            "payments:create",            // record a payment
+  DELETE:            "payments:delete",            // reverse a payment
+  IMPORT_FILE:       "payments:import_file",       // BGMax/camt/CSV import
+  WRITE_OFF_UNMATCHED: "payments:write_off_unmatched", // delete unmatched
+} as const
+
+// ─────────────────────────────────────────────
+// REMINDER PERMISSIONS
+// ─────────────────────────────────────────────
+export const REMINDER_PERMISSIONS = {
+  READ: "reminders:read",
+  SEND: "reminders:send",
+} as const
+
+// ─────────────────────────────────────────────
+// RECURRING INVOICE PERMISSIONS
+// ─────────────────────────────────────────────
+export const RECURRING_PERMISSIONS = {
+  READ:     "recurring:read",
+  CREATE:   "recurring:create",
+  UPDATE:   "recurring:update",
+  DELETE:   "recurring:delete",
+  ACTIVATE: "recurring:activate",
+  PAUSE:    "recurring:pause",
+  END:      "recurring:end",
 } as const
 
 // ─────────────────────────────────────────────
@@ -326,6 +349,8 @@ export const DEPRECIATION_PERMISSIONS = {
 } as const
 
 export type Permission =
+  | (typeof REMINDER_PERMISSIONS)[keyof typeof REMINDER_PERMISSIONS]
+  | (typeof RECURRING_PERMISSIONS)[keyof typeof RECURRING_PERMISSIONS]
   | (typeof INVOICING_SETTINGS_PERMISSIONS)[keyof typeof INVOICING_SETTINGS_PERMISSIONS]
   | (typeof PAYMENT_TERMS_PERMISSIONS)[keyof typeof PAYMENT_TERMS_PERMISSIONS]
   | (typeof UNITS_PERMISSIONS)[keyof typeof UNITS_PERMISSIONS]
@@ -360,6 +385,8 @@ export type Permission =
   | (typeof DEPRECIATION_PERMISSIONS)[keyof typeof DEPRECIATION_PERMISSIONS]
 
 export const ALL_PERMISSIONS: Permission[] = [
+  ...Object.values(REMINDER_PERMISSIONS),
+  ...Object.values(RECURRING_PERMISSIONS),
   ...Object.values(INVOICING_SETTINGS_PERMISSIONS),
   ...Object.values(PAYMENT_TERMS_PERMISSIONS),
   ...Object.values(UNITS_PERMISSIONS),

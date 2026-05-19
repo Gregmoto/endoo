@@ -7,6 +7,41 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-05-19
+
+### Added
+- **[Uppgift 1.7c]** Betalningsmodul: ny `/payments/page.tsx` med daggruppad lista, manuellt registreringsformulär med faktura-autokomplettering, borttagning av enskilda betalningar och bulk-radering
+- **[Uppgift 1.7c]** `GET/POST /api/payments` — paginerad lista med daggrupperingar + registrering av betalning med automatisk uppdatering av `Invoice.paidAmount`/`status`/`paidAt`
+- **[Uppgift 1.7c]** `GET/DELETE /api/payments/unmatched` — lista och bulk-avskriv omatchade betalningar
+- **[Uppgift 1.7c]** `DELETE /api/payments/[id]` — ta bort betalning och reversera fakturastatus
+- **[Uppgift 1.7c]** Påminnelsemodul: ny `/reminders/page.tsx` med statistikblock (obetalda/förfallna), dubbla flikar, påminnelsemodal med avgiftsväxel
+- **[Uppgift 1.7c]** `GET /api/reminders/stats` — räknar obetalda och förfallna fakturor med totalbelopp
+- **[Uppgift 1.7c]** `GET /api/reminders/invoices` — paginerad fakturalista med tab, sökning, `overdueMinDays`-filter och `daysOverdue`-beräkning
+- **[Uppgift 1.7c]** `POST /api/invoices/[id]/send-reminder` — skickar påminnelse, skapar valfri påminnelseavgift (60 kr), räknar upp `reminderCount`
+- **[Uppgift 1.7c]** `POST /api/invoices/bulk/send-reminders` — bulk-påminnelse till upp till 250 förfallna fakturor
+- **[Uppgift 1.7c]** Avtalsfaktureringsmodul: lista (`/recurring`), guideformulär (`/recurring/new`), detaljvy (`/recurring/[id]`) med flikar för info/rader/fakturor/schema
+- **[Uppgift 1.7c]** `GET/POST /api/recurring` — CRUD-lista med status-räkningar per flik
+- **[Uppgift 1.7c]** `GET/PUT/DELETE /api/recurring/[id]` — hämta, uppdatera, mjukt ta bort avtal
+- **[Uppgift 1.7c]** `POST /api/recurring/[id]/activate|pause|resume|end` — livscykelhantering av avtal
+- **[Uppgift 1.7c]** `POST /api/recurring/[id]/generate-now` — skapa faktura manuellt för aktivt avtal
+- **[Uppgift 1.7c]** `GET /api/recurring/[id]/preview-schedule` — förhandsgranska kommande fakturadatum
+- **[Uppgift 1.7c]** `GET/POST /api/cron/contracts` — idempotent cron-rutin som genererar fakturor för alla aktiva avtal vars `nextIssueDate` är idag eller tidigare
+- **[Uppgift 1.7c]** `src/lib/invoicing/recurring/schedule.ts` — `calculateNextIssueDate` (hanterar månadsskifte, skottår, kvartal, halvår) + `generatePreviewSchedule`
+- **[Uppgift 1.7c]** `src/lib/banking/bgmax/parser.ts` — BGMax-parser med stöd för alla posttyper (01, 05, 20/21, 22, 25, 26/27, 30/31, 90)
+- **[Uppgift 1.7c]** `src/lib/banking/camt/parser.ts` — camt.054-parser (ISO 20022 XML) utan extern XML-lib
+- **[Uppgift 1.7c]** `src/lib/banking/csv/parser.ts` — CSV-parser med stöd för `,`/`;`/tab-separatorer, svenska talformat, DD/MM/YYYY
+- **[Uppgift 1.7c]** 69 enhetstester för banking-parsers och schemaläggningslogik (bgmax/camt/csv + recurring schedule)
+- **[Uppgift 1.7c]** Nya RBAC-behörigheter: `PAYMENT_PERMISSIONS`, `REMINDER_PERMISSIONS`, `RECURRING_PERMISSIONS` (12 nya behörigheter totalt)
+- **[Uppgift 1.7c]** Nya planfunktioner: `payment_file_import` (Starter+), `auto_reminders` (Pro+), `recurring_invoicing` (Starter+)
+
+### Changed
+- **[Uppgift 1.7c]** Sidofält: lade till Påminnelser, Avtalsfakturering under Fakturering-gruppen
+- **[Uppgift 1.7c]** `src/lib/rbac/roles.ts`: alla 8 roller uppdaterade med betalnings-, påminnelse- och avtalsbehörigheter
+- **[Uppgift 1.7c]** `RecurringSchedule`-modell utökad med 12 nya fält (titel, beskrivning, customDays, m.fl.)
+
+### Database
+- **[Uppgift 1.7c]** `prisma db push`: ny modell `UnmatchedPayment`; `RecurringSchedule` utökad med 12 fält; `RecurringFrequency`-enum fick `halfyearly` och `custom`
+
 ## [0.16.0] - 2026-05-19
 
 ### Added

@@ -20,8 +20,10 @@ const NAV_GROUPS = [
       { label: "Offerter",       href: "/quotes",            icon: "◩",  feature: "quotes" },
       { label: "Lev.fakturor",   href: "/supplier-invoices", icon: "◨",  feature: "supplier_invoices" },
       { label: "Betalningar",    href: "/payments",          icon: "◎" },
-      { label: "Avtal",          href: "/contracts",         icon: "↺" },
-      { label: "Signeringar",    href: "/signatures",        icon: "✍",  feature: "e_signing" },
+      { label: "Påminnelser",    href: "/reminders",         icon: "◷" },
+      { label: "Avtal",              href: "/contracts",  icon: "↺" },
+      { label: "Avtalsfakturering", href: "/recurring",  icon: "⟳" },
+      { label: "Signeringar",       href: "/signatures", icon: "✍",  feature: "e_signing" },
     ],
   },
   {

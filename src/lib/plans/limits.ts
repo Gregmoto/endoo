@@ -35,6 +35,9 @@ export type PlanFeature =
   | "invoice_export"
   | "interest_invoices"
   | "bulk_actions"
+  | "payment_file_import"
+  | "auto_reminders"
+  | "recurring_invoicing"
 
 export type PlanLimitKey =
   | "maxUsers"
@@ -84,6 +87,8 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "basic_reports",
       "quotes",
       "recurring_invoices",
+      "recurring_invoicing",
+      "payment_file_import",
       "sie_export",
       "vat_periods",
       "e_signing",
@@ -110,6 +115,9 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "advanced_reports",
       "quotes",
       "recurring_invoices",
+      "recurring_invoicing",
+      "payment_file_import",
+      "auto_reminders",
       "sie_export",
       "vat_periods",
       "e_signing",
@@ -174,6 +182,9 @@ export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
       "invoice_export",
       "interest_invoices",
       "bulk_actions",
+      "recurring_invoicing",
+      "payment_file_import",
+      "auto_reminders",
     ],
   },
 }
