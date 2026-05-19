@@ -56,10 +56,23 @@ export const CONTACT_PERMISSIONS = {
 // PRODUCT / SERVICE PERMISSIONS
 // ─────────────────────────────────────────────
 export const PRODUCT_PERMISSIONS = {
-  READ:   "products:read",
-  CREATE: "products:create",
-  UPDATE: "products:update",
-  DELETE: "products:delete",
+  READ:               "products:read",
+  CREATE:             "products:create",
+  UPDATE:             "products:update",
+  DELETE:             "products:delete",
+  BULK_UPDATE:        "products:bulk_update",
+  EXPORT:             "products:export",
+  IMPORT:             "products:import",
+  PRINT_LABELS:       "products:print_labels",
+  MANUAL_RESERVATION: "products:manual_reservation",
+} as const
+
+// ─────────────────────────────────────────────
+// ACCOUNT MAPPING SETTINGS PERMISSIONS
+// ─────────────────────────────────────────────
+export const ACCOUNT_MAPPING_PERMISSIONS = {
+  READ:   "settings:account_mappings:read",
+  UPDATE: "settings:account_mappings:update",
 } as const
 
 // ─────────────────────────────────────────────
@@ -387,6 +400,7 @@ export type Permission =
   | (typeof ACCRUAL_PERMISSIONS)[keyof typeof ACCRUAL_PERMISSIONS]
   | (typeof FIXED_ASSET_PERMISSIONS)[keyof typeof FIXED_ASSET_PERMISSIONS]
   | (typeof DEPRECIATION_PERMISSIONS)[keyof typeof DEPRECIATION_PERMISSIONS]
+  | (typeof ACCOUNT_MAPPING_PERMISSIONS)[keyof typeof ACCOUNT_MAPPING_PERMISSIONS]
 
 export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(REMINDER_PERMISSIONS),
@@ -423,4 +437,5 @@ export const ALL_PERMISSIONS: Permission[] = [
   ...Object.values(ACCRUAL_PERMISSIONS),
   ...Object.values(FIXED_ASSET_PERMISSIONS),
   ...Object.values(DEPRECIATION_PERMISSIONS),
+  ...Object.values(ACCOUNT_MAPPING_PERMISSIONS),
 ]

@@ -576,6 +576,8 @@ model Organization {
   deliveryMethods       DeliveryMethod[]
   deliveryTerms         DeliveryTerms[]
   priceLists            PriceList[]
+  accountMappings       AccountMapping[]
+  manualReservations    ManualReservation[]
   invoiceTemplates      InvoiceTemplate2[]
   exchangeRates         ExchangeRate[]
 
@@ -710,7 +712,8 @@ model User {
   invoicesCreated  Invoice[]   @relation("InvoiceCreatedBy")
   paymentsCreated  Payment[]   @relation("PaymentCreatedBy")
   schedulesCreated RecurringSchedule[] @relation("ScheduleCreatedBy")
-  managedContacts  Contact[]   @relation("AccountManagerContacts")
+  managedContacts      Contact[]            @relation("AccountManagerContacts")
+  manualReservations   ManualReservation[]  @relation("ManualReservations")
   signatureRequestsCreated SignatureRequest[] @relation("SignatureRequestCreatedBy")
   quotesCreated            Quote[]           @relation("QuoteCreatedBy")
 
@@ -1070,16 +1073,49 @@ model Product {
   salesAccount      String?
   vatType           String?
 
+  // v2 — identification
+  ean              String?
+  manufacturer     String?
+  manufacturerSku  String?
+  notes            String? @db.Text
+  isStockItem      Boolean @default(true)
+  isPhasingOut     Boolean @default(false)
+
+  // v2 — physical dimensions
+  width        Int?
+  height       Int?
+  depth        Int?
+  weightGrams  Int?
+
+  // v2 — additional sales accounts (overrides)
+  salesAccountReverseSE  String?
+  salesAccountReverseEU  String?
+  salesAccountVatableEU  String?
+  salesAccountExport     String?
+  inventoryAccount       String?
+  inventoryChangeAccount String?
+
+  // v2 — stock cache (denormalized for list performance)
+  stockQuantity     Decimal  @default(0) @db.Decimal(15, 4)
+  reservedQuantity  Decimal  @default(0) @db.Decimal(15, 4)
+  availableQuantity Decimal  @default(0) @db.Decimal(15, 4)
+  averageCost       BigInt   @default(0)
+  inventoryValue    BigInt   @default(0)
+  lastStockUpdateAt DateTime?
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  lineItems      InvoiceLineItem[]
-  inventoryItem  InventoryItem?
-  priceListItems PriceListItem[]
+  organization       Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lineItems          InvoiceLineItem[]
+  inventoryItem      InventoryItem?
+  priceListItems     PriceListItem[]
+  manualReservations ManualReservation[]
 
   @@index([organizationId])
+  @@index([organizationId, ean])
+  @@index([organizationId, manufacturerSku])
   @@unique([organizationId, sku])
   @@map("products")
 }
@@ -4061,6 +4097,53 @@ model PriceListItem {
   @@unique([priceListId, productId])
   @@index([priceListId])
   @@map("price_list_items")
+}
+
+// ─────────────────────────────────────────────
+// ACCOUNT MAPPING — momskonto per momstyp
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model AccountMapping {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String  @db.Uuid
+  vatTypeCode    String
+  salesAccount   String
+  vatAccountOut  String
+  vatAccountIn   String?
+  description    String?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, vatTypeCode])
+  @@index([organizationId])
+  @@map("account_mappings")
+}
+
+// ─────────────────────────────────────────────
+// MANUAL RESERVATION — manuell artikelreservering
+// TENANT-SCOPED: organization_id required
+// ─────────────────────────────────────────────
+model ManualReservation {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  productId      String   @db.Uuid
+
+  quantity    Decimal  @db.Decimal(15, 4)
+  reason      String
+  notes       String?
+  reservedById String  @db.Uuid
+
+  reservedAt   DateTime  @default(now())
+  expiresAt    DateTime?
+  cancelledAt  DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  product      Product      @relation(fields: [productId],      references: [id], onDelete: Cascade)
+  reservedBy   User         @relation("ManualReservations",     fields: [reservedById], references: [id])
+
+  @@index([organizationId, productId])
+  @@index([organizationId])
+  @@map("manual_reservations")
 }
 
 model InvoiceTemplate2 {

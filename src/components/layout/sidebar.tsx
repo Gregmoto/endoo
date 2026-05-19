@@ -46,7 +46,7 @@ const NAV_GROUPS = [
     label: "Hantering",
     items: [
       { label: "Kunder",    href: "/customers", icon: "◈" },
-      { label: "Artiklar",  href: "/products",  icon: "◉" },
+      { label: "Artiklar",  href: "/articles",  icon: "◉" },
       { label: "Lager",     href: "/inventory", icon: "▣", feature: "inventory" },
     ],
   },
