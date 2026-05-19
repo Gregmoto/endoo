@@ -43,11 +43,11 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: "Register",
+    label: "Hantering",
     items: [
-      { label: "Kunder",         href: "/contacts",          icon: "◈" },
-      { label: "Produkter",      href: "/products",          icon: "◉" },
-      { label: "Lager",          href: "/inventory",         icon: "▣",  feature: "inventory" },
+      { label: "Kunder",    href: "/customers", icon: "◈" },
+      { label: "Artiklar",  href: "/products",  icon: "◉" },
+      { label: "Lager",     href: "/inventory", icon: "▣", feature: "inventory" },
     ],
   },
 ]

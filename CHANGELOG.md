@@ -7,6 +7,20 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-05-19
+
+### Added
+- **[Uppgift 1.8]** Kundlista (`/customers/page.tsx`): sökbar, filterbar (land, status), sorterbar tabell med per-rad åtgärdsmeny, bulk-åtgärder (arkivera/aktivera/exportera), paginering med localStorage-storlek, och mobil kortlayout
+- **[Uppgift 1.8]** `CustomerForm` (`src/components/customers/CustomerForm.tsx`): flikformulär med 8 flikar (Allmän info, Leverans & Besök, Anteckningar, Fakturadata, Referenser, Bokföring, E-post, Fakturatext), autospar-utkast, kundtyp-radio (Företag/Privat), landsdropdown från COUNTRIES, betalningsvillkor-dropdown, VIES-verifiering, multi-chip e-post
+- **[Uppgift 1.8]** Ny kund-sida (`/customers/new/page.tsx`): wraps CustomerForm i "new"-läge
+- **[Uppgift 1.8]** Import-wizard (`/customers/import/page.tsx`): 5-stegs guide för CSV-import med automatisk kolumnmatchning, förhandsvisning och resultatsammanfattning
+- **[Uppgift 1.8a]** Kunddetaljsida `/(dashboard)/[orgSlug]/customers/[id]/page.tsx` med header, statistik och 10 flikar: Allmän information, Leverans & Besök, Anteckningar (inline-redigering), Fakturadata, Referenser, Bokföring (VIES-verifiering), E-post, Fakturatext, Transaktioner (paginerad tabell med filtrering), Aktivitet (tidslinje)
+- **[Uppgift 1.8a]** Kundredigeringssida `/(dashboard)/[orgSlug]/customers/[id]/edit/page.tsx` som laddar CustomerForm i edit-läge med mappade initialData
+- **[Uppgift 1.8a]** `GET /api/customers/[id]` — kunddetalj med relationer (accountManager, priceList, deliveryMethod, deliveryTerms, contactPersons)
+- **[Uppgift 1.8a]** `PUT /api/customers/[id]` — uppdatera internalNotes/notes
+- **[Uppgift 1.8a]** `GET /api/customers/[id]/transactions` — paginerad fakturalista med sammanfattningsstatistik (totalbelopp, obetalt, snittbetalningstid)
+- **[Uppgift 1.8a]** `GET /api/customers/[id]/activity` — aktivitetstidslinje baserad på audit-loggar
+
 ## [0.17.0] - 2026-05-19
 
 ### Added

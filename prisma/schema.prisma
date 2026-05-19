@@ -710,6 +710,7 @@ model User {
   invoicesCreated  Invoice[]   @relation("InvoiceCreatedBy")
   paymentsCreated  Payment[]   @relation("PaymentCreatedBy")
   schedulesCreated RecurringSchedule[] @relation("ScheduleCreatedBy")
+  managedContacts  Contact[]   @relation("AccountManagerContacts")
   signatureRequestsCreated SignatureRequest[] @relation("SignatureRequestCreatedBy")
   quotesCreated            Quote[]           @relation("QuoteCreatedBy")
 
@@ -907,41 +908,82 @@ model Contact {
   id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   organizationId String @db.Uuid
 
-  type  String @default("business") // 'business' | 'individual'
-  name  String
-  email String?
-  phone String?
+  type         String @default("business") // 'business' | 'individual'
+  customerType String @default("business") // business | individual
+  name         String
+  email        String?
+  phone        String?
+  phone2       String?
+  fax          String?
+  countryCode  String?  // dialing prefix e.g. "+46"
+  website      String?
 
-  // Swedish business identifiers
-  vatNumber String?
-  orgNumber String?
+  // Swedish identifiers
+  vatNumber      String?
+  orgNumber      String?
+  personalNumber String?  @db.VarChar(13) // YYYYMMDD-NNNN for individuals
 
+  // Billing address
   addressLine1 String?
   addressLine2 String?
   city         String?
   postalCode   String?
   country      String  @default("SE")
 
-  // Status & classification
-  status         ContactStatus @default(active)
-  customerNumber String?       // org-scoped sequence, e.g. K-0042
-  website        String?
-
-  // Delivery address (separate from billing)
+  // Delivery address
   deliveryLine1      String?
   deliveryLine2      String?
   deliveryCity       String?
   deliveryPostalCode String?
   deliveryCountry    String?
 
-  // Relation metadata
-  customerReference String?   // their reference for invoices
-  internalNotes     String?
+  // Visiting address
+  visitingLine1      String?
+  visitingLine2      String?
+  visitingPostalCode String?
+  visitingCity       String?
+  visitingCountry    String?
 
-  // Per-contact defaults (override org defaults)
+  // Status & classification
+  status         ContactStatus @default(active)
+  customerNumber String?       // org-scoped sequence, e.g. K-0042
+
+  // Invoice defaults (override org defaults)
   defaultCurrency         String?
   defaultPaymentTermsDays Int?
   defaultTaxRate          Decimal? @db.Decimal(5, 4)
+  deliveryMethodId        String?  @db.Uuid
+  deliveryTermsId         String?  @db.Uuid
+  interestInvoicing       Boolean  @default(true)
+  priceListId             String?  @db.Uuid
+  invoiceDiscountRate     Decimal? @db.Decimal(5, 4)
+  invoiceFeeAmount        BigInt?
+  freightAmount           BigInt?
+  pricesIncludeVat        Boolean  @default(false)
+
+  // References
+  customerReference  String?   // their reference for invoices
+  ourReference       String?   // our reference on invoices
+  accountManagerId   String?   @db.Uuid
+  externalReference  String?
+  yourReferenceLabel String?   // override "Er referens" label
+
+  // Accounting overrides
+  defaultVatType       String?
+  salesAccountOverride String?
+
+  // Communication
+  invoiceEmails   String?  @db.Text  // comma-separated CCs
+  invoiceFreeText String?  @db.Text  // appended to all invoices
+
+  // Notes
+  internalNotes String?
+
+  // Cache (updated by refreshContactCache)
+  lastInvoiceDate    DateTime?
+  totalRevenueOre    BigInt   @default(0)
+  openInvoicesCount  Int      @default(0)
+  openInvoicesAmount BigInt   @default(0)
 
   notes      String?
   tags       String[]
@@ -959,10 +1001,16 @@ model Contact {
   quotes            Quote[]
   portalMagicTokens PortalMagicToken[] @relation("ContactPortalTokens")
   trustedDevices    TrustedDevice[]    @relation("ContactTrustedDevices")
+  accountManager    User?              @relation("AccountManagerContacts", fields: [accountManagerId], references: [id])
+  priceList         PriceList?         @relation("ContactPriceList", fields: [priceListId], references: [id])
+  deliveryMethod    DeliveryMethod?    @relation("ContactDeliveryMethod", fields: [deliveryMethodId], references: [id])
+  deliveryTerms     DeliveryTerms?     @relation("ContactDeliveryTerms", fields: [deliveryTermsId], references: [id])
 
   @@index([organizationId])
   @@index([organizationId, email])
   @@index([organizationId, status])
+  @@index([organizationId, customerNumber])
+  @@index([organizationId, accountManagerId])
   @@map("contacts")
 }
 
@@ -3952,6 +4000,7 @@ model DeliveryMethod {
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   invoices     Invoice[]
+  contacts     Contact[]   @relation("ContactDeliveryMethod")
 
   @@unique([organizationId, code])
   @@index([organizationId])
@@ -3971,6 +4020,7 @@ model DeliveryTerms {
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   invoices     Invoice[]
+  contacts     Contact[]   @relation("ContactDeliveryTerms")
 
   @@unique([organizationId, code])
   @@index([organizationId])
@@ -3991,6 +4041,7 @@ model PriceList {
   organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   items        PriceListItem[]
   invoices     Invoice[]
+  contacts     Contact[]      @relation("ContactPriceList")
 
   @@index([organizationId])
   @@map("price_lists")

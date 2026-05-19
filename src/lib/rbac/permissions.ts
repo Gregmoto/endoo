@@ -42,10 +42,14 @@ export const INVOICE_PERMISSIONS = {
 // CONTACT PERMISSIONS
 // ─────────────────────────────────────────────
 export const CONTACT_PERMISSIONS = {
-  READ:   "contacts:read",
-  CREATE: "contacts:create",
-  UPDATE: "contacts:update",
-  DELETE: "contacts:delete",
+  READ:          "contacts:read",
+  CREATE:        "contacts:create",
+  UPDATE:        "contacts:update",
+  DELETE:        "contacts:delete",
+  BULK_UPDATE:   "contacts:bulk_update",
+  EXPORT:        "contacts:export",
+  IMPORT:        "contacts:import",
+  VIES_VALIDATE: "contacts:vies_validate",
 } as const
 
 // ─────────────────────────────────────────────
