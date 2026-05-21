@@ -7,6 +7,13 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.29.1] - 2026-05-21
+
+### Fixed
+- **[SEO]** Lade till `robots: noindex` på alla interna layouter: `(auth)`, `sign`, `q`, `platform`, `onboarding` — förhindrar att inloggnings- och applikationssidor indexeras av sökmotorer
+- **[SEO]** Sitemap uppdaterad: tog bort `/login` och `/register`, lade till `/byra`, `/funktioner` och alla 11 artiklar-undersidor
+- **[SEO]** WWW → non-WWW permanent redirect (301) tillagd i `next.config.ts` för kanonisk domänkonsolidering
+
 ## [0.29.0] - 2026-05-19
 
 ### Added

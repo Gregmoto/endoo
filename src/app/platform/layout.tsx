@@ -1,4 +1,9 @@
+import type { Metadata } from "next"
 import { auth } from "@/lib/auth"
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { SignOutButton } from "./SignOutButton"

@@ -19,9 +19,15 @@ const config: NextConfig = {
     ]
   },
 
-  // Redirect root → /app after auth is wired up
   async redirects() {
-    return []
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.endoo.se" }],
+        destination: "https://endoo.se/:path*",
+        permanent: true,
+      },
+    ]
   },
 
   // @react-pdf/renderer uses Node.js canvas internals — must NOT be bundled by webpack
