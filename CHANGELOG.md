@@ -7,6 +7,28 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.30.0] - 2026-05-22
+
+### Added
+- **[PDF1]** Ny faktura-PDF-mall från grunden: Inter-typsnitt (400/500/600/700) via @fontsource/inter — ersätter Helvetica
+- **[PDF1]** Varumärkesfärg från `BrandingProfile.pdfAccentColor` används nu som accentfärg i header-linje, tabellrubrik och typ-badge
+- **[PDF1]** Fakturerings-adress i "kuvertfönster"-ram för tydlig visuell hierarki
+- **[PDF1]** Typ-badge (röd för kreditnota, gul för påminnelse/räntefaktura) i dokumenthuvudet
+- **[PDF1]** `InvoicePdfPaymentBox` — dedikerad betalningssektion med OCR-nummer prominent, BG/PG/IBAN/BIC i grid, Swish QR integrerat
+- **[PDF1]** `VatBreakdownRow[]` — momsbrytning per skattesats (Bokföringslagen krav) i summeringssektionen
+- **[PDF1]** `wrap={false}` på varje fakturarad — förhindrar att rader splittras vid sidbrytning
+- **[PDF1]** Dimensioner (projekt/avdelning) renderas per rad under benämningen
+- **[PDF1]** OCR beräknas med Luhn mod-10 kontrollsiffra från fakturanummer
+- **[PDF1]** `deliveryDate` tillagt i `InvoicePdfData` och metadata-balk (Bokföringslagen krav)
+- **[PDF1]** `paymentTermsName` tillagt i typen för att visa faktiskt villkorsnamn
+
+### Changed
+- **[PDF1]** `InvoicePdfSummary` visar momsrader per skattesats + separat momstabell under totalsumman
+- **[PDF1]** `InvoicePdfMetadata` använder surface-bakgrund och `flexWrap` istället för fast 4-kolumnsgrid
+- **[PDF1]** `InvoicePdfPageFooter` förenklade till 3 kolumner: adress, kontakt, juridisk identitet
+- **[PDF1]** Swish QR flyttad från fristående komponent till `InvoicePdfPaymentBox`
+- **[PDF1]** `fonts.ts` (ny fil) hanterar Inter-registrering idempotent på modulnivå
+
 ## [0.29.1] - 2026-05-21
 
 ### Fixed

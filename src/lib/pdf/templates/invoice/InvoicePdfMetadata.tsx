@@ -8,72 +8,56 @@ import { t } from "@/lib/pdf/i18n/invoice"
 interface Props {
   d: Pick<InvoicePdfData,
     "lang" | "yourReference" | "ourReference" | "shipmentMark" |
-    "yourOrderNumber" | "paymentTermsDays" | "contactVatNumber" | "template">
+    "yourOrderNumber" | "paymentTermsDays" | "paymentTermsName" |
+    "deliveryDate" | "template">
 }
 
 export function InvoicePdfMetadata({ d }: Props) {
-  const lang = d.lang
+  const { lang } = d
 
-  // Collect reference columns (only non-empty)
-  const refCols: Array<{ label: string; value: string }> = []
-  if (d.yourReference)   refCols.push({ label: t(lang, "yourReference"),  value: d.yourReference })
-  if (d.shipmentMark)    refCols.push({ label: t(lang, "shipmentMark"),   value: d.shipmentMark })
-  if (d.ourReference)    refCols.push({ label: t(lang, "ourReference"),   value: d.ourReference })
-  if (d.yourOrderNumber) refCols.push({ label: t(lang, "orderNumber"),    value: d.yourOrderNumber })
+  type MetaCol = { label: string; value: string }
+  const cols: MetaCol[] = []
 
-  const paymentTermsText = d.paymentTermsDays != null
-    ? `${d.paymentTermsDays} dagar netto`
-    : null
+  if (d.yourReference)  cols.push({ label: t(lang, "yourReference"),  value: d.yourReference })
+  if (d.ourReference)   cols.push({ label: t(lang, "ourReference"),   value: d.ourReference })
+  if (d.shipmentMark)   cols.push({ label: t(lang, "shipmentMark"),   value: d.shipmentMark })
+  if (d.yourOrderNumber) cols.push({ label: t(lang, "yourOrderNumber"), value: d.yourOrderNumber })
 
-  const hasVatRow = d.contactVatNumber || d.template.fScattCertified || paymentTermsText
+  const paymentTermsText = d.paymentTermsName
+    ?? (d.paymentTermsDays != null ? `${d.paymentTermsDays} ${lang === "sv" ? "dagar netto" : "days net"}` : null)
 
-  if (refCols.length === 0 && !hasVatRow) return null
+  if (paymentTermsText) cols.push({ label: t(lang, "paymentTerms"), value: paymentTermsText })
+  if (d.deliveryDate)   cols.push({ label: t(lang, "deliveryDate"), value: d.deliveryDate })
+
+  const showFSkatt = d.template.fScattCertified
+
+  if (cols.length === 0 && !showFSkatt) return null
 
   return (
     <View style={[S.section, {
-      borderTopWidth: 0.5,
-      borderBottomWidth: 0.5,
-      borderColor: PDF_COLORS.border,
+      backgroundColor: PDF_COLORS.surface,
       paddingTop: 6,
       paddingBottom: 6,
+      paddingLeft: 8,
+      paddingRight: 8,
+      borderRadius: 3,
     }]}>
-
-      {/* Row 1: reference columns */}
-      {refCols.length > 0 && (
-        <View style={{ flexDirection: "row", marginBottom: hasVatRow ? 8 : 0 }}>
-          {refCols.map(({ label, value }) => (
-            <View key={label} style={{ flex: 1, paddingRight: 8 }}>
-              <Text style={S.label}>{label}</Text>
-              <Text style={S.value}>{value}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Row 2: VAT, F-skatt, payment terms */}
-      {hasVatRow && (
-        <View style={{ flexDirection: "row" }}>
-          {d.contactVatNumber && (
-            <View style={{ flex: 1, paddingRight: 8 }}>
-              <Text style={S.label}>{t(lang, "vatNumber")}</Text>
-              <Text style={S.value}>{d.contactVatNumber}</Text>
-            </View>
-          )}
-          {d.template.fScattCertified && (
-            <View style={{ flex: 1, paddingRight: 8 }}>
-              <Text style={[S.value, { color: PDF_COLORS.textMuted, fontFamily: "Helvetica-Oblique" }]}>
-                {t(lang, "fScattApproved")}
-              </Text>
-            </View>
-          )}
-          {paymentTermsText && (
-            <View style={{ flex: 2 }}>
-              <Text style={S.label}>{t(lang, "paymentTerms")}</Text>
-              <Text style={S.value}>{paymentTermsText.toUpperCase()}</Text>
-            </View>
-          )}
-        </View>
-      )}
+      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+        {cols.map(({ label, value }) => (
+          <View key={label} style={{ marginRight: 24, marginBottom: 2 }}>
+            <Text style={S.label}>{label}</Text>
+            <Text style={S.value}>{value}</Text>
+          </View>
+        ))}
+        {showFSkatt && (
+          <View style={{ marginRight: 24, marginBottom: 2 }}>
+            <Text style={S.label}> </Text>
+            <Text style={[S.valueSm, { fontStyle: "italic" }]}>
+              {t(lang, "fScattApproved")}
+            </Text>
+          </View>
+        )}
+      </View>
     </View>
   )
 }

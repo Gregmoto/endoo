@@ -1,102 +1,208 @@
 import { StyleSheet } from "@react-pdf/renderer"
 import { PDF_COLORS } from "@/lib/pdf/colors"
 
+const F = "Inter"
+
 export const S = StyleSheet.create({
+
+  // ─── Page ─────────────────────────────────────────────────────────────────
   page: {
+    fontFamily: F,
+    fontWeight: 400,
     fontSize: 9,
-    fontFamily: "Helvetica",
     color: PDF_COLORS.text,
-    paddingLeft: 30,
-    paddingRight: 30,
-    paddingTop: 25,
-    paddingBottom: 65,
+    paddingLeft: 32,
+    paddingRight: 32,
+    paddingTop: 28,
+    paddingBottom: 78,
     backgroundColor: PDF_COLORS.background,
   },
 
-  section: { marginBottom: 16 },
-  row:     { flexDirection: "row" },
+  section: { marginBottom: 14 },
 
-  // Labels + values
+  // ─── Typography ────────────────────────────────────────────────────────────
   label: {
-    fontSize: 7,
+    fontFamily: F,
+    fontWeight: 600,
+    fontSize: 6.5,
     color: PDF_COLORS.textMuted,
     textTransform: "uppercase",
-    letterSpacing: 0.4,
+    letterSpacing: 0.5,
     marginBottom: 2,
   },
   value: {
+    fontFamily: F,
+    fontWeight: 400,
     fontSize: 9,
     color: PDF_COLORS.text,
   },
   valueBold: {
+    fontFamily: F,
+    fontWeight: 600,
     fontSize: 9,
-    fontFamily: "Helvetica-Bold",
     color: PDF_COLORS.text,
   },
+  valueSm: {
+    fontFamily: F,
+    fontWeight: 400,
+    fontSize: 8,
+    color: PDF_COLORS.textMuted,
+  },
 
-  // Table
-  tableHeaderRow: {
+  // ─── Table header ──────────────────────────────────────────────────────────
+  tableHeader: {
     flexDirection: "row",
-    borderBottomWidth: 0.5,
-    borderColor: PDF_COLORS.border,
-    paddingBottom: 4,
-    marginBottom: 1,
-  },
-  tableRow: {
-    flexDirection: "row",
-    paddingTop: 3,
-    paddingBottom: 3,
-  },
-  tableRowAlt: {
-    flexDirection: "row",
-    paddingTop: 3,
-    paddingBottom: 3,
     backgroundColor: PDF_COLORS.surface,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 4,
+    paddingRight: 4,
   },
   thText: {
-    fontSize: 8,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: F,
+    fontWeight: 600,
+    fontSize: 7,
     color: PDF_COLORS.textMuted,
     textTransform: "uppercase",
-    letterSpacing: 0.3,
+    letterSpacing: 0.4,
   },
-  tdText:  { fontSize: 9, color: PDF_COLORS.text },
-  tdMuted: { fontSize: 8, color: PDF_COLORS.textMuted },
 
-  // Totals
-  totalsBox: { marginTop: 8, alignItems: "flex-end" },
-  totalsInner: { width: 210 },
+  // ─── Table rows ────────────────────────────────────────────────────────────
+  tableRow: {
+    flexDirection: "row",
+    paddingTop: 4,
+    paddingBottom: 4,
+    paddingLeft: 4,
+    paddingRight: 4,
+    borderBottomWidth: 0.3,
+    borderColor: PDF_COLORS.border,
+  },
+  tdText: {
+    fontFamily: F,
+    fontWeight: 400,
+    fontSize: 9,
+    color: PDF_COLORS.text,
+  },
+  tdSub: {
+    fontFamily: F,
+    fontWeight: 400,
+    fontSize: 7.5,
+    color: PDF_COLORS.textMuted,
+    marginTop: 1,
+  },
+  tdNum: {
+    fontFamily: F,
+    fontWeight: 400,
+    fontSize: 9,
+    color: PDF_COLORS.text,
+    textAlign: "right",
+  },
+  tdNumBold: {
+    fontFamily: F,
+    fontWeight: 600,
+    fontSize: 9,
+    color: PDF_COLORS.text,
+    textAlign: "right",
+  },
+
+  // ─── Totals ────────────────────────────────────────────────────────────────
+  totalsWrap:  { marginTop: 12, alignItems: "flex-end" },
+  totalsBox:   { width: 234 },
   totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingTop: 2,
-    paddingBottom: 2,
+    paddingTop: 2.5,
+    paddingBottom: 2.5,
   },
-  totalRowBorder: {
+  totalSepRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingTop: 6,
-    paddingBottom: 6,
+    paddingTop: 2.5,
+    paddingBottom: 2.5,
     borderTopWidth: 0.5,
     borderColor: PDF_COLORS.border,
-    marginTop: 4,
+    marginTop: 2,
   },
-  totalLabel: { fontSize: 9, color: PDF_COLORS.textMuted },
-  totalValue: { fontSize: 9, color: PDF_COLORS.text, textAlign: "right" },
-  grandLabel: { fontSize: 12, fontFamily: "Helvetica-Bold", color: PDF_COLORS.heading },
-  grandValue: { fontSize: 12, fontFamily: "Helvetica-Bold", color: PDF_COLORS.heading, textAlign: "right" },
+  totalLabel: {
+    fontFamily: F,
+    fontWeight: 400,
+    fontSize: 8.5,
+    color: PDF_COLORS.textMuted,
+  },
+  totalValue: {
+    fontFamily: F,
+    fontWeight: 400,
+    fontSize: 8.5,
+    color: PDF_COLORS.text,
+    textAlign: "right",
+  },
+  grandBox: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: PDF_COLORS.surface,
+    borderRadius: 4,
+    paddingTop: 9,
+    paddingBottom: 9,
+    paddingLeft: 12,
+    paddingRight: 12,
+    marginTop: 6,
+  },
+  grandLabel: {
+    fontFamily: F,
+    fontWeight: 700,
+    fontSize: 10,
+    color: PDF_COLORS.heading,
+  },
+  grandValue: {
+    fontFamily: F,
+    fontWeight: 700,
+    fontSize: 13,
+    color: PDF_COLORS.heading,
+    textAlign: "right",
+  },
 
-  // Footer (fixed, every page)
+  // ─── Payment box ───────────────────────────────────────────────────────────
+  paymentBox: {
+    marginTop: 14,
+    paddingTop: 10,
+    borderTopWidth: 0.5,
+    borderColor: PDF_COLORS.border,
+  },
+  paymentGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 6,
+  },
+  paymentItem: {
+    marginRight: 28,
+    marginBottom: 5,
+  },
+
+  // ─── Fixed page footer ─────────────────────────────────────────────────────
   pageFooter: {
     position: "absolute",
     bottom: 18,
-    left: 30,
-    right: 30,
+    left: 32,
+    right: 32,
     borderTopWidth: 0.5,
     borderColor: PDF_COLORS.border,
-    paddingTop: 5,
+    paddingTop: 6,
   },
+  footerRow:  { flexDirection: "row" },
   footerCol:  { flex: 1 },
-  footerText: { fontSize: 7, color: PDF_COLORS.textMuted, marginBottom: 1 },
-  footerTextBold: { fontSize: 7, fontFamily: "Helvetica-Bold", color: PDF_COLORS.textMuted, marginBottom: 1 },
+  footerText: {
+    fontFamily: F,
+    fontWeight: 400,
+    fontSize: 6.5,
+    color: PDF_COLORS.textMuted,
+    marginBottom: 1.5,
+  },
+  footerTextBold: {
+    fontFamily: F,
+    fontWeight: 600,
+    fontSize: 6.5,
+    color: PDF_COLORS.textMuted,
+    marginBottom: 1.5,
+  },
 })

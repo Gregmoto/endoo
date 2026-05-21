@@ -11,7 +11,7 @@ import { requireAuth }  from "@/lib/rbac/guards"
 import { canOrThrow }   from "@/lib/rbac/policy"
 import { renderToStream, type DocumentProps } from "@react-pdf/renderer"
 import { InvoicePdf }   from "@/lib/pdf/templates/invoice/InvoicePdf"
-import type { InvoicePdfData, InvoicePdfLine, InvoiceTemplateData } from "@/lib/pdf/templates/invoice/InvoicePdfTypes"
+import type { InvoicePdfData, InvoicePdfLine, InvoiceTemplateData, VatBreakdownRow } from "@/lib/pdf/templates/invoice/InvoicePdfTypes"
 import { resolveBranding } from "@/lib/branding/resolver"
 import React, { type ReactElement } from "react"
 import QRCode from "qrcode"
@@ -51,6 +51,41 @@ function getInterestRate(invoicingSettings: unknown): number | null {
   return typeof v === "number" && v > 0 ? v : null
 }
 
+// Swedish Bankgiro OCR: invoice digits + Luhn mod-10 check digit
+function computeOcr(invoiceNumber: string): string {
+  const digits = invoiceNumber.replace(/\D/g, "")
+  if (!digits) return invoiceNumber
+  let sum = 0
+  let doDouble = true
+  for (let i = digits.length - 1; i >= 0; i--) {
+    let d = parseInt(digits[i])
+    if (doDouble) { d *= 2; if (d > 9) d -= 9 }
+    sum += d
+    doDouble = !doDouble
+  }
+  return digits + ((10 - (sum % 10)) % 10)
+}
+
+// Group line totals by tax rate for per-rate VAT breakdown (Bokföringslagen)
+function computeVatBreakdown(
+  lineItems: Array<{ taxRate: unknown; lineTotal: unknown }>
+): VatBreakdownRow[] {
+  const map = new Map<number, { base: number; tax: number }>()
+  for (const l of lineItems) {
+    const rate = Number(l.taxRate)          // e.g. 0.25
+    const base = Number(l.lineTotal)        // öre, net excl tax
+    const pct  = Math.round(rate * 100)     // e.g. 25
+    const prev = map.get(pct) ?? { base: 0, tax: 0 }
+    map.set(pct, {
+      base: prev.base + base,
+      tax:  prev.tax + Math.round(base * rate),
+    })
+  }
+  return Array.from(map.entries())
+    .sort(([a], [b]) => b - a)
+    .map(([rate, { base, tax }]) => ({ rate, base, tax }))
+}
+
 // ─── Route ───────────────────────────────────────────────────────────────────
 
 export async function GET(
@@ -78,6 +113,7 @@ export async function GET(
               description: true, quantity: true, unit: true,
               unitPrice: true, taxRate: true, discountRate: true, lineTotal: true,
               articleNumber: true, orderedQuantity: true, deliveredQuantity: true,
+              sortOrder: true,
             },
           },
         },
@@ -180,11 +216,16 @@ export async function GET(
       shipmentMark:   invoice.shipmentMark   ?? null,
       yourOrderNumber: invoice.yourOrderNumber ?? null,
       paymentTermsDays: invoice.paymentTermsDays ?? null,
+      paymentTermsName: null,   // TODO: join PaymentTerm if name needed
+      ocr:            invoice.invoiceNumber ? computeOcr(invoice.invoiceNumber) : null,
+      deliveryDate:   invoice.deliveryDate ? invoice.deliveryDate.toLocaleDateString("sv-SE") : null,
+      brandingColor:  branding.pdfAccentColor ?? branding.primaryColor ?? null,
       lines,
       notes:          invoice.notes ?? null,
       subtotalAmount: Number(invoice.subtotalAmount),
       freightAmount:  Number(invoice.freightAmount),
       invoiceFeeAmount: Number(invoice.invoiceFeeAmount),
+      vatBreakdown:   computeVatBreakdown(invoice.lineItems),
       taxAmount:      Number(invoice.taxAmount),
       roundingAmount: Number(invoice.roundingAmount),
       totalAmount:    Number(invoice.totalAmount),
