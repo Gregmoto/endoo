@@ -1017,19 +1017,19 @@
     },
     {
       "file": "src/app/platform/layout.tsx",
-      "line": 19,
+      "line": 24,
       "match": "text-white",
       "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
     },
     {
       "file": "src/app/platform/layout.tsx",
-      "line": 29,
+      "line": 34,
       "match": "hover:bg-gray-800",
       "suggestion": "hover:bg-accent"
     },
     {
       "file": "src/app/platform/layout.tsx",
-      "line": 29,
+      "line": 34,
       "match": "text-white",
       "suggestion": "verify text-white is on a colored background; use text-primary-foreground if on bg-primary"
     },
@@ -1467,7 +1467,7 @@
     },
     {
       "file": "src/components/navigation/AvatarDropdown.tsx",
-      "line": 140,
+      "line": 141,
       "match": "opacity-60",
       "suggestion": "use text-muted-foreground instead of opacity on text"
     },
@@ -1516,6 +1516,18 @@
     {
       "file": "src/components/org-switcher.tsx",
       "line": 185,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/settings/template/TemplateForm.tsx",
+      "line": 71,
+      "match": "opacity-50",
+      "suggestion": "use text-muted-foreground instead of opacity on text"
+    },
+    {
+      "file": "src/components/settings/template/TemplateForm.tsx",
+      "line": 91,
       "match": "opacity-50",
       "suggestion": "use text-muted-foreground instead of opacity on text"
     },
@@ -1672,7 +1684,7 @@
   ],
   "summary": {
     "totalErrors": 0,
-    "totalWarnings": 278,
-    "filesAffected": 90
+    "totalWarnings": 280,
+    "filesAffected": 91
   }
 }
