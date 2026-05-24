@@ -7,6 +7,11 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.30.1] - 2026-05-24
+
+### Fixed
+- **[Hotfix]** Tog bort `redirects()`-blocket i `next.config.ts` som skickade `www.endoo.se` → `endoo.se`. I kombination med Vercels domän-konfiguration (apex → www) blev det en redirect-loop som gjorde att webbläsare avbröt med "alltför många omdirigeringar". www → apex hanteras nu enbart i Vercel (Settings → Domains: sätt `endoo.se` som primary, `www.endoo.se` som "Redirect to endoo.se").
+
 ## [0.30.0] - 2026-05-22
 
 ### Added

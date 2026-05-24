@@ -1,5 +1,5 @@
-export const APP_VERSION = "0.30.0"
-export const APP_VERSION_DATE = "2026-05-21"
+export const APP_VERSION = "0.30.1"
+export const APP_VERSION_DATE = "2026-05-24"
 export const APP_BUILD_COMMIT =
   process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "dev"
 export const APP_BUILD_BRANCH =

@@ -19,16 +19,9 @@ const config: NextConfig = {
     ]
   },
 
-  async redirects() {
-    return [
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "www.endoo.se" }],
-        destination: "https://endoo.se/:path*",
-        permanent: true,
-      },
-    ]
-  },
+  // Domain-level www → apex redirect is handled by Vercel (Settings → Domains:
+  // set endoo.se as primary, www.endoo.se → "Redirect to endoo.se"). Doing it
+  // ALSO here previously caused a redirect loop when Vercel had www as primary.
 
   // @react-pdf/renderer uses Node.js canvas internals — must NOT be bundled by webpack
   serverExternalPackages: ["@react-pdf/renderer"],
