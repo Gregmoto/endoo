@@ -93,6 +93,7 @@ export async function GET(
     signerEmail:   signer.email,
     totalSigners:  sr.signers.filter(s => s.role === "signer").length,
     signedCount:   sr.signers.filter(s => s.role === "signer" && s.status === "signed").length,
+    requireBankId: sr.requireBankId,
   })
 }
 

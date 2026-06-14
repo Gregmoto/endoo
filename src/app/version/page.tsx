@@ -1,6 +1,10 @@
 import { getVersionInfo } from "@/lib/version"
+import { VibeCreditLine } from "@/components/marketing/VibeCreditLine"
 
-export const metadata = { title: "Version · Endoo" }
+export const metadata = {
+  title: "Version · Endoo",
+  robots: { index: false, follow: false },
+}
 
 interface VersionEntry {
   version: string
@@ -132,6 +136,9 @@ export default async function VersionPage() {
           >
             Visa full CHANGELOG.md på GitHub →
           </a>
+          <div className="mt-4 flex justify-center">
+            <VibeCreditLine />
+          </div>
         </div>
       </div>
     </div>

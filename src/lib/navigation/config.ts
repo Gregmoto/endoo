@@ -4,6 +4,8 @@ export type NavCategory = {
   href: (orgSlug: string) => string
   matchPaths: string[]
   visibleWhen?: (orgType: string) => boolean
+  requiresRole?: string[]          // only shown to users with these roles
+  hideWhenImpersonating?: boolean  // hidden when agency staff impersonates a client
   subItems?: NavSubItem[]
 }
 
@@ -103,4 +105,30 @@ export const NAV_CATEGORIES: NavCategory[] = [
       { id: "articles",  label: "Artiklar", href: (s) => `/${s}/articles`  },
     ],
   },
+  {
+    id: "hantering",
+    label: "Hantering",
+    href: (slug) => `/${slug}/tasks`,
+    matchPaths: ["/tasks", "/team", "/audit"],
+    subItems: [
+      { id: "tasks", label: "Uppgifter", href: (s) => `/${s}/tasks` },
+      { id: "team",  label: "Team",      href: (s) => `/${s}/team`  },
+      { id: "audit", label: "Granskningslogg", href: (s) => `/${s}/audit` },
+    ],
+  },
 ]
+
+// Sub-item level visibility rules (applied in TopBar)
+export const SUB_ITEM_RULES: Record<string, {
+  requiresRole?: string[]
+  hideWhenImpersonating?: boolean
+}> = {
+  team: {
+    requiresRole: ["owner", "admin", "member"],
+    hideWhenImpersonating: true,
+  },
+  audit: {
+    requiresRole: ["owner", "admin"],
+    hideWhenImpersonating: true,
+  },
+}

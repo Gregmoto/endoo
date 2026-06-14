@@ -1,6 +1,7 @@
 import Link from "next/link"
 import type { Metadata } from "next"
 import { auth } from "@/lib/auth"
+import { VibeCreditLine } from "@/components/marketing/VibeCreditLine"
 
 export const metadata: Metadata = {
   title: "Endoo – Modern ekonomiplattform för företag och byråer",
@@ -1045,6 +1046,7 @@ export default async function HomePage() {
               <Link href="/terms"   className="hover:text-muted-foreground transition-colors">Användarvillkor</Link>
               <Link href="/cookies" className="hover:text-muted-foreground transition-colors">Cookies</Link>
             </div>
+            <VibeCreditLine />
           </div>
         </div>
       </footer>

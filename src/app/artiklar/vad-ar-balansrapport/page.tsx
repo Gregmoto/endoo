@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { VibeCreditLine } from "@/components/marketing/VibeCreditLine"
 
 export const metadata: Metadata = {
   title: "Vad är en balansrapport? | Endoo",
@@ -146,6 +147,9 @@ export default function VadArBalansrapportPage() {
         {" · "}
         <Link href="/privacy" className="hover:text-muted-foreground">Integritetspolicy</Link>
         {" · © "}{new Date().getFullYear()} Endoo
+        <div className="mt-4 flex justify-center">
+          <VibeCreditLine />
+        </div>
       </footer>
     </main>
   )

@@ -8,15 +8,13 @@
  *   The email contains a link to /invite/[token].
  *   Accepting the invite creates the membership and marks the invite
  *   as accepted. Expired or accepted tokens are rejected.
- *
- * No email service is wired yet (Fas 4). The token is returned in the
- * response so it can be shared manually during development.
  */
 
-import { prisma } from "@/lib/prisma"
-import { requireAuth } from "@/lib/rbac/guards"
-import { canOrThrow } from "@/lib/rbac/policy"
-import { writeAuditLog } from "@/lib/tenant-db"
+import { prisma }                from "@/lib/prisma"
+import { requireAuth }           from "@/lib/rbac/guards"
+import { canOrThrow }            from "@/lib/rbac/policy"
+import { writeAuditLog }         from "@/lib/tenant-db"
+import { sendInvitationEmail }   from "@/lib/email/send-invitation"
 import { z } from "zod"
 
 const InviteSchema = z.object({
@@ -100,16 +98,21 @@ export async function POST(req: Request) {
       ipAddress: req.headers.get("x-forwarded-for") ?? undefined,
     })
 
-    // TODO (Fas 4): send email via Resend
-    // await sendInvitationEmail({ to: normalizedEmail, token: invitation.token, orgName })
+    // Send invitation email — non-blocking; failure doesn't abort the request
+    sendInvitationEmail({
+      organizationId:  ctx.organizationId,
+      invitedByUserId: ctx.userId,
+      recipientEmail:  normalizedEmail,
+      role,
+      token:           invitation.token,
+      expiresAt:       invitation.expiresAt,
+    }).catch(err => console.error("[invitations POST] email send failed:", err))
 
     return Response.json({
       id:        invitation.id,
       email:     invitation.email,
       role:      invitation.role,
       expiresAt: invitation.expiresAt,
-      // Included for development — remove before production
-      inviteUrl: `${process.env.AUTH_URL ?? process.env.NEXTAUTH_URL}/invite/${invitation.token}`,
     }, { status: 201 })
 
   } catch (err: unknown) {

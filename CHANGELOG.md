@@ -7,6 +7,69 @@ och projektet följer [Semantic Versioning](https://semver.org/lang/sv/).
 
 ## [Unreleased]
 
+## [0.33.3] - 2026-06-14
+
+### Fixed
+- **[SEO1]** Återställde www→non-www permanent redirect (301) i `next.config.ts` — den hade tagits bort i arbetsträdet, vilket gjorde `www.endoo.se` otillgänglig och splittrade indexeringen mellan två värdar
+- **[SEO1]** `/version` får nu `noindex` — intern changelog-sida som saknade canonical och inte fanns i sitemap, flaggades felaktigt av Google som "Utesluten av taggen noindex"
+
+## [0.33.2] - 2026-05-25
+
+### Added
+- **[Branding1]** `VibeCreditLine`-komponent i `src/components/marketing/` — diskret "Byggt av VibeDev"-credit med UTM-länk (`utm_source=endoo&utm_medium=footer&utm_campaign=client-credit`)
+- **[Branding1]** Krediten visas nu i footern på alla 22 marknadsföringssidor (startsida, undersidor, artiklar, legal)
+
+## [0.33.1] - 2026-05-24
+
+### Fixed
+- **[Infra1]** `next.config.ts` — tog bort `www.endoo.se → endoo.se` redirect som skapade oändlig redirect-loop (hosting-plattformen hade redan den omvända redirecten konfigurerad)
+
+## [0.33.0] - 2026-05-23
+
+### Added
+- **[Nav1]** Ny navigationsgrupp "Hantering" med undersidor `/tasks`, `/team` och `/audit` i huvud-TopBar
+- **[Nav1]** Rollbaserad navfiltrering: Team visas för owner/admin/member, Granskningslogg enbart för owner/admin; båda dolda vid impersonering
+- **[Nav1]** `SUB_ITEM_RULES` i `src/lib/navigation/config.ts` — deklarativ tabell för roll- och impersoneringsregler per navpost
+- **[Nav1]** `TopBar` accepterar nu `userRole` och `isImpersonating` props och filtrerar subItems därefter
+- **[BankID1]** `src/lib/signing/criipto.ts` — Criipto OIDC-integration för BankID: `buildAuthUrl()`, `exchangeCode()`, `generateNonce()`
+- **[BankID1]** `GET /api/sign/[token]/bankid/initiate` — validerar token, lagrar nonce i cookie, omdirigerar till Criipto
+- **[BankID1]** `GET /api/sign/[token]/bankid/callback` — tar emot OIDC-kod, verifierar nonce, persisterar BankID-bevis (personnummer, namn, transaktions-ID, certifikat) på `Signer`
+- **[BankID1]** Signeringssidan `/sign/[token]` visar BankID-flöde när `requireBankId = true`: separat UX med BankID-logga, samtyckescheckbox och "Signera med BankID"-knapp
+
+### Changed
+- **[Nav1]** `src/app/(dashboard)/[orgSlug]/layout.tsx` — skickar `userRole` och `isImpersonating` till `TopBar`
+- **[BankID1]** `POST /api/signatures` — accepterar nu `requireBankId: boolean` vid skapande av signeringsbegäran
+- **[BankID1]** `GET /api/sign/[token]` — exponerar nu `requireBankId` i responsdata till signeringssidan
+
+### Database
+- **[BankID1]** Migration `20260523_001_bankid_fields`: lägger till `requireBankId` på `signature_requests` och BankID-beviskolumner på `signers` (`bankIdPersonnummer`, `bankIdName`, `bankIdTransactionId`, `bankIdCertificate`, `bankIdCompletedAt`)
+
+## [0.32.0] - 2026-05-23
+
+### Added
+- **[Recurring1]** `GET /api/recurring/[id]/activity` — aktivitetsflöde för avtalsfakturering; deriverar tidslinje från schemats skapdatum, genererade fakturor och `ActivityFeedItem`-poster
+- **[Recurring1]** Aktivitetsfliken på `/recurring/[id]` visar nu kronologisk tidslinje med ikonkodade händelser, klickbara fakturalänkar och tidsstämplar
+
+## [0.31.1] - 2026-05-23
+
+### Added
+- **[Email1]** `src/lib/email/send-invitation.ts` — skickar inbjudningsmejl via Resend med suppressionskontroll och `EmailDelivery`-loggning för webhook-spårning
+
+### Fixed
+- **[Email1]** `POST /api/invitations` — inbjudningsmejl skickas nu faktiskt; `InvitationEmail`-template med avsändarens namn, organisation, roll, acceptlänk och utgångsdatum
+
+### Changed
+- **[Email1]** `POST /api/invitations` — `inviteUrl` tas bort från API-svaret (token exponerades i klartext)
+
+## [0.31.0] - 2026-05-22
+
+### Added
+- **[Klienter1]** `/clients/inbox` — inkorgsida för byrå med åtgärdsbara poster (leverantörsfakturor, attester, signaturer, uppgifter) från alla tillgängliga klienter
+- **[Klienter1]** `/clients/deadlines` — deadlinesida med VatPerioder, räkenskapsår, obetalda fakturor och signaturer inom 90 dagar, färgkodade efter brådska
+- **[Klienter1]** `GET /api/agency/inbox` — API-route som aggregerar inbox-poster per klient med korrekt byråmedlemsscoping
+- **[Klienter1]** `GET /api/agency/deadlines` — API-route som aggregerar frister per klient, sorterade efter datum
+- **[Klienter1]** `src/lib/agency/access.ts` — delad hjälpfunktion `getAccessibleClientIds()` för ägare/admin (alla klienter) vs. övriga roller (explicit AgencyStaffAccess)
+
 ## [0.30.0] - 2026-05-22
 
 ### Added

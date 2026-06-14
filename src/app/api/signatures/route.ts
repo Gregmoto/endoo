@@ -17,12 +17,13 @@ const signerSchema = z.object({
 })
 
 const createSchema = z.object({
-  entityType: z.enum(["contract", "quote"]),
-  entityId:   z.string().uuid(),
-  title:      z.string().min(1).max(300),
-  message:    z.string().max(2000).nullable().optional(),
-  expiresAt:  z.string().datetime().optional(),
-  signers:    z.array(signerSchema).min(1).max(20),
+  entityType:    z.enum(["contract", "quote"]),
+  entityId:      z.string().uuid(),
+  title:         z.string().min(1).max(300),
+  message:       z.string().max(2000).nullable().optional(),
+  expiresAt:     z.string().datetime().optional(),
+  requireBankId: z.boolean().default(false),
+  signers:       z.array(signerSchema).min(1).max(20),
 })
 
 export async function POST(req: Request) {
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
     const parsed = createSchema.safeParse(body)
     if (!parsed.success) return Response.json({ error: parsed.error.flatten() }, { status: 422 })
 
-    const { entityType, entityId, title, message, signers } = parsed.data
+    const { entityType, entityId, title, message, signers, requireBankId } = parsed.data
     const expiresAt = parsed.data.expiresAt
       ? new Date(parsed.data.expiresAt)
       : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days default
@@ -65,6 +66,7 @@ export async function POST(req: Request) {
           title,
           message:         message ?? null,
           expiresAt,
+          requireBankId:   requireBankId ?? false,
           status:          "sent",
           createdByUserId: ctx.userId,
         },

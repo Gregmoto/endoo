@@ -3435,6 +3435,7 @@ model SignatureRequest {
   // Config
   expiresAt      DateTime
   reminderDays   Int[]     @default([3, 7, 14])
+  requireBankId  Boolean   @default(false)
 
   // Status
   status         SignatureRequestStatus @default(draft)
@@ -3482,6 +3483,13 @@ model Signer {
   signatureText String?
   ipAddress     String?
   userAgent     String?
+
+  // BankID evidence (populated after Criipto OIDC callback)
+  bankIdPersonnummer  String?
+  bankIdName          String?
+  bankIdTransactionId String?
+  bankIdCertificate   String?   @db.Text
+  bankIdCompletedAt   DateTime?
 
   // Reminders
   lastRemindedAt DateTime?

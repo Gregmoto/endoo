@@ -19,6 +19,7 @@ const config: NextConfig = {
     ]
   },
 
+  // Consolidate www → apex so search engines index a single canonical host
   async redirects() {
     return [
       {

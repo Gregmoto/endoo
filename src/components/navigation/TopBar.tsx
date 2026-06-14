@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { NAV_CATEGORIES } from "@/lib/navigation/config"
+import { NAV_CATEGORIES, SUB_ITEM_RULES } from "@/lib/navigation/config"
 import { useActiveCategory } from "@/lib/navigation/use-active-category"
 import { TopBarCategories } from "./TopBarCategories"
 import { TopBarRight } from "./TopBarRight"
@@ -20,6 +20,8 @@ interface Props {
   orgPlan?: string
   logoUrl?: string | null
   brandingDisplayName?: string | null
+  userRole?: string | null
+  isImpersonating?: boolean
 }
 
 export function TopBar({
@@ -31,13 +33,25 @@ export function TopBar({
   userName,
   logoUrl,
   brandingDisplayName,
+  userRole,
+  isImpersonating = false,
 }: Props) {
   const [slideOpen, setSlideOpen] = useState(false)
   const { activeCategory } = useActiveCategory(orgSlug)
 
-  const categories = NAV_CATEGORIES.filter(
-    (cat) => !cat.visibleWhen || cat.visibleWhen(orgType)
-  )
+  const categories = NAV_CATEGORIES
+    .filter((cat) => !cat.visibleWhen || cat.visibleWhen(orgType))
+    .map((cat) => {
+      if (!cat.subItems) return cat
+      const filteredSubs = cat.subItems.filter((sub) => {
+        const rules = SUB_ITEM_RULES[sub.id]
+        if (!rules) return true
+        if (rules.hideWhenImpersonating && isImpersonating) return false
+        if (rules.requiresRole && userRole && !rules.requiresRole.includes(userRole)) return false
+        return true
+      })
+      return { ...cat, subItems: filteredSubs }
+    })
 
   const subItems = activeCategory?.subItems ?? []
 

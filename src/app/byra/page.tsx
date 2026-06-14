@@ -1,5 +1,6 @@
 import Link from "next/link"
 import type { Metadata } from "next"
+import { VibeCreditLine } from "@/components/marketing/VibeCreditLine"
 
 export const metadata: Metadata = {
   title: "Endoo för byråer – Hantera alla dina kundkonton",
@@ -419,6 +420,9 @@ export default function ByraPage() {
             <Link href="/artiklar/ekonomisystem-byra" className="hover:text-muted-foreground">Ekonomisystem för byråer</Link>
           </div>
           <span>© {new Date().getFullYear()} Endoo · Byggt i Sverige 🇸🇪</span>
+        </div>
+        <div className="mt-4 flex justify-center md:justify-end">
+          <VibeCreditLine />
         </div>
       </footer>
 

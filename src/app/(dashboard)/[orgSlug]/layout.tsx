@@ -85,6 +85,8 @@ export default async function DashboardLayout({
             orgPlan={org.plan}
             logoUrl={branding.logoUrl}
             brandingDisplayName={branding.displayName}
+            userRole={membership?.role ?? null}
+            isImpersonating={isImpersonating}
           />
         </header>
 

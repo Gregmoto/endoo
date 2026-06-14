@@ -1,6 +1,6 @@
 {
   "name": "endoo",
-  "version": "0.30.0",
+  "version": "0.33.3",
   "private": true,
   "scripts": {
     "dev": "next dev",

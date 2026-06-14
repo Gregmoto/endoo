@@ -1,5 +1,6 @@
 import Link from "next/link"
 import type { Metadata } from "next"
+import { VibeCreditLine } from "@/components/marketing/VibeCreditLine"
 
 export const metadata: Metadata = {
   title: "Cookiepolicy – Endoo",
@@ -104,6 +105,9 @@ export default function CookiesPage() {
         <div className="max-w-3xl mx-auto flex gap-6 text-sm text-muted-foreground">
           <Link href="/privacy" className="hover:text-muted-foreground">Integritetspolicy</Link>
           <Link href="/terms"   className="hover:text-muted-foreground">Användarvillkor</Link>
+        </div>
+        <div className="mt-4 flex justify-center md:justify-end">
+          <VibeCreditLine />
         </div>
       </footer>
     </main>

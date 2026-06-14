@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 
 type SigningContext = {
   requestId:           string
@@ -14,14 +14,17 @@ type SigningContext = {
   signerEmail:         string
   totalSigners:        number
   signedCount:         number
+  requireBankId:       boolean
 }
 
-type State = "loading" | "ready" | "signing" | "signed" | "declined" | "error"
+type State = "loading" | "ready" | "signing" | "signed" | "declined" | "error" | "bankid_pending"
 
-const CLS = "w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+const CLS = "w-full px-3 py-2.5 text-sm border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 bg-background text-foreground"
 
 export default function SigningPage() {
-  const { token } = useParams<{ token: string }>()
+  const { token }       = useParams<{ token: string }>()
+  const searchParams    = useSearchParams()
+  const bankidResult    = searchParams.get("bankid")
 
   const [ctx,   setCtx]   = useState<SigningContext | null>(null)
   const [state, setState] = useState<State>("loading")
@@ -44,9 +47,21 @@ export default function SigningPage() {
           return
         }
         setCtx(data)
+
+        // BankID callback result
+        if (bankidResult === "done") {
+          setState("signed")
+          return
+        }
+        if (bankidResult === "error") {
+          const reason = searchParams.get("reason") ?? "bankid_failed"
+          setError(decodeBankIdError(reason))
+        }
+
         setState("ready")
       })
       .catch(() => { setError("Kunde inte ladda sidan"); setState("error") })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token])
 
   async function submit(action: "sign" | "decline") {
@@ -68,6 +83,11 @@ export default function SigningPage() {
       setError(data.error ?? "Något gick fel")
       setState("ready")
     }
+  }
+
+  function initiateBankId() {
+    setState("bankid_pending")
+    window.location.href = `/api/sign/${token}/bankid/initiate`
   }
 
   // ── Loading ──────────────────────────────────────────────────────────────────
@@ -116,7 +136,7 @@ export default function SigningPage() {
       <Shell>
         <SuccessScreen
           icon="✗"
-          color="gray"
+          color="muted"
           title="Avböjt"
           subtitle="Du har avböjt att signera detta dokument."
         />
@@ -124,24 +144,44 @@ export default function SigningPage() {
     )
   }
 
-  const expiry   = new Date(ctx.expiresAt).toLocaleDateString("sv-SE")
-  const canSign  = agreed && sigText.trim().length > 0
+  // ── BankID redirect in progress ───────────────────────────────────────────────
+
+  if (state === "bankid_pending") {
+    return (
+      <Shell>
+        <div className="flex flex-col items-center py-20 px-6 text-center gap-4">
+          <BankIdLogo />
+          <p className="text-sm text-muted-foreground">Startar BankID…</p>
+        </div>
+      </Shell>
+    )
+  }
+
+  const expiry  = new Date(ctx.expiresAt).toLocaleDateString("sv-SE")
+  const canSign = agreed && sigText.trim().length > 0
 
   // ── Ready to sign ─────────────────────────────────────────────────────────────
 
   return (
     <Shell>
       {/* Header */}
-      <div className="bg-indigo-600 px-6 py-5 text-white">
-        <p className="text-xs font-semibold uppercase tracking-wider text-indigo-200 mb-1">Signeringsbegäran</p>
+      <div className="bg-primary px-6 py-5 text-primary-foreground">
+        <p className="text-xs font-semibold uppercase tracking-wider opacity-70 mb-1">Signeringsbegäran</p>
         <h1 className="text-xl font-bold truncate">{ctx.title}</h1>
-        <p className="text-sm text-indigo-200 mt-0.5">Från {ctx.orgName}</p>
+        <p className="text-sm opacity-80 mt-0.5">Från {ctx.orgName}</p>
       </div>
 
       <div className="p-6 space-y-6">
+        {/* BankID error banner */}
+        {error && bankidResult === "error" && (
+          <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+
         {/* Message */}
         {ctx.message && (
-          <div className="bg-indigo-50 border border-indigo-100 rounded-lg px-4 py-3 text-sm text-indigo-800 italic">
+          <div className="bg-accent border border-border rounded-lg px-4 py-3 text-sm text-foreground italic">
             {ctx.message}
           </div>
         )}
@@ -155,7 +195,7 @@ export default function SigningPage() {
 
         {/* PDF viewer */}
         {ctx.documentSnapshotUrl && (
-          <div className="rounded-lg border border overflow-hidden">
+          <div className="rounded-lg border overflow-hidden">
             <div className="bg-muted border-b border px-3 py-2 text-xs text-muted-foreground font-medium">
               Dokument att signera
             </div>
@@ -169,71 +209,79 @@ export default function SigningPage() {
         )}
 
         {!ctx.documentSnapshotUrl && (
-          <div className="rounded-lg border border-dashed border px-6 py-8 text-center text-sm text-muted-foreground">
+          <div className="rounded-lg border border-dashed px-6 py-8 text-center text-sm text-muted-foreground">
             Dokumentet är bifogat i e-postinbjudan.<br />Granska det innan du signerar.
           </div>
         )}
 
-        {/* Decline mode toggle */}
         {!declining ? (
           <>
-            {/* Signature */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-foreground">
-                Din signatur — skriv ditt fullständiga namn
-              </label>
-              <input
-                className={`${CLS} font-serif text-lg`}
-                placeholder={ctx.signerName}
-                value={sigText}
-                onChange={e => setSigText(e.target.value)}
-                autoComplete="name"
-                spellCheck={false}
+            {ctx.requireBankId ? (
+              /* ── BankID signing ──────────────────────────────────────────── */
+              <BankIdSigningSection
+                signerName={ctx.signerName}
+                onInitiate={initiateBankId}
+                onDecline={() => setDeclining(true)}
               />
-            </div>
+            ) : (
+              /* ── Text signature ──────────────────────────────────────────── */
+              <>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-foreground">
+                    Din signatur — skriv ditt fullständiga namn
+                  </label>
+                  <input
+                    className={`${CLS} font-serif text-lg`}
+                    placeholder={ctx.signerName}
+                    value={sigText}
+                    onChange={e => setSigText(e.target.value)}
+                    autoComplete="name"
+                    spellCheck={false}
+                  />
+                </div>
 
-            {/* Consent */}
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={agreed}
-                onChange={e => setAgreed(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border text-indigo-600 focus:ring-indigo-500"
-              />
-              <span className="text-sm text-foreground leading-relaxed">
-                Jag har läst och förstår dokumentet ovan och godkänner det med denna elektroniska signatur.
-              </span>
-            </label>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={e => setAgreed(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border text-primary focus:ring-primary/50"
+                  />
+                  <span className="text-sm text-foreground leading-relaxed">
+                    Jag har läst och förstår dokumentet ovan och godkänner det med denna elektroniska signatur.
+                  </span>
+                </label>
 
-            {/* Actions */}
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => submit("sign")}
-                disabled={!canSign || state === "signing"}
-                className="flex-1 rounded-lg bg-indigo-600 text-white py-3 text-sm font-semibold hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                {state === "signing" ? "Signerar…" : "Signera dokument"}
-              </button>
-              <button
-                onClick={() => setDeclining(true)}
-                className="px-4 py-3 rounded-lg border border text-sm text-muted-foreground hover:bg-muted transition-colors"
-              >
-                Avböj
-              </button>
-            </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => submit("sign")}
+                    disabled={!canSign || state === "signing"}
+                    className="flex-1 rounded-lg bg-primary text-primary-foreground py-3 text-sm font-semibold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+                  >
+                    {state === "signing" ? "Signerar…" : "Signera dokument"}
+                  </button>
+                  <button
+                    onClick={() => setDeclining(true)}
+                    className="px-4 py-3 rounded-lg border text-sm text-muted-foreground hover:bg-muted transition-colors"
+                  >
+                    Avböj
+                  </button>
+                </div>
 
-            {error && <p className="text-sm text-red-600">{error}</p>}
+                {error && !bankidResult && <p className="text-sm text-destructive">{error}</p>}
+              </>
+            )}
 
-            {/* Legal notice */}
             <p className="text-xs text-muted-foreground leading-relaxed">
               Giltigt till <strong>{expiry}</strong>. Genom att signera godkänner du att din e-postadress ({ctx.signerEmail}) och
               IP-adress registreras som del av signeringsprocessen i enlighet med eIDAS (EU 910/2014).
+              {ctx.requireBankId && " Signeringen verifieras med BankID."}
             </p>
           </>
         ) : (
-          /* Decline form */
+          /* ── Decline form ──────────────────────────────────────────────────── */
           <div className="space-y-4">
-            <div className="bg-red-50 border border-red-100 rounded-lg px-4 py-3 text-sm text-red-700">
+            <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
               Du håller på att avböja att signera detta dokument. Avsändaren meddelas.
             </div>
             <div className="space-y-1">
@@ -250,7 +298,7 @@ export default function SigningPage() {
               <button
                 onClick={() => submit("decline")}
                 disabled={state === "signing"}
-                className="rounded-lg bg-red-600 text-white px-5 py-2.5 text-sm font-semibold hover:bg-red-700 disabled:opacity-50 transition-colors"
+                className="rounded-lg bg-destructive text-destructive-foreground px-5 py-2.5 text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition-opacity"
               >
                 {state === "signing" ? "Skickar…" : "Bekräfta avböjande"}
               </button>
@@ -270,13 +318,84 @@ export default function SigningPage() {
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
+function BankIdSigningSection({
+  signerName,
+  onInitiate,
+  onDecline,
+}: {
+  signerName: string
+  onInitiate: () => void
+  onDecline: () => void
+}) {
+  const [agreed, setAgreed] = useState(false)
+  return (
+    <div className="space-y-5">
+      <div className="rounded-xl border bg-accent/40 px-5 py-4 flex items-start gap-4">
+        <div className="mt-0.5">
+          <BankIdLogo />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-foreground">Signering med BankID krävs</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Du identifierar dig säkert med ditt BankID. Inga extra inloggningar behövs.
+          </p>
+        </div>
+      </div>
+
+      <p className="text-sm text-muted-foreground">
+        Inloggad som: <span className="font-medium text-foreground">{signerName}</span>
+      </p>
+
+      <label className="flex items-start gap-3 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={agreed}
+          onChange={e => setAgreed(e.target.checked)}
+          className="mt-0.5 h-4 w-4 rounded border text-primary focus:ring-primary/50"
+        />
+        <span className="text-sm text-foreground leading-relaxed">
+          Jag har läst och förstår dokumentet ovan och godkänner det med min elektroniska signatur via BankID.
+        </span>
+      </label>
+
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onInitiate}
+          disabled={!agreed}
+          className="flex-1 rounded-lg py-3 text-sm font-semibold transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+          // audit-ok: BankID official brand color — must not be changed per BankID brand guidelines
+          style={{ background: "#193E8F", color: "#fff" }} // audit-ok
+        >
+          Signera med BankID
+        </button>
+        <button
+          onClick={onDecline}
+          className="px-4 py-3 rounded-lg border text-sm text-muted-foreground hover:bg-muted transition-colors"
+        >
+          Avböj
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function BankIdLogo() {
+  return (
+    <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="BankID">
+      {/* audit-ok: BankID official brand color */}
+      <rect width="100" height="100" rx="16" fill="#193E8F"/> {/* audit-ok */}
+      <text x="50" y="62" textAnchor="middle" fill="white" fontSize="38" fontFamily="Arial, sans-serif" fontWeight="bold">BID</text>
+    </svg>
+  )
+}
+
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-muted flex items-start justify-center pt-8 pb-16 px-4">
-      <div className="w-full max-w-lg bg-card rounded-2xl shadow-lg overflow-hidden border border">
+      <div className="w-full max-w-lg bg-card rounded-2xl shadow-lg overflow-hidden border">
         {children}
         <div className="px-6 py-4 border-t border-border/50 text-center">
-          <p className="text-xs text-gray-300">Säker e-signering via <span className="font-semibold text-muted-foreground">Endoo</span></p>
+          <p className="text-xs text-muted-foreground/60">Säker e-signering via <span className="font-semibold text-muted-foreground">Endoo</span></p>
         </div>
       </div>
     </div>
@@ -287,18 +406,34 @@ function SuccessScreen({
   icon, color, title, subtitle,
 }: {
   icon: string
-  color: "green" | "gray"
+  color: "green" | "muted"
   title: string
   subtitle: string
 }) {
-  const bg = color === "green" ? "bg-green-50 text-green-600" : "bg-gray-100 text-gray-500"
+  const cls = color === "green"
+    ? "bg-green-50 text-green-600 dark:bg-green-950 dark:text-green-400"
+    : "bg-muted text-muted-foreground"
   return (
     <div className="flex flex-col items-center py-16 px-6 text-center">
-      <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-5 ${bg}`}>
+      <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-5 ${cls}`}>
         {icon}
       </div>
       <h2 className="text-xl font-bold text-foreground mb-2">{title}</h2>
       <p className="text-sm text-muted-foreground max-w-xs">{subtitle}</p>
     </div>
   )
+}
+
+function decodeBankIdError(reason: string): string {
+  const map: Record<string, string> = {
+    session_expired:  "Sessionen har gått ut. Försök igen.",
+    nonce_mismatch:   "Säkerhetsfel vid BankID-autentisering. Försök igen.",
+    exchange_failed:  "BankID-autentiseringen misslyckades. Försök igen.",
+    expired:          "Signeringslänken har löpt ut.",
+    not_found:        "Signeringslänken är ogiltig.",
+    missing_params:   "Felaktig återlänk från BankID.",
+    invalid_state:    "Säkerhetsfel. Försök igen.",
+    access_denied:    "Du avbröt BankID-inloggningen.",
+  }
+  return map[reason] ?? "BankID-autentiseringen misslyckades. Försök igen."
 }

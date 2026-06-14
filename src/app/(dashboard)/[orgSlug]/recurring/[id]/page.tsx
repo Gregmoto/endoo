@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import type { ActivityEvent } from "@/app/api/recurring/[id]/activity/route"
 
 // ─────────────────────────────────────────────
 // Types
@@ -107,12 +108,14 @@ export default function RecurringDetailPage() {
   const { orgSlug, id } = useParams<{ orgSlug: string; id: string }>()
   const router = useRouter()
 
-  const [schedule, setSchedule]   = useState<Schedule | null>(null)
-  const [preview, setPreview]     = useState<PreviewEntry[]>([])
-  const [activeTab, setActiveTab] = useState<"overview" | "schedule" | "history" | "activity">("overview")
-  const [loading, setLoading]     = useState(true)
-  const [acting, setActing]       = useState(false)
-  const [error, setError]         = useState<string | null>(null)
+  const [schedule, setSchedule]       = useState<Schedule | null>(null)
+  const [preview, setPreview]         = useState<PreviewEntry[]>([])
+  const [activeTab, setActiveTab]     = useState<"overview" | "schedule" | "history" | "activity">("overview")
+  const [loading, setLoading]         = useState(true)
+  const [acting, setActing]           = useState(false)
+  const [error, setError]             = useState<string | null>(null)
+  const [activity, setActivity]       = useState<ActivityEvent[]>([])
+  const [activityLoading, setActivityLoading] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -130,10 +133,21 @@ export default function RecurringDetailPage() {
     if (res.ok) setPreview(await res.json())
   }, [id])
 
+  const loadActivity = useCallback(async () => {
+    setActivityLoading(true)
+    const res = await fetch(`/api/recurring/${id}/activity`)
+    if (res.ok) {
+      const d = await res.json()
+      setActivity(d.events ?? [])
+    }
+    setActivityLoading(false)
+  }, [id])
+
   useEffect(() => { load() }, [load])
   useEffect(() => {
-    if (activeTab === "schedule") loadPreview()
-  }, [activeTab, loadPreview])
+    if (activeTab === "schedule")  loadPreview()
+    if (activeTab === "activity")  loadActivity()
+  }, [activeTab, loadPreview, loadActivity])
 
   async function doAction(action: "pause" | "resume" | "end" | "generate-now") {
     setActing(true)
@@ -485,12 +499,103 @@ export default function RecurringDetailPage() {
       {/* ── Tab: Aktivitet ── */}
       {activeTab === "activity" && (
         <Card>
-          <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground text-sm">Aktivitetslogg kommer snart</p>
+          <CardContent className="p-5">
+            <h2 className="text-sm font-semibold text-foreground mb-5">Aktivitetslogg</h2>
+
+            {activityLoading ? (
+              <div className="space-y-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="flex gap-3">
+                    <div className="w-7 h-7 rounded-full bg-muted animate-pulse flex-shrink-0 mt-0.5" />
+                    <div className="flex-1 space-y-1.5 pt-1">
+                      <div className="h-3.5 bg-muted rounded animate-pulse w-3/4" />
+                      <div className="h-3 bg-muted rounded animate-pulse w-1/3" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : activity.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4">Ingen aktivitet registrerad ännu</p>
+            ) : (
+              <ol className="relative border-l border ml-3">
+                {activity.map((ev, idx) => (
+                  <ActivityRow
+                    key={ev.id}
+                    event={ev}
+                    orgSlug={orgSlug}
+                    isLast={idx === activity.length - 1}
+                  />
+                ))}
+              </ol>
+            )}
           </CardContent>
         </Card>
       )}
 
     </div>
+  )
+}
+
+// ─────────────────────────────────────────────
+// ActivityRow — single timeline entry
+// ─────────────────────────────────────────────
+
+const EVENT_META: Record<string, { icon: string; dot: string; label: string }> = {
+  schedule_created:  { icon: "✦", dot: "bg-brand-500",       label: "Skapad"       },
+  schedule_ended:    { icon: "◑", dot: "bg-muted-foreground", label: "Avslutad"     },
+  schedule_paused:   { icon: "⏸", dot: "bg-amber-500",       label: "Pausad"       },
+  schedule_resumed:  { icon: "▶", dot: "bg-green-500",        label: "Återupptagen" },
+  invoice_generated: { icon: "◧", dot: "bg-brand-400",        label: "Genererad"    },
+  invoice_sent:      { icon: "✉", dot: "bg-blue-500",         label: "Skickad"      },
+  invoice_viewed:    { icon: "◎", dot: "bg-indigo-400",       label: "Öppnad"       },
+  invoice_paid:      { icon: "◉", dot: "bg-green-500",        label: "Betald"       },
+  invoice_overdue:   { icon: "◷", dot: "bg-destructive",      label: "Försenad"     },
+  invoice_voided:    { icon: "✕", dot: "bg-muted-foreground", label: "Makulerad"    },
+  activity:          { icon: "◈", dot: "bg-muted-foreground", label: ""             },
+}
+
+function ActivityRow({
+  event,
+  orgSlug,
+  isLast,
+}: {
+  event:    ActivityEvent
+  orgSlug:  string
+  isLast:   boolean
+}) {
+  const meta  = EVENT_META[event.type] ?? EVENT_META.activity
+  const href  = event.href ? `/${orgSlug}${event.href}` : null
+  const ts    = new Date(event.timestamp)
+  const date  = ts.toLocaleDateString("sv-SE", { day: "numeric", month: "short", year: "numeric" })
+  const time  = ts.toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit" })
+
+  return (
+    <li className={`ml-4 ${isLast ? "pb-0" : "pb-6"}`}>
+      {/* dot */}
+      <span className={`absolute -left-[9px] mt-1.5 w-[18px] h-[18px] rounded-full border-2 border-card flex items-center justify-center text-[8px] text-card ${meta.dot}`}>
+        {meta.icon}
+      </span>
+
+      <div className="flex flex-col gap-0.5">
+        <p className="text-sm font-medium text-foreground leading-snug">
+          {href ? (
+            <Link href={href} className="hover:underline underline-offset-2">
+              {event.title}
+            </Link>
+          ) : (
+            event.title
+          )}
+        </p>
+
+        {event.body && (
+          <p className="text-xs text-muted-foreground">{event.body}</p>
+        )}
+
+        <p className="text-xs text-muted-foreground mt-0.5">
+          {date} {time}
+          {event.actor && <span className="ml-1.5 text-foreground/60">· {event.actor}</span>}
+        </p>
+      </div>
+    </li>
   )
 }
